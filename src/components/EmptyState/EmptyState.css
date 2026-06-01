@@ -1,0 +1,18 @@
+.empty-state {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.empty-state__title {
+  font-size: var(--font-size-lg);
+}
+
+.empty-state__message {
+  font-size: var(--font-size-sm);
+}

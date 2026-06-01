@@ -1,0 +1,22 @@
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-10);
+  height: var(--space-10);
+}
+
+.spinner__ring {
+  width: var(--space-8);
+  height: var(--space-8);
+  border: var(--space-1) solid var(--color-primary-100);
+  border-top-color: var(--color-primary-700);
+  border-radius: var(--radius-full);
+  animation: spinner-rotate var(--transition-slow) linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,122 @@
+.services-page {
+  min-height: 100vh;
+  background-color: var(--color-neutral-50);
+}
+
+.services-page__main {
+  background-color: var(--color-neutral-50);
+}
+
+.services-catalog {
+  display: grid;
+  gap: var(--space-8);
+  width: min(100%, 75rem);
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-4) var(--space-16);
+}
+
+.services-catalog__header {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 44rem;
+}
+
+.services-catalog__header h1 {
+  font-size: var(--font-size-3xl);
+  color: var(--color-secondary-800);
+}
+
+.services-catalog__header p {
+  color: var(--color-neutral-700);
+}
+
+.services-catalog__grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.services-card {
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-5);
+  min-height: 16rem;
+  padding: var(--space-6);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.services-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  background-color: var(--color-neutral-100);
+  border-radius: var(--radius-full);
+  color: var(--color-secondary-700);
+}
+
+.services-card__body {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.services-card__body h2 {
+  font-size: var(--font-size-xl);
+  color: var(--color-secondary-800);
+}
+
+.services-card__body p {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-700);
+}
+
+.services-card__meta {
+  display: grid;
+  gap: var(--space-1);
+  padding-top: var(--space-4);
+  border-top: thin solid var(--border-color);
+  font-size: var(--font-size-sm);
+}
+
+.services-card__meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.services-card__meta-row dt,
+.services-card__meta-row dd {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.services-card__meta-row dt {
+  color: var(--color-neutral-700);
+}
+
+.services-card__meta-row dd {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary-900);
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .services-catalog__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-catalog {
+    padding-inline: var(--space-8);
+  }
+
+  .services-catalog__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

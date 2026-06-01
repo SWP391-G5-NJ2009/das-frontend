@@ -1,0 +1,47 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  border: thin solid currentColor;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.badge--confirmed {
+  background-color: var(--status-confirmed-bg);
+  color: var(--status-confirmed);
+}
+
+.badge--waiting {
+  background-color: var(--status-waiting-bg);
+  color: var(--status-waiting);
+}
+
+.badge--checked-in {
+  background-color: var(--status-checked-in-bg);
+  color: var(--status-checked-in);
+}
+
+.badge--cancelled {
+  background-color: var(--status-cancelled-bg);
+  color: var(--status-cancelled);
+}
+
+.badge--no-show {
+  background-color: var(--status-no-show-bg);
+  color: var(--status-no-show);
+}
+
+.badge--conflict {
+  background-color: var(--status-conflict-bg);
+  color: var(--status-conflict);
+}
+
+.badge--in-treatment {
+  background-color: var(--status-in-treatment-bg);
+  color: var(--status-in-treatment);
+}
