@@ -142,6 +142,7 @@ function AdminAccountsPage() {
                     <th>#</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Phone</th>
                     <th>Status</th>
                     <th>Account Type</th>
                     <th>Actions</th>
@@ -149,15 +150,15 @@ function AdminAccountsPage() {
                 </thead>
                 <tbody>
                   {isLoading && (
-                    <tr><td className="admin-accounts__cell" colSpan={6}>Loading accounts...</td></tr>
+                    <tr><td className="admin-accounts__cell" colSpan={7}>Loading accounts...</td></tr>
                   )}
 
                   {error && (
-                    <tr><td className="admin-accounts__cell" colSpan={6}>Error: {error.message}</td></tr>
+                    <tr><td className="admin-accounts__cell" colSpan={7}>Error: {error.message}</td></tr>
                   )}
 
                   {!isLoading && !error && accounts.length === 0 && (
-                    <tr><td className="admin-accounts__cell" colSpan={6}>No accounts found</td></tr>
+                    <tr><td className="admin-accounts__cell" colSpan={7}>No accounts found</td></tr>
                   )}
 
                   {!isLoading && !error && accounts.map((account, index) => (
@@ -172,6 +173,7 @@ function AdminAccountsPage() {
                         </div>
                       </td>
                       <td className="admin-accounts__cell">{account.email}</td>
+                      <td className="admin-accounts__cell">{account.phone}</td>
                       <td className="admin-accounts__cell">{account.status}</td>
                       <td className="admin-accounts__cell">
                         <span className={`admin-accounts__role-badge admin-accounts__role-badge--${(account.role?.role_name || "").toLowerCase()}`}>
