@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Eye, Send, UserRound } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Send, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import heroLogin from "../../assets/hero-login.jpg";
 import { authService } from "../../services/auth.service";
@@ -14,6 +14,15 @@ function ForgotPasswordPage() {
   const [devOtp, setDevOtp] = useState(null);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState({
+    newPassword: false,
+    confirmPassword: false,
+  });
+
+  const focusOtpSlot = (index) => {
+    const nextInput = document.querySelector(`[name="${otpSlots[index]}"]`);
+    nextInput?.focus();
+  };
 
   const handleRequestOtp = async (event) => {
     event.preventDefault();
@@ -24,7 +33,9 @@ function ForgotPasswordPage() {
     const nextIdentifier = formData.get("identifier");
 
     try {
-      const data = await authService.forgotPassword({ identifier: nextIdentifier });
+      const data = await authService.forgotPassword({
+        identifier: nextIdentifier,
+      });
       setIdentifier(nextIdentifier);
       setDevOtp(data.devOtp || null);
       setStep("reset");
@@ -76,13 +87,63 @@ function ForgotPasswordPage() {
     }
   };
 
+  const handleOtpInput = (event, index) => {
+    const input = event.currentTarget;
+    const digit = input.value.replace(/\D/g, "").slice(-1);
+    input.value = digit;
+
+    if (digit && index < otpSlots.length - 1) {
+      focusOtpSlot(index + 1);
+    }
+  };
+
+  const handleOtpKeyDown = (event, index) => {
+    if (event.key === "Backspace" && !event.currentTarget.value && index > 0) {
+      focusOtpSlot(index - 1);
+    }
+  };
+
+  const handleOtpPaste = (event, index) => {
+    event.preventDefault();
+
+    const digits = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, otpSlots.length - index)
+      .split("");
+
+    digits.forEach((digit, offset) => {
+      const input = document.querySelector(`[name="${otpSlots[index + offset]}"]`);
+
+      if (input) {
+        input.value = digit;
+      }
+    });
+
+    const nextIndex = Math.min(index + digits.length, otpSlots.length - 1);
+    focusOtpSlot(nextIndex);
+  };
+
+  const handleTogglePassword = (field) => {
+    setVisiblePasswords((current) => ({
+      ...current,
+      [field]: !current[field],
+    }));
+  };
+
   return (
     <main className="forgot-password">
-      <section className="forgot-password__hero" aria-label="Không gian phòng khám DentalCare">
+      <section
+        className="forgot-password__hero"
+        aria-label="Không gian phòng khám DentalCare"
+      >
         <img src={heroLogin} alt="Ghế nha khoa tại phòng khám DentalCare" />
       </section>
 
-      <section className="forgot-password__panel" aria-labelledby="forgot-password-title">
+      <section
+        className="forgot-password__panel"
+        aria-labelledby="forgot-password-title"
+      >
         <Link className="forgot-password__back" to="/login">
           <ArrowLeft size={18} aria-hidden="true" />
           Quay lại
@@ -113,17 +174,20 @@ function ForgotPasswordPage() {
               </div>
             </label>
 
-            <button className="forgot-password__submit" type="submit" disabled={isSubmitting}>
+            <button
+              className="forgot-password__submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Đang gửi..." : "Gửi mã OTP"}
               <Send size={18} aria-hidden="true" />
             </button>
-
-            <p className="forgot-password__support">
-              Cần hỗ trợ? <a href="mailto:it@dentalcare.vn">Liên hệ bộ phận IT</a>
-            </p>
           </form>
         ) : (
-          <form className="forgot-password__form forgot-password__form--reset" onSubmit={handleResetPassword}>
+          <form
+            className="forgot-password__form forgot-password__form--reset"
+            onSubmit={handleResetPassword}
+          >
             <div className="forgot-password__heading">
               <h2 id="forgot-password-title">Xác thực & Đặt lại mật khẩu</h2>
               <p>
@@ -132,17 +196,23 @@ function ForgotPasswordPage() {
               </p>
             </div>
 
-            {devOtp && <p className="forgot-password__dev-otp">Mã OTP dev: {devOtp}</p>}
+            {devOtp && (
+              <p className="forgot-password__dev-otp">Mã OTP dev: {devOtp}</p>
+            )}
             {error && <p className="forgot-password__error">{error}</p>}
 
             <div className="forgot-password__otp" aria-label="Nhập mã OTP">
-              {otpSlots.map((slot) => (
+              {otpSlots.map((slot, index) => (
                 <input
                   aria-label="Một chữ số OTP"
+                  autoComplete={index === 0 ? "one-time-code" : "off"}
                   inputMode="numeric"
                   key={slot}
                   maxLength="1"
                   name={slot}
+                  onInput={(event) => handleOtpInput(event, index)}
+                  onKeyDown={(event) => handleOtpKeyDown(event, index)}
+                  onPaste={(event) => handleOtpPaste(event, index)}
                   type="text"
                   required
                 />
@@ -150,15 +220,35 @@ function ForgotPasswordPage() {
             </div>
 
             <p className="forgot-password__resend">
-              Chưa nhận được mã? <button type="button" onClick={handleResendOtp}>Gửi lại mã</button>
+              Chưa nhận được mã?{" "}
+              <button type="button" onClick={handleResendOtp}>
+                Gửi lại mã
+              </button>
             </p>
 
             <label className="forgot-password__field">
               <span>Mật khẩu mới</span>
               <div className="forgot-password__control forgot-password__control--password">
-                <input type="password" name="newPassword" placeholder="Nhập mật khẩu mới" required />
-                <button type="button" aria-label="Hiện mật khẩu mới">
-                  <Eye size={16} aria-hidden="true" />
+                <input
+                  type={visiblePasswords.newPassword ? "text" : "password"}
+                  name="newPassword"
+                  placeholder="Nhập mật khẩu mới"
+                  required
+                />
+                <button
+                  type="button"
+                  aria-label={
+                    visiblePasswords.newPassword
+                      ? "Ẩn mật khẩu mới"
+                      : "Hiện mật khẩu mới"
+                  }
+                  onClick={() => handleTogglePassword("newPassword")}
+                >
+                  {visiblePasswords.newPassword ? (
+                    <EyeOff size={16} aria-hidden="true" />
+                  ) : (
+                    <Eye size={16} aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </label>
@@ -167,24 +257,36 @@ function ForgotPasswordPage() {
               <span>Xác nhận mật khẩu mới</span>
               <div className="forgot-password__control forgot-password__control--password">
                 <input
-                  type="password"
+                  type={visiblePasswords.confirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Nhập lại mật khẩu mới"
                   required
                 />
-                <button type="button" aria-label="Hiện xác nhận mật khẩu mới">
-                  <Eye size={16} aria-hidden="true" />
+                <button
+                  type="button"
+                  aria-label={
+                    visiblePasswords.confirmPassword
+                      ? "Ẩn xác nhận mật khẩu mới"
+                      : "Hiện xác nhận mật khẩu mới"
+                  }
+                  onClick={() => handleTogglePassword("confirmPassword")}
+                >
+                  {visiblePasswords.confirmPassword ? (
+                    <EyeOff size={16} aria-hidden="true" />
+                  ) : (
+                    <Eye size={16} aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </label>
 
-            <button className="forgot-password__submit" type="submit" disabled={isSubmitting}>
+            <button
+              className="forgot-password__submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Đang xử lý..." : "Xác nhận & Đổi mật khẩu"}
             </button>
-
-            <Link className="forgot-password__login-link" to="/login">
-              Quay lại trang Đăng nhập
-            </Link>
           </form>
         )}
       </section>

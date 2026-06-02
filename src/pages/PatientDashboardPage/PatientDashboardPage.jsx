@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { authService } from "../../services/auth.service";
 import "./PatientDashboardPage.css";
 
 const initialPatient = {
@@ -83,6 +84,16 @@ function PatientDashboardPage() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [patient, setPatient] = useState(initialPatient);
   const [draftPatient, setDraftPatient] = useState(initialPatient);
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordStatus, setPasswordStatus] = useState({
+    isLoading: false,
+    error: "",
+    success: "",
+  });
 
   const handleEditProfile = () => {
     setDraftPatient(patient);
@@ -102,6 +113,60 @@ function PatientDashboardPage() {
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
     setDraftPatient((current) => ({ ...current, [name]: value }));
+  };
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    setPasswordForm((current) => ({ ...current, [name]: value }));
+    setPasswordStatus({ isLoading: false, error: "", success: "" });
+  };
+
+  const handleCancelPasswordChange = () => {
+    setPasswordForm({
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+    setPasswordStatus({ isLoading: false, error: "", success: "" });
+  };
+
+  const handleSubmitPasswordChange = async (event) => {
+    event.preventDefault();
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus({
+        isLoading: false,
+        error: "Mật khẩu xác nhận không khớp.",
+        success: "",
+      });
+      return;
+    }
+
+    setPasswordStatus({ isLoading: true, error: "", success: "" });
+
+    try {
+      await authService.changePassword({
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword,
+      });
+
+      setPasswordForm({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setPasswordStatus({
+        isLoading: false,
+        error: "",
+        success: "Đổi mật khẩu thành công.",
+      });
+    } catch (error) {
+      setPasswordStatus({
+        isLoading: false,
+        error: error.message || "Không thể đổi mật khẩu. Vui lòng thử lại.",
+        success: "",
+      });
+    }
   };
 
   const handleLogout = () => {
@@ -295,22 +360,63 @@ function PatientDashboardPage() {
                 <h2>Đổi mật khẩu</h2>
                 <p>Cập nhật mật khẩu để bảo vệ tài khoản</p>
               </div>
-              <form className="patient-password-form">
+              <form className="patient-password-form" onSubmit={handleSubmitPasswordChange}>
                 <label>
                   <span>Mật khẩu hiện tại</span>
-                  <input type="password" placeholder="Nhập mật khẩu hiện tại" />
+                  <input
+                    name="oldPassword"
+                    type="password"
+                    value={passwordForm.oldPassword}
+                    placeholder="Nhập mật khẩu hiện tại"
+                    onChange={handlePasswordChange}
+                    required
+                  />
                 </label>
                 <label>
                   <span>Mật khẩu mới</span>
-                  <input type="password" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)" />
+                  <input
+                    name="newPassword"
+                    type="password"
+                    value={passwordForm.newPassword}
+                    minLength={8}
+                    pattern="^(?=.*[A-Za-z])(?=.*\d).+$"
+                    placeholder="Nhập mật khẩu mới (ít nhất 8 ký tự, có chữ và số)"
+                    onChange={handlePasswordChange}
+                    required
+                  />
                 </label>
                 <label>
                   <span>Xác nhận mật khẩu mới</span>
-                  <input type="password" placeholder="Nhập lại mật khẩu mới" />
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    value={passwordForm.confirmPassword}
+                    placeholder="Nhập lại mật khẩu mới"
+                    onChange={handlePasswordChange}
+                    required
+                  />
                 </label>
+                {passwordStatus.error && (
+                  <p className="patient-password-form__message patient-password-form__message--error">
+                    {passwordStatus.error}
+                  </p>
+                )}
+                {passwordStatus.success && (
+                  <p className="patient-password-form__message patient-password-form__message--success">
+                    {passwordStatus.success}
+                  </p>
+                )}
                 <div className="patient-password-form__actions">
-                  <button type="button">Lưu mật khẩu</button>
-                  <button type="button">Hủy</button>
+                  <button type="submit" disabled={passwordStatus.isLoading}>
+                    {passwordStatus.isLoading ? "Đang lưu..." : "Lưu mật khẩu"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelPasswordChange}
+                    disabled={passwordStatus.isLoading}
+                  >
+                    Hủy
+                  </button>
                 </div>
               </form>
             </article>

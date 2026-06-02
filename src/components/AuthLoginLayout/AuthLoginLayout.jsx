@@ -1,8 +1,10 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
+  Eye,
   EyeOff,
   LockKeyhole,
   Smile,
@@ -22,6 +24,8 @@ function AuthLoginLayout({
   subtitle,
   title,
 }) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   return (
     <main className="auth-login">
       <section className="auth-login__hero" aria-label="Không gian phòng khám DentalCare">
@@ -64,9 +68,22 @@ function AuthLoginLayout({
             <span>Mật khẩu</span>
             <div className="auth-login__control">
               <LockKeyhole size={20} aria-hidden="true" />
-              <input type="password" name="password" placeholder="Nhập mật khẩu" required />
-              <button type="button" aria-label="Hiện mật khẩu">
-                <EyeOff size={20} aria-hidden="true" />
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                name="password"
+                placeholder="Nhập mật khẩu"
+                required
+              />
+              <button
+                type="button"
+                aria-label={isPasswordVisible ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                onClick={() => setIsPasswordVisible((current) => !current)}
+              >
+                {isPasswordVisible ? (
+                  <EyeOff size={20} aria-hidden="true" />
+                ) : (
+                  <Eye size={20} aria-hidden="true" />
+                )}
               </button>
             </div>
           </label>
