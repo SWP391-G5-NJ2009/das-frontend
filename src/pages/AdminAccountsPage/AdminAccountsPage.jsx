@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useAccounts } from "../../hooks/useAccounts"
 import AddAccountModal from "./AddAccountModal";
+import EditAccountModal from "./EditAccountModal";
 import "./AdminAccountsPage.css";
 
 const NAV_ITEMS = [
@@ -18,6 +19,7 @@ function AdminAccountsPage() {
   const { accounts, isLoading, error, refetch } = useAccounts();
   const [toastVisible, setToastVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [editAccount, setEditAccount] = useState(null);
 
   const showToast = () => {
     setToastVisible(true);
@@ -177,7 +179,7 @@ function AdminAccountsPage() {
                         </span>
                       </td>
                       <td className="admin-accounts__cell admin-accounts__cell--actions">
-                        <button className="admin-accounts__action-btn admin-accounts__action-btn--edit" type="button" onClick={showToast}>
+                        <button className="admin-accounts__action-btn admin-accounts__action-btn--edit" type="button" onClick={() => setEditAccount(account)}>
                           <span className="material-symbols-outlined">edit</span>
                         </button>
                         <button className="admin-accounts__action-btn admin-accounts__action-btn--delete" type="button" onClick={showToast}>
@@ -265,6 +267,16 @@ function AdminAccountsPage() {
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
+            refetch();
+          }}
+        />
+      )}
+      {editAccount && (
+        <EditAccountModal
+          account={editAccount}
+          onClose={() => setEditAccount(null)}
+          onSuccess={() => {
+            setEditAccount(null);
             refetch();
           }}
         />
