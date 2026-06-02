@@ -4,4 +4,5 @@ export const accountService = {
     getAll: () => api.get("/admin/accounts"),
     create: (data) => api.post("/admin/accounts", data),
     update: (id, data) => api.put(`/admin/accounts/${id}`, data),
+    delete: (id) => api.delete(`/admin/accounts/${id}`),
 }

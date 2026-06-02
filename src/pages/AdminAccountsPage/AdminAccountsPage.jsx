@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useAccounts } from "../../hooks/useAccounts"
 import AddAccountModal from "./AddAccountModal";
 import EditAccountModal from "./EditAccountModal";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import "./AdminAccountsPage.css";
 
 const NAV_ITEMS = [
@@ -20,6 +21,7 @@ function AdminAccountsPage() {
   const [toastVisible, setToastVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
+  const [deleteAccount, setDeleteAccount] = useState(null);
 
   const showToast = () => {
     setToastVisible(true);
@@ -184,7 +186,7 @@ function AdminAccountsPage() {
                         <button className="admin-accounts__action-btn admin-accounts__action-btn--edit" type="button" onClick={() => setEditAccount(account)}>
                           <span className="material-symbols-outlined">edit</span>
                         </button>
-                        <button className="admin-accounts__action-btn admin-accounts__action-btn--delete" type="button" onClick={showToast}>
+                        <button className="admin-accounts__action-btn admin-accounts__action-btn--delete" type="button" onClick={() => setDeleteAccount(account)}>
                           <span className="material-symbols-outlined">delete</span>
                         </button>
                       </td>
@@ -279,6 +281,16 @@ function AdminAccountsPage() {
           onClose={() => setEditAccount(null)}
           onSuccess={() => {
             setEditAccount(null);
+            refetch();
+          }}
+        />
+      )}
+      {deleteAccount && (
+        <DeleteConfirmModal
+          account={deleteAccount}
+          onClose={() => setDeleteAccount(null)}
+          onSuccess={() => {
+            setDeleteAccount(null);
             refetch();
           }}
         />
