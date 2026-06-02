@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useAccounts } from "../../hooks/useAccounts"
+import AddAccountModal from "./AddAccountModal";
 import "./AdminAccountsPage.css";
 
 const NAV_ITEMS = [
@@ -14,8 +15,9 @@ const NAV_ITEMS = [
 
 function AdminAccountsPage() {
   const { user } = useAuth();
-  const { accounts, isLoading, error } = useAccounts();
+  const { accounts, isLoading, error, refetch } = useAccounts();
   const [toastVisible, setToastVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const showToast = () => {
     setToastVisible(true);
@@ -98,7 +100,7 @@ function AdminAccountsPage() {
                 Add, update, or remove administrative and patient user access.
               </p>
             </div>
-            <button className="admin-accounts__btn-primary" type="button" onClick={showToast}>
+            <button className="admin-accounts__btn-primary" type="button" onClick={() => setShowModal(true)}>
               <span className="material-symbols-outlined">person_add</span>
               Add New Account
             </button>
@@ -258,6 +260,15 @@ function AdminAccountsPage() {
         <span className="material-symbols-outlined admin-accounts__toast-icon">check_circle</span>
         <span>Action successful</span>
       </div>
+      {showModal && (
+        <AddAccountModal
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false);
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 }
