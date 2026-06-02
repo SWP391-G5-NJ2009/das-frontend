@@ -36,7 +36,7 @@ function AddAccountModal({ onClose, onSuccess }) {
   };
 
   return (
-    <div className="add-account-modal__overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="add-account-modal__overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="add-account-modal">
         <div className="add-account-modal__header">
           <h3 className="add-account-modal__title">Add New Account</h3>

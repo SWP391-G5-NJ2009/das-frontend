@@ -6,11 +6,11 @@ import AddAccountModal from "./AddAccountModal";
 import "./AdminAccountsPage.css";
 
 const NAV_ITEMS = [
+  { icon: "person", label: "Manage Account", to: "/admin/accounts" },
   { icon: "dashboard", label: "Dashboard", to: "/admin/dashboard" },
-  { icon: "calendar_today", label: "Appointments", to: "#" },
-  { icon: "person", label: "Manage Account", to: "#" },
-  { icon: "assessment", label: "Reports", to: "#" },
-  { icon: "settings", label: "Settings", to: "#" },
+  { icon: "calendar_today", label: "Appointments", to: "/admin/appointments" },
+  { icon: "assessment", label: "Reports", to: "/admin/reports" },
+  { icon: "settings", label: "Settings", to: "/admin/settings" },
 ];
 
 function AdminAccountsPage() {
