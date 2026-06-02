@@ -6,6 +6,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import PatientDashboardPage from "./pages/PatientDashboardPage/PatientDashboardPage";
 import PatientLoginPage from "./pages/PatientLoginPage/PatientLoginPage";
+import AdminAccountsPage from "./pages/AdminAccountsPage/AdminAccountsPage";
 import RoleDashboardPage from "./pages/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/StaffLoginPage/StaffLoginPage";
@@ -58,6 +59,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <RoleDashboardPage title="Bảng điều khiển quản trị" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/accounts"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminAccountsPage />
               </ProtectedRoute>
             }
           />

@@ -9,7 +9,7 @@ export const ROLE_HOME = {
   receptionist: "/receptionist/dashboard",
   dentist: "/dentist/dashboard",
   owner: "/owner/dashboard",
-  admin: "/admin/dashboard",
+  admin: "/admin/accounts",
 };
 
 export function AuthProvider({ children }) {
