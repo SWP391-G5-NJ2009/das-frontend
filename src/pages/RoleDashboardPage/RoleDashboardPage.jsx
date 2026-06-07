@@ -8,11 +8,14 @@ function RoleDashboardPage({ title }) {
   return (
     <main className="role-dashboard">
       <h1>{title}</h1>
-      <p>Xin chào, {user?.fullName || user?.email}.</p>
+      <p>Xin chao, {user?.fullName || user?.email}.</p>
       <button type="button" onClick={logout}>
-        Đăng xuất
+        Dang xuat
       </button>
-      <Link to="/">Về trang chủ</Link>
+      {user?.role === "owner" && (
+        <Link to="/owner/services">Quan ly dich vu nha khoa</Link>
+      )}
+      <Link to="/">Ve trang chu</Link>
     </main>
   );
 }
