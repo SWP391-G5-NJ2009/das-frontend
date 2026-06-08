@@ -4,6 +4,7 @@ import ProtectedRoute from "./router/ProtectedRoute";
 import ConsultationPage from "./pages/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
+import OwnerServiceCatalogPage from "./pages/OwnerServiceCatalogPage/OwnerServiceCatalogPage";
 import PatientDashboardPage from "./pages/PatientDashboardPage/PatientDashboardPage";
 import PatientLoginPage from "./pages/PatientLoginPage/PatientLoginPage";
 import AdminAccountsPage from "./pages/AdminAccountsPage/AdminAccountsPage";
@@ -60,6 +61,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <RoleDashboardPage title="Bảng điều khiển chủ phòng khám" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/services"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <OwnerServiceCatalogPage />
               </ProtectedRoute>
             }
           />
