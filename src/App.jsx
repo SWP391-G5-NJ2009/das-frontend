@@ -7,6 +7,7 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import PatientDashboardPage from "./pages/PatientDashboardPage/PatientDashboardPage";
 import PatientLoginPage from "./pages/PatientLoginPage/PatientLoginPage";
 import AdminAccountsPage from "./pages/AdminAccountsPage/AdminAccountsPage";
+import ReceptionistRequestsPage from "./pages/ReceptionistRequestsPage/ReceptionistRequestsPage";
 import RoleDashboardPage from "./pages/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/StaffLoginPage/StaffLoginPage";
@@ -35,6 +36,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <RoleDashboardPage title="Bảng điều khiển lễ tân" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/receptionist/consultation-request"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <ReceptionistRequestsPage />
               </ProtectedRoute>
             }
           />

@@ -1,0 +1,188 @@
+.handle-request-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+}
+
+.handle-request-modal {
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 680px;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-xl);
+}
+
+.handle-request-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.handle-request-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.handle-request-modal__close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: var(--radius-full);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+}
+
+.handle-request-modal__close:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.handle-request-modal__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.handle-request-modal__form > .handle-request-modal__error {
+  grid-column: 1 / -1;
+}
+
+.handle-request-modal__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.handle-request-modal__error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.handle-request-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.handle-request-modal__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-700);
+}
+
+.handle-request-modal__submitted-at {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-500);
+  margin-bottom: var(--space-1);
+}
+
+.handle-request-modal__field input,
+.handle-request-modal__field select,
+.handle-request-modal__field textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-900);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.handle-request-modal__field textarea {
+  resize: none;
+}
+
+.handle-request-modal__field--description textarea {
+  height: 120px;
+}
+
+.handle-request-modal__field--note textarea {
+  height: 80px;
+}
+
+.handle-request-modal__btn--schedule {
+  width: 100%;
+  background-color: var(--color-secondary-700);
+  color: #ffffff;
+  text-align: center;
+}
+
+.handle-request-modal__btn--schedule:hover {
+  opacity: 0.9;
+}
+
+.handle-request-modal__field input:focus,
+.handle-request-modal__field select:focus,
+.handle-request-modal__field textarea:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 2px var(--color-primary-200);
+}
+
+.handle-request-modal__field input[readOnly],
+.handle-request-modal__field textarea[readOnly] {
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-600);
+  cursor: not-allowed;
+}
+
+.handle-request-modal__column--editable {
+  border-left: 1px solid var(--border-color);
+  padding-left: var(--space-6);
+}
+
+.handle-request-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-4);
+}
+
+.handle-request-modal__btn {
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  border: none;
+  transition: opacity var(--transition-fast);
+}
+
+.handle-request-modal__btn--cancel {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+.handle-request-modal__btn--cancel:hover {
+  background-color: var(--color-neutral-200);
+}
+
+.handle-request-modal__btn--submit {
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+}
+
+.handle-request-modal__btn--submit:hover {
+  opacity: 0.9;
+}
+
+.handle-request-modal__btn--submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

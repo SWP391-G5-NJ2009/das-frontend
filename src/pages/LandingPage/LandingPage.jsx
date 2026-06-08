@@ -4,9 +4,43 @@ import heroDentist from "../../assets/hero-dentist.jpg";
 import SiteFooter from "../../components/SiteFooter/SiteFooter";
 import SiteHeader from "../../components/SiteHeader/SiteHeader";
 import { dentalServices } from "../../data/dentalServices";
+import { useState } from "react";
 import "./LandingPage.css";
+import { consultationService } from "../../services/consultation.service";
+import Toast from "../../components/Toast/Toast";
 
 function LandingPage() {
+
+  const [form, setForm] = useState({
+    full_name: "",
+    phone: "",
+    email: "",
+    description: "",
+  });
+
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(null);
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      await consultationService.create(form);
+      setForm({ full_name: "", phone: "", email: "", description: ""});
+      setSuccess("Gửi yêu cầu tư vấn thành công!");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="landing-page">
       <SiteHeader />
@@ -87,27 +121,26 @@ function LandingPage() {
               </ul>
             </div>
 
-            <form className="consultation-form">
+            <form className="consultation-form" onSubmit={handleSubmit}>
+              {error && <p>{error}</p>}
               <label className="consultation-form__field">
-                <span>Họ và tên</span>
-                <input type="text" name="fullName" placeholder="Họ và tên" />
+                <input type="text" name="full_name" value={form.full_name} placeholder="Họ và tên" onChange={handleChange} required />
               </label>
               <label className="consultation-form__field">
-                <span>Số điện thoại</span>
-                <input type="tel" name="phone" placeholder="Số điện thoại" />
+                <input type="tel" name="phone" value={form.phone} placeholder="Số điện thoại" onChange={handleChange} required />
               </label>
               <label className="consultation-form__field">
-                <span>Email</span>
-                <input type="email" name="email" placeholder="Email" />
+                <input type="email" name="email" value={form.email} placeholder="Email" onChange={handleChange} />
               </label>
               <label className="consultation-form__field">
-                <span>Nội dung cần tư vấn</span>
-                <textarea name="message" placeholder="Nội dung cần tư vấn" rows="5" />
+                <textarea name="description" value={form.description} placeholder="Nội dung cần tư vấn" rows="5" onChange={handleChange} required />
               </label>
-              <button className="consultation-form__submit" type="button">
+              <button className="consultation-form__submit" type="submit" disabled={isSubmitting}>
                 Gửi yêu cầu tư vấn
               </button>
+              {success && <Toast type="success" message={success} />}
             </form>
+            
           </div>
         </section>
       </main>
