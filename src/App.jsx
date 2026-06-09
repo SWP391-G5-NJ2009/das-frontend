@@ -9,9 +9,11 @@ import PatientDashboardPage from "./pages/PatientDashboardPage/PatientDashboardP
 import PatientLoginPage from "./pages/PatientLoginPage/PatientLoginPage";
 import AdminAccountsPage from "./pages/AdminAccountsPage/AdminAccountsPage";
 import ReceptionistRequestsPage from "./pages/ReceptionistRequestsPage/ReceptionistRequestsPage";
+import PaymentListPage from "./pages/PaymentListPage/PaymentListPage";
 import RoleDashboardPage from "./pages/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/StaffLoginPage/StaffLoginPage";
+import ReceptionistDashboardPage from "./pages/ReceptionistDashboardPage/ReceptionistDashboardPage";
 
 function App() {
   return (
@@ -36,7 +38,7 @@ function App() {
             path="/receptionist/dashboard"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
-                <RoleDashboardPage title="Bảng điều khiển lễ tân" />
+                <ReceptionistDashboardPage title="Bảng điều khiển lễ tân" />
               </ProtectedRoute>
             }
           />
@@ -85,6 +87,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminAccountsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <PaymentListPage />
               </ProtectedRoute>
             }
           />
