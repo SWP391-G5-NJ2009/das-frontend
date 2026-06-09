@@ -1,9 +1,9 @@
 .receptionist-requests {
-  display: flex;
-  min-height: 100vh;
-  background-color: var(--color-neutral-50);
+  display: grid;
+  min-height: auto;
+  background-color: transparent;
   color: var(--color-neutral-900);
-  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-family-base);
 }
 
 /* ===== Sidebar ===== */
@@ -253,8 +253,9 @@
 
 /* ===== Content ===== */
 .receptionist-requests__content {
-  padding: 88px var(--space-6) var(--space-10);
-  flex: 1;
+  display: grid;
+  gap: var(--space-6);
+  padding: 0;
 }
 
 /* ===== Page Header ===== */
