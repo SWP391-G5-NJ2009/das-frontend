@@ -38,13 +38,10 @@ function OwnerServiceCatalog() {
       const token =
         localStorage.getItem("token") || localStorage.getItem("accessToken");
 
-      const response = await axios.get(
-        "http://localhost:3000/api/dental-services",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        },
-      );
+      const response = await axios.get("http://localhost:3000/api/services", {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
 
       if (response.data && response.data.data) {
         setServices(response.data.data);
@@ -62,7 +59,7 @@ function OwnerServiceCatalog() {
       const token =
         localStorage.getItem("token") || localStorage.getItem("accessToken");
       const response = await axios.get(
-        "http://localhost:3000/api/dental-services/categories",
+        "http://localhost:3000/api/services/categories",
         {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
@@ -152,13 +149,10 @@ function OwnerServiceCatalog() {
     try {
       const token =
         localStorage.getItem("token") || localStorage.getItem("accessToken");
-      await axios.delete(
-        `http://localhost:3000/api/dental-services/${serviceId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        },
-      );
+      await axios.delete(`http://localhost:3000/api/services/${serviceId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
 
       alert("Service deleted successfully.");
       setServices((prevServices) =>
@@ -178,7 +172,7 @@ function OwnerServiceCatalog() {
 
       if (isEditMode) {
         await axios.put(
-          `http://localhost:3000/api/dental-services/${currentServiceId}`,
+          `http://localhost:3000/api/services/${currentServiceId}`,
           formData,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -187,14 +181,10 @@ function OwnerServiceCatalog() {
         );
         alert("Service updated successfully!");
       } else {
-        await axios.post(
-          "http://localhost:3000/api/dental-services",
-          formData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            withCredentials: true,
-          },
-        );
+        await axios.post("http://localhost:3000/api/services", formData, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        });
         alert("New service added successfully!");
       }
 
