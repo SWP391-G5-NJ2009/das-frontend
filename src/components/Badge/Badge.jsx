@@ -9,26 +9,24 @@ const STATUS_CLASS = {
   "No-Show": "no-show",
   Conflict: "conflict",
   "In-Treatment": "in-treatment",
+  Completed: "completed",
+  Pending: "pending",
+  Failed: "failed",
+  Refunded: "refunded",
 };
 
 function Badge({ status }) {
+  const statusClass = STATUS_CLASS[status] || "neutral";
+
   return (
-    <span className={`badge badge--${STATUS_CLASS[status]} status-badge`}>
+    <span className={`badge badge--${statusClass} status-badge`}>
       {status}
     </span>
   );
 }
 
 Badge.propTypes = {
-  status: PropTypes.oneOf([
-    "Confirmed",
-    "Waiting",
-    "Checked-in",
-    "Cancelled",
-    "No-Show",
-    "Conflict",
-    "In-Treatment",
-  ]).isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 export default Badge;

@@ -45,3 +45,24 @@
   background-color: var(--status-in-treatment-bg);
   color: var(--status-in-treatment);
 }
+
+.badge--completed {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.badge--pending {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge--failed {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.badge--refunded,
+.badge--neutral {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+}
