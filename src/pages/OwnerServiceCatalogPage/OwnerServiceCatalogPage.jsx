@@ -97,7 +97,6 @@ function OwnerServiceCatalog() {
     setCurrentPage(1);
   }, [filterCategory, searchTerm]);
 
-  // ---- HÀM KÍCH HOẠT FORM THÊM MỚI ----
   const openAddModal = () => {
     setIsEditMode(false);
     setCurrentServiceId(null);
@@ -114,7 +113,6 @@ function OwnerServiceCatalog() {
     setIsModalOpen(true);
   };
 
-  // ---- HÀM ĐÓNG MODAL VÀ DỌN DẸP TRẠNG THÁI ----
   const closeModal = () => {
     setIsModalOpen(false);
     setIsEditMode(false);
@@ -131,7 +129,6 @@ function OwnerServiceCatalog() {
     });
   };
 
-  // ---- HÀM KÍCH HOẠT FORM SỬA (ĐỔ NGƯỢC DATA) ----
   const openEditModal = (service) => {
     setIsEditMode(true);
     setCurrentServiceId(service.service_id);
@@ -214,7 +211,6 @@ function OwnerServiceCatalog() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // 1. CHẠY BỘ LỌC TÌM KIẾM VÀ CATEGORY TRƯỚC
   const filteredServices = services.filter((service) => {
     const matchesCategory =
       filterCategory === "All" ||
@@ -228,11 +224,9 @@ function OwnerServiceCatalog() {
     return matchesCategory && matchesSearch;
   });
 
-  // 2. 🔥 ĐƯA LOGIC PHÂN TRANG RA NGOÀI HÀM FILTER (Sửa triệt để lỗi crash)
   const indexOfLastService = currentPage * servicesPerPage;
   const indexOfFirstService = indexOfLastService - servicesPerPage;
 
-  // Cắt lát dữ liệu đã lọc để đem đi hiển thị ở trang hiện hành
   const currentServices = filteredServices.slice(
     indexOfFirstService,
     indexOfLastService,
@@ -252,7 +246,6 @@ function OwnerServiceCatalog() {
                 Manage and update clinical service information
               </p>
             </div>
-            {/* 🛠️ Đã sửa từ setIsModalOpen(true) sang hàm chuẩn openAddModal */}
             <button className="btn-add-service" onClick={openAddModal}>
               <span className="plus-icon">+</span> Add New Service
             </button>
