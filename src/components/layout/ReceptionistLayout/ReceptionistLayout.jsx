@@ -1,17 +1,16 @@
 import {
   BarChart3,
-  Bell,
   CalendarDays,
   ClipboardList,
   CreditCard,
   HelpCircle,
   LayoutDashboard,
   LogOut,
-  Search,
   Settings,
 } from "lucide-react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import RoleHeader from "../RoleHeader/RoleHeader";
 import "./ReceptionistLayout.css";
 
 const NAV_ITEMS = [
@@ -47,24 +46,9 @@ const NAV_ITEMS = [
   },
 ];
 
-function getDisplayName(user) {
-  return user?.fullName || user?.name || user?.username || "Nguyễn Thu Lễ Tân";
-}
-
-function getInitials(name) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(-2)
-    .map((word) => word.charAt(0).toUpperCase())
-    .join("");
-}
-
 function ReceptionistLayout() {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const displayName = getDisplayName(user);
-  const initials = getInitials(displayName);
 
   const handleLogout = () => {
     logout();
@@ -110,34 +94,11 @@ function ReceptionistLayout() {
       </aside>
 
       <main className="receptionist-layout__main">
-        <header className="receptionist-layout__header">
-          <label className="receptionist-layout__search">
-            <Search size={20} aria-hidden="true" />
-            <span className="receptionist-layout__sr-only">Tìm kiếm</span>
-            <input placeholder="Search for accounts, names or roles..." type="search" />
-          </label>
-
-          <div className="receptionist-layout__header-actions">
-            <button className="receptionist-layout__icon-btn" type="button">
-              <Bell size={22} aria-hidden="true" />
-              <span className="receptionist-layout__sr-only">Thông báo</span>
-            </button>
-            <button className="receptionist-layout__icon-btn" type="button">
-              <HelpCircle size={22} aria-hidden="true" />
-              <span className="receptionist-layout__sr-only">Trợ giúp</span>
-            </button>
-            <div className="receptionist-layout__divider" />
-            <div className="receptionist-layout__profile">
-              <div className="receptionist-layout__profile-info">
-                <strong>{displayName}</strong>
-                <span>ADMIN</span>
-              </div>
-              <div className="receptionist-layout__avatar" aria-hidden="true">
-                {initials}
-              </div>
-            </div>
-          </div>
-        </header>
+        <RoleHeader
+          roleLabel={user?.role || "Receptionist"}
+          searchLabel="Tìm kiếm"
+          showHelp
+        />
 
         <div className="receptionist-layout__content">
           <Outlet />

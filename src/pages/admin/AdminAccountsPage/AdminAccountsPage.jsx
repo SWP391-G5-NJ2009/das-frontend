@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
 import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
 import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
+import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
 import "./AdminAccountsPage.css";
 
 const NAV_ITEMS = [
@@ -16,7 +16,6 @@ const NAV_ITEMS = [
 ];
 
 function AdminAccountsPage() {
-  const { user } = useAuth();
   const { accounts, isLoading, error, refetch } = useAccounts();
   const [toastVisible, setToastVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -60,40 +59,7 @@ function AdminAccountsPage() {
       </aside>
 
       <main className="admin-accounts__main">
-        <header className="admin-accounts__header">
-          <div className="admin-accounts__search">
-            <span className="material-symbols-outlined admin-accounts__search-icon">
-              search
-            </span>
-            <input
-              className="admin-accounts__search-input"
-              placeholder="Search for accounts, names or roles..."
-              type="text"
-            />
-          </div>
-
-          <div className="admin-accounts__header-actions">
-            <button
-              className="admin-accounts__icon-btn"
-              type="button"
-              onClick={showToast}
-            >
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-
-            <div className="admin-accounts__divider" />
-
-            <div className="admin-accounts__profile">
-              <div className="admin-accounts__profile-info">
-                <p className="admin-accounts__profile-name">
-                  {user?.fullName || "Dr. Sarah Miller"}
-                </p>
-                <p className="admin-accounts__profile-role">Admin</p>
-              </div>
-              <div className="admin-accounts__avatar">SM</div>
-            </div>
-          </div>
-        </header>
+        <RoleHeader isFixed onNotificationClick={showToast} roleLabel="Admin" />
 
         <div className="admin-accounts__content">
           <div className="admin-accounts__page-header">
