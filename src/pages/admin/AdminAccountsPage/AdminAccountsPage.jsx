@@ -52,10 +52,6 @@ function AdminAccountsPage() {
         </nav>
 
         <div className="admin-accounts__sidebar-footer">
-          <NavLink to="#" className="admin-accounts__nav-item">
-            <span className="material-symbols-outlined">help</span>
-            <span>Support</span>
-          </NavLink>
           <NavLink to="/" className="admin-accounts__nav-item">
             <span className="material-symbols-outlined">logout</span>
             <span>Logout</span>
