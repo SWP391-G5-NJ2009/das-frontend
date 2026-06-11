@@ -15,12 +15,26 @@ const STATUS_CLASS = {
   Refunded: "refunded",
 };
 
+const STATUS_LABEL = {
+  Confirmed: "Da xac nhan",
+  Waiting: "Dang cho",
+  "Checked-in": "Da check-in",
+  Cancelled: "Da huy",
+  "No-Show": "Khong den",
+  Conflict: "Bi trung lich",
+  "In-Treatment": "Dang dieu tri",
+  Completed: "Hoan tat",
+  Pending: "Dang cho",
+  Failed: "That bai",
+  Refunded: "Da hoan tien",
+};
+
 function Badge({ status }) {
   const statusClass = STATUS_CLASS[status] || "neutral";
 
   return (
     <span className={`badge badge--${statusClass} status-badge`}>
-      {status}
+      {STATUS_LABEL[status] || status}
     </span>
   );
 }

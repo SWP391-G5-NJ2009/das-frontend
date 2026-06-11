@@ -4,9 +4,12 @@ import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
-import OwnerServiceCatalogPage from "./pages/owner/OwnerServiceCatalogPage/OwnerServiceCatalogPage";
-import PatientDashboardPage from "./pages/patient/PatientDashboardPage/PatientDashboardPage";
+import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
+import AppointmentsPage from "./pages/patient/AppointmentsPage/AppointmentsPage";
+import BookingPage from "./pages/patient/BookingPage/BookingPage";
+import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
+import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
@@ -26,10 +29,34 @@ function App() {
           <Route path="/login" element={<PatientLoginPage />} />
           <Route path="/staff/login" element={<StaffLoginPage />} />
           <Route
-            path="/patient/dashboard"
+            path="/patient/profile"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
-                <PatientDashboardPage />
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/booking"
+            element={
+              <ProtectedRoute allowedRoles={["patient"]}>
+                <BookingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/appointments"
+            element={
+              <ProtectedRoute allowedRoles={["patient"]}>
+                <AppointmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/history"
+            element={
+              <ProtectedRoute allowedRoles={["patient"]}>
+                <HistoryPage />
               </ProtectedRoute>
             }
           />
@@ -77,7 +104,7 @@ function App() {
             path="/owner/services"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
-                <OwnerServiceCatalogPage />
+                <ServiceCatalogPage />
               </ProtectedRoute>
             }
           />

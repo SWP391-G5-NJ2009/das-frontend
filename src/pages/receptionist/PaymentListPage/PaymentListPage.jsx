@@ -66,7 +66,7 @@ function PaymentListPage() {
         <RoleHeader
           isFixed
           roleLabel={user?.role || "Receptionist"}
-          searchLabel="Search receptionist workspace"
+          searchLabel="Tìm kiếm trong khu vực lễ tân"
         />
         <section
           className="receptionist-page__content payment-list"
@@ -74,7 +74,7 @@ function PaymentListPage() {
         >
           <div className="payment-list__header">
             <div className="payment-list__heading">
-              <h1 id="payment-list-title">Payment List</h1>
+              <h1 id="payment-list-title">Danh sách thanh toán</h1>
               <p>
                 Theo dõi các giao dịch thanh toán đã ghi nhận trong hệ thống.
               </p>

@@ -7,11 +7,11 @@ import { getOwnerFooterItems, OWNER_NAV_ITEMS } from "../../owner/ownerNavigatio
 import "./RoleDashboardPage.css";
 
 const ADMIN_NAV_ITEMS = [
-  { icon: "person", label: "Manage Account", to: "/admin/accounts" },
-  { icon: "dashboard", label: "Dashboard", to: "/admin/dashboard" },
-  { icon: "calendar_today", label: "Appointments", to: "/admin/appointments" },
-  { icon: "assessment", label: "Reports", to: "/admin/reports" },
-  { icon: "settings", label: "Settings", to: "/admin/settings" },
+  { icon: "person", label: "Quản lý tài khoản", to: "/admin/accounts" },
+  { icon: "dashboard", label: "Bảng điều khiển", to: "/admin/dashboard" },
+  { icon: "calendar_today", label: "Lịch hẹn", to: "/admin/appointments" },
+  { icon: "assessment", label: "Báo cáo", to: "/admin/reports" },
+  { icon: "settings", label: "Cài đặt", to: "/admin/settings" },
 ];
 
 function RoleDashboardPage({ title }) {
@@ -22,13 +22,13 @@ function RoleDashboardPage({ title }) {
   const navItems = isOwner ? OWNER_NAV_ITEMS : ADMIN_NAV_ITEMS;
   const footerItems = isOwner
     ? getOwnerFooterItems(logout)
-    : [{ icon: "logout", label: "Logout", onClick: logout }];
+    : [{ icon: "logout", label: "Đăng xuất", onClick: logout }];
 
   return (
     <div className={`role-dashboard${hasSidebar ? " role-dashboard--with-sidebar" : ""}`}>
       {hasSidebar && (
         <RoleSidebar
-          ariaLabel={`${user?.role || "Role"} navigation`}
+          ariaLabel="Điều hướng theo vai trò"
           navItems={navItems}
           footerItems={footerItems}
         />
@@ -42,14 +42,14 @@ function RoleDashboardPage({ title }) {
         />
       <main className="role-dashboard__content">
         <h1>{title}</h1>
-        <p>Xin chao, {user?.fullName || user?.email}.</p>
+        <p>Xin chào, {user?.fullName || user?.email}.</p>
         <button type="button" onClick={logout}>
-          Dang xuat
+          Đăng xuất
         </button>
         {user?.role === "owner" && (
-          <Link to="/owner/services">Quan ly dich vu nha khoa</Link>
+          <Link to="/owner/services">Quản lý dịch vụ nha khoa</Link>
         )}
-        <Link to="/">Ve trang chu</Link>
+        <Link to="/">Về trang chủ</Link>
       </main>
       </div>
     </div>

@@ -22,7 +22,7 @@ function PatientLoginPage() {
         phone: formData.get("phone"),
         password: formData.get("password"),
       });
-      navigate(ROLE_HOME[user.role] || "/patient/dashboard", { replace: true });
+      navigate(ROLE_HOME[user.role] || "/patient/profile", { replace: true });
     } catch (err) {
       setError(err.message || "Đăng nhập thất bại.");
     } finally {

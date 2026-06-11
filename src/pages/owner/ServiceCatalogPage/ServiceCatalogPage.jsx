@@ -101,16 +101,16 @@ function OwnerServiceCatalog() {
 
   const handleDeleteService = async (serviceId, serviceName) => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete the service "${serviceName}"?`,
+      `Ban co chac muon xoa dich vu "${serviceName}"?`,
     );
     if (!confirmDelete) return;
 
     try {
       await deleteService(serviceId);
-      alert("Service deleted successfully.");
+      alert("Da xoa dich vu thanh cong.");
     } catch (err) {
       console.error("Error occurred while deleting service:", err);
-      alert(err.message || "Failed to delete service.");
+      alert(err.message || "Khong the xoa dich vu.");
     }
   };
 
@@ -119,16 +119,16 @@ function OwnerServiceCatalog() {
     try {
       if (isEditMode) {
         await updateService(currentServiceId, formData);
-        alert("Service updated successfully!");
+        alert("Cap nhat dich vu thanh cong!");
       } else {
         await createService(formData);
-        alert("New service added successfully!");
+        alert("Them dich vu moi thanh cong!");
       }
 
       setIsModalOpen(false);
     } catch (err) {
       console.error("Error submitting form:", err);
-      alert(err.message || "Operation failed.");
+      alert(err.message || "Thao tac that bai.");
     }
   };
 
@@ -167,7 +167,7 @@ function OwnerServiceCatalog() {
   return (
     <div className="owner-page owner-catalog-page">
       <RoleSidebar
-        ariaLabel="Owner navigation"
+        ariaLabel="Dieu huong chu phong kham"
         navItems={OWNER_NAV_ITEMS}
         footerItems={getOwnerFooterItems()}
       />
@@ -175,8 +175,8 @@ function OwnerServiceCatalog() {
       <main className="owner-page__main">
         <RoleHeader
           isFixed
-          roleLabel={user?.role || "Owner"}
-          searchLabel="Search owner workspace"
+          roleLabel={user?.role || "owner"}
+          searchLabel="Tim kiem trong khu vuc chu phong kham"
           showHelp
         />
 
@@ -184,13 +184,13 @@ function OwnerServiceCatalog() {
           <div className="catalog-container">
             <div className="catalog-header">
               <div>
-                <h1>Service Catalog</h1>
+                <h1>Danh muc dich vu</h1>
                 <p className="subtitle">
-                  Manage and update clinical service information
+                  Quan ly va cap nhat thong tin dich vu nha khoa
                 </p>
               </div>
               <button className="btn-add-service" onClick={openAddModal}>
-                <span className="plus-icon">+</span> Add New Service
+                <span className="plus-icon">+</span> Them dich vu moi
               </button>
             </div>
 
@@ -204,7 +204,7 @@ function OwnerServiceCatalog() {
               >
                 <input
                   type="text"
-                  placeholder="🔍 Search service name or description..."
+                  placeholder="Tim ten dich vu hoac mo ta..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="search-service-input"
@@ -239,12 +239,12 @@ function OwnerServiceCatalog() {
             </div>
 
             <div className="filter-tabs">
-              <span className="filter-label">Filter by category:</span>
+              <span className="filter-label">Loc theo danh muc:</span>
               <button
                 className={`tab-btn ${filterCategory === "All" ? "active" : ""}`}
                 onClick={() => setFilterCategory("All")}
               >
-                All
+                Tat ca
               </button>
               {dbCategories.map((cat) => (
                 <button
@@ -264,7 +264,7 @@ function OwnerServiceCatalog() {
               >
                 <Spinner />
                 <p style={{ marginTop: "10px", color: "#666" }}>
-                  Loading service data from Backend...
+                  Dang tai du lieu dich vu...
                 </p>
               </div>
             ) : error ? (
@@ -273,19 +273,19 @@ function OwnerServiceCatalog() {
                 style={{ color: "red", textAlign: "center", padding: "20px" }}
               >
                 {error.message ||
-                  "Unable to load service list from the backend system."}
+                  "Khong the tai danh sach dich vu tu he thong."}
               </div>
             ) : (
               <div className="table-responsive">
                 <table className="catalog-table">
                   <thead>
                     <tr>
-                      <th>SERVICE NAME</th>
-                      <th>CATEGORY</th>
-                      <th>EST. PRICE (VND)</th>
-                      <th>SLOTS</th>
-                      <th>STATUS</th>
-                      <th style={{ textAlign: "center" }}>ACTIONS</th>
+                      <th>TEN DICH VU</th>
+                      <th>DANH MUC</th>
+                      <th>GIA DU KIEN (VND)</th>
+                      <th>SO KHUNG</th>
+                      <th>TRANG THAI</th>
+                      <th style={{ textAlign: "center" }}>THAO TAC</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -297,13 +297,13 @@ function OwnerServiceCatalog() {
                               {service.service_name}
                             </span>
                             <span className="sub-desc">
-                              {service.description || "No description provided"}
+                              {service.description || "Chua co mo ta"}
                             </span>
                           </div>
                         </td>
                         <td>
                           {service.service_categories?.category_name ||
-                            "Uncategorized"}
+                            "Chua phan loai"}
                         </td>
                         <td className="price-cell">
                           {Number(
@@ -313,26 +313,28 @@ function OwnerServiceCatalog() {
                         </td>
                         <td>
                           {service.slot_occupied || 1}{" "}
-                          {(service.slot_occupied || 1) > 1 ? "Slots" : "Slot"}
+                          khung
                         </td>
                         <td>
                           <span
                             className={`status-badge ${String(service.status || "Active").toLowerCase()}`}
                           >
-                            {service.status || "Active"}
+                            {(service.status || "Active") === "Inactive"
+                              ? "Ngung hoat dong"
+                              : "Hoat dong"}
                           </span>
                         </td>
                         <td className="actions-cell">
                           <button
                             className="action-btn edit-btn"
-                            title="Edit"
+                            title="Chinh sua"
                             onClick={() => openEditModal(service)}
                           >
                             <Edit size={18} aria-hidden="true" />
                           </button>
                           <button
                             className="action-btn delete-btn"
-                            title="Delete"
+                            title="Xoa"
                             onClick={() =>
                               handleDeleteService(
                                 service.service_id,
@@ -352,7 +354,7 @@ function OwnerServiceCatalog() {
                           className="empty-row"
                           style={{ textAlign: "center", padding: "20px" }}
                         >
-                          No services found.
+                          Khong tim thay dich vu nao.
                         </td>
                       </tr>
                     )}
@@ -377,9 +379,9 @@ function OwnerServiceCatalog() {
                   className="pagination-info"
                   style={{ color: "#666", fontSize: "14px" }}
                 >
-                  Showing {indexOfFirstService + 1} to{" "}
-                  {Math.min(indexOfLastService, filteredServices.length)} of{" "}
-                  {filteredServices.length} services
+                  Hien thi {indexOfFirstService + 1} den{" "}
+                  {Math.min(indexOfLastService, filteredServices.length)} trong
+                  tong so {filteredServices.length} dich vu
                 </div>
 
                 <div
@@ -400,7 +402,7 @@ function OwnerServiceCatalog() {
                       color: currentPage === 1 ? "#aaa" : "#333",
                     }}
                   >
-                    &laquo; Previous
+                    &laquo; Truoc
                   </button>
 
                   {Array.from({ length: totalPages }, (_, index) => (
@@ -441,7 +443,7 @@ function OwnerServiceCatalog() {
                       color: currentPage === totalPages ? "#aaa" : "#333",
                     }}
                   >
-                    Next &raquo;
+                    Sau &raquo;
                   </button>
                 </div>
               </div>
@@ -456,8 +458,8 @@ function OwnerServiceCatalog() {
             <div className="modal-header">
               <h2>
                 {isEditMode
-                  ? "Update Dental Service"
-                  : "Create New Dental Service"}
+                  ? "Cap nhat dich vu nha khoa"
+                  : "Tao dich vu nha khoa moi"}
               </h2>
               <button className="close-modal-btn" onClick={closeModal}>
                 &times;
@@ -466,7 +468,7 @@ function OwnerServiceCatalog() {
             <form onSubmit={handleFormSubmit}>
               <div className="form-group">
                 <label>
-                  Service Name <span style={{ color: "red" }}>*</span>
+                  Ten dich vu <span style={{ color: "red" }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -474,14 +476,14 @@ function OwnerServiceCatalog() {
                   value={formData.service_name}
                   onChange={handleInputChange}
                   required
-                  placeholder="e.g., Composite Filling"
+                  placeholder="Vi du: Tram rang tham my"
                 />
               </div>
 
               <div className="form-row">
                 <div className="form-group">
                   <label>
-                    Category Group <span style={{ color: "red" }}>*</span>
+                    Nhom danh muc <span style={{ color: "red" }}>*</span>
                   </label>
                   <select
                     name="category_id"
@@ -497,14 +499,14 @@ function OwnerServiceCatalog() {
                 </div>
 
                 <div className="form-group">
-                  <label>Status</label>
+                  <label>Trang thai</label>
                   <select
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
                   >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Active">Hoat dong</option>
+                    <option value="Inactive">Ngung hoat dong</option>
                   </select>
                 </div>
               </div>
@@ -512,7 +514,7 @@ function OwnerServiceCatalog() {
               <div className="form-row">
                 <div className="form-group">
                   <label>
-                    Estimated Price (VND){" "}
+                    Gia du kien (VND){" "}
                     <span style={{ color: "red" }}>*</span>
                   </label>
                   <input
@@ -522,12 +524,12 @@ function OwnerServiceCatalog() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    placeholder="e.g., 500000"
+                    placeholder="Vi du: 500000"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Required Slots</label>
+                  <label>So khung can thiet</label>
                   <input
                     type="number"
                     name="slot_occupied"
@@ -540,13 +542,13 @@ function OwnerServiceCatalog() {
               </div>
 
               <div className="form-group">
-                <label>Service Description</label>
+                <label>Mo ta dich vu</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows="3"
-                  placeholder="Brief details about the clinical procedures..."
+                  placeholder="Mo ta ngan ve quy trinh dieu tri..."
                 />
               </div>
 
@@ -556,10 +558,10 @@ function OwnerServiceCatalog() {
                   className="btn-secondary"
                   onClick={closeModal}
                 >
-                  Cancel
+                  Huy
                 </button>
                 <button type="submit" className="btn-primary">
-                  {isEditMode ? "Update Changes" : "Save Service"}
+                  {isEditMode ? "Cap nhat thay doi" : "Luu dich vu"}
                 </button>
               </div>
             </form>

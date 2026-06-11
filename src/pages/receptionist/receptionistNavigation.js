@@ -1,26 +1,26 @@
 export const RECEPTIONIST_NAV_ITEMS = [
   {
     icon: "assignment",
-    label: "Consultation Requests",
+    label: "Yêu cầu tư vấn",
     to: "/receptionist/consultation-request",
   },
   {
     icon: "payments",
-    label: "Payments",
+    label: "Thanh toán",
     to: "/payments",
   },
   {
     icon: "calendar_today",
-    label: "Appointments",
+    label: "Lịch hẹn",
     to: "/receptionist/appointments",
   },
   {
     icon: "meeting_room",
-    label: "Rooms",
+    label: "Phòng khám",
     to: "/receptionist/rooms",
   },
 ];
 
 export function getReceptionistFooterItems() {
-  return [{ icon: "logout", label: "Logout", to: "/staff/login" }];
+  return [{ icon: "logout", label: "Đăng xuất", to: "/staff/login" }];
 }
