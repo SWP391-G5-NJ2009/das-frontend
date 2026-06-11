@@ -21,6 +21,6 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
 ];
 
-export function getReceptionistFooterItems() {
-  return [{ icon: "logout", label: "Đăng xuất", to: "/staff/login" }];
-}
+export const RECEPTIONIST_FOOTER_ITEMS = [
+  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
+];

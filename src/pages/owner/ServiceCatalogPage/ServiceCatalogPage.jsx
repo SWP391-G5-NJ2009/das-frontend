@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
 import { Edit, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import Spinner from "../../../components/common/Spinner/Spinner";
-import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
-import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
-import { useAuth } from "../../../context/AuthContext";
 import { useOwnerDentalServices } from "../../../hooks/useDentalServices";
-import { getOwnerFooterItems, OWNER_NAV_ITEMS } from "../ownerNavigation";
-import "../ownerPageShell.css";
+import OwnerPageShell from "../OwnerPageShell";
 import "./ServiceCatalogPage.css";
 
 function OwnerServiceCatalog() {
-  const { logout, user } = useAuth();
-  const navigate = useNavigate();
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -159,28 +152,8 @@ function OwnerServiceCatalog() {
   );
   const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/staff/login", { replace: true });
-  };
-
   return (
-    <div className="owner-page owner-catalog-page">
-      <RoleSidebar
-        ariaLabel="Dieu huong chu phong kham"
-        navItems={OWNER_NAV_ITEMS}
-        footerItems={getOwnerFooterItems()}
-      />
-
-      <main className="owner-page__main">
-        <RoleHeader
-          isFixed
-          roleLabel={user?.role || "owner"}
-          searchLabel="Tim kiem trong khu vuc chu phong kham"
-          showHelp
-        />
-
-        <div className="owner-page__content">
+    <OwnerPageShell contentClassName="owner-catalog-page">
           <div className="catalog-container">
             <div className="catalog-header">
               <div>
@@ -449,8 +422,7 @@ function OwnerServiceCatalog() {
               </div>
             )}
           </div>
-        </div>
-      </main>
+      
 
       {isModalOpen && (
         <div className="modal-overlay">
@@ -568,7 +540,7 @@ function OwnerServiceCatalog() {
           </div>
         </div>
       )}
-    </div>
+    </OwnerPageShell>
   );
 }
 

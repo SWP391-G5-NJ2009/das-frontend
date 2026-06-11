@@ -9,43 +9,20 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
-import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
 import { useConsultationRequests } from "../../../hooks/useConsultationRequests";
-import { useAuth } from "../../../context/AuthContext";
 import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal";
-import {
-  getReceptionistFooterItems,
-  RECEPTIONIST_NAV_ITEMS,
-} from "../receptionistNavigation";
-import "../receptionistPage.css";
+import ReceptionistPageShell from "../ReceptionistPageShell";
 import "./RequestsPage.css";
 
 function ReceptionistRequestsPage() {
-  const { logout, user } = useAuth();
-  const navigate = useNavigate();
   const { requests, isLoading, error, refetch } = useConsultationRequests();
   const [handleRequest, setHandleRequest] = useState(null);
 
   return (
-    <div className="receptionist-page">
-      <RoleSidebar
-        ariaLabel="Receptionist navigation"
-        navItems={RECEPTIONIST_NAV_ITEMS}
-        footerItems={getReceptionistFooterItems()}
-      />
-
-      <main className="receptionist-page__main">
-        <RoleHeader
-          isFixed
-          roleLabel={user?.role || "Receptionist"}
-          searchLabel="Tìm kiếm trong khu vực lễ tân"
-        />
-        <section
-          className="receptionist-page__content receptionist-requests"
-          aria-labelledby="receptionist-requests-title"
-        >
+    <ReceptionistPageShell
+      contentClassName="receptionist-requests"
+      contentLabelledBy="receptionist-requests-title"
+    >
           <div className="receptionist-requests__content">
             <div className="receptionist-requests__page-header">
               <div>
@@ -234,9 +211,7 @@ function ReceptionistRequestsPage() {
               }}
             />
           )}
-        </section>
-      </main>
-    </div>
+    </ReceptionistPageShell>
   );
 }
 

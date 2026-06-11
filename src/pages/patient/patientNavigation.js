@@ -5,6 +5,6 @@ export const PATIENT_NAV_ITEMS = [
   { icon: "history", label: "Lịch sử điều trị", to: "/patient/history" },
 ];
 
-export function getPatientFooterItems(onLogout) {
-  return [{ icon: "logout", label: "Đăng xuất", to: "/login" }];
-}
+export const PATIENT_FOOTER_ITEMS = [
+  { icon: "logout", label: "Đăng xuất", to: "/login" },
+];

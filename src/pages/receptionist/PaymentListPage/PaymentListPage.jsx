@@ -1,15 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import Badge from "../../../components/common/Badge/Badge";
 import Spinner from "../../../components/common/Spinner/Spinner";
-import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
-import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
-import { useAuth } from "../../../context/AuthContext";
 import { usePayments } from "../../../hooks/usePayments";
-import {
-  getReceptionistFooterItems,
-  RECEPTIONIST_NAV_ITEMS,
-} from "../receptionistNavigation";
-import "../receptionistPage.css";
+import ReceptionistPageShell from "../ReceptionistPageShell";
 import "./PaymentListPage.css";
 
 const EMPTY_VALUE = "-";
@@ -45,33 +37,13 @@ function formatPaymentDate(paymentDate) {
 }
 
 function PaymentListPage() {
-  const { logout, user } = useAuth();
-  const navigate = useNavigate();
   const { payments, isLoading, error } = usePayments();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/staff/login", { replace: true });
-  };
-
   return (
-    <div className="receptionist-page">
-      <RoleSidebar
-        ariaLabel="Receptionist navigation"
-        navItems={RECEPTIONIST_NAV_ITEMS}
-        footerItems={getReceptionistFooterItems(handleLogout)}
-      />
-
-      <main className="receptionist-page__main">
-        <RoleHeader
-          isFixed
-          roleLabel={user?.role || "Receptionist"}
-          searchLabel="Tìm kiếm trong khu vực lễ tân"
-        />
-        <section
-          className="receptionist-page__content payment-list"
-          aria-labelledby="payment-list-title"
-        >
+    <ReceptionistPageShell
+      contentClassName="payment-list"
+      contentLabelledBy="payment-list-title"
+    >
           <div className="payment-list__header">
             <div className="payment-list__heading">
               <h1 id="payment-list-title">Danh sách thanh toán</h1>
@@ -145,9 +117,7 @@ function PaymentListPage() {
               </table>
             </div>
           )}
-        </section>
-      </main>
-    </div>
+    </ReceptionistPageShell>
   );
 }
 

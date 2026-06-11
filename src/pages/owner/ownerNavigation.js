@@ -26,6 +26,6 @@ export const OWNER_NAV_ITEMS = [
   },
 ];
 
-export function getOwnerFooterItems() {
-  return [{ icon: "logout", label: "Đăng xuất", to: "/staff/login" }];
-}
+export const OWNER_FOOTER_ITEMS = [
+  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
+];

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import RoleHeader from "../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../components/layout/RoleSidebar/RoleSidebar";
 import { useAuth } from "../../context/AuthContext";
-import { getPatientFooterItems, PATIENT_NAV_ITEMS } from "./patientNavigation";
+import { PATIENT_FOOTER_ITEMS, PATIENT_NAV_ITEMS } from "./patientNavigation";
 import "./PatientPages.css";
 import "./patientPageShell.css";
 
@@ -16,7 +16,7 @@ function PatientPageShell({ children }) {
       <RoleSidebar
         ariaLabel="Điều hướng bệnh nhân"
         navItems={PATIENT_NAV_ITEMS}
-        footerItems={getPatientFooterItems()}
+        footerItems={PATIENT_FOOTER_ITEMS}
       />
 
       <main className="patient-page__main">

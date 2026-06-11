@@ -18,16 +18,8 @@ import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
 import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
-import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
-import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
+import AdminPageShell from "../AdminPageShell";
 import "./AdminAccountsPage.css";
-
-const NAV_ITEMS = [
-  { icon: "person", label: "Quản lý tài khoản", to: "/admin/accounts" },
-  { icon: "calendar_today", label: "Lịch hẹn", to: "/admin/appointments" },
-  { icon: "assessment", label: "Báo cáo", to: "/admin/reports" },
-  { icon: "settings", label: "Cài đặt", to: "/admin/settings" },
-];
 
 function AdminAccountsPage() {
   const { accounts, isLoading, error, refetch } = useAccounts();
@@ -42,17 +34,7 @@ function AdminAccountsPage() {
   };
 
   return (
-    <div className="admin-accounts">
-      <RoleSidebar
-        ariaLabel="Điều hướng quản trị"
-        navItems={NAV_ITEMS}
-        footerItems={[{ icon: "logout", label: "Đăng xuất", to: "/staff/login" }]}
-      />
-
-      <main className="admin-accounts__main">
-        <RoleHeader isFixed onNotificationClick={showToast} roleLabel="Admin" />
-
-        <div className="admin-accounts__content">
+    <AdminPageShell onNotificationClick={showToast}>
           <div className="admin-accounts__page-header">
             <div>
               <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
@@ -258,8 +240,7 @@ function AdminAccountsPage() {
               </div>
             </div>
           </div>
-        </div>
-      </main>
+      
 
       <div
         className={`admin-accounts__toast${toastVisible ? " admin-accounts__toast--visible" : ""}`}
@@ -300,7 +281,7 @@ function AdminAccountsPage() {
           }}
         />
       )}
-    </div>
+    </AdminPageShell>
   );
 }
 
