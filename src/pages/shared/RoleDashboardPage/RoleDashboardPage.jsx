@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
-import { getOwnerFooterItems, OWNER_NAV_ITEMS } from "../../owner/ownerNavigation";
+import {
+  OWNER_FOOTER_ITEMS,
+  OWNER_NAV_ITEMS,
+} from "../../owner/ownerNavigation";
 import "./RoleDashboardPage.css";
 
 const ADMIN_NAV_ITEMS = [
@@ -25,7 +28,9 @@ function RoleDashboardPage({ title }) {
     : [{ icon: "logout", label: "Đăng xuất", onClick: logout }];
 
   return (
-    <div className={`role-dashboard${hasSidebar ? " role-dashboard--with-sidebar" : ""}`}>
+    <div
+      className={`role-dashboard${hasSidebar ? " role-dashboard--with-sidebar" : ""}`}
+    >
       {hasSidebar && (
         <RoleSidebar
           ariaLabel="Điều hướng theo vai trò"
@@ -37,20 +42,21 @@ function RoleDashboardPage({ title }) {
       <div className="role-dashboard__main">
         <RoleHeader
           isFixed={hasSidebar}
+          mobileNavItems={hasSidebar ? navItems : []}
           roleLabel={user?.role || "Staff"}
           showHelp
         />
-      <main className="role-dashboard__content">
-        <h1>{title}</h1>
-        <p>Xin chào, {user?.fullName || user?.email}.</p>
-        <button type="button" onClick={logout}>
-          Đăng xuất
-        </button>
-        {user?.role === "owner" && (
-          <Link to="/owner/services">Quản lý dịch vụ nha khoa</Link>
-        )}
-        <Link to="/">Về trang chủ</Link>
-      </main>
+        <main className="role-dashboard__content">
+          <h1>{title}</h1>
+          <p>Xin chào, {user?.fullName || user?.email}.</p>
+          <button type="button" onClick={logout}>
+            Đăng xuất
+          </button>
+          {user?.role === "owner" && (
+            <Link to="/owner/services">Quản lý dịch vụ nha khoa</Link>
+          )}
+          <Link to="/">Về trang chủ</Link>
+        </main>
       </div>
     </div>
   );

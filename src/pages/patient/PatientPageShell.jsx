@@ -4,7 +4,6 @@ import RoleHeader from "../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../components/layout/RoleSidebar/RoleSidebar";
 import { useAuth } from "../../context/AuthContext";
 import { PATIENT_FOOTER_ITEMS, PATIENT_NAV_ITEMS } from "./patientNavigation";
-import "./PatientPages.css";
 import "./patientPageShell.css";
 
 function PatientPageShell({ children }) {
@@ -14,7 +13,7 @@ function PatientPageShell({ children }) {
   return (
     <div className="patient-page">
       <RoleSidebar
-        ariaLabel="Điều hướng bệnh nhân"
+        ariaLabel="Dieu huong benh nhan"
         navItems={PATIENT_NAV_ITEMS}
         footerItems={PATIENT_FOOTER_ITEMS}
       />
@@ -22,8 +21,9 @@ function PatientPageShell({ children }) {
       <main className="patient-page__main">
         <RoleHeader
           isFixed
-          roleLabel={user?.role || "Patient"}
-          searchLabel="Search patient workspace"
+          mobileNavItems={PATIENT_NAV_ITEMS}
+          roleLabel={user?.role || "patient"}
+          searchLabel="Tim kiem trong khu vuc benh nhan"
         />
         <div className="patient-page__content">{children}</div>
       </main>

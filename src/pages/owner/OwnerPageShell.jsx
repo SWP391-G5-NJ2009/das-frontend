@@ -23,6 +23,7 @@ function OwnerPageShell({ children, contentClassName }) {
       <main className="owner-page__main">
         <RoleHeader
           isFixed
+          mobileNavItems={OWNER_NAV_ITEMS}
           roleLabel={user?.role || "owner"}
           searchLabel="Tim kiem trong khu vuc chu phong kham"
           showHelp

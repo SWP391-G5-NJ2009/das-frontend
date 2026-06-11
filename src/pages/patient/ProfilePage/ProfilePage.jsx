@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PatientPageShell from "../PatientPageShell";
+import "./ProfilePage.css";
 import { initialPatient } from "../patientData";
 import { authService } from "../../../services/auth.service";
 
@@ -94,7 +95,10 @@ function ProfilePage() {
 
   return (
     <PatientPageShell>
-      <section className="patient-profile-section" aria-labelledby="patient-profile-title">
+      <section
+        className="patient-profile-section"
+        aria-labelledby="patient-profile-title"
+      >
         <article className="patient-profile-card">
           <div className="patient-profile-card__header">
             <div>
@@ -116,27 +120,57 @@ function ProfilePage() {
             <form className="patient-profile-form">
               <label className="patient-profile-form__field">
                 <span>Họ và tên</span>
-                <input name="fullName" type="text" value={draftPatient.fullName} onChange={handleProfileChange} />
+                <input
+                  name="fullName"
+                  type="text"
+                  value={draftPatient.fullName}
+                  onChange={handleProfileChange}
+                />
               </label>
               <label className="patient-profile-form__field">
                 <span>Email</span>
-                <input name="email" type="email" value={draftPatient.email} onChange={handleProfileChange} />
+                <input
+                  name="email"
+                  type="email"
+                  value={draftPatient.email}
+                  onChange={handleProfileChange}
+                />
               </label>
               <label className="patient-profile-form__field">
                 <span>Số điện thoại</span>
-                <input name="phone" type="tel" value={draftPatient.phone} onChange={handleProfileChange} />
+                <input
+                  name="phone"
+                  type="tel"
+                  value={draftPatient.phone}
+                  onChange={handleProfileChange}
+                />
               </label>
               <label className="patient-profile-form__field">
                 <span>Ngày sinh</span>
-                <input name="birthDate" type="date" value={draftPatient.birthDate} onChange={handleProfileChange} />
+                <input
+                  name="birthDate"
+                  type="date"
+                  value={draftPatient.birthDate}
+                  onChange={handleProfileChange}
+                />
               </label>
               <label className="patient-profile-form__field">
                 <span>Giới tính</span>
-                <input name="gender" type="text" value={draftPatient.gender} onChange={handleProfileChange} />
+                <input
+                  name="gender"
+                  type="text"
+                  value={draftPatient.gender}
+                  onChange={handleProfileChange}
+                />
               </label>
               <label className="patient-profile-form__field patient-profile-form__field--full">
                 <span>Địa chỉ</span>
-                <input name="address" type="text" value={draftPatient.address} onChange={handleProfileChange} />
+                <input
+                  name="address"
+                  type="text"
+                  value={draftPatient.address}
+                  onChange={handleProfileChange}
+                />
               </label>
               <div className="patient-profile-form__actions">
                 <button type="button" onClick={handleSaveProfile}>
@@ -182,7 +216,10 @@ function ProfilePage() {
             <h2>Đổi mật khẩu</h2>
             <p>Cập nhật mật khẩu để bảo vệ tài khoản</p>
           </div>
-          <form className="patient-password-form" onSubmit={handleSubmitPasswordChange}>
+          <form
+            className="patient-password-form"
+            onSubmit={handleSubmitPasswordChange}
+          >
             <label>
               <span>Mật khẩu hiện tại</span>
               <input

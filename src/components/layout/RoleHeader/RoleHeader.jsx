@@ -1,5 +1,7 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
-import { Bell } from "lucide-react";
+import { Bell, Menu, X } from "lucide-react";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import "./RoleHeader.css";
 
@@ -39,17 +41,59 @@ function getRoleLabel(roleLabel) {
 
 function RoleHeader({
   isFixed,
+  mobileNavItems,
   onNotificationClick,
   roleLabel,
-  searchLabel,
-  searchPlaceholder,
 }) {
   const { user } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const displayName = getDisplayName(user);
   const initials = getInitials(displayName);
+  const hasMobileNav = mobileNavItems.length > 0;
 
   return (
     <header className={`role-header${isFixed ? " role-header--fixed" : ""}`}>
+      {hasMobileNav && (
+        <div className="role-header__mobile-nav">
+          <button
+            className="role-header__icon-btn role-header__menu-btn"
+            type="button"
+            aria-expanded={isMobileMenuOpen}
+            aria-label={
+              isMobileMenuOpen ? "Dong menu dieu huong" : "Mo menu dieu huong"
+            }
+            onClick={() => setIsMobileMenuOpen((current) => !current)}
+          >
+            {isMobileMenuOpen ? (
+              <X size={20} aria-hidden="true" />
+            ) : (
+              <Menu size={20} aria-hidden="true" />
+            )}
+          </button>
+
+          {isMobileMenuOpen && (
+            <nav
+              className="role-header__mobile-menu"
+              aria-label="Dieu huong nhanh"
+            >
+              {mobileNavItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    `role-header__mobile-menu-item${isActive ? " role-header__mobile-menu-item--active" : ""}`
+                  }
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+          )}
+        </div>
+      )}
+
       <div className="role-header__actions">
         <button
           className="role-header__icon-btn"
@@ -65,7 +109,9 @@ function RoleHeader({
         <div className="role-header__profile">
           <div className="role-header__profile-info">
             <p className="role-header__profile-name">{displayName}</p>
-            <p className="role-header__profile-role">{getRoleLabel(roleLabel)}</p>
+            <p className="role-header__profile-role">
+              {getRoleLabel(roleLabel)}
+            </p>
           </div>
           <div className="role-header__avatar" aria-hidden="true">
             {initials}
@@ -78,17 +124,21 @@ function RoleHeader({
 
 RoleHeader.propTypes = {
   isFixed: PropTypes.bool,
+  mobileNavItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      end: PropTypes.bool,
+      label: PropTypes.string.isRequired,
+      to: PropTypes.string.isRequired,
+    }),
+  ),
   onNotificationClick: PropTypes.func,
   roleLabel: PropTypes.string.isRequired,
-  searchLabel: PropTypes.string,
-  searchPlaceholder: PropTypes.string,
 };
 
 RoleHeader.defaultProps = {
   isFixed: false,
+  mobileNavItems: [],
   onNotificationClick: undefined,
-  searchLabel: "Tìm kiếm",
-  searchPlaceholder: "Tìm tài khoản, tên hoặc vai trò...",
 };
 
 export default RoleHeader;

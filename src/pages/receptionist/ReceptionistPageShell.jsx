@@ -28,6 +28,7 @@ function ReceptionistPageShell({
       <main className="receptionist-page__main">
         <RoleHeader
           isFixed
+          mobileNavItems={RECEPTIONIST_NAV_ITEMS}
           roleLabel={user?.role || "receptionist"}
           searchLabel="Tim kiem trong khu vuc le tan"
           showHelp

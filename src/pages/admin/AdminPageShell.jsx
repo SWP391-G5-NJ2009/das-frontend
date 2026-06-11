@@ -15,6 +15,7 @@ function AdminPageShell({ children, onNotificationClick }) {
       <main className="admin-accounts__main">
         <RoleHeader
           isFixed
+          mobileNavItems={ADMIN_NAV_ITEMS}
           onNotificationClick={onNotificationClick}
           roleLabel="admin"
         />
