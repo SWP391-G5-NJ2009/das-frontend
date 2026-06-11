@@ -29,7 +29,7 @@ function App() {
           <Route path="/login" element={<PatientLoginPage />} />
           <Route path="/staff/login" element={<StaffLoginPage />} />
           <Route
-            path="/patient/profile"
+            path="/profile"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <ProfilePage />
@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="/patient/booking"
+            path="/booking"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <BookingPage />
@@ -45,7 +45,7 @@ function App() {
             }
           />
           <Route
-            path="/patient/appointments"
+            path="/appointments"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <AppointmentsPage />
@@ -53,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="/patient/history"
+            path="/history"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <HistoryPage />
@@ -61,15 +61,7 @@ function App() {
             }
           />
           <Route
-            path="/receptionist/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["receptionist"]}>
-                <RoleDashboardPage title="Bảng điều khiển lễ tân" />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/receptionist/consultation-request"
+            path="/consultation-request"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <ReceptionistRequestsPage />
@@ -93,15 +85,7 @@ function App() {
             }
           />
           <Route
-            path="/owner/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["owner"]}>
-                <RoleDashboardPage title="Bảng điều khiển chủ phòng khám" />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/owner/services"
+            path="/services-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ServiceCatalogPage />
@@ -109,15 +93,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <RoleDashboardPage title="Bảng điều khiển quản trị" />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/accounts"
+            path="/accounts"
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminAccountsPage />

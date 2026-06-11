@@ -2,7 +2,7 @@ export const RECEPTIONIST_NAV_ITEMS = [
   {
     icon: "assignment",
     label: "Yêu cầu tư vấn",
-    to: "/receptionist/consultation-request",
+    to: "/consultation-request",
   },
   {
     icon: "payments",
@@ -12,12 +12,12 @@ export const RECEPTIONIST_NAV_ITEMS = [
   {
     icon: "calendar_today",
     label: "Lịch hẹn",
-    to: "/receptionist/appointments",
+    to: "/appointments",
   },
   {
     icon: "meeting_room",
     label: "Phòng khám",
-    to: "/receptionist/rooms",
+    to: "/rooms",
   },
 ];
 
