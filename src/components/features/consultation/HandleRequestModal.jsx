@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { X } from "lucide-react";
 import { accountService } from "../../../services/account.service";
 import "./HandleRequestModal.css";
 import { consultationService } from "../../../services/consultation.service";
@@ -45,7 +46,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
         <div className="handle-request-modal__header">
           <h3 className="handle-request-modal__title">Manage Request</h3>
           <button className="handle-request-modal__close" type="button" onClick={onClose}>
-            <span className="material-symbols-outlined">close</span>
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
 

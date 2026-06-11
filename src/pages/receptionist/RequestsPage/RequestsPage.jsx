@@ -1,4 +1,14 @@
 import { useState } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Edit,
+  Filter,
+  Search,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
@@ -57,35 +67,17 @@ function ReceptionistRequestsPage() {
                   <h2 className="receptionist-requests__card-title">
                     Consultation Request Management
                   </h2>
-                  <div className="receptionist-requests__total-badge">
-                    <span className="material-symbols-outlined">group</span>
-                    <span>Total Requests: {requests.length}</span>
-                    <span className="receptionist-requests__trend-badge">
-                      <span className="material-symbols-outlined">
-                        trending_up
-                      </span>
-                      12%
-                    </span>
-                  </div>
                 </div>
                 <div className="receptionist-requests__card-toolbar">
                   <div className="receptionist-requests__table-search">
-                    <span className="material-symbols-outlined">search</span>
+                    <Search size={18} aria-hidden="true" />
                     <input placeholder="Find in list..." type="text" />
                   </div>
                   <button
                     className="receptionist-requests__tool-btn"
                     type="button"
                   >
-                    <span className="material-symbols-outlined">
-                      filter_list
-                    </span>
-                  </button>
-                  <button
-                    className="receptionist-requests__tool-btn"
-                    type="button"
-                  >
-                    <span className="material-symbols-outlined">download</span>
+                    <Filter size={18} aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -182,9 +174,7 @@ function ReceptionistRequestsPage() {
                               type="button"
                               onClick={() => setHandleRequest(request)}
                             >
-                              <span className="material-symbols-outlined">
-                                edit
-                              </span>
+                              <Edit size={20} aria-hidden="true" />
                             </button>
                           </td>
                         </tr>
@@ -203,9 +193,7 @@ function ReceptionistRequestsPage() {
                     className="receptionist-requests__page-btn"
                     type="button"
                   >
-                    <span className="material-symbols-outlined">
-                      chevron_left
-                    </span>
+                    <ChevronLeft size={18} aria-hidden="true" />
                   </button>
                   <button
                     className="receptionist-requests__page-btn receptionist-requests__page-btn--active"
@@ -229,9 +217,7 @@ function ReceptionistRequestsPage() {
                     className="receptionist-requests__page-btn"
                     type="button"
                   >
-                    <span className="material-symbols-outlined">
-                      chevron_right
-                    </span>
+                    <ChevronRight size={18} aria-hidden="true" />
                   </button>
                 </div>
               </div>

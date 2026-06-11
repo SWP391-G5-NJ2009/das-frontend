@@ -1,4 +1,19 @@
 import { useState } from "react";
+import {
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Filter,
+  Headphones,
+  Landmark,
+  Search,
+  Shield,
+  Stethoscope,
+  Trash2,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
@@ -50,7 +65,7 @@ function AdminAccountsPage() {
               type="button"
               onClick={() => setShowModal(true)}
             >
-              <span className="material-symbols-outlined">person_add</span>
+              <UserPlus size={20} aria-hidden="true" />
               Add New Account
             </button>
           </div>
@@ -58,7 +73,7 @@ function AdminAccountsPage() {
           <div className="admin-accounts__stats">
             <div className="admin-accounts__stat-card">
               <div className="admin-accounts__stat-icon admin-accounts__stat-icon--primary">
-                <span className="material-symbols-outlined">security</span>
+                <Shield size={24} aria-hidden="true" />
               </div>
               <div>
                 <p className="admin-accounts__stat-label">Admins</p>
@@ -67,9 +82,7 @@ function AdminAccountsPage() {
             </div>
             <div className="admin-accounts__stat-card">
               <div className="admin-accounts__stat-icon admin-accounts__stat-icon--primary-container">
-                <span className="material-symbols-outlined">
-                  medical_services
-                </span>
+                <Stethoscope size={24} aria-hidden="true" />
               </div>
               <div>
                 <p className="admin-accounts__stat-label">Doctors</p>
@@ -78,9 +91,7 @@ function AdminAccountsPage() {
             </div>
             <div className="admin-accounts__stat-card">
               <div className="admin-accounts__stat-icon admin-accounts__stat-icon--tertiary">
-                <span className="material-symbols-outlined">
-                  account_balance
-                </span>
+                <Landmark size={24} aria-hidden="true" />
               </div>
               <div>
                 <p className="admin-accounts__stat-label">Owners</p>
@@ -89,7 +100,7 @@ function AdminAccountsPage() {
             </div>
             <div className="admin-accounts__stat-card">
               <div className="admin-accounts__stat-icon admin-accounts__stat-icon--secondary">
-                <span className="material-symbols-outlined">support_agent</span>
+                <Headphones size={24} aria-hidden="true" />
               </div>
               <div>
                 <p className="admin-accounts__stat-label">Staff</p>
@@ -98,7 +109,7 @@ function AdminAccountsPage() {
             </div>
             <div className="admin-accounts__stat-card">
               <div className="admin-accounts__stat-icon admin-accounts__stat-icon--secondary">
-                <span className="material-symbols-outlined">group</span>
+                <Users size={24} aria-hidden="true" />
               </div>
               <div>
                 <p className="admin-accounts__stat-label">Patients</p>
@@ -116,11 +127,11 @@ function AdminAccountsPage() {
               </div>
               <div className="admin-accounts__card-toolbar">
                 <div className="admin-accounts__table-search">
-                  <span className="material-symbols-outlined">search</span>
+                  <Search size={18} aria-hidden="true" />
                   <input placeholder="Find in list..." type="text" />
                 </div>
                 <button className="admin-accounts__tool-btn" type="button">
-                  <span className="material-symbols-outlined">filter_list</span>
+                  <Filter size={18} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -205,18 +216,14 @@ function AdminAccountsPage() {
                             type="button"
                             onClick={() => setEditAccount(account)}
                           >
-                            <span className="material-symbols-outlined">
-                              edit
-                            </span>
+                            <Edit size={20} aria-hidden="true" />
                           </button>
                           <button
                             className="admin-accounts__action-btn admin-accounts__action-btn--delete"
                             type="button"
                             onClick={() => setDeleteAccount(account)}
                           >
-                            <span className="material-symbols-outlined">
-                              delete
-                            </span>
+                            <Trash2 size={20} aria-hidden="true" />
                           </button>
                         </td>
                       </tr>
@@ -231,9 +238,7 @@ function AdminAccountsPage() {
               </p>
               <div className="admin-accounts__pagination-controls">
                 <button className="admin-accounts__page-btn" type="button">
-                  <span className="material-symbols-outlined">
-                    chevron_left
-                  </span>
+                  <ChevronLeft size={18} aria-hidden="true" />
                 </button>
                 <button
                   className="admin-accounts__page-btn admin-accounts__page-btn--active"
@@ -248,9 +253,7 @@ function AdminAccountsPage() {
                   3
                 </button>
                 <button className="admin-accounts__page-btn" type="button">
-                  <span className="material-symbols-outlined">
-                    chevron_right
-                  </span>
+                  <ChevronRight size={18} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -261,9 +264,11 @@ function AdminAccountsPage() {
       <div
         className={`admin-accounts__toast${toastVisible ? " admin-accounts__toast--visible" : ""}`}
       >
-        <span className="material-symbols-outlined admin-accounts__toast-icon">
-          check_circle
-        </span>
+        <CheckCircle
+          className="admin-accounts__toast-icon"
+          size={20}
+          aria-hidden="true"
+        />
         <span>Action successful</span>
       </div>
       {showModal && (

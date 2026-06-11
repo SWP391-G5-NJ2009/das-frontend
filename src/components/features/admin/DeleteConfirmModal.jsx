@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { X } from "lucide-react";
 import { accountService } from "../../../services/account.service";
 import "./AddAccountModal.css";
 
@@ -18,7 +19,7 @@ function DeleteConfirmModal({ account, onClose, onSuccess }) {
         <div className="add-account-modal__header">
           <h3 className="add-account-modal__title">Delete Account</h3>
           <button className="add-account-modal__close" type="button" onClick={onClose}>
-            <span className="material-symbols-outlined">close</span>
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
 

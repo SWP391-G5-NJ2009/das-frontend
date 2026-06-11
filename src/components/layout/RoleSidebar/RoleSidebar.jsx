@@ -1,6 +1,48 @@
 import PropTypes from "prop-types";
+import {
+  BarChart3,
+  Bell,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
+  CalendarRange,
+  ClipboardList,
+  CreditCard,
+  DoorOpen,
+  Headphones,
+  HelpCircle,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  Shield,
+  Stethoscope,
+  User,
+  Users,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "./RoleSidebar.css";
+
+const ICONS = {
+  analytics: BarChart3,
+  assessment: BarChart3,
+  assignment: ClipboardList,
+  business: Building2,
+  calendar_month: CalendarRange,
+  calendar_today: CalendarDays,
+  dashboard: LayoutDashboard,
+  group: Users,
+  help: HelpCircle,
+  logout: LogOut,
+  medical_services: Stethoscope,
+  meeting_room: DoorOpen,
+  notifications: Bell,
+  payments: CreditCard,
+  person: User,
+  security: Shield,
+  settings: Settings,
+  support_agent: Headphones,
+  work: BriefcaseBusiness,
+};
 
 function renderIcon(item) {
   if (item.Icon) {
@@ -9,11 +51,8 @@ function renderIcon(item) {
   }
 
   if (item.icon) {
-    return (
-      <span className="material-symbols-outlined" aria-hidden="true">
-        {item.icon}
-      </span>
-    );
+    const Icon = ICONS[item.icon] || HelpCircle;
+    return <Icon size={20} aria-hidden="true" />;
   }
 
   return null;

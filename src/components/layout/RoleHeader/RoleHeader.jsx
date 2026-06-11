@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { Bell } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import "./RoleHeader.css";
 
@@ -43,7 +44,7 @@ function RoleHeader({
           onClick={onNotificationClick}
           aria-label="Notifications"
         >
-          <span className="material-symbols-outlined">notifications</span>
+          <Bell size={20} aria-hidden="true" />
         </button>
 
         <div className="role-header__divider" />

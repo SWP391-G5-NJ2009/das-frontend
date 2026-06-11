@@ -1,13 +1,6 @@
 .owner-catalog-page {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  background-color: #f8f9fa;
-}
-
-.owner-catalog-main {
-  flex: 1;
-  padding: 40px 20px;
+  background-color: var(--color-neutral-50);
 }
 
 .catalog-container {

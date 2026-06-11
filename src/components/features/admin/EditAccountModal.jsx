@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { X } from "lucide-react";
 import { accountService } from "../../../services/account.service";
 import "./AddAccountModal.css";
 
@@ -47,7 +48,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
         <div className="add-account-modal__header">
           <h3 className="add-account-modal__title">Edit Account</h3>
           <button className="add-account-modal__close" type="button" onClick={onClose}>
-            <span className="material-symbols-outlined">close</span>
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
 

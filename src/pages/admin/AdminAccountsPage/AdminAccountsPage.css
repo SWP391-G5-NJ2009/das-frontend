@@ -352,7 +352,7 @@
   font-weight: var(--font-weight-medium);
 }
 
-.admin-accounts__total-badge .material-symbols-outlined {
+.admin-accounts__total-badge svg {
   font-size: 18px;
 }
 
@@ -366,7 +366,7 @@
   border-radius: var(--radius-sm);
 }
 
-.admin-accounts__trend-badge .material-symbols-outlined {
+.admin-accounts__trend-badge svg {
   font-size: 12px;
 }
 
@@ -381,7 +381,7 @@
   width: 200px;
 }
 
-.admin-accounts__table-search .material-symbols-outlined {
+.admin-accounts__table-search svg {
   position: absolute;
   left: var(--space-2);
   top: 50%;
@@ -558,7 +558,7 @@
   transition: background-color var(--transition-fast);
 }
 
-.admin-accounts__action-btn .material-symbols-outlined {
+.admin-accounts__action-btn svg {
   font-size: 20px;
 }
 
@@ -663,7 +663,7 @@
   flex-shrink: 0;
 }
 
-.admin-accounts__stat-icon .material-symbols-outlined {
+.admin-accounts__stat-icon svg {
   font-size: 24px;
 }
 

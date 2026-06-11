@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
+import { getOwnerFooterItems, OWNER_NAV_ITEMS } from "../../owner/ownerNavigation";
 import "./RoleDashboardPage.css";
 
 const ADMIN_NAV_ITEMS = [
@@ -16,20 +17,26 @@ const ADMIN_NAV_ITEMS = [
 function RoleDashboardPage({ title }) {
   const { logout, user } = useAuth();
   const isAdmin = user?.role === "admin";
+  const isOwner = user?.role === "owner";
+  const hasSidebar = isAdmin || isOwner;
+  const navItems = isOwner ? OWNER_NAV_ITEMS : ADMIN_NAV_ITEMS;
+  const footerItems = isOwner
+    ? getOwnerFooterItems(logout)
+    : [{ icon: "logout", label: "Logout", onClick: logout }];
 
   return (
-    <div className={`role-dashboard${isAdmin ? " role-dashboard--with-sidebar" : ""}`}>
-      {isAdmin && (
+    <div className={`role-dashboard${hasSidebar ? " role-dashboard--with-sidebar" : ""}`}>
+      {hasSidebar && (
         <RoleSidebar
-          ariaLabel="Admin navigation"
-          navItems={ADMIN_NAV_ITEMS}
-          footerItems={[{ icon: "logout", label: "Logout", onClick: logout }]}
+          ariaLabel={`${user?.role || "Role"} navigation`}
+          navItems={navItems}
+          footerItems={footerItems}
         />
       )}
 
       <div className="role-dashboard__main">
         <RoleHeader
-          isFixed={isAdmin}
+          isFixed={hasSidebar}
           roleLabel={user?.role || "Staff"}
           showHelp
         />
