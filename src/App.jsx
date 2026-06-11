@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ReceptionistLayout from "./components/layout/ReceptionistLayout/ReceptionistLayout";
 import { AuthProvider } from "./context/AuthContext";
 import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
@@ -9,8 +8,7 @@ import OwnerServiceCatalogPage from "./pages/owner/OwnerServiceCatalogPage/Owner
 import PatientDashboardPage from "./pages/patient/PatientDashboardPage/PatientDashboardPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
-import ReceptionistDashboardPage from "./pages/receptionist/ReceptionistDashboardPage/ReceptionistDashboardPage";
-import ReceptionistRequestsPage from "./pages/receptionist/ReceptionistRequestsPage/ReceptionistRequestsPage";
+import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -36,19 +34,29 @@ function App() {
             }
           />
           <Route
+            path="/receptionist/dashboard"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
-                <ReceptionistLayout />
+                <RoleDashboardPage title="Bảng điều khiển lễ tân" />
               </ProtectedRoute>
             }
-          >
-            <Route path="/receptionist/dashboard" element={<ReceptionistDashboardPage />} />
-            <Route
-              path="/receptionist/consultation-request"
-              element={<ReceptionistRequestsPage />}
-            />
-            <Route path="/payments" element={<PaymentListPage />} />
-          </Route>
+          />
+          <Route
+            path="/receptionist/consultation-request"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <ReceptionistRequestsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <PaymentListPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dentist/dashboard"
             element={

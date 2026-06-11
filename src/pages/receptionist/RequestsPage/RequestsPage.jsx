@@ -1,0 +1,259 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
+import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
+import { useConsultationRequests } from "../../../hooks/useConsultationRequests";
+import { useAuth } from "../../../context/AuthContext";
+import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal";
+import {
+  getReceptionistFooterItems,
+  RECEPTIONIST_NAV_ITEMS,
+} from "../receptionistNavigation";
+import "../receptionistPage.css";
+import "./RequestsPage.css";
+
+function ReceptionistRequestsPage() {
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+  const { requests, isLoading, error, refetch } = useConsultationRequests();
+  const [handleRequest, setHandleRequest] = useState(null);
+
+  return (
+    <div className="receptionist-page">
+      <RoleSidebar
+        ariaLabel="Receptionist navigation"
+        navItems={RECEPTIONIST_NAV_ITEMS}
+        footerItems={getReceptionistFooterItems()}
+      />
+
+      <main className="receptionist-page__main">
+        <RoleHeader
+          isFixed
+          roleLabel={user?.role || "Receptionist"}
+          searchLabel="Search receptionist workspace"
+        />
+        <section
+          className="receptionist-page__content receptionist-requests"
+          aria-labelledby="receptionist-requests-title"
+        >
+          <div className="receptionist-requests__content">
+            <div className="receptionist-requests__page-header">
+              <div>
+                <h1
+                  className="receptionist-requests__page-title"
+                  id="receptionist-requests-title"
+                >
+                  Manage Consultation Requests
+                </h1>
+                <p className="receptionist-requests__page-desc">
+                  View and update consultation requests.
+                </p>
+              </div>
+            </div>
+
+            <div className="receptionist-requests__card">
+              <div className="receptionist-requests__card-header">
+                <div className="receptionist-requests__card-title-group">
+                  <h2 className="receptionist-requests__card-title">
+                    Consultation Request Management
+                  </h2>
+                  <div className="receptionist-requests__total-badge">
+                    <span className="material-symbols-outlined">group</span>
+                    <span>Total Requests: {requests.length}</span>
+                    <span className="receptionist-requests__trend-badge">
+                      <span className="material-symbols-outlined">
+                        trending_up
+                      </span>
+                      12%
+                    </span>
+                  </div>
+                </div>
+                <div className="receptionist-requests__card-toolbar">
+                  <div className="receptionist-requests__table-search">
+                    <span className="material-symbols-outlined">search</span>
+                    <input placeholder="Find in list..." type="text" />
+                  </div>
+                  <button
+                    className="receptionist-requests__tool-btn"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined">
+                      filter_list
+                    </span>
+                  </button>
+                  <button
+                    className="receptionist-requests__tool-btn"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined">download</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="receptionist-requests__table-wrapper">
+                <table className="receptionist-requests__table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Full name</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Description</th>
+                      <th>Created at</th>
+                      <th>Status</th>
+                      <th>Handled by</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {isLoading && (
+                      <tr>
+                        <td className="receptionist-requests__cell" colSpan={9}>
+                          Loading requests...
+                        </td>
+                      </tr>
+                    )}
+
+                    {!isLoading && error && (
+                      <tr>
+                        <td className="receptionist-requests__cell" colSpan={9}>
+                          Error: {error.message}
+                        </td>
+                      </tr>
+                    )}
+
+                    {!isLoading && !error && requests.length === 0 && (
+                      <tr>
+                        <td className="receptionist-requests__cell" colSpan={9}>
+                          No requests found
+                        </td>
+                      </tr>
+                    )}
+
+                    {!isLoading &&
+                      !error &&
+                      requests.map((request, index) => (
+                        <tr
+                          key={
+                            request.id ||
+                            `${request.phone}-${request.created_at}`
+                          }
+                          className="receptionist-requests__row"
+                        >
+                          <td className="receptionist-requests__cell receptionist-requests__cell--num">
+                            {index + 1}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            <div className="receptionist-requests__user-cell">
+                              <div
+                                className="receptionist-requests__avatar"
+                                aria-hidden="true"
+                              >
+                                {(request.full_name || "?")
+                                  .charAt(0)
+                                  .toUpperCase()}
+                              </div>
+                              <span>{request.full_name}</span>
+                            </div>
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            {request.phone}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            {request.email}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            {request.description}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            {new Date(request.created_at).toLocaleString(
+                              "vi-VN",
+                            )}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            {request.status}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            {request.handled_by}
+                          </td>
+                          <td className="receptionist-requests__cell">
+                            <button
+                              className="receptionist-requests__action-btn receptionist-requests__action-btn--edit"
+                              type="button"
+                              onClick={() => setHandleRequest(request)}
+                            >
+                              <span className="material-symbols-outlined">
+                                edit
+                              </span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="receptionist-requests__pagination">
+                <p className="receptionist-requests__pagination-info">
+                  Showing 1-{Math.min(requests.length, 6)} of {requests.length}{" "}
+                  requests
+                </p>
+                <div className="receptionist-requests__pagination-controls">
+                  <button
+                    className="receptionist-requests__page-btn"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined">
+                      chevron_left
+                    </span>
+                  </button>
+                  <button
+                    className="receptionist-requests__page-btn receptionist-requests__page-btn--active"
+                    type="button"
+                  >
+                    1
+                  </button>
+                  <button
+                    className="receptionist-requests__page-btn"
+                    type="button"
+                  >
+                    2
+                  </button>
+                  <button
+                    className="receptionist-requests__page-btn"
+                    type="button"
+                  >
+                    3
+                  </button>
+                  <button
+                    className="receptionist-requests__page-btn"
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined">
+                      chevron_right
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {handleRequest && (
+            <HandleRequestModal
+              request={handleRequest}
+              onClose={() => setHandleRequest(null)}
+              onSuccess={() => {
+                setHandleRequest(null);
+                refetch();
+              }}
+            />
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+ReceptionistRequestsPage.propTypes = {};
+
+export default ReceptionistRequestsPage;

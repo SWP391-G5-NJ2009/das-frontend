@@ -29,7 +29,6 @@ function RoleHeader({
   roleLabel,
   searchLabel,
   searchPlaceholder,
-  showHelp,
 }) {
   const { user } = useAuth();
   const displayName = getDisplayName(user);
@@ -46,16 +45,6 @@ function RoleHeader({
         >
           <span className="material-symbols-outlined">notifications</span>
         </button>
-
-        {showHelp && (
-          <button
-            className="role-header__icon-btn"
-            type="button"
-            aria-label="Help"
-          >
-            <span className="material-symbols-outlined">help</span>
-          </button>
-        )}
 
         <div className="role-header__divider" />
 
@@ -79,7 +68,6 @@ RoleHeader.propTypes = {
   roleLabel: PropTypes.string.isRequired,
   searchLabel: PropTypes.string,
   searchPlaceholder: PropTypes.string,
-  showHelp: PropTypes.bool,
 };
 
 RoleHeader.defaultProps = {
@@ -87,7 +75,6 @@ RoleHeader.defaultProps = {
   onNotificationClick: undefined,
   searchLabel: "Search",
   searchPlaceholder: "Search for accounts, names or roles...",
-  showHelp: false,
 };
 
 export default RoleHeader;

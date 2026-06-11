@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
 import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
 import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
 import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
+import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
 import "./AdminAccountsPage.css";
 
 const NAV_ITEMS = [
   { icon: "person", label: "Manage Account", to: "/admin/accounts" },
-  { icon: "dashboard", label: "Dashboard", to: "/admin/dashboard" },
   { icon: "calendar_today", label: "Appointments", to: "/admin/appointments" },
   { icon: "assessment", label: "Reports", to: "/admin/reports" },
   { icon: "settings", label: "Settings", to: "/admin/settings" },
@@ -29,34 +28,11 @@ function AdminAccountsPage() {
 
   return (
     <div className="admin-accounts">
-      <aside className="admin-accounts__sidebar">
-        <div className="admin-accounts__brand">
-          <h1 className="admin-accounts__brand-name">DentalCare</h1>
-        </div>
-
-        <nav className="admin-accounts__nav">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              end
-              className={({ isActive }) =>
-                `admin-accounts__nav-item${isActive ? " admin-accounts__nav-item--active" : ""}`
-              }
-            >
-              <span className="material-symbols-outlined">{item.icon}</span>
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="admin-accounts__sidebar-footer">
-          <NavLink to="/" className="admin-accounts__nav-item">
-            <span className="material-symbols-outlined">logout</span>
-            <span>Logout</span>
-          </NavLink>
-        </div>
-      </aside>
+      <RoleSidebar
+        ariaLabel="Admin navigation"
+        navItems={NAV_ITEMS}
+        footerItems={[{ icon: "logout", label: "Logout", to: "/staff/login" }]}
+      />
 
       <main className="admin-accounts__main">
         <RoleHeader isFixed onNotificationClick={showToast} roleLabel="Admin" />

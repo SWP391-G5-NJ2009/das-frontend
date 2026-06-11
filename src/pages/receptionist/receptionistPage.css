@@ -1,0 +1,23 @@
+.receptionist-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+}
+
+.receptionist-page__main {
+  flex: 1;
+  min-height: 100vh;
+  margin-left: 260px;
+}
+
+.receptionist-page__content {
+  padding: calc(var(--header-height) + var(--space-6)) var(--space-6)
+    var(--space-10);
+}
+
+@media (max-width: 768px) {
+  .receptionist-page__main {
+    margin-left: 0;
+  }
+}
