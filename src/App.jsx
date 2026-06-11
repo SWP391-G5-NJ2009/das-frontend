@@ -1,19 +1,19 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ReceptionistLayout from "./components/ReceptionistLayout/ReceptionistLayout";
+import ReceptionistLayout from "./components/layout/ReceptionistLayout/ReceptionistLayout";
 import { AuthProvider } from "./context/AuthContext";
-import AdminAccountsPage from "./pages/AdminAccountsPage/AdminAccountsPage";
-import ConsultationPage from "./pages/ConsultationPage/ConsultationPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
-import LandingPage from "./pages/LandingPage/LandingPage";
-import OwnerServiceCatalogPage from "./pages/OwnerServiceCatalogPage/OwnerServiceCatalogPage";
-import PatientDashboardPage from "./pages/PatientDashboardPage/PatientDashboardPage";
-import PatientLoginPage from "./pages/PatientLoginPage/PatientLoginPage";
-import PaymentListPage from "./pages/PaymentListPage/PaymentListPage";
-import ReceptionistDashboardPage from "./pages/ReceptionistDashboardPage/ReceptionistDashboardPage";
-import ReceptionistRequestsPage from "./pages/ReceptionistRequestsPage/ReceptionistRequestsPage";
-import RoleDashboardPage from "./pages/RoleDashboardPage/RoleDashboardPage";
-import ServicesPage from "./pages/ServicesPage/ServicesPage";
-import StaffLoginPage from "./pages/StaffLoginPage/StaffLoginPage";
+import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
+import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
+import LandingPage from "./pages/public/LandingPage/LandingPage";
+import OwnerServiceCatalogPage from "./pages/owner/OwnerServiceCatalogPage/OwnerServiceCatalogPage";
+import PatientDashboardPage from "./pages/patient/PatientDashboardPage/PatientDashboardPage";
+import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
+import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
+import ReceptionistDashboardPage from "./pages/receptionist/ReceptionistDashboardPage/ReceptionistDashboardPage";
+import ReceptionistRequestsPage from "./pages/receptionist/ReceptionistRequestsPage/ReceptionistRequestsPage";
+import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
+import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
+import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import ProtectedRoute from "./router/ProtectedRoute";
 
 function App() {
