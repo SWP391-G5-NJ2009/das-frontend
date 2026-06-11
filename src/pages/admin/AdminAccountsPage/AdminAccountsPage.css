@@ -3,7 +3,11 @@
   min-height: 100vh;
   background-color: var(--color-neutral-50);
   color: var(--color-neutral-900);
-  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 /* ===== Sidebar ===== */
@@ -59,7 +63,9 @@
   padding: var(--space-3);
   border-radius: var(--radius-md);
   color: var(--color-neutral-600);
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-base);
 }
@@ -169,7 +175,9 @@
   border-radius: var(--radius-full);
   color: var(--color-neutral-500);
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .admin-accounts__icon-btn:hover {
@@ -603,7 +611,9 @@
   align-items: center;
   justify-content: center;
   min-width: 36px;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .admin-accounts__page-btn:hover {
@@ -622,6 +632,7 @@
   grid-template-columns: repeat(5, 1fr);
   gap: var(--space-4);
   margin-top: var(--space-6);
+  margin-bottom: var(--space-6);
 }
 
 .admin-accounts__stat-card {
@@ -632,7 +643,9 @@
   background-color: var(--color-neutral-50);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-neutral-200);
-  transition: transform var(--transition-fast), box-shadow var(--transition-slow);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-slow);
 }
 
 .admin-accounts__stat-card:hover {
@@ -708,7 +721,9 @@
   font-weight: var(--font-weight-medium);
   transform: translateY(80px);
   opacity: 0;
-  transition: transform var(--transition-slow), opacity var(--transition-slow);
+  transition:
+    transform var(--transition-slow),
+    opacity var(--transition-slow);
   pointer-events: none;
 }
 
