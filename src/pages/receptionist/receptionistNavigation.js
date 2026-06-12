@@ -2,22 +2,22 @@ export const RECEPTIONIST_NAV_ITEMS = [
   {
     icon: "assignment",
     label: "Yêu cầu tư vấn",
-    to: "/consultation-request",
+    to: "/receptionist/consultation-request",
   },
   {
     icon: "payments",
     label: "Thanh toán",
-    to: "/payments",
+    to: "/receptionist/payments",
   },
   {
     icon: "calendar_today",
     label: "Lịch hẹn",
-    to: "/appointments",
+    to: "/receptionist/appointments",
   },
   {
     icon: "meeting_room",
     label: "Phòng khám",
-    to: "/rooms",
+    to: "/receptionist/rooms",
   },
 ];
 

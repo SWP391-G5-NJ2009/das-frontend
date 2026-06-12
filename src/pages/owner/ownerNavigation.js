@@ -2,27 +2,27 @@ export const OWNER_NAV_ITEMS = [
   {
     icon: "medical_services",
     label: "Dịch vụ nha khoa",
-    to: "/services",
+    to: "/owner/services",
   },
   {
     icon: "business",
     label: "Thông tin phòng khám",
-    to: "/clinic-info",
+    to: "/owner/clinic-info",
   },
   {
     icon: "calendar_month",
     label: "Lịch phòng khám",
-    to: "/clinic-schedule",
+    to: "/owner/clinic-schedule",
   },
   {
     icon: "analytics",
     label: "Phân tích",
-    to: "/analytics",
+    to: "/owner/analytics",
   },
   {
     icon: "payments",
     label: "Doanh thu",
-    to: "/revenue",
+    to: "/owner/revenue",
   },
 ];
 

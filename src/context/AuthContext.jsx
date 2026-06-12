@@ -5,11 +5,11 @@ import { authService } from "../services/auth.service";
 const AuthContext = createContext(null);
 
 export const ROLE_HOME = {
-  patient: "/profile",
-  receptionist: "/consultation-request",
+  patient: "/patient/profile",
+  receptionist: "/receptionist/consultation-request",
   dentist: "/dentist/dashboard",
-  owner: "/services-management",
-  admin: "/accounts",
+  owner: "/owner/services-management",
+  admin: "/admin/accounts",
 };
 
 export function AuthProvider({ children }) {

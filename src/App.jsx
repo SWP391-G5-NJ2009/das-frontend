@@ -29,7 +29,7 @@ function App() {
           <Route path="/login" element={<PatientLoginPage />} />
           <Route path="/staff/login" element={<StaffLoginPage />} />
           <Route
-            path="/profile"
+            path="/patient/profile"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <ProfilePage />
@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="/booking"
+            path="/patient/booking"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <BookingPage />
@@ -45,7 +45,7 @@ function App() {
             }
           />
           <Route
-            path="/appointments"
+            path="/patient/appointments"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <AppointmentsPage />
@@ -53,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="/history"
+            path="/patient/history"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
                 <HistoryPage />
@@ -61,7 +61,7 @@ function App() {
             }
           />
           <Route
-            path="/consultation-request"
+            path="/receptionist/consultation-request"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <ReceptionistRequestsPage />
@@ -69,7 +69,7 @@ function App() {
             }
           />
           <Route
-            path="/payments"
+            path="/receptionist/payments"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <PaymentListPage />
@@ -85,7 +85,7 @@ function App() {
             }
           />
           <Route
-            path="/services-management"
+            path="/owner/services-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ServiceCatalogPage />
@@ -93,7 +93,7 @@ function App() {
             }
           />
           <Route
-            path="/accounts"
+            path="/admin/accounts"
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminAccountsPage />
