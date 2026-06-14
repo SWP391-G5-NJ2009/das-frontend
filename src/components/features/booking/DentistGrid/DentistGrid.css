@@ -1,0 +1,88 @@
+.dentist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--space-3);
+}
+
+.dentist-grid__empty {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  font-style: italic;
+  margin: 0;
+  padding: var(--space-3) 0;
+}
+
+.dentist-grid__card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: #ffffff;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--transition-base),
+    background-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+  position: relative;
+}
+
+.dentist-grid__card:hover {
+  border-color: var(--color-primary-300);
+  background-color: var(--color-primary-50);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.dentist-grid__card:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.dentist-grid__card--selected {
+  border-color: var(--color-primary-700);
+  background-color: var(--color-primary-50);
+  box-shadow: var(--shadow-md);
+}
+
+
+.dentist-grid__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dentist-grid__name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dentist-grid__card--selected .dentist-grid__name {
+  color: var(--color-primary-800);
+}
+
+.dentist-grid__spec {
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Checkmark */
+.dentist-grid__check {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-700);
+  margin-left: auto;
+  flex-shrink: 0;
+}

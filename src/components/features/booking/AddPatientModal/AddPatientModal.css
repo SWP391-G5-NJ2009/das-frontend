@@ -1,0 +1,202 @@
+/* ── Overlay ── */
+.add-patient-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+  backdrop-filter: blur(2px);
+  animation: add-patient-overlay-in var(--transition-base) ease;
+}
+
+@keyframes add-patient-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Panel ── */
+.add-patient-modal__panel {
+  width: 100%;
+  max-width: 440px;
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: add-patient-panel-in var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes add-patient-panel-in {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Header ── */
+.add-patient-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--color-primary-50);
+}
+
+.add-patient-modal__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.add-patient-modal__title-icon {
+  color: var(--color-primary-700);
+  flex-shrink: 0;
+}
+
+.add-patient-modal__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.add-patient-modal__close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.add-patient-modal__close-btn:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-800);
+}
+
+.add-patient-modal__close-btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+/* ── Form ── */
+.add-patient-modal__form {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── Field ── */
+.add-patient-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.add-patient-modal__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-700);
+}
+
+.add-patient-modal__label span {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.add-patient-modal__input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  color: var(--color-neutral-900);
+  background-color: #ffffff;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.add-patient-modal__input:focus {
+  outline: none;
+  border-color: var(--color-primary-700);
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
+}
+
+.add-patient-modal__input--error {
+  border-color: var(--color-error);
+}
+
+.add-patient-modal__input--error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+}
+
+.add-patient-modal__error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+}
+
+/* ── Actions ── */
+.add-patient-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.add-patient-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  border: none;
+  transition:
+    background-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.add-patient-modal__btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.add-patient-modal__btn:active {
+  transform: translateY(0);
+}
+
+.add-patient-modal__btn--cancel {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+.add-patient-modal__btn--cancel:hover {
+  background-color: var(--color-neutral-200);
+}
+
+.add-patient-modal__btn--save {
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+}
+
+.add-patient-modal__btn--save:hover {
+  background-color: var(--color-primary-800);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}

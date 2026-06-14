@@ -1,0 +1,182 @@
+/* AppointmentTable — BEM */
+
+/* Scrollable wrapper for horizontal overflow on mobile */
+.appt-table__wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  background-color: #ffffff;
+}
+
+/* Table base */
+.appt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-base);
+  white-space: nowrap;
+}
+
+/* Head */
+.appt-table__head {
+  background-color: var(--color-neutral-50);
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.appt-table__th {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-500);
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.appt-table__th--sortable {
+  display: table-cell;
+  cursor: pointer;
+  user-select: none;
+}
+
+.appt-table__th--sortable:hover {
+  color: var(--color-neutral-800);
+}
+
+.appt-table__th--sortable span {
+  vertical-align: middle;
+  margin-right: var(--space-1);
+}
+
+.appt-table__th--actions {
+  text-align: center;
+}
+
+/* Body rows */
+.appt-table__row {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast);
+}
+
+.appt-table__row:last-child {
+  border-bottom: none;
+}
+
+.appt-table__row:hover {
+  background-color: var(--color-primary-50);
+}
+
+/* Cells */
+.appt-table__td {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-neutral-700);
+  vertical-align: middle;
+}
+
+.appt-table__td--index {
+  color: var(--color-neutral-400);
+  font-weight: var(--font-weight-medium);
+  width: 40px;
+  text-align: center;
+}
+
+/* Patient cell — stacked name + phone */
+.appt-table__patient-name {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+}
+
+.appt-table__patient-phone {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-400);
+  margin-top: 2px;
+}
+
+.appt-table__td--service {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-800);
+  max-width: 180px;
+  white-space: normal;
+}
+
+.appt-table__td--dentist {
+  color: var(--color-neutral-600);
+}
+
+/* Date/time cell — stacked */
+.appt-table__td--datetime {
+  min-width: 120px;
+}
+
+.appt-table__date {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-800);
+}
+
+.appt-table__time {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-500);
+  margin-top: 2px;
+}
+
+/* Action cell */
+.appt-table__td--actions {
+  text-align: center;
+}
+
+.appt-table__action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.appt-table__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.appt-table__action-btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.appt-table__action-btn--edit {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+.appt-table__action-btn--edit:hover:not(:disabled) {
+  background-color: var(--color-primary-200);
+  transform: scale(1.1);
+}
+
+.appt-table__action-btn--edit:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.appt-table__action-btn--cancel {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.appt-table__action-btn--cancel:hover {
+  background-color: #ffcdd2;
+  transform: scale(1.1);
+}

@@ -1,26 +1,26 @@
 export const RECEPTIONIST_NAV_ITEMS = [
   {
+    icon: "calendar_today",
+    label: "Appointments",
+    to: "/receptionist/appointments",
+  },
+  {
     icon: "assignment",
-    label: "Yêu cầu tư vấn",
+    label: "Consultation Requests",
     to: "/receptionist/consultation-request",
   },
   {
     icon: "payments",
-    label: "Thanh toán",
+    label: "Payments",
     to: "/receptionist/payments",
   },
   {
-    icon: "calendar_today",
-    label: "Lịch hẹn",
-    to: "/receptionist/appointments",
-  },
-  {
     icon: "meeting_room",
-    label: "Phòng khám",
+    label: "Rooms",
     to: "/receptionist/rooms",
   },
 ];
 
 export const RECEPTIONIST_FOOTER_ITEMS = [
-  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
+  { icon: "logout", label: "Log out", to: "/staff/login" },
 ];

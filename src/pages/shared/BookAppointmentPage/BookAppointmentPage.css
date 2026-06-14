@@ -1,0 +1,80 @@
+.book-appointment {
+  padding: var(--space-6) var(--space-6) var(--space-12);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* Page heading */
+.book-appointment__heading-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.book-appointment__heading-icon {
+  color: var(--color-primary-700);
+}
+
+.book-appointment__page-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+/* Two-column layout */
+.book-appointment__layout {
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .book-appointment__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .book-appointment__sidebar-col {
+    order: -1;
+  }
+}
+
+/* Form column */
+.book-appointment__form-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Step card */
+.book-appointment__step-card {
+  background-color: #ffffff;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.book-appointment__step-card:hover {
+  border-color: var(--color-neutral-200);
+  box-shadow: var(--shadow-md);
+}
+
+/* Locked state — dimmed when preceding step not done */
+.book-appointment__step-card--locked {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.book-appointment__locked-msg {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-400);
+  font-style: italic;
+  margin: 0;
+  padding: var(--space-2) 0;
+}

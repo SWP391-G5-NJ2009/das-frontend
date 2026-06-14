@@ -1,0 +1,84 @@
+/* PatientAppointmentsPage — BEM: patient-appts */
+
+.patient-appts {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* Header row */
+.patient-appts__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.patient-appts__heading h1 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.patient-appts__heading p {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+/* Book button */
+.patient-appts__book-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.patient-appts__book-btn:hover {
+  background-color: var(--color-primary-800);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.patient-appts__book-btn:active {
+  transform: translateY(0);
+}
+
+.patient-appts__book-btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+/* Cards grid */
+.patient-appts__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .patient-appts__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .patient-appts__grid {
+    grid-template-columns: 1fr;
+  }
+}
