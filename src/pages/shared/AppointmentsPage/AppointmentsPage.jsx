@@ -103,7 +103,7 @@ function AppointmentsPage() {
     [],
   );
   const handleSearchChange = useCallback(
-    debounce((search) => setFilters((prev) => ({ ...prev, search })), 400),
+    (search) => setFilters((prev) => ({ ...prev, search })),
     [],
   );
 
