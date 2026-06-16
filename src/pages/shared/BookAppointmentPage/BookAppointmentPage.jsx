@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -10,6 +10,7 @@ import {
 import PropTypes from "prop-types";
 
 import { usePublicServices, useDentistsByService } from "../../../hooks/useDentalServices";
+import { useAuth } from "../../../context/AuthContext";
 import PatientSearchSection from "../../../components/features/booking/PatientSearchSection/PatientSearchSection";
 import ServiceGrid from "../../../components/features/booking/ServiceGrid/ServiceGrid";
 import DentistGrid from "../../../components/features/booking/DentistGrid/DentistGrid";
@@ -56,11 +57,24 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     error: servicesError,
   } = usePublicServices();
 
+  const { user } = useAuth();
+
   /* ── State ── */
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+
+  /* Auto-fill patient info from logged-in user (patient role only) */
+  useEffect(() => {
+    if (!isReceptionist && user) {
+      setSelectedPatient({
+        id: user.profileId,
+        fullName: user.fullName,
+        phone: user.phone || "",
+      });
+    }
+  }, [isReceptionist, user]);
 
   const [selectedService, setSelectedService] = useState(null);
   const [selectedDentist, setSelectedDentist] = useState(null);
@@ -113,8 +127,11 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
   }, []);
 
   const handleSaveNewPatient = useCallback((newPatient) => {
-    // Assign a temporary local ID — will be replaced by real patient ID after backend integration
     setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
+  }, []);
+
+  const handlePhoneChange = useCallback((phone) => {
+    setSelectedPatient((prev) => (prev ? { ...prev, phone } : prev));
   }, []);
 
   const handleSelectService = useCallback((service) => {
@@ -229,6 +246,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
               }
               isSearching={isSearching}
               phoneNumber={phoneNumber}
+              onPhoneChange={!isReceptionist ? handlePhoneChange : undefined}
             />
           </section>
 

@@ -5,7 +5,7 @@ import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
-import AppointmentsPage from "./pages/patient/AppointmentsPage/AppointmentsPage";
+import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
@@ -13,7 +13,7 @@ import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
-import ReceptionistAppointmentsPage from "./pages/receptionist/AppointmentsPage/ReceptionistAppointmentsPage";
+
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -74,7 +74,7 @@ function App() {
             path="/receptionist/appointments"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
-                <ReceptionistAppointmentsPage />
+                <AppointmentsPage />
               </ProtectedRoute>
             }
           />

@@ -26,7 +26,7 @@ const MOCK_APPOINTMENTS = [
     dentistName: "BS. Trần Văn Minh",
     scheduledDate: "2026-06-22",
     scheduledTime: "14:00",
-    status: "Waiting",
+    status: "Confirmed",
     notes: "Bệnh nhân yêu cầu gây tê",
   },
   {
@@ -132,7 +132,7 @@ export function useMyAppointments(filters = {}) {
     } finally {
       setIsLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedFilters]);
 
   useEffect(() => {
@@ -190,7 +190,6 @@ export function useAllAppointments(filters = {}) {
     } finally {
       setIsLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedFilters]);
 
   useEffect(() => {

@@ -3,27 +3,29 @@ import { ArrowUpDown, Ban, Pencil } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
-const CANCELLABLE_STATUSES = ["Confirmed", "Waiting", "Checked-in"];
+const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in"];
 
-function AppointmentTable({ appointments, onCancel, onEdit }) {
+function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
   if (appointments.length === 0) return null;
 
   return (
-    <div className="appt-table__wrap" role="region" aria-label="Danh sách lịch hẹn">
+    <div className="appt-table__wrap" role="region" aria-label="Appointment list">
       <table className="appt-table">
         <thead className="appt-table__head">
           <tr>
             <th className="appt-table__th" scope="col">#</th>
-            <th className="appt-table__th" scope="col">Bệnh nhân</th>
-            <th className="appt-table__th" scope="col">Dịch vụ</th>
-            <th className="appt-table__th" scope="col">Bác sĩ phụ trách</th>
+            {showPatientInfo && (
+              <th className="appt-table__th" scope="col">Patient</th>
+            )}
+            <th className="appt-table__th" scope="col">Service</th>
+            <th className="appt-table__th" scope="col">Dentist</th>
             <th className="appt-table__th appt-table__th--sortable" scope="col">
-              <span>Ngày &amp; Giờ</span>
+              <span>Date &amp; Time</span>
               <ArrowUpDown size={14} aria-hidden="true" />
             </th>
-            <th className="appt-table__th" scope="col">Trạng thái</th>
+            <th className="appt-table__th" scope="col">Status</th>
             <th className="appt-table__th appt-table__th--actions" scope="col">
-              Hành động
+              Actions
             </th>
           </tr>
         </thead>
@@ -41,14 +43,16 @@ function AppointmentTable({ appointments, onCancel, onEdit }) {
                   {idx + 1}
                 </td>
 
-                <td className="appt-table__td">
-                  <span className="appt-table__patient-name">
-                    {appt.patientName}
-                  </span>
-                  <span className="appt-table__patient-phone">
-                    {appt.patientPhone}
-                  </span>
-                </td>
+                {showPatientInfo && (
+                  <td className="appt-table__td">
+                    <span className="appt-table__patient-name">
+                      {appt.patientName}
+                    </span>
+                    <span className="appt-table__patient-phone">
+                      {appt.patientPhone}
+                    </span>
+                  </td>
+                )}
 
                 <td className="appt-table__td appt-table__td--service">
                   {appt.serviceName}
@@ -73,8 +77,8 @@ function AppointmentTable({ appointments, onCancel, onEdit }) {
                       id={`tbl-edit-${appt.id}`}
                       type="button"
                       className="appt-table__action-btn appt-table__action-btn--edit"
-                      aria-label={`Chỉnh sửa lịch hẹn của ${appt.patientName}`}
-                      title="Tính năng chỉnh sửa sẽ ra mắt sớm"
+                      aria-label={`Edit appointment for ${appt.patientName}`}
+                      title="Edit feature coming soon"
                       disabled
                       onClick={() => onEdit?.(appt)}
                     >
@@ -85,7 +89,7 @@ function AppointmentTable({ appointments, onCancel, onEdit }) {
                         id={`tbl-cancel-${appt.id}`}
                         type="button"
                         className="appt-table__action-btn appt-table__action-btn--cancel"
-                        aria-label={`Hủy lịch hẹn của ${appt.patientName}`}
+                        aria-label={`Cancel appointment for ${appt.patientName}`}
                         onClick={() => onCancel?.(appt)}
                       >
                         <Ban size={15} aria-hidden="true" />
@@ -117,11 +121,13 @@ AppointmentTable.propTypes = {
   ).isRequired,
   onCancel: PropTypes.func,
   onEdit: PropTypes.func,
+  showPatientInfo: PropTypes.bool,
 };
 
 AppointmentTable.defaultProps = {
   onCancel: null,
   onEdit: null,
+  showPatientInfo: true,
 };
 
 export default AppointmentTable;

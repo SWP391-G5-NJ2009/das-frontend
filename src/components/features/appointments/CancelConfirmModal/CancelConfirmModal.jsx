@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
-import { X, AlertTriangle } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import "./CancelConfirmModal.css";
 
 function CancelConfirmModal({
@@ -11,29 +11,17 @@ function CancelConfirmModal({
   isLoading,
 }) {
   const [reason, setReason] = useState("");
-  const dialogRef = useRef(null);
-  const firstFocusRef = useRef(null);
-
-  /* Trap focus & ESC key */
-  useEffect(() => {
-    if (!isOpen) return;
-    setReason("");
-    const timer = setTimeout(() => firstFocusRef.current?.focus(), 50);
-
-    const handleKey = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const handleConfirm = () => {
     onConfirm(reason.trim());
+    setReason("");
+  };
+
+  const handleClose = () => {
+    setReason("");
+    onClose();
   };
 
   return (
@@ -41,11 +29,10 @@ function CancelConfirmModal({
       className="cancel-modal__overlay"
       role="presentation"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) handleClose();
       }}
     >
       <dialog
-        ref={dialogRef}
         className="cancel-modal"
         open
         aria-modal="true"
@@ -59,14 +46,14 @@ function CancelConfirmModal({
               <AlertTriangle size={20} />
             </span>
             <h2 id="cancel-modal-title" className="cancel-modal__title">
-              Xác nhận hủy lịch hẹn
+              Cancel Appointment
             </h2>
           </div>
           <button
             type="button"
             className="cancel-modal__close"
-            aria-label="Đóng"
-            onClick={onClose}
+            aria-label="Close"
+            onClick={handleClose}
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -75,22 +62,21 @@ function CancelConfirmModal({
         {/* Body */}
         <div className="cancel-modal__body">
           <p id="cancel-modal-desc" className="cancel-modal__desc">
-            Bạn có chắc chắn muốn hủy lịch hẹn{" "}
+            Are you sure you want to cancel{" "}
             {appointmentLabel && (
               <strong>&ldquo;{appointmentLabel}&rdquo;</strong>
             )}
-            ? Hành động này không thể hoàn tác.
+            ? This action cannot be undone.
           </p>
 
           <label htmlFor="cancel-reason" className="cancel-modal__label">
-            Lý do hủy <span className="cancel-modal__optional">(tuỳ chọn)</span>
+            Reason <span className="cancel-modal__optional">(optional)</span>
           </label>
           <textarea
             id="cancel-reason"
-            ref={firstFocusRef}
             className="cancel-modal__textarea"
             rows={3}
-            placeholder="Nhập lý do hủy lịch..."
+            placeholder="Enter cancellation reason..."
             value={reason}
             onChange={(e) => setReason(e.target.value)}
           />
@@ -101,10 +87,10 @@ function CancelConfirmModal({
           <button
             type="button"
             className="cancel-modal__btn cancel-modal__btn--secondary"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isLoading}
           >
-            Giữ lịch hẹn
+            Keep Appointment
           </button>
           <button
             type="button"
@@ -113,7 +99,7 @@ function CancelConfirmModal({
             disabled={isLoading}
             aria-busy={isLoading}
           >
-            {isLoading ? "Đang hủy..." : "Xác nhận hủy"}
+            {isLoading ? "Cancelling..." : "Confirm Cancel"}
           </button>
         </div>
       </dialog>

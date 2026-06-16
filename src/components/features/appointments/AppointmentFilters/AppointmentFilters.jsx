@@ -3,14 +3,14 @@ import { Search, X } from "lucide-react";
 import "./AppointmentFilters.css";
 
 const STATUS_TABS = [
-  { value: "all", label: "Tất cả" },
-  { value: "Waiting", label: "Chờ xác nhận" },
-  { value: "Confirmed", label: "Đã xác nhận" },
-  { value: "Checked-in", label: "Đã check-in" },
-  { value: "In-Treatment", label: "Đang điều trị" },
-  { value: "Completed", label: "Hoàn thành" },
-  { value: "Cancelled", label: "Đã hủy" },
-  { value: "No-Show", label: "Không đến" },
+  { value: "all", label: "All" },
+  { value: "Confirmed", label: "Confirmed" },
+  { value: "Checked-in", label: "Checked-in" },
+  { value: "Completed", label: "Completed" },
+  { value: "Conflict", label: "Conflict" },
+  { value: "Cancelled", label: "Cancelled" },
+  { value: "No-Show", label: "No-Show" },
+  { value: "Resolved No-Show", label: "Resolved No-Show" },
 ];
 
 function AppointmentFilters({
@@ -28,7 +28,7 @@ function AppointmentFilters({
       <div
         className="appt-filters__tabs"
         role="tablist"
-        aria-label="Lọc theo trạng thái"
+        aria-label="Filter by status"
       >
         {tabs.map((tab) => (
           <button
@@ -59,16 +59,16 @@ function AppointmentFilters({
             id="appt-filter-search"
             type="text"
             className="appt-filters__search"
-            placeholder="Tìm theo tên, dịch vụ, bác sĩ..."
+            placeholder="Search by patient, service, dentist..."
             value={filters.search}
             onChange={(e) => onSearchChange(e.target.value)}
-            aria-label="Tìm kiếm lịch hẹn"
+            aria-label="Search appointments"
           />
           {filters.search && (
             <button
               type="button"
               className="appt-filters__search-clear"
-              aria-label="Xóa tìm kiếm"
+              aria-label="Clear search"
               onClick={() => onSearchChange("")}
             >
               <X size={14} aria-hidden="true" />
@@ -83,13 +83,13 @@ function AppointmentFilters({
             className="appt-filters__date"
             value={filters.date}
             onChange={(e) => onDateChange(e.target.value)}
-            aria-label="Lọc theo ngày"
+            aria-label="Filter by date"
           />
           {filters.date && (
             <button
               type="button"
               className="appt-filters__date-clear"
-              aria-label="Xóa lọc ngày"
+              aria-label="Clear date filter"
               onClick={() => onDateChange("")}
             >
               <X size={14} aria-hidden="true" />
@@ -110,7 +110,6 @@ AppointmentFilters.propTypes = {
   onStatusChange: PropTypes.func.isRequired,
   onDateChange: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
-  /** Override the status tab list (optional) */
   statusOptions: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,

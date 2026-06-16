@@ -13,6 +13,7 @@ function PatientSearchSection({
   onAddNewPatient,
   isSearching,
   phoneNumber,
+  onPhoneChange,
 }) {
   return (
     <div className="patient-search">
@@ -97,10 +98,10 @@ function PatientSearchSection({
               id="patient-phone-input"
               type="tel"
               className="patient-search__input patient-search__input--phone"
-              placeholder="Tự động điền khi chọn bệnh nhân"
+              placeholder={isReceptionist ? "Auto-filled when patient is selected" : "Auto-filled from your profile"}
               value={phoneNumber}
               readOnly
-              aria-label="Số điện thoại bệnh nhân"
+              aria-label="Patient phone number"
             />
           </div>
         </div>
@@ -136,11 +137,13 @@ PatientSearchSection.propTypes = {
   onAddNewPatient: PropTypes.func,
   isSearching: PropTypes.bool.isRequired,
   phoneNumber: PropTypes.string.isRequired,
+  onPhoneChange: PropTypes.func,
 };
 
 PatientSearchSection.defaultProps = {
   selectedPatient: null,
   onAddNewPatient: null,
+  onPhoneChange: null,
 };
 
 export default PatientSearchSection;

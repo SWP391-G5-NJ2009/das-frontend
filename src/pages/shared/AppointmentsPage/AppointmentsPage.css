@@ -1,11 +1,18 @@
-.receptionist-appointments {
+/* SharedAppointmentsPage — BEM: appts-page */
+
+.appts-page {
   padding: var(--space-6);
   max-width: var(--content-max-width);
   margin: 0 auto;
 }
 
+.appts-page__section {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
 /* Header row */
-.receptionist-appointments__header {
+.appts-page__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -13,28 +20,21 @@
   margin-bottom: var(--space-6);
 }
 
-@media (max-width: 640px) {
-  .receptionist-appointments__header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-.receptionist-appointments__heading h1 {
+.appts-page__heading h1 {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-neutral-900);
   margin: 0 0 var(--space-1) 0;
 }
 
-.receptionist-appointments__heading p {
+.appts-page__heading p {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
   margin: 0;
 }
 
 /* Book button */
-.receptionist-appointments__book-btn {
+.appts-page__book-btn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -55,40 +55,25 @@
     transform var(--transition-fast);
 }
 
-.receptionist-appointments__book-btn:hover {
+.appts-page__book-btn:hover {
   background-color: var(--color-primary-800);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
 
-.receptionist-appointments__book-btn:active {
+.appts-page__book-btn:active {
   transform: translateY(0);
 }
 
-.receptionist-appointments__book-btn:focus-visible {
+.appts-page__book-btn:focus-visible {
   outline: 2px solid var(--color-primary-700);
   outline-offset: 2px;
 }
 
-/* Placeholder */
-.receptionist-appointments__placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-16) var(--space-4);
-  background-color: #ffffff;
-  border: 1.5px dashed var(--border-color);
-  border-radius: var(--radius-xl);
-}
-
-.receptionist-appointments__placeholder-icon {
-  font-size: 3rem;
-  line-height: 1;
-}
-
-.receptionist-appointments__placeholder-text {
-  font-size: var(--font-size-base);
-  color: var(--color-neutral-400);
-  margin: 0;
+/* Responsive */
+@media (max-width: 640px) {
+  .appts-page__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

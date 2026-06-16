@@ -3,7 +3,6 @@ import "./Badge.css";
 
 const STATUS_CLASS = {
   Confirmed: "confirmed",
-  Waiting: "waiting",
   "Checked-in": "checked-in",
   Cancelled: "cancelled",
   "No-Show": "no-show",
@@ -16,17 +15,16 @@ const STATUS_CLASS = {
 };
 
 const STATUS_LABEL = {
-  Confirmed: "Da xac nhan",
-  Waiting: "Dang cho",
-  "Checked-in": "Da check-in",
-  Cancelled: "Da huy",
-  "No-Show": "Khong den",
-  Conflict: "Bi trung lich",
-  "In-Treatment": "Dang dieu tri",
-  Completed: "Hoan tat",
-  Pending: "Dang cho",
-  Failed: "That bai",
-  Refunded: "Da hoan tien",
+  Confirmed: "Confirmed",
+  "Checked-in": "Checked-in",
+  Cancelled: "Cancelled",
+  "No-Show": "No-Show",
+  Conflict: "Conflict",
+  "In-Treatment": "In Treatment",
+  Completed: "Completed",
+  Pending: "Pending",
+  Failed: "Failed",
+  Refunded: "Refunded",
 };
 
 function Badge({ status }) {
