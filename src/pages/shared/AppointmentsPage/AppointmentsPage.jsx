@@ -10,7 +10,10 @@ import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
-import { useMyAppointments, useAllAppointments } from "../../../hooks/useAppointments";
+import {
+  useMyAppointments,
+  useAllAppointments,
+} from "../../../hooks/useAppointments";
 import "./AppointmentsPage.css";
 
 /* ── Role-specific config ── */
@@ -46,7 +49,9 @@ const ROLE_CONFIG = {
 /* ── Hook selector ── */
 function useAppointmentsByRole(role, filters) {
   const patient = useMyAppointments(role === "patient" ? filters : {});
-  const receptionist = useAllAppointments(role === "receptionist" ? filters : {});
+  const receptionist = useAllAppointments(
+    role === "receptionist" ? filters : {},
+  );
   return role === "patient" ? patient : receptionist;
 }
 
@@ -77,7 +82,11 @@ function AppointmentsPage() {
   const config = ROLE_CONFIG[role] ?? ROLE_CONFIG.patient;
   const navigate = useNavigate();
 
-  const [filters, setFilters] = useState({ status: "all", date: "", search: "" });
+  const [filters, setFilters] = useState({
+    status: "all",
+    date: "",
+    search: "",
+  });
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
@@ -94,7 +103,7 @@ function AppointmentsPage() {
     [],
   );
   const handleSearchChange = useCallback(
-    (search) => setFilters((prev) => ({ ...prev, search })),
+    debounce((search) => setFilters((prev) => ({ ...prev, search })), 400),
     [],
   );
 
@@ -124,17 +133,24 @@ function AppointmentsPage() {
   /* ── Cancel label ── */
   const cancelLabel = appointmentToCancel
     ? role === "receptionist"
-      ? `${appointmentToCancel.serviceName} — ${
-          appointmentToCancel.scheduledDate?.split("-").reverse().join("/")
-        } lúc ${appointmentToCancel.scheduledTime} (${appointmentToCancel.patientName})`
-      : `${appointmentToCancel.serviceName} — ${
-          appointmentToCancel.scheduledDate?.split("-").reverse().join("/")
-        } lúc ${appointmentToCancel.scheduledTime}`
+      ? `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
+          ?.split("-")
+          .reverse()
+          .join(
+            "/",
+          )} lúc ${appointmentToCancel.scheduledTime} (${appointmentToCancel.patientName})`
+      : `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
+          ?.split("-")
+          .reverse()
+          .join("/")} lúc ${appointmentToCancel.scheduledTime}`
     : "";
 
   return (
     <PageShell role={role}>
-      <section className="appts-page__section" aria-labelledby={config.headingId}>
+      <section
+        className="appts-page__section"
+        aria-labelledby={config.headingId}
+      >
         {/* Page header */}
         <div className="appts-page__header">
           <div className="appts-page__heading">
