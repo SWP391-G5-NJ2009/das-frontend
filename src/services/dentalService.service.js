@@ -20,6 +20,7 @@ export const dentalServiceService = {
     return api.get(`/services/owner/catalog${query ? `?${query}` : ""}`);
   },
   getCategories: () => api.get("/services/categories"),
+  getDentistsByService: (serviceId) => api.get(`/services/${serviceId}/dentists`),
   create: (payload) => api.post("/services", payload),
   update: (serviceId, payload) => api.put(`/services/${serviceId}`, payload),
   delete: (serviceId) => api.delete(`/services/${serviceId}`),

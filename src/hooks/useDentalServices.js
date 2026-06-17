@@ -92,3 +92,87 @@ export function useOwnerDentalServices(filters = {}) {
     updateService,
   };
 }
+
+/**
+ * Lightweight hook for the booking page.
+ * Fetches all active dental services and maps DB fields → UI shape.
+ *
+ * Returned service shape:
+ *   { id, name, duration, price, description, category }
+ */
+export function usePublicServices() {
+  const [services, setServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchServices = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await dentalServiceService.getAll();
+      const mapped = (data || [])
+        .filter((s) => s.status?.toLowerCase() === "active")
+        .map((s) => ({
+          id: String(s.service_id),
+          name: s.service_name,
+          duration: s.slot_occupied * 30, // each slot = 30 min
+          price: s.unit_price,
+          description: s.description || "",
+          category: s.service_categories?.category_name || "",
+        }));
+      setServices(mapped);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchServices();
+  }, [fetchServices]);
+
+  return { services, isLoading, error, refetch: fetchServices };
+}
+
+/**
+ * Fetches dentists qualified for a given service.
+ * Re-fetches automatically when serviceId changes.
+ *
+ * Returned dentist shape:
+ *   { id, fullName, specialization }
+ */
+export function useDentistsByService(serviceId) {
+  const [dentists, setDentists] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchDentists = useCallback(async () => {
+    if (!serviceId) {
+      setDentists([]);
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await dentalServiceService.getDentistsByService(serviceId);
+      const mapped = (data || []).map((d) => ({
+        id: String(d.dentist_id),
+        fullName: d.full_name,
+        specialization: d.specialization || "",
+      }));
+      setDentists(mapped);
+    } catch (err) {
+      setError(err);
+      setDentists([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [serviceId]);
+
+  useEffect(() => {
+    fetchDentists();
+  }, [fetchDentists]);
+
+  return { dentists, isLoading, error };
+}
