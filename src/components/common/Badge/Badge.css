@@ -1,3 +1,99 @@
-.status-badge {
+/* ── Base badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
   width: fit-content;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: var(--line-height-tight);
+}
+
+/* ── Status modifiers ── */
+
+/* Confirmed — blue */
+.badge--confirmed {
+  background-color: var(--status-confirmed-bg);
+  color: var(--status-confirmed);
+  border: 1px solid var(--status-confirmed);
+}
+
+/* Checked-in — green */
+.badge--checked-in {
+  background-color: var(--status-checked-in-bg);
+  color: var(--status-checked-in);
+  border: 1px solid var(--status-checked-in);
+}
+
+/* Cancelled — grey */
+.badge--cancelled {
+  background-color: var(--status-cancelled-bg);
+  color: var(--status-cancelled);
+  border: 1px solid var(--status-cancelled);
+}
+
+/* No-Show — red */
+.badge--no-show {
+  background-color: var(--status-no-show-bg);
+  color: var(--status-no-show);
+  border: 1px solid var(--status-no-show);
+}
+
+/* Conflict — amber */
+.badge--conflict {
+  background-color: var(--status-conflict-bg);
+  color: var(--status-conflict);
+  border: 1px solid var(--status-conflict);
+}
+
+/* In-Treatment — teal */
+.badge--in-treatment {
+  background-color: var(--status-in-treatment-bg);
+  color: var(--status-in-treatment);
+  border: 1px solid var(--status-in-treatment);
+}
+
+/* Completed — secondary-teal-darker */
+.badge--completed {
+  background-color: var(--color-secondary-100);
+  color: var(--color-secondary-900);
+  border: 1px solid var(--color-secondary-400);
+}
+
+/* Waiting — orange */
+.badge--waiting {
+  background-color: var(--status-waiting-bg);
+  color: var(--status-waiting);
+  border: 1px solid var(--status-waiting);
+}
+
+/* Pending — purple-ish neutral */
+.badge--pending {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-800);
+  border: 1px solid var(--color-primary-300);
+}
+
+/* Failed — error red */
+.badge--failed {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+/* Refunded — info blue-light */
+.badge--refunded {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+  border: 1px solid var(--color-primary-200);
+}
+
+/* Neutral fallback */
+.badge--neutral {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+  border: 1px solid var(--color-neutral-300);
 }
