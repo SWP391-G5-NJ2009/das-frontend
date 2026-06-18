@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Search, X } from "lucide-react";
+import { Search, X, CalendarCheck } from "lucide-react";
 import "./AppointmentFilters.css";
 
 const STATUS_TABS = [
@@ -13,14 +13,84 @@ const STATUS_TABS = [
   { value: "Resolved No-Show", label: "Resolved No-Show" },
 ];
 
+/* ── Helpers ── */
+const MONTHS = [
+  { value: "01", label: "Tháng 1" },
+  { value: "02", label: "Tháng 2" },
+  { value: "03", label: "Tháng 3" },
+  { value: "04", label: "Tháng 4" },
+  { value: "05", label: "Tháng 5" },
+  { value: "06", label: "Tháng 6" },
+  { value: "07", label: "Tháng 7" },
+  { value: "08", label: "Tháng 8" },
+  { value: "09", label: "Tháng 9" },
+  { value: "10", label: "Tháng 10" },
+  { value: "11", label: "Tháng 11" },
+  { value: "12", label: "Tháng 12" },
+];
+
+function getDaysInMonth(year, month) {
+  if (!year || !month) return 31;
+  return new Date(Number(year), Number(month), 0).getDate();
+}
+
+function buildYearOptions() {
+  const current = new Date().getFullYear();
+  const years = [];
+  for (let y = current + 1; y >= current - 4; y--) {
+    years.push(String(y));
+  }
+  return years;
+}
+
+/* ── Component ── */
 function AppointmentFilters({
   filters,
   onStatusChange,
-  onDateChange,
+  onDatePartsChange,
   onSearchChange,
+  onTodayClick,
+  isTodayActive,
   statusOptions,
 }) {
   const tabs = statusOptions ?? STATUS_TABS;
+
+  const { year, month, day } = filters;
+  const daysInMonth = getDaysInMonth(year, month);
+  const dayOptions = Array.from({ length: daysInMonth }, (_, i) =>
+    String(i + 1).padStart(2, "0"),
+  );
+  const yearOptions = buildYearOptions();
+
+  /* ── Handlers ── */
+  function handleYearChange(e) {
+    const newYear = e.target.value;
+    // Clamp day if needed when month/year combo has fewer days
+    const newDays = newYear && month ? getDaysInMonth(newYear, month) : 31;
+    const clampedDay = day && Number(day) > newDays ? "" : day;
+    onDatePartsChange({ year: newYear, month: newYear ? month : "", day: clampedDay });
+  }
+
+  function handleMonthChange(e) {
+    const newMonth = e.target.value;
+    const newDays = year && newMonth ? getDaysInMonth(year, newMonth) : 31;
+    const clampedDay = day && Number(day) > newDays ? "" : day;
+    onDatePartsChange({ year, month: newMonth, day: clampedDay });
+  }
+
+  function handleDayChange(e) {
+    onDatePartsChange({ year, month, day: e.target.value });
+  }
+
+  function clearYear() {
+    onDatePartsChange({ year: "", month: "", day: "" });
+  }
+  function clearMonth() {
+    onDatePartsChange({ year, month: "", day: "" });
+  }
+  function clearDay() {
+    onDatePartsChange({ year, month, day: "" });
+  }
 
   return (
     <div className="appt-filters">
@@ -47,8 +117,9 @@ function AppointmentFilters({
         ))}
       </div>
 
-      {/* Search + date row */}
+      {/* Search + date pickers row */}
       <div className="appt-filters__controls">
+        {/* Search */}
         <div className="appt-filters__search-wrap">
           <Search
             size={16}
@@ -76,25 +147,108 @@ function AppointmentFilters({
           )}
         </div>
 
-        <div className="appt-filters__date-wrap">
-          <input
-            id="appt-filter-date"
-            type="date"
-            className="appt-filters__date"
-            value={filters.date}
-            onChange={(e) => onDateChange(e.target.value)}
-            aria-label="Filter by date"
-          />
-          {filters.date && (
-            <button
-              type="button"
-              className="appt-filters__date-clear"
-              aria-label="Clear date filter"
-              onClick={() => onDateChange("")}
+        {/* Date selectors — Year / Month / Day */}
+        <div className="appt-filters__date-group">
+          {/* Today shortcut button */}
+          <button
+            id="appt-filter-today-btn"
+            type="button"
+            className={`appt-filters__today-btn${
+              isTodayActive ? " appt-filters__today-btn--active" : ""
+            }`}
+            onClick={onTodayClick}
+            aria-label="Filter appointments for today"
+            aria-pressed={isTodayActive}
+          >
+            <CalendarCheck size={14} aria-hidden="true" />
+            Today
+          </button>
+
+          {/* Year */}
+          <div className="appt-filters__select-wrap">
+            <select
+              id="appt-filter-year"
+              className="appt-filters__select"
+              value={year}
+              onChange={handleYearChange}
+              aria-label="Filter by year"
             >
-              <X size={14} aria-hidden="true" />
-            </button>
-          )}
+              <option value="">-- Năm --</option>
+              {yearOptions.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+            {year && (
+              <button
+                type="button"
+                className="appt-filters__select-clear"
+                aria-label="Clear year filter"
+                onClick={clearYear}
+              >
+                <X size={12} aria-hidden="true" />
+              </button>
+            )}
+          </div>
+
+          {/* Month — only enabled when a year is chosen */}
+          <div className="appt-filters__select-wrap">
+            <select
+              id="appt-filter-month"
+              className={`appt-filters__select${!year ? " appt-filters__select--disabled" : ""}`}
+              value={month}
+              onChange={handleMonthChange}
+              disabled={!year}
+              aria-label="Filter by month"
+            >
+              <option value="">-- Tháng --</option>
+              {MONTHS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+            {month && (
+              <button
+                type="button"
+                className="appt-filters__select-clear"
+                aria-label="Clear month filter"
+                onClick={clearMonth}
+              >
+                <X size={12} aria-hidden="true" />
+              </button>
+            )}
+          </div>
+
+          {/* Day — only enabled when year + month are chosen */}
+          <div className="appt-filters__select-wrap">
+            <select
+              id="appt-filter-day"
+              className={`appt-filters__select${!month ? " appt-filters__select--disabled" : ""}`}
+              value={day}
+              onChange={handleDayChange}
+              disabled={!month}
+              aria-label="Filter by day"
+            >
+              <option value="">-- Ngày --</option>
+              {dayOptions.map((d) => (
+                <option key={d} value={d}>
+                  Ngày {Number(d)}
+                </option>
+              ))}
+            </select>
+            {day && (
+              <button
+                type="button"
+                className="appt-filters__select-clear"
+                aria-label="Clear day filter"
+                onClick={clearDay}
+              >
+                <X size={12} aria-hidden="true" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -104,12 +258,16 @@ function AppointmentFilters({
 AppointmentFilters.propTypes = {
   filters: PropTypes.shape({
     status: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
+    year: PropTypes.string.isRequired,
+    month: PropTypes.string.isRequired,
+    day: PropTypes.string.isRequired,
     search: PropTypes.string.isRequired,
   }).isRequired,
   onStatusChange: PropTypes.func.isRequired,
-  onDateChange: PropTypes.func.isRequired,
+  onDatePartsChange: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
+  onTodayClick: PropTypes.func.isRequired,
+  isTodayActive: PropTypes.bool,
   statusOptions: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
@@ -119,6 +277,7 @@ AppointmentFilters.propTypes = {
 };
 
 AppointmentFilters.defaultProps = {
+  isTodayActive: false,
   statusOptions: null,
 };
 
