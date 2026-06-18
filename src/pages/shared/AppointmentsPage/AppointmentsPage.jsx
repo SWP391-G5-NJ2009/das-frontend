@@ -82,9 +82,11 @@ function AppointmentsPage() {
   const config = ROLE_CONFIG[role] ?? ROLE_CONFIG.patient;
   const navigate = useNavigate();
 
+  const todayISO = new Date().toLocaleDateString("en-CA"); // "YYYY-MM-DD" in local time
+
   const [filters, setFilters] = useState({
     status: "all",
-    date: "",
+    date: todayISO,
     search: "",
   });
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
