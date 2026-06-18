@@ -63,26 +63,34 @@
   font-size: 14px;
   color: #4b5563;
   font-weight: 500;
+  white-space: nowrap;
 }
 
-.tab-btn {
-  background: #f3f4f6;
-  border: 1px solid transparent;
-  padding: 6px 16px;
-  border-radius: 20px;
+.filter-select {
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
   font-size: 14px;
   color: #374151;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 180px;
 }
 
-.tab-btn:hover {
-  background: #e5e7eb;
+.filter-select:hover {
+  border-color: #9ca3af;
 }
 
-.tab-btn.active {
-  background: #005a5b;
-  color: white;
+.filter-select:focus {
+  outline: none;
+  border-color: #005a5b;
+  box-shadow: 0 0 0 3px rgba(0, 90, 91, 0.15);
 }
 
 /* Table Design */

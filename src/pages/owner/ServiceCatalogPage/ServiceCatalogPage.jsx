@@ -212,22 +212,22 @@ function OwnerServiceCatalog() {
             </div>
 
             <div className="filter-tabs">
-              <span className="filter-label">Filter by category:</span>
-              <button
-                className={`tab-btn ${filterCategory === "All" ? "active" : ""}`}
-                onClick={() => setFilterCategory("All")}
+              <label className="filter-label" htmlFor="category-filter">
+                Filter by category:
+              </label>
+              <select
+                id="category-filter"
+                className="filter-select"
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
               >
-                All
-              </button>
-              {dbCategories.map((cat) => (
-                <button
-                  key={cat.category_id}
-                  className={`tab-btn ${filterCategory === cat.category_name ? "active" : ""}`}
-                  onClick={() => setFilterCategory(cat.category_name)}
-                >
-                  {cat.category_name}
-                </button>
-              ))}
+                <option value="All">All</option>
+                {dbCategories.map((cat) => (
+                  <option key={cat.category_id} value={cat.category_name}>
+                    {cat.category_name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {isLoading ? (
