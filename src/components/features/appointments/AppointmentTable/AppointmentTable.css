@@ -125,10 +125,6 @@
   margin-top: 2px;
 }
 
-.appt-table__time-end {
-  color: var(--color-neutral-400);
-}
-
 /* Action cell */
 .appt-table__td--actions {
   text-align: center;
