@@ -1,0 +1,33 @@
+.payment-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-neutral-700);
+  text-align: center;
+}
+
+.payment-state h2 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-neutral-900);
+}
+
+.payment-state p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.payment-state--error {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.payment-state--error h2 {
+  color: var(--color-error);
+}
