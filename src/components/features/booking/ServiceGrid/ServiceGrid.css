@@ -1,3 +1,64 @@
+/* ── Wrapper ── */
+.service-grid__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Filter row ── */
+.service-grid__filter-row {
+  display: flex;
+  align-items: center;
+}
+
+.service-grid__select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.service-grid__select {
+  appearance: none;
+  padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-900);
+  background-color: #ffffff;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+  min-width: 11rem;
+}
+
+.service-grid__select:hover {
+  border-color: var(--color-primary-400);
+}
+
+.service-grid__select:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+  border-color: var(--border-color-focus);
+}
+
+.service-grid__select-icon {
+  position: absolute;
+  right: var(--space-3);
+  color: var(--color-neutral-500);
+  pointer-events: none;
+}
+
+/* ── Empty state ── */
+.service-grid__empty {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  padding: var(--space-4) 0;
+}
+
+/* ── Grid ── */
 
 .service-grid {
   display: grid;
