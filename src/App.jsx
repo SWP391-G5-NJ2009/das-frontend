@@ -3,7 +3,6 @@ import { AuthProvider } from "./context/AuthContext";
 import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
-import InvoicePage from "./pages/InvoicePage/InvoicePage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
@@ -14,7 +13,6 @@ import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
-
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -88,14 +86,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <PaymentListPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/receptionist/invoices"
-            element={
-              <ProtectedRoute allowedRoles={["receptionist"]}>
-                <InvoicePage />
               </ProtectedRoute>
             }
           />
