@@ -152,6 +152,29 @@ function OwnerServiceCatalog() {
   );
   const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
 
+  const getPaginationRange = () => {
+    const totalNumbers = 7;
+    if (totalPages <= totalNumbers) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    const isNearFirstPage = currentPage <= 4;
+    const isNearLastPage = currentPage >= totalPages - 3;
+    if (isNearFirstPage) return [1, 2, 3, 4, 5, "...", totalPages];
+    if (isNearLastPage)
+      return [
+        1,
+        "...",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
+  };
+
+  const paginationRange = getPaginationRange();
+
   return (
     <OwnerPageShell contentClassName="owner-catalog-page">
           <div className="catalog-container">
@@ -378,27 +401,42 @@ function OwnerServiceCatalog() {
                     &laquo; Previous
                   </button>
 
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                      key={index + 1}
-                      onClick={() => setCurrentPage(index + 1)}
-                      style={{
-                        padding: "6px 12px",
-                        border: "1px solid",
-                        borderColor:
-                          currentPage === index + 1 ? "#0f766e" : "#ccc",
-                        borderRadius: "4px",
-                        background:
-                          currentPage === index + 1 ? "#0f766e" : "#fff",
-                        color: currentPage === index + 1 ? "#fff" : "#333",
-                        fontWeight:
-                          currentPage === index + 1 ? "bold" : "normal",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
+                  {paginationRange.map((page, index) => {
+                    if (page === "...") {
+                      return (
+                        <span
+                          key={`dots-${index}`}
+                          style={{
+                            padding: "6px 8px",
+                            color: "#999",
+                            fontSize: "14px",
+                            userSelect: "none",
+                          }}
+                          aria-hidden="true"
+                        >
+                          &hellip;
+                        </span>
+                      );
+                    }
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        style={{
+                          padding: "6px 12px",
+                          border: "1px solid",
+                          borderColor: currentPage === page ? "#0f766e" : "#ccc",
+                          borderRadius: "4px",
+                          background: currentPage === page ? "#0f766e" : "#fff",
+                          color: currentPage === page ? "#fff" : "#333",
+                          fontWeight: currentPage === page ? "bold" : "normal",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
 
                   <button
                     onClick={() =>

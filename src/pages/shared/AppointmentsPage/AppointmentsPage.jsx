@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -15,6 +15,9 @@ import {
   useAllAppointments,
 } from "../../../hooks/useAppointments";
 import "./AppointmentsPage.css";
+
+/* ── Constants ── */
+const ITEMS_PER_PAGE = 8;
 
 /* ── Role-specific config ── */
 const PATIENT_STATUS_OPTIONS = [
@@ -87,11 +90,57 @@ function AppointmentsPage() {
     date: "",
     search: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
+
+  /* ── Reset page when filters change ── */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
+  /* ── Pagination calculations ── */
+  const totalPages = Math.ceil(appointments.length / ITEMS_PER_PAGE);
+  const indexOfFirst = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedAppointments = appointments.slice(
+    indexOfFirst,
+    indexOfFirst + ITEMS_PER_PAGE,
+  );
+
+  /* ── Truncated pagination range ── */
+  const getPaginationRange = () => {
+    const totalNumbers = 7;
+
+    if (totalPages <= totalNumbers) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const isNearFirstPage = currentPage <= 4;
+    const isNearLastPage = currentPage >= totalPages - 3;
+
+    if (isNearFirstPage) {
+      return [1, 2, 3, 4, 5, "...", totalPages];
+    }
+
+    if (isNearLastPage) {
+      return [
+        1,
+        "...",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
+  };
+
+  const paginationRange = getPaginationRange();
 
   /* ── Filter handlers ── */
   const handleStatusChange = useCallback(
@@ -191,11 +240,76 @@ function AppointmentsPage() {
         )}
 
         {!isLoading && !error && appointments.length > 0 && (
-          <AppointmentTable
-            appointments={appointments}
-            onCancel={handleRequestCancel}
-            showPatientInfo={config.showPatientInfo}
-          />
+          <>
+            <AppointmentTable
+              appointments={paginatedAppointments}
+              onCancel={handleRequestCancel}
+              showPatientInfo={config.showPatientInfo}
+            />
+
+            {totalPages > 1 && (
+              <div
+                className="appts-page__pagination"
+                aria-label="Appointment list pagination"
+              >
+                <span className="appts-page__pagination-info">
+                  Showing {indexOfFirst + 1}–
+                  {Math.min(indexOfFirst + ITEMS_PER_PAGE, appointments.length)}{" "}
+                  of {appointments.length} appointments
+                </span>
+
+                <div className="appts-page__pagination-controls">
+                  <button
+                    type="button"
+                    className="appts-page__page-btn appts-page__page-btn--prev"
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    disabled={currentPage === 1}
+                    aria-label="Previous page"
+                  >
+                    ‹ Previous
+                  </button>
+
+                  {paginationRange.map((page, index) => {
+                    if (page === "...") {
+                      return (
+                        <span
+                          key={`dots-${index}`}
+                          className="appts-page__page-dots"
+                          aria-hidden="true"
+                        >
+                          &hellip;
+                        </span>
+                      );
+                    }
+                    return (
+                      <button
+                        key={page}
+                        type="button"
+                        className={`appts-page__page-btn${currentPage === page ? " appts-page__page-btn--active" : ""}`}
+                        onClick={() => setCurrentPage(page)}
+                        aria-label={`Page ${page}`}
+                        aria-current={currentPage === page ? "page" : undefined}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    className="appts-page__page-btn appts-page__page-btn--next"
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(p + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                    aria-label="Next page"
+                  >
+                    Next ›
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </section>
 
