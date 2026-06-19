@@ -76,3 +76,105 @@
     align-items: stretch;
   }
 }
+
+/* ── Pagination ── */
+.appts-page__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color);
+}
+
+.appts-page__pagination-info {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+}
+
+.appts-page__pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.appts-page__page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.appts-page__page-btn:hover:not(:disabled) {
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.appts-page__page-btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.appts-page__page-btn--active {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: #ffffff;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-sm);
+}
+
+.appts-page__page-btn--active:hover {
+  background-color: var(--color-primary-800);
+  border-color: var(--color-primary-800);
+  color: #ffffff;
+}
+
+.appts-page__page-btn--prev,
+.appts-page__page-btn--next {
+  padding: 0 var(--space-4);
+  font-weight: var(--font-weight-semibold);
+}
+
+.appts-page__page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.appts-page__page-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 var(--space-1);
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family-base);
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .appts-page__pagination {
+    flex-direction: column;
+    align-items: center;
+  }
+}
