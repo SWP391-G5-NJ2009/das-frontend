@@ -40,6 +40,7 @@ function StaffLoginPage() {
       credentialPlaceholder="Nhập tên đăng nhập"
       CredentialIcon={User}
       error={error}
+      forgotPasswordPath="/staff/forgot-password"
       isSubmitting={isSubmitting}
       onSubmit={handleSubmit}
     />

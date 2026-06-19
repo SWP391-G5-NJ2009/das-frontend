@@ -28,6 +28,10 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/consultation" element={<ConsultationPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route
+            path="/staff/forgot-password"
+            element={<ForgotPasswordPage mode="staff" />}
+          />
           <Route path="/login" element={<PatientLoginPage />} />
           <Route path="/staff/login" element={<StaffLoginPage />} />
           <Route
