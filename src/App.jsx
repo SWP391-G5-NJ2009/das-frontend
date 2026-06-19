@@ -13,7 +13,6 @@ import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
-
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -28,6 +27,10 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/consultation" element={<ConsultationPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route
+            path="/staff/forgot-password"
+            element={<ForgotPasswordPage mode="staff" />}
+          />
           <Route path="/login" element={<PatientLoginPage />} />
           <Route path="/staff/login" element={<StaffLoginPage />} />
           <Route

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowLeft, Eye, EyeOff, Send, UserRound } from "lucide-react";
+import PropTypes from "prop-types";
+import { ArrowLeft, Eye, EyeOff, Phone, Send, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import heroLogin from "../../../assets/images/hero-login.jpg";
 import { authService } from "../../../services/auth.service";
@@ -7,10 +8,11 @@ import "./ForgotPasswordPage.css";
 
 const otpSlots = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"];
 
-function ForgotPasswordPage() {
+function ForgotPasswordPage({ mode }) {
   const navigate = useNavigate();
   const [step, setStep] = useState("request");
   const [identifier, setIdentifier] = useState("");
+  const [resetAccountId, setResetAccountId] = useState(null);
   const [devOtp, setDevOtp] = useState(null);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,9 +21,25 @@ function ForgotPasswordPage() {
     confirmPassword: false,
   });
 
+  const isStaffMode = mode === "staff";
+  const loginPath = isStaffMode ? "/staff/login" : "/login";
+  const identifierLabel = isStaffMode ? "Tên đăng nhập" : "Số điện thoại";
+  const identifierPlaceholder = isStaffMode
+    ? "Nhập tên đăng nhập nội bộ"
+    : "Nhập số điện thoại";
+  const IdentifierIcon = isStaffMode ? UserRound : Phone;
+
   const focusOtpSlot = (index) => {
     const nextInput = document.querySelector(`[name="${otpSlots[index]}"]`);
     nextInput?.focus();
+  };
+
+  const requestOtp = (nextIdentifier) => {
+    if (isStaffMode) {
+      return authService.staffForgotPassword({ username: nextIdentifier });
+    }
+
+    return authService.forgotPassword({ identifier: nextIdentifier });
   };
 
   const handleRequestOtp = async (event) => {
@@ -33,10 +51,9 @@ function ForgotPasswordPage() {
     const nextIdentifier = formData.get("identifier");
 
     try {
-      const data = await authService.forgotPassword({
-        identifier: nextIdentifier,
-      });
+      const data = await requestOtp(nextIdentifier);
       setIdentifier(nextIdentifier);
+      setResetAccountId(data.accountId);
       setDevOtp(data.devOtp || null);
       setStep("reset");
     } catch (err) {
@@ -62,9 +79,19 @@ function ForgotPasswordPage() {
       return;
     }
 
+    if (!resetAccountId) {
+      setError("Không tìm thấy phiên đặt lại mật khẩu. Vui lòng gửi lại mã OTP.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      await authService.resetPassword({ identifier, otp, newPassword });
-      navigate("/login", { replace: true });
+      await authService.resetPassword({
+        accountId: resetAccountId,
+        otp,
+        newPassword,
+      });
+      navigate(loginPath, { replace: true });
     } catch (err) {
       setError(err.message || "Không thể đặt lại mật khẩu.");
     } finally {
@@ -78,7 +105,8 @@ function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     try {
-      const data = await authService.forgotPassword({ identifier });
+      const data = await requestOtp(identifier);
+      setResetAccountId(data.accountId);
       setDevOtp(data.devOtp || null);
     } catch (err) {
       setError(err.message || "Không thể gửi lại mã OTP.");
@@ -144,7 +172,7 @@ function ForgotPasswordPage() {
         className="forgot-password__panel"
         aria-labelledby="forgot-password-title"
       >
-        <Link className="forgot-password__back" to="/login">
+        <Link className="forgot-password__back" to={loginPath}>
           <ArrowLeft size={18} aria-hidden="true" />
           Quay lại
         </Link>
@@ -154,21 +182,22 @@ function ForgotPasswordPage() {
             <div className="forgot-password__heading">
               <h2 id="forgot-password-title">Quên mật khẩu?</h2>
               <p>
-                Vui lòng nhập tên đăng nhập hoặc số điện thoại để nhận mã xác
-                thực OTP.
+                {isStaffMode
+                  ? "Nhập tên đăng nhập để nhận mã xác thực OTP qua số điện thoại của tài khoản nhân viên."
+                  : "Nhập số điện thoại để nhận mã xác thực OTP."}
               </p>
             </div>
 
             {error && <p className="forgot-password__error">{error}</p>}
 
             <label className="forgot-password__field">
-              <span>Tên đăng nhập / Số điện thoại</span>
+              <span>{identifierLabel}</span>
               <div className="forgot-password__control">
-                <UserRound size={18} aria-hidden="true" />
+                <IdentifierIcon size={18} aria-hidden="true" />
                 <input
-                  type="text"
+                  type={isStaffMode ? "text" : "tel"}
                   name="identifier"
-                  placeholder="Nhập ID hoặc số điện thoại..."
+                  placeholder={identifierPlaceholder}
                   required
                 />
               </div>
@@ -189,7 +218,7 @@ function ForgotPasswordPage() {
             onSubmit={handleResetPassword}
           >
             <div className="forgot-password__heading">
-              <h2 id="forgot-password-title">Xác thực & Đặt lại mật khẩu</h2>
+              <h2 id="forgot-password-title">Xác thực và đặt lại mật khẩu</h2>
               <p>
                 Mã OTP đã được tạo cho tài khoản của bạn. Vui lòng nhập mã bên
                 dưới.
@@ -285,7 +314,7 @@ function ForgotPasswordPage() {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang xử lý..." : "Xác nhận & Đổi mật khẩu"}
+              {isSubmitting ? "Đang xử lý..." : "Xác nhận và đổi mật khẩu"}
             </button>
           </form>
         )}
@@ -293,5 +322,13 @@ function ForgotPasswordPage() {
     </main>
   );
 }
+
+ForgotPasswordPage.propTypes = {
+  mode: PropTypes.oneOf(["patient", "staff"]),
+};
+
+ForgotPasswordPage.defaultProps = {
+  mode: "patient",
+};
 
 export default ForgotPasswordPage;

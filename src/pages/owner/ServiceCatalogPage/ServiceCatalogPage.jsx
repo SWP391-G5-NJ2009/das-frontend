@@ -20,7 +20,7 @@ function OwnerServiceCatalog() {
     description: "",
     unit_price: "",
     slot_occupied: "1",
-    status: "Active",
+    status: "Inactive",
   });
 
   const {
@@ -57,7 +57,7 @@ function OwnerServiceCatalog() {
       description: "",
       unit_price: "",
       slot_occupied: "1",
-      status: "Active",
+      status: "Inactive",
     });
     setIsModalOpen(true);
   };
@@ -74,7 +74,7 @@ function OwnerServiceCatalog() {
       description: "",
       unit_price: "",
       slot_occupied: "1",
-      status: "Active",
+      status: "Inactive",
     });
   };
 
@@ -94,16 +94,16 @@ function OwnerServiceCatalog() {
 
   const handleDeleteService = async (serviceId, serviceName) => {
     const confirmDelete = window.confirm(
-      `Ban co chac muon xoa dich vu "${serviceName}"?`,
+      `Are you sure you want to delete the service "${serviceName}"?`,
     );
     if (!confirmDelete) return;
 
     try {
       await deleteService(serviceId);
-      alert("Da xoa dich vu thanh cong.");
+      alert("Service deleted successfully.");
     } catch (err) {
       console.error("Error occurred while deleting service:", err);
-      alert(err.message || "Khong the xoa dich vu.");
+      alert(err.message || "Unable to delete the service.");
     }
   };
 
@@ -112,16 +112,16 @@ function OwnerServiceCatalog() {
     try {
       if (isEditMode) {
         await updateService(currentServiceId, formData);
-        alert("Cap nhat dich vu thanh cong!");
+        alert("Service updated successfully!");
       } else {
         await createService(formData);
-        alert("Them dich vu moi thanh cong!");
+        alert("New service added successfully!");
       }
 
       setIsModalOpen(false);
     } catch (err) {
       console.error("Error submitting form:", err);
-      alert(err.message || "Thao tac that bai.");
+      alert(err.message || "Operation failed.");
     }
   };
 
@@ -152,18 +152,41 @@ function OwnerServiceCatalog() {
   );
   const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
 
+  const getPaginationRange = () => {
+    const totalNumbers = 7;
+    if (totalPages <= totalNumbers) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    const isNearFirstPage = currentPage <= 4;
+    const isNearLastPage = currentPage >= totalPages - 3;
+    if (isNearFirstPage) return [1, 2, 3, 4, 5, "...", totalPages];
+    if (isNearLastPage)
+      return [
+        1,
+        "...",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
+  };
+
+  const paginationRange = getPaginationRange();
+
   return (
     <OwnerPageShell contentClassName="owner-catalog-page">
           <div className="catalog-container">
             <div className="catalog-header">
               <div>
-                <h1>Danh muc dich vu</h1>
+                <h1>Service Catalog</h1>
                 <p className="subtitle">
-                  Quan ly va cap nhat thong tin dich vu nha khoa
+                  Manage and update dental service information
                 </p>
               </div>
               <button className="btn-add-service" onClick={openAddModal}>
-                <span className="plus-icon">+</span> Them dich vu moi
+                <span className="plus-icon">+</span> Add New Service
               </button>
             </div>
 
@@ -177,7 +200,7 @@ function OwnerServiceCatalog() {
               >
                 <input
                   type="text"
-                  placeholder="Tim ten dich vu hoac mo ta..."
+                  placeholder="Search by service name or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="search-service-input"
@@ -212,22 +235,22 @@ function OwnerServiceCatalog() {
             </div>
 
             <div className="filter-tabs">
-              <span className="filter-label">Loc theo danh muc:</span>
-              <button
-                className={`tab-btn ${filterCategory === "All" ? "active" : ""}`}
-                onClick={() => setFilterCategory("All")}
+              <label className="filter-label" htmlFor="category-filter">
+                Filter by category:
+              </label>
+              <select
+                id="category-filter"
+                className="filter-select"
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
               >
-                Tat ca
-              </button>
-              {dbCategories.map((cat) => (
-                <button
-                  key={cat.category_id}
-                  className={`tab-btn ${filterCategory === cat.category_name ? "active" : ""}`}
-                  onClick={() => setFilterCategory(cat.category_name)}
-                >
-                  {cat.category_name}
-                </button>
-              ))}
+                <option value="All">All</option>
+                {dbCategories.map((cat) => (
+                  <option key={cat.category_id} value={cat.category_name}>
+                    {cat.category_name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {isLoading ? (
@@ -237,7 +260,7 @@ function OwnerServiceCatalog() {
               >
                 <Spinner />
                 <p style={{ marginTop: "10px", color: "#666" }}>
-                  Dang tai du lieu dich vu...
+                  Loading service data...
                 </p>
               </div>
             ) : error ? (
@@ -246,19 +269,19 @@ function OwnerServiceCatalog() {
                 style={{ color: "red", textAlign: "center", padding: "20px" }}
               >
                 {error.message ||
-                  "Khong the tai danh sach dich vu tu he thong."}
+                  "Unable to load the service list from the system."}
               </div>
             ) : (
               <div className="table-responsive">
                 <table className="catalog-table">
                   <thead>
                     <tr>
-                      <th>TEN DICH VU</th>
-                      <th>DANH MUC</th>
-                      <th>GIA DU KIEN (VND)</th>
-                      <th>SO KHUNG</th>
-                      <th>TRANG THAI</th>
-                      <th style={{ textAlign: "center" }}>THAO TAC</th>
+                      <th>SERVICE NAME</th>
+                      <th>CATEGORY</th>
+                      <th>ESTIMATED PRICE (VND)</th>
+                      <th>SLOTS</th>
+                      <th>STATUS</th>
+                      <th style={{ textAlign: "center" }}>ACTIONS</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -270,13 +293,13 @@ function OwnerServiceCatalog() {
                               {service.service_name}
                             </span>
                             <span className="sub-desc">
-                              {service.description || "Chua co mo ta"}
+                              {service.description || "No description"}
                             </span>
                           </div>
                         </td>
                         <td>
                           {service.service_categories?.category_name ||
-                            "Chua phan loai"}
+                            "Uncategorized"}
                         </td>
                         <td className="price-cell">
                           {Number(
@@ -286,28 +309,28 @@ function OwnerServiceCatalog() {
                         </td>
                         <td>
                           {service.slot_occupied || 1}{" "}
-                          khung
+                          {(service.slot_occupied || 1) === 1 ? "slot" : "slots"}
                         </td>
                         <td>
                           <span
                             className={`status-badge ${String(service.status || "Active").toLowerCase()}`}
                           >
                             {(service.status || "Active") === "Inactive"
-                              ? "Ngung hoat dong"
-                              : "Hoat dong"}
+                              ? "Inactive"
+                              : "Active"}
                           </span>
                         </td>
                         <td className="actions-cell">
                           <button
                             className="action-btn edit-btn"
-                            title="Chinh sua"
+                            title="Edit"
                             onClick={() => openEditModal(service)}
                           >
                             <Edit size={18} aria-hidden="true" />
                           </button>
                           <button
                             className="action-btn delete-btn"
-                            title="Xoa"
+                            title="Delete"
                             onClick={() =>
                               handleDeleteService(
                                 service.service_id,
@@ -327,7 +350,7 @@ function OwnerServiceCatalog() {
                           className="empty-row"
                           style={{ textAlign: "center", padding: "20px" }}
                         >
-                          Khong tim thay dich vu nao.
+                          No services found.
                         </td>
                       </tr>
                     )}
@@ -352,9 +375,9 @@ function OwnerServiceCatalog() {
                   className="pagination-info"
                   style={{ color: "#666", fontSize: "14px" }}
                 >
-                  Hien thi {indexOfFirstService + 1} den{" "}
-                  {Math.min(indexOfLastService, filteredServices.length)} trong
-                  tong so {filteredServices.length} dich vu
+                  Showing {indexOfFirstService + 1} to{" "}
+                  {Math.min(indexOfLastService, filteredServices.length)} of{" "}
+                  {filteredServices.length} services
                 </div>
 
                 <div
@@ -375,30 +398,45 @@ function OwnerServiceCatalog() {
                       color: currentPage === 1 ? "#aaa" : "#333",
                     }}
                   >
-                    &laquo; Truoc
+                    &laquo; Previous
                   </button>
 
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                      key={index + 1}
-                      onClick={() => setCurrentPage(index + 1)}
-                      style={{
-                        padding: "6px 12px",
-                        border: "1px solid",
-                        borderColor:
-                          currentPage === index + 1 ? "#0f766e" : "#ccc",
-                        borderRadius: "4px",
-                        background:
-                          currentPage === index + 1 ? "#0f766e" : "#fff",
-                        color: currentPage === index + 1 ? "#fff" : "#333",
-                        fontWeight:
-                          currentPage === index + 1 ? "bold" : "normal",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
+                  {paginationRange.map((page, index) => {
+                    if (page === "...") {
+                      return (
+                        <span
+                          key={`dots-${index}`}
+                          style={{
+                            padding: "6px 8px",
+                            color: "#999",
+                            fontSize: "14px",
+                            userSelect: "none",
+                          }}
+                          aria-hidden="true"
+                        >
+                          &hellip;
+                        </span>
+                      );
+                    }
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        style={{
+                          padding: "6px 12px",
+                          border: "1px solid",
+                          borderColor: currentPage === page ? "#0f766e" : "#ccc",
+                          borderRadius: "4px",
+                          background: currentPage === page ? "#0f766e" : "#fff",
+                          color: currentPage === page ? "#fff" : "#333",
+                          fontWeight: currentPage === page ? "bold" : "normal",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
 
                   <button
                     onClick={() =>
@@ -416,7 +454,7 @@ function OwnerServiceCatalog() {
                       color: currentPage === totalPages ? "#aaa" : "#333",
                     }}
                   >
-                    Sau &raquo;
+                    Next &raquo;
                   </button>
                 </div>
               </div>
@@ -430,8 +468,8 @@ function OwnerServiceCatalog() {
             <div className="modal-header">
               <h2>
                 {isEditMode
-                  ? "Cap nhat dich vu nha khoa"
-                  : "Tao dich vu nha khoa moi"}
+                  ? "Update Dental Service"
+                  : "Create New Dental Service"}
               </h2>
               <button className="close-modal-btn" onClick={closeModal}>
                 &times;
@@ -440,7 +478,7 @@ function OwnerServiceCatalog() {
             <form onSubmit={handleFormSubmit}>
               <div className="form-group">
                 <label>
-                  Ten dich vu <span style={{ color: "red" }}>*</span>
+                  Service Name <span style={{ color: "red" }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -448,14 +486,14 @@ function OwnerServiceCatalog() {
                   value={formData.service_name}
                   onChange={handleInputChange}
                   required
-                  placeholder="Vi du: Tram rang tham my"
+                  placeholder="e.g. Cosmetic Tooth Filling"
                 />
               </div>
 
               <div className="form-row">
                 <div className="form-group">
                   <label>
-                    Nhom danh muc <span style={{ color: "red" }}>*</span>
+                    Category <span style={{ color: "red" }}>*</span>
                   </label>
                   <select
                     name="category_id"
@@ -470,23 +508,25 @@ function OwnerServiceCatalog() {
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label>Trang thai</label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Active">Hoat dong</option>
-                    <option value="Inactive">Ngung hoat dong</option>
-                  </select>
-                </div>
+                {isEditMode && (
+                  <div className="form-group">
+                    <label>Status</label>
+                    <select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="form-row">
                 <div className="form-group">
                   <label>
-                    Gia du kien (VND){" "}
+                    Estimated Price (VND){" "}
                     <span style={{ color: "red" }}>*</span>
                   </label>
                   <input
@@ -496,12 +536,12 @@ function OwnerServiceCatalog() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    placeholder="Vi du: 500000"
+                    placeholder="e.g. 500000"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>So khung can thiet</label>
+                  <label>Slots Required</label>
                   <input
                     type="number"
                     name="slot_occupied"
@@ -514,13 +554,13 @@ function OwnerServiceCatalog() {
               </div>
 
               <div className="form-group">
-                <label>Mo ta dich vu</label>
+                <label>Service Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows="3"
-                  placeholder="Mo ta ngan ve quy trinh dieu tri..."
+                  placeholder="Brief description of the treatment process..."
                 />
               </div>
 
@@ -530,10 +570,10 @@ function OwnerServiceCatalog() {
                   className="btn-secondary"
                   onClick={closeModal}
                 >
-                  Huy
+                  Cancel
                 </button>
                 <button type="submit" className="btn-primary">
-                  {isEditMode ? "Cap nhat thay doi" : "Luu dich vu"}
+                  {isEditMode ? "Save Changes" : "Save Service"}
                 </button>
               </div>
             </form>

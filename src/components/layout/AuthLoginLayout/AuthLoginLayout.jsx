@@ -19,6 +19,7 @@ function AuthLoginLayout({
   credentialPlaceholder,
   credentialType,
   error,
+  forgotPasswordPath,
   isSubmitting,
   onSubmit,
   subtitle,
@@ -88,7 +89,7 @@ function AuthLoginLayout({
             </div>
           </label>
 
-          <Link className="auth-login__forgot" to="/forgot-password">
+          <Link className="auth-login__forgot" to={forgotPasswordPath}>
             Quên mật khẩu?
           </Link>
 
@@ -109,6 +110,7 @@ AuthLoginLayout.propTypes = {
   credentialPlaceholder: PropTypes.string.isRequired,
   credentialType: PropTypes.string.isRequired,
   error: PropTypes.string,
+  forgotPasswordPath: PropTypes.string,
   isSubmitting: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
   subtitle: PropTypes.string.isRequired,
@@ -117,6 +119,7 @@ AuthLoginLayout.propTypes = {
 
 AuthLoginLayout.defaultProps = {
   error: null,
+  forgotPasswordPath: "/forgot-password",
   isSubmitting: false,
 };
 
