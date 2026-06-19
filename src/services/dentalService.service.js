@@ -15,10 +15,6 @@ export const dentalServiceService = {
     const query = toQueryString(filters);
     return api.get(`/services${query ? `?${query}` : ""}`);
   },
-  getOwnerCatalog: (filters = {}) => {
-    const query = toQueryString(filters);
-    return api.get(`/services/owner/catalog${query ? `?${query}` : ""}`);
-  },
   getCategories: () => api.get("/services/categories"),
   getDentistsByService: (serviceId) => api.get(`/services/${serviceId}/dentists`),
   create: (payload) => api.post("/services", payload),
