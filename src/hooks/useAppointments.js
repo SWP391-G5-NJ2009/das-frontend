@@ -4,14 +4,22 @@ import { appointmentService } from "../services/appointment.service";
 /* ─────────────────────────────────────────────────────────────────────────────
    Patient hook — own appointments (calls GET /api/appointments/my)
 ───────────────────────────────────────────────────────────────────────────── */
-export function useMyAppointments(filters = {}) {
+export function useMyAppointments(filters = {}, options = {}) {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const isEnabled = options.enabled ?? true;
 
   const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
   const fetchAppointments = useCallback(async () => {
+    if (!isEnabled) {
+      setAppointments([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
@@ -23,7 +31,7 @@ export function useMyAppointments(filters = {}) {
       setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedFilters]);
+  }, [isEnabled, serializedFilters]);
 
   useEffect(() => {
     fetchAppointments();
@@ -50,14 +58,22 @@ export function useMyAppointments(filters = {}) {
    Receptionist / Admin / Owner hook — all clinic appointments
    (calls GET /api/appointments)
 ───────────────────────────────────────────────────────────────────────────── */
-export function useAllAppointments(filters = {}) {
+export function useAllAppointments(filters = {}, options = {}) {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const isEnabled = options.enabled ?? true;
 
   const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
   const fetchAppointments = useCallback(async () => {
+    if (!isEnabled) {
+      setAppointments([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
@@ -69,7 +85,7 @@ export function useAllAppointments(filters = {}) {
       setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedFilters]);
+  }, [isEnabled, serializedFilters]);
 
   useEffect(() => {
     fetchAppointments();

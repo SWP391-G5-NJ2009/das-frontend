@@ -1,7 +1,36 @@
+import { useMemo } from "react";
+import { usePatientTreatments } from "../../../hooks/usePatientTreatments";
 import PatientPageShell from "../PatientPageShell";
-import { treatmentHistory } from "../patientData";
+
+const currencyFormatter = new Intl.NumberFormat("vi-VN", {
+  currency: "VND",
+  style: "currency",
+});
+
+function formatDate(value) {
+  if (!value) return "Chưa cập nhật";
+  return new Intl.DateTimeFormat("vi-VN").format(new Date(value));
+}
+
+function formatCurrency(value) {
+  if (value === null || value === undefined || value === "") {
+    return "Chưa cập nhật";
+  }
+
+  return currencyFormatter.format(Number(value));
+}
 
 function HistoryPage() {
+  const { error, isLoading, treatments } = usePatientTreatments();
+  const totalCost = useMemo(
+    () =>
+      treatments.reduce(
+        (sum, record) => sum + Number(record.cost || 0),
+        0,
+      ),
+    [treatments],
+  );
+
   return (
     <PatientPageShell>
       <section className="patient-history-section" aria-labelledby="patient-history-title">
@@ -11,34 +40,52 @@ function HistoryPage() {
             <p>Hồ sơ các lần khám và điều trị đã hoàn thành</p>
           </div>
 
-          <div className="patient-history-table-wrap">
-            <table className="patient-history-table">
-              <thead>
-                <tr>
-                  <th>Ngày</th>
-                  <th>Điều trị</th>
-                  <th>Chẩn đoán</th>
-                  <th>Bác sĩ</th>
-                  <th>Chi phí</th>
-                </tr>
-              </thead>
-              <tbody>
-                {treatmentHistory.map((record) => (
-                  <tr key={record.id}>
-                    <td>{record.date}</td>
-                    <td>{record.treatment}</td>
-                    <td>{record.diagnosis}</td>
-                    <td>{record.dentist}</td>
-                    <td>{record.cost}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {isLoading && (
+            <p className="patient-profile-card__state">Đang tải lịch sử điều trị...</p>
+          )}
+          {error && (
+            <p className="patient-profile-card__state patient-profile-card__state--error">
+              {error.message || "Không thể tải lịch sử điều trị."}
+            </p>
+          )}
+          {!isLoading && !error && !treatments.length && (
+            <p className="patient-profile-card__state">
+              Chưa có lịch sử điều trị.
+            </p>
+          )}
 
-          <p className="patient-history-card__total">
-            Tổng chi phí điều trị: <strong>2.650.000đ</strong>
-          </p>
+          {!isLoading && !error && treatments.length > 0 && (
+            <>
+              <div className="patient-history-table-wrap">
+                <table className="patient-history-table">
+                  <thead>
+                    <tr>
+                      <th>Ngày</th>
+                      <th>Điều trị</th>
+                      <th>Chẩn đoán</th>
+                      <th>Bác sĩ</th>
+                      <th>Chi phí</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {treatments.map((record) => (
+                      <tr key={record.id}>
+                        <td>{formatDate(record.date)}</td>
+                        <td>{record.treatment}</td>
+                        <td>{record.diagnosis || "Chưa cập nhật"}</td>
+                        <td>{record.dentist || "Chưa cập nhật"}</td>
+                        <td>{formatCurrency(record.cost)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="patient-history-card__total">
+                Tổng chi phí điều trị: <strong>{formatCurrency(totalCost)}</strong>
+              </p>
+            </>
+          )}
         </article>
       </section>
     </PatientPageShell>

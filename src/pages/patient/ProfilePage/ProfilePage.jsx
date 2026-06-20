@@ -1,13 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePatientProfile } from "../../../hooks/usePatientProfile";
+import { authService } from "../../../services/auth.service";
 import PatientPageShell from "../PatientPageShell";
 import "./ProfilePage.css";
-import { initialPatient } from "../patientData";
-import { authService } from "../../../services/auth.service";
+
+const emptyPatient = {
+  fullName: "",
+  email: "",
+  phone: "",
+  birthDate: "",
+  gender: "",
+  address: "",
+  medicalHistory: "",
+};
+
+function formatValue(value) {
+  return value || "Chưa cập nhật";
+}
 
 function ProfilePage() {
+  const {
+    error: profileError,
+    isLoading,
+    patient,
+    updateProfile,
+  } = usePatientProfile();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [patient, setPatient] = useState(initialPatient);
-  const [draftPatient, setDraftPatient] = useState(initialPatient);
+  const [draftPatient, setDraftPatient] = useState(emptyPatient);
+  const [profileStatus, setProfileStatus] = useState({
+    isLoading: false,
+    error: "",
+    success: "",
+  });
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
     newPassword: "",
@@ -19,24 +43,65 @@ function ProfilePage() {
     success: "",
   });
 
+  useEffect(() => {
+    if (patient) {
+      setDraftPatient({
+        fullName: patient.fullName || "",
+        email: patient.email || "",
+        phone: patient.phone || "",
+        birthDate: patient.birthDate || "",
+        gender: patient.gender || "",
+        address: patient.address || "",
+        medicalHistory: patient.medicalHistory || "",
+      });
+    }
+  }, [patient]);
+
   const handleEditProfile = () => {
-    setDraftPatient(patient);
+    setProfileStatus({ isLoading: false, error: "", success: "" });
     setIsEditingProfile(true);
   };
 
   const handleCancelEdit = () => {
-    setDraftPatient(patient);
+    if (patient) {
+      setDraftPatient({
+        fullName: patient.fullName || "",
+        email: patient.email || "",
+        phone: patient.phone || "",
+        birthDate: patient.birthDate || "",
+        gender: patient.gender || "",
+        address: patient.address || "",
+        medicalHistory: patient.medicalHistory || "",
+      });
+    }
+    setProfileStatus({ isLoading: false, error: "", success: "" });
     setIsEditingProfile(false);
   };
 
-  const handleSaveProfile = () => {
-    setPatient(draftPatient);
-    setIsEditingProfile(false);
+  const handleSaveProfile = async () => {
+    setProfileStatus({ isLoading: true, error: "", success: "" });
+
+    try {
+      await updateProfile(draftPatient);
+      setIsEditingProfile(false);
+      setProfileStatus({
+        isLoading: false,
+        error: "",
+        success: "Cập nhật hồ sơ thành công.",
+      });
+    } catch (error) {
+      setProfileStatus({
+        isLoading: false,
+        error: error.message || "Không thể cập nhật hồ sơ. Vui lòng thử lại.",
+        success: "",
+      });
+    }
   };
 
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
     setDraftPatient((current) => ({ ...current, [name]: value }));
+    setProfileStatus({ isLoading: false, error: "", success: "" });
   };
 
   const handlePasswordChange = (event) => {
@@ -105,7 +170,7 @@ function ProfilePage() {
               <h1 id="patient-profile-title">Hồ sơ cá nhân</h1>
               <p>Quản lý thông tin cá nhân của bạn</p>
             </div>
-            {!isEditingProfile && (
+            {!isEditingProfile && patient && (
               <button
                 className="patient-profile-card__edit"
                 type="button"
@@ -116,98 +181,152 @@ function ProfilePage() {
             )}
           </div>
 
-          {isEditingProfile ? (
-            <form className="patient-profile-form">
-              <label className="patient-profile-form__field">
-                <span>Họ và tên</span>
-                <input
-                  name="fullName"
-                  type="text"
-                  value={draftPatient.fullName}
-                  onChange={handleProfileChange}
-                />
-              </label>
-              <label className="patient-profile-form__field">
-                <span>Email</span>
-                <input
-                  name="email"
-                  type="email"
-                  value={draftPatient.email}
-                  onChange={handleProfileChange}
-                />
-              </label>
-              <label className="patient-profile-form__field">
-                <span>Số điện thoại</span>
-                <input
-                  name="phone"
-                  type="tel"
-                  value={draftPatient.phone}
-                  onChange={handleProfileChange}
-                />
-              </label>
-              <label className="patient-profile-form__field">
-                <span>Ngày sinh</span>
-                <input
-                  name="birthDate"
-                  type="date"
-                  value={draftPatient.birthDate}
-                  onChange={handleProfileChange}
-                />
-              </label>
-              <label className="patient-profile-form__field">
-                <span>Giới tính</span>
-                <input
-                  name="gender"
-                  type="text"
-                  value={draftPatient.gender}
-                  onChange={handleProfileChange}
-                />
-              </label>
-              <label className="patient-profile-form__field patient-profile-form__field--full">
-                <span>Địa chỉ</span>
-                <input
-                  name="address"
-                  type="text"
-                  value={draftPatient.address}
-                  onChange={handleProfileChange}
-                />
-              </label>
-              <div className="patient-profile-form__actions">
-                <button type="button" onClick={handleSaveProfile}>
-                  Lưu thay đổi
-                </button>
-                <button type="button" onClick={handleCancelEdit}>
-                  Hủy
-                </button>
-              </div>
-            </form>
-          ) : (
-            <dl className="patient-profile-details">
-              <div>
-                <dt>Họ và tên</dt>
-                <dd>{patient.fullName}</dd>
-              </div>
-              <div>
-                <dt>Email</dt>
-                <dd>{patient.email}</dd>
-              </div>
-              <div>
-                <dt>Số điện thoại</dt>
-                <dd>{patient.phone}</dd>
-              </div>
-              <div>
-                <dt>Ngày sinh</dt>
-                <dd>{patient.birthDate}</dd>
-              </div>
-              <div>
-                <dt>Giới tính</dt>
-                <dd>{patient.gender}</dd>
-              </div>
-              <div className="patient-profile-details__full">
-                <dt>Địa chỉ</dt>
-                <dd>{patient.address}</dd>
-              </div>
-            </dl>
+          {isLoading && (
+            <p className="patient-profile-card__state">Đang tải hồ sơ...</p>
+          )}
+          {profileError && (
+            <p className="patient-profile-card__state patient-profile-card__state--error">
+              {profileError.message || "Không thể tải hồ sơ bệnh nhân."}
+            </p>
+          )}
+          {!isLoading && !profileError && !patient && (
+            <p className="patient-profile-card__state">
+              Không tìm thấy hồ sơ bệnh nhân.
+            </p>
+          )}
+
+          {!isLoading && !profileError && patient && (
+            <>
+              {profileStatus.error && (
+                <p className="patient-password-form__message patient-password-form__message--error">
+                  {profileStatus.error}
+                </p>
+              )}
+              {profileStatus.success && (
+                <p className="patient-password-form__message patient-password-form__message--success">
+                  {profileStatus.success}
+                </p>
+              )}
+
+              {isEditingProfile ? (
+                <form className="patient-profile-form">
+                  <label className="patient-profile-form__field">
+                    <span>Họ và tên</span>
+                    <input
+                      name="fullName"
+                      type="text"
+                      value={draftPatient.fullName}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <label className="patient-profile-form__field">
+                    <span>Email</span>
+                    <input
+                      name="email"
+                      type="email"
+                      value={draftPatient.email}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <label className="patient-profile-form__field">
+                    <span>Số điện thoại</span>
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={draftPatient.phone}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <label className="patient-profile-form__field">
+                    <span>Ngày sinh</span>
+                    <input
+                      name="birthDate"
+                      type="date"
+                      value={draftPatient.birthDate}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <label className="patient-profile-form__field">
+                    <span>Giới tính</span>
+                    <input
+                      name="gender"
+                      type="text"
+                      value={draftPatient.gender}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <label className="patient-profile-form__field patient-profile-form__field--full">
+                    <span>Địa chỉ</span>
+                    <input
+                      name="address"
+                      type="text"
+                      value={draftPatient.address}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <label className="patient-profile-form__field patient-profile-form__field--full">
+                    <span>Tiền sử bệnh</span>
+                    <input
+                      name="medicalHistory"
+                      type="text"
+                      value={draftPatient.medicalHistory}
+                      onChange={handleProfileChange}
+                    />
+                  </label>
+                  <div className="patient-profile-form__actions">
+                    <button
+                      type="button"
+                      onClick={handleSaveProfile}
+                      disabled={profileStatus.isLoading}
+                    >
+                      {profileStatus.isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      disabled={profileStatus.isLoading}
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <dl className="patient-profile-details">
+                  <div>
+                    <dt>Họ và tên</dt>
+                    <dd>{formatValue(patient.fullName)}</dd>
+                  </div>
+                  <div>
+                    <dt>Email</dt>
+                    <dd>{formatValue(patient.email)}</dd>
+                  </div>
+                  <div>
+                    <dt>Số điện thoại</dt>
+                    <dd>{formatValue(patient.phone)}</dd>
+                  </div>
+                  <div>
+                    <dt>Ngày sinh</dt>
+                    <dd>{formatValue(patient.birthDate)}</dd>
+                  </div>
+                  <div>
+                    <dt>Giới tính</dt>
+                    <dd>{formatValue(patient.gender)}</dd>
+                  </div>
+                  <div>
+                    <dt>Số lần vắng mặt</dt>
+                    <dd>{patient.noShowCount ?? 0}</dd>
+                  </div>
+                  <div className="patient-profile-details__full">
+                    <dt>Địa chỉ</dt>
+                    <dd>{formatValue(patient.address)}</dd>
+                  </div>
+                  <div className="patient-profile-details__full">
+                    <dt>Tiền sử bệnh</dt>
+                    <dd>{formatValue(patient.medicalHistory)}</dd>
+                  </div>
+                </dl>
+              )}
+            </>
           )}
         </article>
 
@@ -239,7 +358,7 @@ function ProfilePage() {
                 value={passwordForm.newPassword}
                 minLength={8}
                 pattern="^(?=.*[A-Za-z])(?=.*\d).+$"
-                placeholder="Nhập mật khẩu mới (ít nhất 8 ký tự, có chữ và số)"
+                placeholder="Nhập mật khẩu mới"
                 onChange={handlePasswordChange}
                 required
               />

@@ -260,6 +260,19 @@
   color: var(--color-secondary-800);
 }
 
+.patient-profile-card__state {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-info-bg);
+  border-radius: var(--radius-md);
+  color: var(--color-info);
+}
+
+.patient-profile-card__state--error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
 .patient-profile-details {
   display: grid;
   gap: var(--space-6);
