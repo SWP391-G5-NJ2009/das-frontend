@@ -73,9 +73,6 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
     viewYear > today.getFullYear() ||
     (viewYear === today.getFullYear() && viewMonth > today.getMonth());
 
-  // Separate slots into available and unavailable
-  const availableSlots = slots.filter((s) => s.status === "available");
-  const unavailableSlots = slots.filter((s) => s.status !== "available");
 
   return (
     <div className="date-time-picker">
@@ -172,32 +169,33 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
           </p>
         ) : (
           <div className="date-time-picker__slots-grid">
-            {availableSlots.map((slot) => {
-              const isSelected = slot.id === selectedSlotId;
+            {slots.map((slot) => {
+              const isAvailable = slot.status === "available";
+              const isSelected = isAvailable && slot.id === selectedSlotId;
               return (
                 <button
                   key={slot.id}
                   type="button"
-                  className={`date-time-picker__slot${isSelected ? " date-time-picker__slot--selected" : ""}`}
-                  onClick={() => onSelectSlot(slot)}
+                  className={[
+                    "date-time-picker__slot",
+                    !isAvailable ? "date-time-picker__slot--disabled" : "",
+                    isSelected ? "date-time-picker__slot--selected" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => isAvailable && onSelectSlot(slot)}
+                  disabled={!isAvailable}
                   aria-pressed={isSelected}
-                  aria-label={`Chọn giờ ${slot.time}`}
+                  aria-label={
+                    isAvailable
+                      ? `Chọn giờ ${slot.time}`
+                      : `${slot.time} — không khả dụng`
+                  }
                 >
                   {slot.time}
                 </button>
               );
             })}
-            {unavailableSlots.map((slot) => (
-              <button
-                key={slot.id}
-                type="button"
-                className="date-time-picker__slot date-time-picker__slot--disabled"
-                disabled
-                aria-label={`${slot.time} — không khả dụng`}
-              >
-                {slot.time}
-              </button>
-            ))}
           </div>
         )}
       </div>
