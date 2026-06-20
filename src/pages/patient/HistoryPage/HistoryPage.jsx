@@ -2,19 +2,19 @@ import { useMemo } from "react";
 import { usePatientTreatments } from "../../../hooks/usePatientTreatments";
 import PatientPageShell from "../PatientPageShell";
 
-const currencyFormatter = new Intl.NumberFormat("vi-VN", {
+const currencyFormatter = new Intl.NumberFormat("en-US", {
   currency: "VND",
   style: "currency",
 });
 
 function formatDate(value) {
-  if (!value) return "Chưa cập nhật";
-  return new Intl.DateTimeFormat("vi-VN").format(new Date(value));
+  if (!value) return "Not updated";
+  return new Intl.DateTimeFormat("en-US").format(new Date(value));
 }
 
 function formatCurrency(value) {
   if (value === null || value === undefined || value === "") {
-    return "Chưa cập nhật";
+    return "Not updated";
   }
 
   return currencyFormatter.format(Number(value));
@@ -36,21 +36,21 @@ function HistoryPage() {
       <section className="patient-history-section" aria-labelledby="patient-history-title">
         <article className="patient-history-card">
           <div className="patient-history-card__header">
-            <h1 id="patient-history-title">Lịch sử điều trị</h1>
-            <p>Hồ sơ các lần khám và điều trị đã hoàn thành</p>
+            <h1 id="patient-history-title">Treatment History</h1>
+            <p>Records of completed visits and treatments</p>
           </div>
 
           {isLoading && (
-            <p className="patient-profile-card__state">Đang tải lịch sử điều trị...</p>
+            <p className="patient-profile-card__state">Loading treatment history...</p>
           )}
           {error && (
             <p className="patient-profile-card__state patient-profile-card__state--error">
-              {error.message || "Không thể tải lịch sử điều trị."}
+              {error.message || "Unable to load treatment history."}
             </p>
           )}
           {!isLoading && !error && !treatments.length && (
             <p className="patient-profile-card__state">
-              Chưa có lịch sử điều trị.
+              No treatment history yet.
             </p>
           )}
 
@@ -60,11 +60,11 @@ function HistoryPage() {
                 <table className="patient-history-table">
                   <thead>
                     <tr>
-                      <th>Ngày</th>
-                      <th>Điều trị</th>
-                      <th>Chẩn đoán</th>
-                      <th>Bác sĩ</th>
-                      <th>Chi phí</th>
+                      <th>Date</th>
+                      <th>Treatment</th>
+                      <th>Diagnosis</th>
+                      <th>Dentist</th>
+                      <th>Cost</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -72,8 +72,8 @@ function HistoryPage() {
                       <tr key={record.id}>
                         <td>{formatDate(record.date)}</td>
                         <td>{record.treatment}</td>
-                        <td>{record.diagnosis || "Chưa cập nhật"}</td>
-                        <td>{record.dentist || "Chưa cập nhật"}</td>
+                        <td>{record.diagnosis || "Not updated"}</td>
+                        <td>{record.dentist || "Not updated"}</td>
                         <td>{formatCurrency(record.cost)}</td>
                       </tr>
                     ))}
@@ -82,7 +82,7 @@ function HistoryPage() {
               </div>
 
               <p className="patient-history-card__total">
-                Tổng chi phí điều trị: <strong>{formatCurrency(totalCost)}</strong>
+                Total treatment cost: <strong>{formatCurrency(totalCost)}</strong>
               </p>
             </>
           )}

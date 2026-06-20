@@ -24,7 +24,7 @@ function PatientLoginPage() {
       });
       navigate(ROLE_HOME[user.role] || "/patient/profile", { replace: true });
     } catch (err) {
-      setError(err.message || "Đăng nhập thất bại.");
+      setError(err.message || "Login failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -32,12 +32,12 @@ function PatientLoginPage() {
 
   return (
     <AuthLoginLayout
-      title="Chào mừng trở lại"
-      subtitle="Vui lòng đăng nhập để quản lý hồ sơ của bạn."
-      credentialLabel="Số điện thoại"
+      title="Welcome back"
+      subtitle="Please log in to manage your profile."
+      credentialLabel="Phone number"
       credentialName="phone"
       credentialType="tel"
-      credentialPlaceholder="Nhập số điện thoại"
+      credentialPlaceholder="Enter phone number"
       CredentialIcon={Phone}
       error={error}
       isSubmitting={isSubmitting}

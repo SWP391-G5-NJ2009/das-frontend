@@ -5,12 +5,12 @@ import "./DateTimePicker.css";
 
 const WEEKDAYS = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 const MONTHS = [
-  "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
-  "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
-  "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+  "January", "February", "March", "April",
+  "May", "June", "July", "August",
+  "September", "January0", "January1", "January2",
 ];
 
-// month là 1-indexed (1 = Tháng 1, 3 = Tháng 3)
+// month is 1-indexed (1 = January, 3 = March)
 function getDaysInMonth(year, month) {
   return new Date(year, month, 0).getDate();
 }
@@ -87,7 +87,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
             className="date-time-picker__nav-btn"
             onClick={handlePrevMonth}
             disabled={!canGoPrev}
-            aria-label="Tháng trước"
+            aria-label="Previous month"
           >
             <ChevronLeft size={16} />
           </button>
@@ -99,7 +99,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
             type="button"
             className="date-time-picker__nav-btn"
             onClick={handleNextMonth}
-            aria-label="Tháng sau"
+            aria-label="Next month"
           >
             <ChevronRight size={16} />
           </button>
@@ -113,7 +113,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
           ))}
         </div>
 
-        <div className="date-time-picker__days" role="grid" aria-label="Lưới chọn ngày">
+        <div className="date-time-picker__days" role="grid" aria-label="Date picker grid">
           {/* Empty cells for first day offset */}
           {Array.from({ length: firstDay }).map((_, i) => (
             <span key={`empty-${i}`} className="date-time-picker__day date-time-picker__day--empty" />
@@ -140,7 +140,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
                   .join(" ")}
                 onClick={() => !past && onSelectDate(date)}
                 disabled={past}
-                aria-label={`${day} tháng ${viewMonth + 1} năm ${viewYear}${isToday ? ", hôm nay" : ""}${past ? ", đã qua" : ""}`}
+                aria-label={`${day} month ${viewMonth + 1} year ${viewYear}${isToday ? ", today" : ""}${past ? ", past" : ""}`}
                 aria-pressed={isSelected}
                 role="gridcell"
               >
@@ -154,7 +154,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
       {/* Time Slots */}
       <div className="date-time-picker__slots">
         <p className="date-time-picker__slots-label">
-          Khung giờ còn trống
+          Available time slots
           {selectedDate && (
             <span className="date-time-picker__slots-date">
               {" "}— {formatDateVN(selectedDate)}
@@ -164,11 +164,11 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
 
         {!selectedDate ? (
           <p className="date-time-picker__slots-empty">
-            Vui lòng chọn ngày để xem khung giờ trống.
+            Please select a date to view available time slots.
           </p>
         ) : slots.length === 0 ? (
           <p className="date-time-picker__slots-empty">
-            Không có khung giờ trống cho ngày này.
+            No available time slots for this date.
           </p>
         ) : (
           <div className="date-time-picker__slots-grid">
@@ -181,7 +181,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
                   className={`date-time-picker__slot${isSelected ? " date-time-picker__slot--selected" : ""}`}
                   onClick={() => onSelectSlot(slot)}
                   aria-pressed={isSelected}
-                  aria-label={`Chọn giờ ${slot.time}`}
+                  aria-label={`Select time ${slot.time}`}
                 >
                   {slot.time}
                 </button>
@@ -193,7 +193,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
                 type="button"
                 className="date-time-picker__slot date-time-picker__slot--disabled"
                 disabled
-                aria-label={`${slot.time} — không khả dụng`}
+                aria-label={`${slot.time} — unavailable`}
               >
                 {slot.time}
               </button>

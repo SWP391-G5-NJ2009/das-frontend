@@ -11,7 +11,7 @@ function formatCurrencyVnd(amount) {
     return EMPTY_VALUE;
   }
 
-  return `${new Intl.NumberFormat("vi-VN").format(numericAmount)} đ`;
+  return `${new Intl.NumberFormat("en-US").format(numericAmount)} VND`;
 }
 
 function formatPaymentDate(paymentDate) {
@@ -48,13 +48,13 @@ function PaymentTable({ payments }) {
       <table className="payment-table__table">
         <thead>
           <tr>
-            <th scope="col">Mã thanh toán</th>
-            <th scope="col">Mã hóa đơn</th>
-            <th scope="col">Số tiền</th>
-            <th scope="col">Phương thức</th>
-            <th scope="col">Thời gian</th>
-            <th scope="col">Mã giao dịch</th>
-            <th scope="col">Trạng thái</th>
+            <th scope="col">Payment ID</th>
+            <th scope="col">Invoice ID</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Method</th>
+            <th scope="col">Time</th>
+            <th scope="col">Transaction ID</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>

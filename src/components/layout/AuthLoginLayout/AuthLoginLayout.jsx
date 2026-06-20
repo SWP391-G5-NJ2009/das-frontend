@@ -29,14 +29,14 @@ function AuthLoginLayout({
 
   return (
     <main className="auth-login">
-      <section className="auth-login__hero" aria-label="Không gian phòng khám DentalCare">
-        <img src={heroLogin} alt="Ghế nha khoa tại phòng khám DentalCare" />
+      <section className="auth-login__hero" aria-label="DentalCare clinic space">
+        <img src={heroLogin} alt="Dental chair at DentalCare clinic" />
       </section>
 
       <section className="auth-login__panel" aria-labelledby="auth-login-title">
         <Link className="auth-login__back" to="/">
           <ArrowLeft size={18} aria-hidden="true" />
-          Trang chủ
+          Home
         </Link>
 
         <form className="auth-login__form" onSubmit={onSubmit}>
@@ -66,18 +66,18 @@ function AuthLoginLayout({
           </label>
 
           <label className="auth-login__field">
-            <span>Mật khẩu</span>
+            <span>Password</span>
             <div className="auth-login__control">
               <LockKeyhole size={20} aria-hidden="true" />
               <input
                 type={isPasswordVisible ? "text" : "password"}
                 name="password"
-                placeholder="Nhập mật khẩu"
+                placeholder="Enter password"
                 required
               />
               <button
                 type="button"
-                aria-label={isPasswordVisible ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                aria-label={isPasswordVisible ? "Hide password" : "Show password"}
                 onClick={() => setIsPasswordVisible((current) => !current)}
               >
                 {isPasswordVisible ? (
@@ -90,11 +90,11 @@ function AuthLoginLayout({
           </label>
 
           <Link className="auth-login__forgot" to={forgotPasswordPath}>
-            Quên mật khẩu?
+            Forgot password?
           </Link>
 
           <button className="auth-login__submit" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+            {isSubmitting ? "Logging in..." : "Log in"}
             <ArrowRight size={20} aria-hidden="true" />
           </button>
         </form>

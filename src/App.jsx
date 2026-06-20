@@ -101,7 +101,7 @@ function App() {
             path="/dentist/dashboard"
             element={
               <ProtectedRoute allowedRoles={["dentist"]}>
-                <RoleDashboardPage title="Bảng điều khiển bác sĩ" />
+                <RoleDashboardPage title="Dentist Dashboard" />
               </ProtectedRoute>
             }
           />

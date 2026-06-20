@@ -11,51 +11,51 @@ import {
 
 export const dentalServices = [
   {
-    title: "Nhổ răng khôn",
+    title: "Wisdom tooth extraction",
     description:
-      "Loại bỏ răng khôn mọc lệch, ngầm an toàn, không đau, phục hồi nhanh chóng nhờ công nghệ siêu âm Piezotome.",
-    duration: "30 - 60 phút",
-    price: "từ 1.500.000 VNĐ",
+      "Safe removal of impacted or misaligned wisdom teeth with Piezotome ultrasonic technology for faster recovery.",
+    duration: "30 - 60 minutes",
+    price: "from 1,500,000 VND",
     Icon: Smile,
   },
   {
-    title: "Niềng răng",
+    title: "Orthodontics",
     description:
-      "Chỉnh nha chuyên sâu với các phương pháp mắc cài kim loại, sứ, hoặc khay trong suốt Invisalign tiên tiến.",
-    duration: "1 - 3 năm",
-    price: "từ 30.000.000 VNĐ",
+      "Advanced orthodontics with metal braces, ceramic braces, or clear Invisalign aligners.",
+    duration: "1 - 3 year",
+    price: "from 30,000,000 VND",
     Icon: ShieldCheck,
   },
   {
-    title: "Tẩy trắng răng",
+    title: "Teeth whitening",
     description:
-      "Mang lại nụ cười rạng rỡ với công nghệ Laser Whitening an toàn, không ê buốt, hiệu quả tức thì sau một lần hẹn.",
-    duration: "45 - 60 phút",
-    price: "từ 2.500.000 VNĐ",
+      "Brighten your smile with safe laser whitening technology and visible results after one visit.",
+    duration: "45 - 60 minutes",
+    price: "from 2,500,000 VND",
     Icon: WandSparkles,
   },
   {
-    title: "Khám tổng quát",
+    title: "General checkup",
     description:
-      "Kiểm tra toàn diện sức khỏe răng miệng, lấy cao răng định kỳ và tư vấn phòng ngừa các bệnh lý nha khoa.",
-    duration: "30 phút",
-    price: "từ 300.000 VNĐ",
+      "Comprehensive oral health checks, routine scaling, and preventive dental guidance.",
+    duration: "30 minutes",
+    price: "from 300,000 VND",
     Icon: Cross,
   },
   {
-    title: "Trồng răng Implant",
+    title: "Dental implants",
     description:
-      "Phục hình răng đã mất bằng chân răng nhân tạo Titanium, đảm bảo chức năng ăn nhai và thẩm mỹ trọn đời.",
-    duration: "60 - 90 phút/răng",
-    price: "từ 15.000.000 VNĐ",
+      "Replace missing teeth with titanium implant roots for lasting function and aesthetics.",
+    duration: "60 - 90 minutes/tooth",
+    price: "from 15,000,000 VND",
     Icon: Syringe,
   },
   {
-    title: "Bọc răng sứ",
+    title: "Porcelain crowns",
     description:
-      "Phục hồi hình dáng, màu sắc răng hoàn hảo với các dòng sứ cao cấp, bảo tồn tối đa răng gốc.",
-    duration: "2 - 3 buổi",
-    price: "từ 3.000.000 VNĐ",
+      "Restore tooth shape and color with premium porcelain while preserving natural tooth structure.",
+    duration: "2 - 3 visits",
+    price: "from 3,000,000 VND",
     Icon: Sparkles,
   },
 ];

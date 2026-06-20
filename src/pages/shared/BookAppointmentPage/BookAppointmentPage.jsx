@@ -39,9 +39,9 @@ const MOCK_SLOTS = [
 ];
 
 const MOCK_PATIENTS = [
-  { id: "p1", fullName: "Trần Văn Nam", phone: "0901234567" },
-  { id: "p2", fullName: "Nguyễn Thị Lan", phone: "0912345678" },
-  { id: "p3", fullName: "Lê Quốc Bảo", phone: "0923456789" },
+  { id: "p1", fullName: "Tran Van Nam", phone: "0901234567" },
+  { id: "p2", fullName: "Nguyen Thi Lan", phone: "0912345678" },
+  { id: "p3", fullName: "Le Quoc Bao", phone: "0923456789" },
 ];
 
 /* ─────────────────────────────────────────────

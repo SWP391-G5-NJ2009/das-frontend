@@ -20,7 +20,7 @@ function ReceptionistPageShell({
   return (
     <div className="receptionist-page">
       <RoleSidebar
-        ariaLabel="Dieu huong le tan"
+        ariaLabel="Receptionist navigation"
         navItems={RECEPTIONIST_NAV_ITEMS}
         footerItems={RECEPTIONIST_FOOTER_ITEMS}
       />
@@ -30,7 +30,7 @@ function ReceptionistPageShell({
           isFixed
           mobileNavItems={RECEPTIONIST_NAV_ITEMS}
           roleLabel={user?.role || "receptionist"}
-          searchLabel="Tim kiem trong khu vuc le tan"
+          searchLabel="Search receptionist area"
           showHelp
         />
         <section

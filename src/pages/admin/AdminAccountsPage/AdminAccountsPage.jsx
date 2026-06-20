@@ -37,9 +37,9 @@ function AdminAccountsPage() {
     <AdminPageShell onNotificationClick={showToast}>
           <div className="admin-accounts__page-header">
             <div>
-              <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
+              <h2 className="admin-accounts__page-title">Account Management</h2>
               <p className="admin-accounts__page-desc">
-                Thêm, cập nhật hoặc gỡ quyền truy cập của người dùng trong hệ thống.
+                Add, update, or remove user access in the system.
               </p>
             </div>
             <button
@@ -48,7 +48,7 @@ function AdminAccountsPage() {
               onClick={() => setShowModal(true)}
             >
               <UserPlus size={20} aria-hidden="true" />
-              Thêm tài khoản mới
+              Add new account
             </button>
           </div>
 
@@ -58,7 +58,7 @@ function AdminAccountsPage() {
                 <Shield size={24} aria-hidden="true" />
               </div>
               <div>
-                <p className="admin-accounts__stat-label">Quản trị viên</p>
+                <p className="admin-accounts__stat-label">Administrators</p>
                 <p className="admin-accounts__stat-value">12</p>
               </div>
             </div>
@@ -67,7 +67,7 @@ function AdminAccountsPage() {
                 <Stethoscope size={24} aria-hidden="true" />
               </div>
               <div>
-                <p className="admin-accounts__stat-label">Nha sĩ</p>
+                <p className="admin-accounts__stat-label">Dentists</p>
                 <p className="admin-accounts__stat-value">45</p>
               </div>
             </div>
@@ -76,7 +76,7 @@ function AdminAccountsPage() {
                 <Landmark size={24} aria-hidden="true" />
               </div>
               <div>
-                <p className="admin-accounts__stat-label">Chủ phòng khám</p>
+                <p className="admin-accounts__stat-label">Clinic owners</p>
                 <p className="admin-accounts__stat-value">5</p>
               </div>
             </div>
@@ -85,7 +85,7 @@ function AdminAccountsPage() {
                 <Headphones size={24} aria-hidden="true" />
               </div>
               <div>
-                <p className="admin-accounts__stat-label">Nhân viên</p>
+                <p className="admin-accounts__stat-label">Staff</p>
                 <p className="admin-accounts__stat-value">28</p>
               </div>
             </div>
@@ -94,7 +94,7 @@ function AdminAccountsPage() {
                 <Users size={24} aria-hidden="true" />
               </div>
               <div>
-                <p className="admin-accounts__stat-label">Bệnh nhân</p>
+                <p className="admin-accounts__stat-label">Patients</p>
                 <p className="admin-accounts__stat-value">1,163</p>
               </div>
             </div>
@@ -104,13 +104,13 @@ function AdminAccountsPage() {
             <div className="admin-accounts__card-header">
               <div className="admin-accounts__card-title-group">
                 <h4 className="admin-accounts__card-title">
-                  Danh sách tài khoản
+                  Account list
                 </h4>
               </div>
               <div className="admin-accounts__card-toolbar">
                 <div className="admin-accounts__table-search">
                   <Search size={18} aria-hidden="true" />
-                  <input placeholder="Tìm trong danh sách..." type="text" />
+                  <input placeholder="Search the list..." type="text" />
                 </div>
                 <button className="admin-accounts__tool-btn" type="button">
                   <Filter size={18} aria-hidden="true" />
@@ -123,19 +123,19 @@ function AdminAccountsPage() {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Tên đăng nhập</th>
+                    <th>Username</th>
                     <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Trạng thái</th>
-                    <th>Loại tài khoản</th>
-                    <th>Thao tác</th>
+                    <th>Phone number</th>
+                    <th>Status</th>
+                    <th>Account type</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading && (
                     <tr>
                       <td className="admin-accounts__cell" colSpan={7}>
-                        Đang tải tài khoản...
+                        Loading accounts...
                       </td>
                     </tr>
                   )}
@@ -143,7 +143,7 @@ function AdminAccountsPage() {
                   {error && (
                     <tr>
                       <td className="admin-accounts__cell" colSpan={7}>
-                        Lỗi: {error.message}
+                        Error: {error.message}
                       </td>
                     </tr>
                   )}
@@ -151,7 +151,7 @@ function AdminAccountsPage() {
                   {!isLoading && !error && accounts.length === 0 && (
                     <tr>
                       <td className="admin-accounts__cell" colSpan={7}>
-                        Không tìm thấy tài khoản nào
+                        No accounts found
                       </td>
                     </tr>
                   )}
@@ -216,7 +216,7 @@ function AdminAccountsPage() {
 
             <div className="admin-accounts__pagination">
               <p className="admin-accounts__pagination-info">
-                Hiển thị 1-6 trong tổng số 1.248 tài khoản
+                Showing 1-6 of 1,248 accounts
               </p>
               <div className="admin-accounts__pagination-controls">
                 <button className="admin-accounts__page-btn" type="button">
@@ -250,7 +250,7 @@ function AdminAccountsPage() {
           size={20}
           aria-hidden="true"
         />
-        <span>Thao tác thành công</span>
+        <span>Action completed successfully</span>
       </div>
       {showModal && (
         <AddAccountModal

@@ -15,7 +15,7 @@ const emptyPatient = {
 };
 
 function formatValue(value) {
-  return value || "Chưa cập nhật";
+  return value || "Not updated";
 }
 
 function ProfilePage() {
@@ -87,12 +87,12 @@ function ProfilePage() {
       setProfileStatus({
         isLoading: false,
         error: "",
-        success: "Cập nhật hồ sơ thành công.",
+        success: "Profile updated successfully.",
       });
     } catch (error) {
       setProfileStatus({
         isLoading: false,
-        error: error.message || "Không thể cập nhật hồ sơ. Vui lòng thử lại.",
+        error: error.message || "Unable to update profile. Please try again.",
         success: "",
       });
     }
@@ -125,7 +125,7 @@ function ProfilePage() {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setPasswordStatus({
         isLoading: false,
-        error: "Mật khẩu xác nhận không khớp.",
+        error: "Password confirmation does not match.",
         success: "",
       });
       return;
@@ -147,12 +147,12 @@ function ProfilePage() {
       setPasswordStatus({
         isLoading: false,
         error: "",
-        success: "Đổi mật khẩu thành công.",
+        success: "Password changed successfully.",
       });
     } catch (error) {
       setPasswordStatus({
         isLoading: false,
-        error: error.message || "Không thể đổi mật khẩu. Vui lòng thử lại.",
+        error: error.message || "Unable to change password. Please try again.",
         success: "",
       });
     }
@@ -167,8 +167,8 @@ function ProfilePage() {
         <article className="patient-profile-card">
           <div className="patient-profile-card__header">
             <div>
-              <h1 id="patient-profile-title">Hồ sơ cá nhân</h1>
-              <p>Quản lý thông tin cá nhân của bạn</p>
+              <h1 id="patient-profile-title">Personal Profile</h1>
+              <p>Manage your personal information</p>
             </div>
             {!isEditingProfile && patient && (
               <button
@@ -176,22 +176,22 @@ function ProfilePage() {
                 type="button"
                 onClick={handleEditProfile}
               >
-                Chỉnh sửa
+                Edit
               </button>
             )}
           </div>
 
           {isLoading && (
-            <p className="patient-profile-card__state">Đang tải hồ sơ...</p>
+            <p className="patient-profile-card__state">Loading profile...</p>
           )}
           {profileError && (
             <p className="patient-profile-card__state patient-profile-card__state--error">
-              {profileError.message || "Không thể tải hồ sơ bệnh nhân."}
+              {profileError.message || "Unable to load patient profile."}
             </p>
           )}
           {!isLoading && !profileError && !patient && (
             <p className="patient-profile-card__state">
-              Không tìm thấy hồ sơ bệnh nhân.
+              Patient profile not found.
             </p>
           )}
 
@@ -211,7 +211,7 @@ function ProfilePage() {
               {isEditingProfile ? (
                 <form className="patient-profile-form">
                   <label className="patient-profile-form__field">
-                    <span>Họ và tên</span>
+                    <span>Full name</span>
                     <input
                       name="fullName"
                       type="text"
@@ -229,7 +229,7 @@ function ProfilePage() {
                     />
                   </label>
                   <label className="patient-profile-form__field">
-                    <span>Số điện thoại</span>
+                    <span>Phone number</span>
                     <input
                       name="phone"
                       type="tel"
@@ -238,7 +238,7 @@ function ProfilePage() {
                     />
                   </label>
                   <label className="patient-profile-form__field">
-                    <span>Ngày sinh</span>
+                    <span>Date of birth</span>
                     <input
                       name="birthDate"
                       type="date"
@@ -247,7 +247,7 @@ function ProfilePage() {
                     />
                   </label>
                   <label className="patient-profile-form__field">
-                    <span>Giới tính</span>
+                    <span>Gender</span>
                     <input
                       name="gender"
                       type="text"
@@ -256,7 +256,7 @@ function ProfilePage() {
                     />
                   </label>
                   <label className="patient-profile-form__field patient-profile-form__field--full">
-                    <span>Địa chỉ</span>
+                    <span>Address</span>
                     <input
                       name="address"
                       type="text"
@@ -265,7 +265,7 @@ function ProfilePage() {
                     />
                   </label>
                   <label className="patient-profile-form__field patient-profile-form__field--full">
-                    <span>Tiền sử bệnh</span>
+                    <span>Medical history</span>
                     <input
                       name="medicalHistory"
                       type="text"
@@ -279,21 +279,21 @@ function ProfilePage() {
                       onClick={handleSaveProfile}
                       disabled={profileStatus.isLoading}
                     >
-                      {profileStatus.isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+                      {profileStatus.isLoading ? "Saving..." : "Save changes"}
                     </button>
                     <button
                       type="button"
                       onClick={handleCancelEdit}
                       disabled={profileStatus.isLoading}
                     >
-                      Hủy
+                      Cancel
                     </button>
                   </div>
                 </form>
               ) : (
                 <dl className="patient-profile-details">
                   <div>
-                    <dt>Họ và tên</dt>
+                    <dt>Full name</dt>
                     <dd>{formatValue(patient.fullName)}</dd>
                   </div>
                   <div>
@@ -301,27 +301,27 @@ function ProfilePage() {
                     <dd>{formatValue(patient.email)}</dd>
                   </div>
                   <div>
-                    <dt>Số điện thoại</dt>
+                    <dt>Phone number</dt>
                     <dd>{formatValue(patient.phone)}</dd>
                   </div>
                   <div>
-                    <dt>Ngày sinh</dt>
+                    <dt>Date of birth</dt>
                     <dd>{formatValue(patient.birthDate)}</dd>
                   </div>
                   <div>
-                    <dt>Giới tính</dt>
+                    <dt>Gender</dt>
                     <dd>{formatValue(patient.gender)}</dd>
                   </div>
                   <div>
-                    <dt>Số lần vắng mặt</dt>
+                    <dt>No-show count</dt>
                     <dd>{patient.noShowCount ?? 0}</dd>
                   </div>
                   <div className="patient-profile-details__full">
-                    <dt>Địa chỉ</dt>
+                    <dt>Address</dt>
                     <dd>{formatValue(patient.address)}</dd>
                   </div>
                   <div className="patient-profile-details__full">
-                    <dt>Tiền sử bệnh</dt>
+                    <dt>Medical history</dt>
                     <dd>{formatValue(patient.medicalHistory)}</dd>
                   </div>
                 </dl>
@@ -332,44 +332,44 @@ function ProfilePage() {
 
         <article className="patient-password-card">
           <div className="patient-password-card__header">
-            <h2>Đổi mật khẩu</h2>
-            <p>Cập nhật mật khẩu để bảo vệ tài khoản</p>
+            <h2>Change password</h2>
+            <p>Update your password to protect your account</p>
           </div>
           <form
             className="patient-password-form"
             onSubmit={handleSubmitPasswordChange}
           >
             <label>
-              <span>Mật khẩu hiện tại</span>
+              <span>Current password</span>
               <input
                 name="oldPassword"
                 type="password"
                 value={passwordForm.oldPassword}
-                placeholder="Nhập mật khẩu hiện tại"
+                placeholder="Enter current password"
                 onChange={handlePasswordChange}
                 required
               />
             </label>
             <label>
-              <span>Mật khẩu mới</span>
+              <span>New password</span>
               <input
                 name="newPassword"
                 type="password"
                 value={passwordForm.newPassword}
                 minLength={8}
                 pattern="^(?=.*[A-Za-z])(?=.*\d).+$"
-                placeholder="Nhập mật khẩu mới"
+                placeholder="Enter new password"
                 onChange={handlePasswordChange}
                 required
               />
             </label>
             <label>
-              <span>Xác nhận mật khẩu mới</span>
+              <span>Confirm new password</span>
               <input
                 name="confirmPassword"
                 type="password"
                 value={passwordForm.confirmPassword}
-                placeholder="Nhập lại mật khẩu mới"
+                placeholder="Re-enter new password"
                 onChange={handlePasswordChange}
                 required
               />
@@ -386,14 +386,14 @@ function ProfilePage() {
             )}
             <div className="patient-password-form__actions">
               <button type="submit" disabled={passwordStatus.isLoading}>
-                {passwordStatus.isLoading ? "Đang lưu..." : "Lưu mật khẩu"}
+                {passwordStatus.isLoading ? "Saving..." : "Save password"}
               </button>
               <button
                 type="button"
                 onClick={handleCancelPasswordChange}
                 disabled={passwordStatus.isLoading}
               >
-                Hủy
+                Cancel
               </button>
             </div>
           </form>
