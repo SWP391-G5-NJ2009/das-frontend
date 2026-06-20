@@ -3,10 +3,10 @@
 /* Scrollable wrapper for horizontal overflow on mobile */
 .appt-table__wrap {
   overflow-x: auto;
-  border-radius: var(--radius-lg);
-  border: 1.5px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
   background-color: #ffffff;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Table base */
@@ -20,19 +20,26 @@
 
 /* Head */
 .appt-table__head {
-  background-color: var(--color-neutral-50);
-  border-bottom: 1.5px solid var(--border-color);
+  background-color: var(--color-secondary-100);
 }
 
 .appt-table__th {
   padding: var(--space-3) var(--space-4);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-neutral-500);
+  color: var(--color-primary-700);
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   white-space: nowrap;
+}
+
+.appt-table__th:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.appt-table__th:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .appt-table__th--sortable {
@@ -42,7 +49,7 @@
 }
 
 .appt-table__th--sortable:hover {
-  color: var(--color-neutral-800);
+  color: var(--color-primary-800);
 }
 
 .appt-table__th--sortable span {
@@ -56,7 +63,7 @@
 
 /* Body rows */
 .appt-table__row {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--color-neutral-200);
   transition: background-color var(--transition-fast);
 }
 
@@ -70,13 +77,13 @@
 
 /* Cells */
 .appt-table__td {
-  padding: var(--space-3) var(--space-4);
-  color: var(--color-neutral-700);
+  padding: var(--space-4);
+  color: var(--color-neutral-600);
   vertical-align: middle;
 }
 
 .appt-table__td--index {
-  color: var(--color-neutral-400);
+  color: var(--color-neutral-500);
   font-weight: var(--font-weight-medium);
   width: 40px;
   text-align: center;
@@ -85,7 +92,7 @@
 /* Patient cell — stacked name + phone */
 .appt-table__patient-name {
   display: block;
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   color: var(--color-neutral-900);
 }
 
@@ -98,7 +105,7 @@
 
 .appt-table__td--service {
   font-weight: var(--font-weight-medium);
-  color: var(--color-neutral-800);
+  color: var(--color-neutral-900);
   max-width: 180px;
   white-space: normal;
 }
@@ -115,7 +122,7 @@
 .appt-table__date {
   display: block;
   font-weight: var(--font-weight-medium);
-  color: var(--color-neutral-800);
+  color: var(--color-neutral-900);
 }
 
 .appt-table__time {
@@ -142,8 +149,9 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   border: none;
+  background: none;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -156,12 +164,11 @@
 }
 
 .appt-table__action-btn--edit {
-  background-color: var(--color-primary-100);
   color: var(--color-primary-700);
 }
 
 .appt-table__action-btn--edit:hover:not(:disabled) {
-  background-color: var(--color-primary-200);
+  background-color: var(--color-primary-100);
   transform: scale(1.1);
 }
 
@@ -172,11 +179,10 @@
 }
 
 .appt-table__action-btn--cancel {
-  background-color: var(--color-error-bg);
   color: var(--color-error);
 }
 
 .appt-table__action-btn--cancel:hover {
-  background-color: #ffcdd2;
+  background-color: var(--color-error-bg);
   transform: scale(1.1);
 }

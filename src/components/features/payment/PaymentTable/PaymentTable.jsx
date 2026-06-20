@@ -48,8 +48,6 @@ function PaymentTable({ payments }) {
       <table className="payment-table__table">
         <thead>
           <tr>
-            <th scope="col">Payment ID</th>
-            <th scope="col">Invoice ID</th>
             <th scope="col">Amount</th>
             <th scope="col">Method</th>
             <th scope="col">Time</th>
@@ -60,8 +58,6 @@ function PaymentTable({ payments }) {
         <tbody>
           {payments.map((payment) => (
             <tr key={getPaymentKey(payment)}>
-              <td>{payment.payment_id ?? EMPTY_VALUE}</td>
-              <td>{payment.invoice_id ?? EMPTY_VALUE}</td>
               <td className="payment-table__amount">
                 {formatCurrencyVnd(payment.amount)}
               </td>
