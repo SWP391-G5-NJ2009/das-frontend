@@ -225,11 +225,11 @@ function AppointmentsPage() {
           .reverse()
           .join(
             "/",
-          )} lúc ${appointmentToCancel.scheduledTime} (${appointmentToCancel.patientName})`
+          )} at ${appointmentToCancel.scheduledTime} (${appointmentToCancel.patientName})`
       : `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
           ?.split("-")
           .reverse()
-          .join("/")} lúc ${appointmentToCancel.scheduledTime}`
+          .join("/")} at ${appointmentToCancel.scheduledTime}`
     : "";
 
   return (

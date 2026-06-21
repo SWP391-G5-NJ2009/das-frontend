@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./DateTimePicker.css";
 
-const WEEKDAYS = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
-  "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
-  "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
-  "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+  "January", "February", "March", "April",
+  "May", "June", "July", "August",
+  "September", "October", "November", "December",
 ];
 
-// month là 1-indexed (1 = Tháng 1, 3 = Tháng 3)
+// month is 1-indexed (1 = January, 3 = March)
 function getDaysInMonth(year, month) {
   return new Date(year, month, 0).getDate();
 }
@@ -27,7 +27,7 @@ function isSameDay(a, b) {
   );
 }
 
-function formatDateVN(date) {
+function formatDate(date) {
   return `${WEEKDAYS[date.getDay()]}, ${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
@@ -84,7 +84,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
             className="date-time-picker__nav-btn"
             onClick={handlePrevMonth}
             disabled={!canGoPrev}
-            aria-label="Tháng trước"
+            aria-label="Previous month"
           >
             <ChevronLeft size={16} />
           </button>
@@ -96,7 +96,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
             type="button"
             className="date-time-picker__nav-btn"
             onClick={handleNextMonth}
-            aria-label="Tháng sau"
+            aria-label="Next month"
           >
             <ChevronRight size={16} />
           </button>
@@ -110,7 +110,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
           ))}
         </div>
 
-        <div className="date-time-picker__days" role="grid" aria-label="Lưới chọn ngày">
+        <div className="date-time-picker__days" role="grid" aria-label="Date selection grid">
           {/* Empty cells for first day offset */}
           {Array.from({ length: firstDay }).map((_, i) => (
             <span key={`empty-${i}`} className="date-time-picker__day date-time-picker__day--empty" />
@@ -137,7 +137,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
                   .join(" ")}
                 onClick={() => !past && onSelectDate(date)}
                 disabled={past}
-                aria-label={`${day} tháng ${viewMonth + 1} năm ${viewYear}${isToday ? ", hôm nay" : ""}${past ? ", đã qua" : ""}`}
+                aria-label={`${day} ${MONTHS[viewMonth]} ${viewYear}${isToday ? ", today" : ""}${past ? ", past" : ""}`}
                 aria-pressed={isSelected}
                 role="gridcell"
               >
@@ -151,21 +151,21 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
       {/* Time Slots */}
       <div className="date-time-picker__slots">
         <p className="date-time-picker__slots-label">
-          Khung giờ còn trống
+          Available Time Slots
           {selectedDate && (
             <span className="date-time-picker__slots-date">
-              {" "}— {formatDateVN(selectedDate)}
+              {" "}— {formatDate(selectedDate)}
             </span>
           )}
         </p>
 
         {!selectedDate ? (
           <p className="date-time-picker__slots-empty">
-            Vui lòng chọn ngày để xem khung giờ trống.
+            Please select a date to view available time slots.
           </p>
         ) : slots.length === 0 ? (
           <p className="date-time-picker__slots-empty">
-            Không có khung giờ trống cho ngày này.
+            No available time slots for this date.
           </p>
         ) : (
           <div className="date-time-picker__slots-grid">
@@ -188,8 +188,8 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
                   aria-pressed={isSelected}
                   aria-label={
                     isAvailable
-                      ? `Chọn giờ ${slot.time}`
-                      : `${slot.time} — không khả dụng`
+                      ? `Select time ${slot.time}`
+                      : `${slot.time} — unavailable`
                   }
                 >
                   {slot.time}

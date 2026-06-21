@@ -29,7 +29,10 @@ function AuthLoginLayout({
 
   return (
     <main className="auth-login">
-      <section className="auth-login__hero" aria-label="Không gian phòng khám DentalCare">
+      <section
+        className="auth-login__hero"
+        aria-label="Không gian phòng khám DentalCare"
+      >
         <img src={heroLogin} alt="Ghế nha khoa tại phòng khám DentalCare" />
       </section>
 
@@ -93,7 +96,11 @@ function AuthLoginLayout({
             Quên mật khẩu?
           </Link>
 
-          <button className="auth-login__submit" type="submit" disabled={isSubmitting}>
+          <button
+            className="auth-login__submit"
+            type="submit"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
             <ArrowRight size={20} aria-hidden="true" />
           </button>

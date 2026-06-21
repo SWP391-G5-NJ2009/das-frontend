@@ -14,21 +14,42 @@ function DeleteConfirmModal({ account, onClose, onSuccess }) {
   };
 
   return (
-    <div className="add-account-modal__overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div
+      className="add-account-modal__overlay"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="add-account-modal">
         <div className="add-account-modal__header">
           <h3 className="add-account-modal__title">Xóa tài khoản</h3>
-          <button className="add-account-modal__close" type="button" onClick={onClose}>
+          <button
+            className="add-account-modal__close"
+            type="button"
+            onClick={onClose}
+          >
             <X size={20} aria-hidden="true" />
           </button>
         </div>
 
-        <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--font-size-sm)", color: "var(--color-neutral-600)", lineHeight: "var(--line-height-relaxed)" }}>
-          Bạn có chắc muốn xóa <strong>{account.username}</strong>? Thao tác này không thể hoàn tác.
+        <p
+          style={{
+            margin: "0 0 var(--space-6)",
+            fontSize: "var(--font-size-sm)",
+            color: "var(--color-neutral-600)",
+            lineHeight: "var(--line-height-relaxed)",
+          }}
+        >
+          Bạn có chắc muốn xóa <strong>{account.username}</strong>? Thao tác này
+          không thể hoàn tác.
         </p>
 
         <div className="add-account-modal__actions">
-          <button className="add-account-modal__btn add-account-modal__btn--cancel" type="button" onClick={onClose}>
+          <button
+            className="add-account-modal__btn add-account-modal__btn--cancel"
+            type="button"
+            onClick={onClose}
+          >
             Hủy
           </button>
           <button

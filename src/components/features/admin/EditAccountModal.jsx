@@ -49,11 +49,20 @@ function EditAccountModal({ account, onClose, onSuccess }) {
   };
 
   return (
-    <div className="add-account-modal__overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div
+      className="add-account-modal__overlay"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="add-account-modal">
         <div className="add-account-modal__header">
           <h3 className="add-account-modal__title">Chỉnh sửa tài khoản</h3>
-          <button className="add-account-modal__close" type="button" onClick={onClose}>
+          <button
+            className="add-account-modal__close"
+            type="button"
+            onClick={onClose}
+          >
             <X size={20} aria-hidden="true" />
           </button>
         </div>
@@ -63,29 +72,56 @@ function EditAccountModal({ account, onClose, onSuccess }) {
 
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">Tên đăng nhập</span>
-            <input name="username" value={form.username} onChange={handleChange} />
+            <input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+            />
           </label>
 
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">Email</span>
-            <input name="email" type="email" value={form.email} onChange={handleChange} />
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+            />
           </label>
 
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">Số điện thoại</span>
-            <input name="phone" type="tel" value={form.phone} onChange={handleChange} />
+            <input
+              name="phone"
+              type="tel"
+              value={form.phone}
+              onChange={handleChange}
+            />
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Mật khẩu mới (để trống nếu không đổi)</span>
-            <input name="password" type="password" value={form.password} onChange={handleChange} />
+            <span className="add-account-modal__label">
+              Mật khẩu mới (để trống nếu không đổi)
+            </span>
+            <input
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+            />
           </label>
 
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">Vai trò</span>
-            <select name="role_name" value={form.role_name} onChange={handleChange}>
+            <select
+              name="role_name"
+              value={form.role_name}
+              onChange={handleChange}
+            >
               {ROLES.map((role) => (
-                <option key={role.value} value={role.value}>{role.label}</option>
+                <option key={role.value} value={role.value}>
+                  {role.label}
+                </option>
               ))}
             </select>
           </label>
@@ -99,7 +135,11 @@ function EditAccountModal({ account, onClose, onSuccess }) {
           </label>
 
           <div className="add-account-modal__actions">
-            <button className="add-account-modal__btn add-account-modal__btn--cancel" type="button" onClick={onClose}>
+            <button
+              className="add-account-modal__btn add-account-modal__btn--cancel"
+              type="button"
+              onClick={onClose}
+            >
               Hủy
             </button>
             <button

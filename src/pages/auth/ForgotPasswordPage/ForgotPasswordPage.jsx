@@ -80,7 +80,9 @@ function ForgotPasswordPage({ mode }) {
     }
 
     if (!resetAccountId) {
-      setError("Không tìm thấy phiên đặt lại mật khẩu. Vui lòng gửi lại mã OTP.");
+      setError(
+        "Không tìm thấy phiên đặt lại mật khẩu. Vui lòng gửi lại mã OTP.",
+      );
       setIsSubmitting(false);
       return;
     }
@@ -141,7 +143,9 @@ function ForgotPasswordPage({ mode }) {
       .split("");
 
     digits.forEach((digit, offset) => {
-      const input = document.querySelector(`[name="${otpSlots[index + offset]}"]`);
+      const input = document.querySelector(
+        `[name="${otpSlots[index + offset]}"]`,
+      );
 
       if (input) {
         input.value = digit;

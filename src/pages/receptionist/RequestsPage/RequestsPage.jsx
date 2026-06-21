@@ -23,194 +23,174 @@ function ReceptionistRequestsPage() {
       contentClassName="receptionist-requests"
       contentLabelledBy="receptionist-requests-title"
     >
-          <div className="receptionist-requests__content">
-            <div className="receptionist-requests__page-header">
-              <div>
-                <h1
-                  className="receptionist-requests__page-title"
-                  id="receptionist-requests-title"
-                >
-                  Quản lý yêu cầu tư vấn
-                </h1>
-                <p className="receptionist-requests__page-desc">
-                  View and update consultation requests.
-                </p>
-              </div>
+      <div className="receptionist-requests__content">
+        <div className="receptionist-requests__page-header">
+          <div>
+            <h1
+              className="receptionist-requests__page-title"
+              id="receptionist-requests-title"
+            >
+              Quản lý yêu cầu tư vấn
+            </h1>
+            <p className="receptionist-requests__page-desc">
+              View and update consultation requests.
+            </p>
+          </div>
+        </div>
+
+        <div className="receptionist-requests__card">
+          <div className="receptionist-requests__card-header">
+            <div className="receptionist-requests__card-title-group">
+              <h2 className="receptionist-requests__card-title">
+                Danh sách yêu cầu tư vấn
+              </h2>
             </div>
-
-            <div className="receptionist-requests__card">
-              <div className="receptionist-requests__card-header">
-                <div className="receptionist-requests__card-title-group">
-                  <h2 className="receptionist-requests__card-title">
-                    Danh sách yêu cầu tư vấn
-                  </h2>
-                </div>
-                <div className="receptionist-requests__card-toolbar">
-                  <div className="receptionist-requests__table-search">
-                    <Search size={18} aria-hidden="true" />
-                    <input placeholder="Tìm trong danh sách..." type="text" />
-                  </div>
-                  <button
-                    className="receptionist-requests__tool-btn"
-                    type="button"
-                  >
-                    <Filter size={18} aria-hidden="true" />
-                  </button>
-                </div>
+            <div className="receptionist-requests__card-toolbar">
+              <div className="receptionist-requests__table-search">
+                <Search size={18} aria-hidden="true" />
+                <input placeholder="Tìm trong danh sách..." type="text" />
               </div>
-
-              <div className="receptionist-requests__table-wrapper">
-                <table className="receptionist-requests__table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Họ và tên</th>
-                      <th>Số điện thoại</th>
-                      <th>Email</th>
-                      <th>Mô tả</th>
-                      <th>Ngày tạo</th>
-                      <th>Trạng thái</th>
-                      <th>Người xử lý</th>
-                      <th>Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {isLoading && (
-                      <tr>
-                        <td className="receptionist-requests__cell" colSpan={9}>
-                          Đang tải yêu cầu...
-                        </td>
-                      </tr>
-                    )}
-
-                    {!isLoading && error && (
-                      <tr>
-                        <td className="receptionist-requests__cell" colSpan={9}>
-                          Lỗi: {error.message}
-                        </td>
-                      </tr>
-                    )}
-
-                    {!isLoading && !error && requests.length === 0 && (
-                      <tr>
-                        <td className="receptionist-requests__cell" colSpan={9}>
-                          Không tìm thấy yêu cầu nào
-                        </td>
-                      </tr>
-                    )}
-
-                    {!isLoading &&
-                      !error &&
-                      requests.map((request, index) => (
-                        <tr
-                          key={
-                            request.id ||
-                            `${request.phone}-${request.created_at}`
-                          }
-                          className="receptionist-requests__row"
-                        >
-                          <td className="receptionist-requests__cell receptionist-requests__cell--num">
-                            {index + 1}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            <div className="receptionist-requests__user-cell">
-                              <div
-                                className="receptionist-requests__avatar"
-                                aria-hidden="true"
-                              >
-                                {(request.full_name || "?")
-                                  .charAt(0)
-                                  .toUpperCase()}
-                              </div>
-                              <span>{request.full_name}</span>
-                            </div>
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            {request.phone}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            {request.email}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            {request.description}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            {new Date(request.created_at).toLocaleString(
-                              "vi-VN",
-                            )}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            {request.status}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            {request.handled_by}
-                          </td>
-                          <td className="receptionist-requests__cell">
-                            <button
-                              className="receptionist-requests__action-btn receptionist-requests__action-btn--edit"
-                              type="button"
-                              onClick={() => setHandleRequest(request)}
-                            >
-                              <Edit size={20} aria-hidden="true" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="receptionist-requests__pagination">
-                <p className="receptionist-requests__pagination-info">
-                  Hiển thị 1-{Math.min(requests.length, 6)} trong tổng số{" "}
-                  {requests.length} yêu cầu
-                </p>
-                <div className="receptionist-requests__pagination-controls">
-                  <button
-                    className="receptionist-requests__page-btn"
-                    type="button"
-                  >
-                    <ChevronLeft size={18} aria-hidden="true" />
-                  </button>
-                  <button
-                    className="receptionist-requests__page-btn receptionist-requests__page-btn--active"
-                    type="button"
-                  >
-                    1
-                  </button>
-                  <button
-                    className="receptionist-requests__page-btn"
-                    type="button"
-                  >
-                    2
-                  </button>
-                  <button
-                    className="receptionist-requests__page-btn"
-                    type="button"
-                  >
-                    3
-                  </button>
-                  <button
-                    className="receptionist-requests__page-btn"
-                    type="button"
-                  >
-                    <ChevronRight size={18} aria-hidden="true" />
-                  </button>
-                </div>
-              </div>
+              <button className="receptionist-requests__tool-btn" type="button">
+                <Filter size={18} aria-hidden="true" />
+              </button>
             </div>
           </div>
 
-          {handleRequest && (
-            <HandleRequestModal
-              request={handleRequest}
-              onClose={() => setHandleRequest(null)}
-              onSuccess={() => {
-                setHandleRequest(null);
-                refetch();
-              }}
-            />
-          )}
+          <div className="receptionist-requests__table-wrapper">
+            <table className="receptionist-requests__table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Họ và tên</th>
+                  <th>Số điện thoại</th>
+                  <th>Email</th>
+                  <th>Mô tả</th>
+                  <th>Ngày tạo</th>
+                  <th>Trạng thái</th>
+                  <th>Người xử lý</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {isLoading && (
+                  <tr>
+                    <td className="receptionist-requests__cell" colSpan={9}>
+                      Đang tải yêu cầu...
+                    </td>
+                  </tr>
+                )}
+
+                {!isLoading && error && (
+                  <tr>
+                    <td className="receptionist-requests__cell" colSpan={9}>
+                      Lỗi: {error.message}
+                    </td>
+                  </tr>
+                )}
+
+                {!isLoading && !error && requests.length === 0 && (
+                  <tr>
+                    <td className="receptionist-requests__cell" colSpan={9}>
+                      Không tìm thấy yêu cầu nào
+                    </td>
+                  </tr>
+                )}
+
+                {!isLoading &&
+                  !error &&
+                  requests.map((request, index) => (
+                    <tr
+                      key={
+                        request.id || `${request.phone}-${request.created_at}`
+                      }
+                      className="receptionist-requests__row"
+                    >
+                      <td className="receptionist-requests__cell receptionist-requests__cell--num">
+                        {index + 1}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        <div className="receptionist-requests__user-cell">
+                          <div
+                            className="receptionist-requests__avatar"
+                            aria-hidden="true"
+                          >
+                            {(request.full_name || "?").charAt(0).toUpperCase()}
+                          </div>
+                          <span>{request.full_name}</span>
+                        </div>
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.phone}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.email}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.description}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {new Date(request.created_at).toLocaleString("vi-VN")}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.status}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.handled_by}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        <button
+                          className="receptionist-requests__action-btn receptionist-requests__action-btn--edit"
+                          type="button"
+                          onClick={() => setHandleRequest(request)}
+                        >
+                          <Edit size={20} aria-hidden="true" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="receptionist-requests__pagination">
+            <p className="receptionist-requests__pagination-info">
+              Hiển thị 1-{Math.min(requests.length, 6)} trong tổng số{" "}
+              {requests.length} yêu cầu
+            </p>
+            <div className="receptionist-requests__pagination-controls">
+              <button className="receptionist-requests__page-btn" type="button">
+                <ChevronLeft size={18} aria-hidden="true" />
+              </button>
+              <button
+                className="receptionist-requests__page-btn receptionist-requests__page-btn--active"
+                type="button"
+              >
+                1
+              </button>
+              <button className="receptionist-requests__page-btn" type="button">
+                2
+              </button>
+              <button className="receptionist-requests__page-btn" type="button">
+                3
+              </button>
+              <button className="receptionist-requests__page-btn" type="button">
+                <ChevronRight size={18} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {handleRequest && (
+        <HandleRequestModal
+          request={handleRequest}
+          onClose={() => setHandleRequest(null)}
+          onSuccess={() => {
+            setHandleRequest(null);
+            refetch();
+          }}
+        />
+      )}
     </ReceptionistPageShell>
   );
 }

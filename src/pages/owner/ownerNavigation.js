@@ -1,31 +1,31 @@
 export const OWNER_NAV_ITEMS = [
   {
     icon: "medical_services",
-    label: "Dịch vụ nha khoa",
+    label: "Dental Services",
     to: "/owner/services",
   },
   {
     icon: "business",
-    label: "Thông tin phòng khám",
+    label: "Clinic Info",
     to: "/owner/clinic-info",
   },
   {
     icon: "calendar_month",
-    label: "Lịch phòng khám",
+    label: "Clinic Schedule",
     to: "/owner/clinic-schedule",
   },
   {
     icon: "analytics",
-    label: "Phân tích",
+    label: "Analytics",
     to: "/owner/analytics",
   },
   {
     icon: "payments",
-    label: "Doanh thu",
+    label: "Revenue",
     to: "/owner/revenue",
   },
 ];
 
 export const OWNER_FOOTER_ITEMS = [
-  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
+  { icon: "logout", label: "Logout", to: "/staff/login" },
 ];
