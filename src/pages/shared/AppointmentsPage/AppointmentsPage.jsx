@@ -20,14 +20,6 @@ import "./AppointmentsPage.css";
 const ITEMS_PER_PAGE = 8;
 
 /* ── Role-specific config ── */
-const PATIENT_STATUS_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "Confirmed", label: "Confirmed" },
-  { value: "Completed", label: "Completed" },
-  { value: "Conflict", label: "Conflict" },
-  { value: "Cancelled", label: "Cancelled" },
-];
-
 const ROLE_CONFIG = {
   patient: {
     title: "My Appointments",
@@ -36,7 +28,7 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
-    statusOptions: PATIENT_STATUS_OPTIONS,
+    statusOptions: null, // use AppointmentFilters default (all statuses)
   },
   receptionist: {
     title: "Appointment List",
