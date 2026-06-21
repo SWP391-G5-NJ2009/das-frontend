@@ -129,9 +129,9 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
 
   const handleCancel = useCallback(() => {
     if (isReceptionist) {
-      navigate("/receptionist/dashboard");
+      navigate("/receptionist/appointments");
     } else {
-      navigate("/patient/dashboard");
+      navigate("/patient/appointments");
     }
   }, [navigate, isReceptionist]);
 
@@ -151,12 +151,17 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         slotId: Number(selectedSlot.id),
         serviceId: Number(selectedService.id),
         note: "",
-      // Receptionist: send patientId for existing patients, or newPatient for walk-ins
-      ...(isReceptionist
-        ? String(selectedPatient.id).startsWith("new-")
-          ? { newPatient: { fullName: selectedPatient.fullName, phone: selectedPatient.phone } }
-          : { patientId: Number(selectedPatient.id) }
-        : {}),
+        // Receptionist: send patientId for existing patients, or newPatient for walk-ins
+        ...(isReceptionist
+          ? String(selectedPatient.id).startsWith("new-")
+            ? {
+                newPatient: {
+                  fullName: selectedPatient.fullName,
+                  phone: selectedPatient.phone,
+                },
+              }
+            : { patientId: Number(selectedPatient.id) }
+          : {}),
       });
       alert(
         "Appointment booked successfully! A confirmation email has been sent to your inbox.",
