@@ -303,6 +303,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
                     selectedSlotId={selectedSlot?.id || null}
                     onSelectSlot={handleSelectSlot}
                     slots={slots}
+                    enforceTimingRule={!isReceptionist}
                   />
                 )}
               </>
