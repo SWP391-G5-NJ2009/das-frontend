@@ -151,8 +151,12 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         slotId: Number(selectedSlot.id),
         serviceId: Number(selectedService.id),
         note: "",
-        // receptionist must supply patientId; patient role ignored on BE
-        ...(isReceptionist ? { patientId: Number(selectedPatient.id) } : {}),
+      // Receptionist: send patientId for existing patients, or newPatient for walk-ins
+      ...(isReceptionist
+        ? String(selectedPatient.id).startsWith("new-")
+          ? { newPatient: { fullName: selectedPatient.fullName, phone: selectedPatient.phone } }
+          : { patientId: Number(selectedPatient.id) }
+        : {}),
       });
       alert(
         "Appointment booked successfully! A confirmation email has been sent to your inbox.",
