@@ -170,7 +170,7 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
         ) : (
           <div className="date-time-picker__slots-grid">
             {slots.map((slot) => {
-              const isAvailable = slot.status === "available";
+              const isAvailable = slot.status === "Available";
               const isSelected = isAvailable && slot.id === selectedSlotId;
               return (
                 <button
@@ -189,7 +189,9 @@ function DateTimePicker({ selectedDate, onSelectDate, selectedSlotId, onSelectSl
                   aria-label={
                     isAvailable
                       ? `Select time ${slot.time}`
-                      : `${slot.time} — unavailable`
+                      : slot.status === "Booked"
+                        ? `${slot.time} — booked`
+                        : `${slot.time} — unavailable`
                   }
                 >
                   {slot.time}
@@ -212,7 +214,7 @@ DateTimePicker.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       time: PropTypes.string.isRequired,
-      status: PropTypes.oneOf(["available", "booked", "passed"]).isRequired,
+      status: PropTypes.oneOf(["Available", "Booked", "Unavailable"]).isRequired,
     })
   ).isRequired,
 };
