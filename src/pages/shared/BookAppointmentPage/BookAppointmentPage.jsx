@@ -9,7 +9,10 @@ import {
 } from "lucide-react";
 import PropTypes from "prop-types";
 
-import { usePublicServices, useDentistsByService } from "../../../hooks/useDentalServices";
+import {
+  usePublicServices,
+  useDentistsByService,
+} from "../../../hooks/useDentalServices";
 import { useAuth } from "../../../context/AuthContext";
 import { usePatientSearch } from "../../../hooks/usePatientSearch";
 import { useAvailableSlots } from "../../../hooks/useAvailableSlots";
@@ -83,21 +86,24 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     slots,
     isLoading: isSlotsLoading,
     error: slotsError,
-  } = useAvailableSlots(
-    selectedDentist?.id ?? null,
-    selectedDate ?? null,
-  );
+  } = useAvailableSlots(selectedDentist?.id ?? null, selectedDate ?? null);
 
   const phoneNumber = selectedPatient?.phone || "";
 
   /* ── Handlers ── */
-  const handleSaveNewPatient = useCallback((newPatient) => {
-    setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
-  }, [setSelectedPatient]);
+  const handleSaveNewPatient = useCallback(
+    (newPatient) => {
+      setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
+    },
+    [setSelectedPatient],
+  );
 
-  const handlePhoneChange = useCallback((phone) => {
-    setSelectedPatient((prev) => (prev ? { ...prev, phone } : prev));
-  }, [setSelectedPatient]);
+  const handlePhoneChange = useCallback(
+    (phone) => {
+      setSelectedPatient((prev) => (prev ? { ...prev, phone } : prev));
+    },
+    [setSelectedPatient],
+  );
 
   const handleSelectService = useCallback((service) => {
     setSelectedService(service);
@@ -148,7 +154,9 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         // receptionist must supply patientId; patient role ignored on BE
         ...(isReceptionist ? { patientId: Number(selectedPatient.id) } : {}),
       });
-      alert("Appointment booked successfully!");
+      alert(
+        "Appointment booked successfully! A confirmation email has been sent to your inbox.",
+      );
       if (isReceptionist) {
         navigate("/receptionist/appointments");
       } else {
@@ -208,9 +216,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
               onSelectPatient={handleSelectPatient}
               onClearPatient={handleClearPatient}
               onAddNewPatient={
-                isReceptionist
-                  ? () => setIsAddPatientModalOpen(true)
-                  : null
+                isReceptionist ? () => setIsAddPatientModalOpen(true) : null
               }
               isSearching={isSearching}
               phoneNumber={phoneNumber}
