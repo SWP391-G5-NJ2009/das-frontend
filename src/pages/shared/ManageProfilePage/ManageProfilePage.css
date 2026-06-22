@@ -68,6 +68,7 @@
 
 .manage-profile__details dt,
 .manage-profile__field span,
+.manage-profile__field legend,
 .manage-profile__password-form span {
   color: var(--color-neutral-700);
   font-size: var(--font-size-sm);
@@ -92,10 +93,44 @@
   font: inherit;
 }
 
+.manage-profile__field--radio {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.manage-profile__radio-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--space-12);
+}
+
+.manage-profile__radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.manage-profile__radio input {
+  width: auto;
+  min-height: auto;
+  margin: 0;
+  accent-color: var(--color-secondary-700);
+}
+
 .manage-profile__field input:focus,
 .manage-profile__password-form input:focus {
   border-color: var(--color-primary-700);
   outline: 2px solid var(--color-primary-100);
+}
+
+.manage-profile__radio input:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
 }
 
 .manage-profile__password-form {

@@ -15,7 +15,7 @@ const COMMON_FIELDS = [
   { name: "email", label: "Email", type: "email" },
   { name: "phone", label: "Phone number", type: "tel" },
   { name: "birthDate", label: "Date of birth", type: "date" },
-  { name: "gender", label: "Gender" },
+  { name: "gender", label: "Gender", options: ["Male", "Female"] },
   { name: "address", label: "Address", wide: true },
 ];
 
@@ -41,6 +41,17 @@ const EMPTY_PASSWORD_FORM = {
 
 function formatValue(value) {
   return value === 0 ? "0" : value || "Not updated";
+}
+
+function normalizeGender(value) {
+  if (value === "Nam") return "Male";
+  if (value === "Nữ" || value === "Nu") return "Female";
+  return value || "";
+}
+
+function getFieldValue(field, profile) {
+  const value = profile?.[field.name];
+  return field.name === "gender" ? normalizeGender(value) : value;
 }
 
 function RoleShell({ children, role }) {
@@ -71,10 +82,62 @@ function getDraft(profile, fields) {
   return Object.fromEntries(
     getEditableFields(fields).map((field) => [
       field.name,
-      profile?.[field.name] || "",
+      getFieldValue(field, profile),
     ]),
   );
 }
+
+function ProfileField({ field, value, onChange }) {
+  if (field.options) {
+    return (
+      <fieldset
+        className={`manage-profile__field manage-profile__field--radio${field.wide ? " manage-profile__field--wide" : ""}`}
+      >
+        <legend>{field.label}</legend>
+        <div className="manage-profile__radio-group">
+          {field.options.map((option) => (
+            <label className="manage-profile__radio" key={option}>
+              <input
+                name={field.name}
+                type="radio"
+                value={option}
+                checked={value === option}
+                onChange={onChange}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    );
+  }
+
+  return (
+    <label
+      className={`manage-profile__field${field.wide ? " manage-profile__field--wide" : ""}`}
+    >
+      <span>{field.label}</span>
+      <input
+        name={field.name}
+        type={field.type || "text"}
+        value={value}
+        onChange={onChange}
+      />
+    </label>
+  );
+}
+
+ProfileField.propTypes = {
+  field: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    options: PropTypes.arrayOf(PropTypes.string),
+    type: PropTypes.string,
+    wide: PropTypes.bool,
+  }).isRequired,
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
+};
 
 function ManageProfilePage() {
   const { user } = useAuth();
@@ -226,18 +289,12 @@ function ManageProfilePage() {
               {isEditing ? (
                 <form className="manage-profile__form" onSubmit={saveProfile}>
                   {editableFields.map((field) => (
-                    <label
-                      className={`manage-profile__field${field.wide ? " manage-profile__field--wide" : ""}`}
+                    <ProfileField
+                      field={field}
                       key={field.name}
-                    >
-                      <span>{field.label}</span>
-                      <input
-                        name={field.name}
-                        type={field.type || "text"}
-                        value={draft[field.name] || ""}
-                        onChange={changeDraft}
-                      />
-                    </label>
+                      value={draft[field.name] || ""}
+                      onChange={changeDraft}
+                    />
                   ))}
                   <div className="manage-profile__actions">
                     <button type="submit" disabled={profileStatus.isLoading}>
@@ -260,7 +317,7 @@ function ManageProfilePage() {
                       key={field.name}
                     >
                       <dt>{field.label}</dt>
-                      <dd>{formatValue(profile[field.name])}</dd>
+                      <dd>{formatValue(getFieldValue(field, profile))}</dd>
                     </div>
                   ))}
                 </dl>
