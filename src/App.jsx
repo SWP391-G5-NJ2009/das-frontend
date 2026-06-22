@@ -9,7 +9,6 @@ import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
-import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
@@ -39,7 +38,7 @@ function App() {
             path="/patient/profile"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
-                <ProfilePage />
+                <ManageProfilePage />
               </ProtectedRoute>
             }
           />

@@ -11,7 +11,6 @@ const emptyPatient = {
   birthDate: "",
   gender: "",
   address: "",
-  medicalHistory: "",
 };
 
 function formatValue(value) {
@@ -52,7 +51,6 @@ function ProfilePage() {
         birthDate: patient.birthDate || "",
         gender: patient.gender || "",
         address: patient.address || "",
-        medicalHistory: patient.medicalHistory || "",
       });
     }
   }, [patient]);
@@ -71,7 +69,6 @@ function ProfilePage() {
         birthDate: patient.birthDate || "",
         gender: patient.gender || "",
         address: patient.address || "",
-        medicalHistory: patient.medicalHistory || "",
       });
     }
     setProfileStatus({ isLoading: false, error: "", success: "" });
@@ -264,15 +261,6 @@ function ProfilePage() {
                       onChange={handleProfileChange}
                     />
                   </label>
-                  <label className="patient-profile-form__field patient-profile-form__field--full">
-                    <span>Medical history</span>
-                    <input
-                      name="medicalHistory"
-                      type="text"
-                      value={draftPatient.medicalHistory}
-                      onChange={handleProfileChange}
-                    />
-                  </label>
                   <div className="patient-profile-form__actions">
                     <button
                       type="button"
@@ -319,10 +307,6 @@ function ProfilePage() {
                   <div className="patient-profile-details__full">
                     <dt>Address</dt>
                     <dd>{formatValue(patient.address)}</dd>
-                  </div>
-                  <div className="patient-profile-details__full">
-                    <dt>Medical history</dt>
-                    <dd>{formatValue(patient.medicalHistory)}</dd>
                   </div>
                 </dl>
               )}

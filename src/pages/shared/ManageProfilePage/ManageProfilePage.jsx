@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import AdminPageShell from "../../admin/AdminPageShell";
 import DentistPageShell from "../../dentist/DentistPageShell";
 import OwnerPageShell from "../../owner/OwnerPageShell";
@@ -10,38 +10,27 @@ import { useMyProfile } from "../../../hooks/useMyProfile";
 import { authService } from "../../../services/auth.service";
 import "./ManageProfilePage.css";
 
+const COMMON_FIELDS = [
+  { name: "fullName", label: "Full name" },
+  { name: "email", label: "Email", type: "email" },
+  { name: "phone", label: "Phone number", type: "tel" },
+  { name: "birthDate", label: "Date of birth", type: "date" },
+  { name: "gender", label: "Gender" },
+  { name: "address", label: "Address", wide: true },
+];
+
 const ROLE_FIELDS = {
-  admin: [
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Phone number", type: "tel" },
-  ],
+  admin: COMMON_FIELDS,
   dentist: [
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Phone number", type: "tel" },
-    { name: "speciality", label: "Speciality" },
-    { name: "experience", label: "Experience", multiline: true },
-    { name: "avatar", label: "Avatar URL", type: "url" },
+    ...COMMON_FIELDS,
+    { name: "speciality", label: "Speciality", wide: true },
   ],
-  owner: [
-    { name: "fullName", label: "Full name" },
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Phone number", type: "tel" },
-  ],
+  owner: COMMON_FIELDS,
   patient: [
-    { name: "fullName", label: "Full name" },
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Phone number", type: "tel" },
-    { name: "birthDate", label: "Date of birth", type: "date" },
-    { name: "gender", label: "Gender" },
-    { name: "address", label: "Address", multiline: true },
-    { name: "medicalHistory", label: "Medical history", multiline: true },
+    ...COMMON_FIELDS,
+    { name: "noShowCount", label: "No-show count", readOnly: true },
   ],
-  receptionist: [
-    { name: "fullName", label: "Full name" },
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Phone number", type: "tel" },
-    { name: "citizenId", label: "Citizen ID" },
-  ],
+  receptionist: COMMON_FIELDS,
 };
 
 const EMPTY_PASSWORD_FORM = {
@@ -51,7 +40,7 @@ const EMPTY_PASSWORD_FORM = {
 };
 
 function formatValue(value) {
-  return value || "Not updated";
+  return value === 0 ? "0" : value || "Not updated";
 }
 
 function RoleShell({ children, role }) {
@@ -74,9 +63,16 @@ RoleShell.defaultProps = {
   role: "patient",
 };
 
+function getEditableFields(fields) {
+  return fields.filter((field) => !field.readOnly);
+}
+
 function getDraft(profile, fields) {
   return Object.fromEntries(
-    fields.map((field) => [field.name, profile?.[field.name] || ""]),
+    getEditableFields(fields).map((field) => [
+      field.name,
+      profile?.[field.name] || "",
+    ]),
   );
 }
 
@@ -84,7 +80,9 @@ function ManageProfilePage() {
   const { user } = useAuth();
   const { error, isLoading, profile, updateProfile } = useMyProfile();
   const role = profile?.role || user?.role || "patient";
-  const fields = ROLE_FIELDS[role] || ROLE_FIELDS.admin;
+  const fields = ROLE_FIELDS[role] || COMMON_FIELDS;
+  const editableFields = getEditableFields(fields);
+  const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState({});
   const [profileStatus, setProfileStatus] = useState({
     isLoading: false,
@@ -102,6 +100,17 @@ function ManageProfilePage() {
     setDraft(getDraft(profile, fields));
   }, [fields, profile]);
 
+  const startEdit = () => {
+    setProfileStatus({ isLoading: false, error: "", success: "" });
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => {
+    setDraft(getDraft(profile, fields));
+    setProfileStatus({ isLoading: false, error: "", success: "" });
+    setIsEditing(false);
+  };
+
   const changeDraft = (event) => {
     const { name, value } = event.target;
     setDraft((current) => ({ ...current, [name]: value }));
@@ -114,6 +123,7 @@ function ManageProfilePage() {
 
     try {
       await updateProfile(draft);
+      setIsEditing(false);
       setProfileStatus({
         isLoading: false,
         error: "",
@@ -128,14 +138,14 @@ function ManageProfilePage() {
     }
   };
 
-  const resetProfile = () => {
-    setDraft(getDraft(profile, fields));
-    setProfileStatus({ isLoading: false, error: "", success: "" });
-  };
-
   const changePasswordForm = (event) => {
     const { name, value } = event.target;
     setPasswordForm((current) => ({ ...current, [name]: value }));
+    setPasswordStatus({ isLoading: false, error: "", success: "" });
+  };
+
+  const resetPasswordForm = () => {
+    setPasswordForm(EMPTY_PASSWORD_FORM);
     setPasswordStatus({ isLoading: false, error: "", success: "" });
   };
 
@@ -176,14 +186,21 @@ function ManageProfilePage() {
   return (
     <RoleShell role={role}>
       <section className="manage-profile" aria-labelledby="manage-profile-title">
-        <header className="manage-profile__header">
-          <h1 id="manage-profile-title">Manage Profile</h1>
-          <p>Keep your account details and password up to date.</p>
-        </header>
-
         <article className="manage-profile__card">
           <div className="manage-profile__card-header">
-            <h2>Account information</h2>
+            <div>
+              <h1 id="manage-profile-title">Personal Profile</h1>
+              <p>Manage your personal information</p>
+            </div>
+            {!isEditing && profile && (
+              <button
+                className="manage-profile__edit"
+                type="button"
+                onClick={startEdit}
+              >
+                Edit
+              </button>
+            )}
           </div>
 
           {isLoading && <p className="manage-profile__state">Loading profile...</p>}
@@ -195,106 +212,102 @@ function ManageProfilePage() {
 
           {!isLoading && !error && profile && (
             <>
-              <dl className="manage-profile__summary">
-                <div>
-                  <dt>Username</dt>
-                  <dd>{formatValue(profile.username)}</dd>
-                </div>
-                <div>
-                  <dt>Role</dt>
-                  <dd>{formatValue(profile.role)}</dd>
-                </div>
-                <div>
-                  <dt>Status</dt>
-                  <dd>{formatValue(profile.status)}</dd>
-                </div>
-              </dl>
+              {profileStatus.error && (
+                <p className="manage-profile__message manage-profile__message--error">
+                  {profileStatus.error}
+                </p>
+              )}
+              {profileStatus.success && (
+                <p className="manage-profile__message manage-profile__message--success">
+                  {profileStatus.success}
+                </p>
+              )}
 
-              <form className="manage-profile__form" onSubmit={saveProfile}>
-                {fields.map((field) => (
-                  <label
-                    className={`manage-profile__field${field.multiline ? " manage-profile__field--wide" : ""}`}
-                    key={field.name}
-                  >
-                    <span>{field.label}</span>
-                    {field.multiline ? (
-                      <textarea
-                        name={field.name}
-                        value={draft[field.name] || ""}
-                        onChange={changeDraft}
-                      />
-                    ) : (
+              {isEditing ? (
+                <form className="manage-profile__form" onSubmit={saveProfile}>
+                  {editableFields.map((field) => (
+                    <label
+                      className={`manage-profile__field${field.wide ? " manage-profile__field--wide" : ""}`}
+                      key={field.name}
+                    >
+                      <span>{field.label}</span>
                       <input
                         name={field.name}
                         type={field.type || "text"}
                         value={draft[field.name] || ""}
                         onChange={changeDraft}
                       />
-                    )}
-                  </label>
-                ))}
-
-                {profileStatus.error && (
-                  <p className="manage-profile__message manage-profile__message--error">
-                    {profileStatus.error}
-                  </p>
-                )}
-                {profileStatus.success && (
-                  <p className="manage-profile__message manage-profile__message--success">
-                    {profileStatus.success}
-                  </p>
-                )}
-
-                <div className="manage-profile__actions">
-                  <button type="submit" disabled={profileStatus.isLoading}>
-                    {profileStatus.isLoading ? "Saving..." : "Save changes"}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={profileStatus.isLoading}
-                    onClick={resetProfile}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
+                    </label>
+                  ))}
+                  <div className="manage-profile__actions">
+                    <button type="submit" disabled={profileStatus.isLoading}>
+                      {profileStatus.isLoading ? "Saving..." : "Save changes"}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={profileStatus.isLoading}
+                      onClick={cancelEdit}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <dl className="manage-profile__details">
+                  {fields.map((field) => (
+                    <div
+                      className={field.wide ? "manage-profile__details-full" : ""}
+                      key={field.name}
+                    >
+                      <dt>{field.label}</dt>
+                      <dd>{formatValue(profile[field.name])}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
             </>
           )}
         </article>
 
         <article className="manage-profile__card">
           <div className="manage-profile__card-header">
-            <h2>Change password</h2>
+            <div>
+              <h2>Change password</h2>
+              <p>Update your password to protect your account</p>
+            </div>
           </div>
 
-          <form className="manage-profile__form" onSubmit={savePassword}>
-            <label className="manage-profile__field">
+          <form className="manage-profile__password-form" onSubmit={savePassword}>
+            <label>
               <span>Current password</span>
               <input
                 required
                 name="oldPassword"
+                placeholder="Enter current password"
                 type="password"
                 value={passwordForm.oldPassword}
                 onChange={changePasswordForm}
               />
             </label>
-            <label className="manage-profile__field">
+            <label>
               <span>New password</span>
               <input
                 required
                 minLength={8}
                 name="newPassword"
                 pattern="^(?=.*[A-Za-z])(?=.*\d).+$"
+                placeholder="Enter new password"
                 type="password"
                 value={passwordForm.newPassword}
                 onChange={changePasswordForm}
               />
             </label>
-            <label className="manage-profile__field">
+            <label>
               <span>Confirm new password</span>
               <input
                 required
                 name="confirmPassword"
+                placeholder="Re-enter new password"
                 type="password"
                 value={passwordForm.confirmPassword}
                 onChange={changePasswordForm}
@@ -312,14 +325,14 @@ function ManageProfilePage() {
               </p>
             )}
 
-            <div className="manage-profile__actions">
+            <div className="manage-profile__actions manage-profile__actions--password">
               <button type="submit" disabled={passwordStatus.isLoading}>
                 {passwordStatus.isLoading ? "Saving..." : "Save password"}
               </button>
               <button
                 type="button"
                 disabled={passwordStatus.isLoading}
-                onClick={() => setPasswordForm(EMPTY_PASSWORD_FORM)}
+                onClick={resetPasswordForm}
               >
                 Cancel
               </button>
