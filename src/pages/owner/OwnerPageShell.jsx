@@ -24,7 +24,7 @@ function OwnerPageShell({ children, contentClassName }) {
       <RoleSidebar
         ariaLabel="Clinic owner navigation"
         navItems={OWNER_NAV_ITEMS}
-        footerItems={footerItems}
+        footerItems={[footerItems]}
       />
 
       <main className="owner-page__main">

@@ -22,7 +22,7 @@ function PatientPageShell({ children }) {
       <RoleSidebar
         ariaLabel="Patient navigation"
         navItems={PATIENT_NAV_ITEMS}
-        footerItems={footerItems}
+        footerItems={[footerItems]}
       />
 
       <main className="patient-page__main">

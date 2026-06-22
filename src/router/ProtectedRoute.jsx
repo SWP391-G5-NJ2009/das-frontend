@@ -5,9 +5,13 @@ import Spinner from "../components/common/Spinner/Spinner";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, isLoading } = useAuth();
+  const loginPath =
+    allowedRoles?.length && !allowedRoles.includes("patient")
+      ? "/staff/login"
+      : "/login";
 
   if (isLoading) return <Spinner />;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to={loginPath} replace />;
 
   if (allowedRoles?.length && !allowedRoles.includes(user.role)) {
     return <Navigate to={ROLE_HOME[user.role] || "/login"} replace />;

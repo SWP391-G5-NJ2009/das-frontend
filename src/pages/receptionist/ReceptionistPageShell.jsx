@@ -29,7 +29,7 @@ function ReceptionistPageShell({
       <RoleSidebar
         ariaLabel="Receptionist navigation"
         navItems={RECEPTIONIST_NAV_ITEMS}
-        footerItems={footerItems}
+        footerItems={[footerItems]}
       />
 
       <main className="receptionist-page__main">

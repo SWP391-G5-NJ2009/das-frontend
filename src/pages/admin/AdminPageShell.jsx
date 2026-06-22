@@ -21,7 +21,7 @@ function AdminPageShell({ children }) {
       <RoleSidebar
         ariaLabel="Admin navigation"
         navItems={ADMIN_NAV_ITEMS}
-        footerItems={footerItems}
+        footerItems={[footerItems]}
       />
 
       <main className="admin-accounts__main">
