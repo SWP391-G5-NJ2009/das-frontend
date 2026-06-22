@@ -24,6 +24,11 @@ export const RECEPTIONIST_NAV_ITEMS = [
     label: "Rooms",
     to: "/receptionist/rooms",
   },
+  {
+    icon: "person",
+    label: "Manage Profile",
+    to: "/receptionist/profile",
+  },
 ];
 
 export const RECEPTIONIST_FOOTER_ITEMS = [

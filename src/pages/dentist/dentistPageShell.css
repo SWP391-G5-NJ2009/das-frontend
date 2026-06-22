@@ -1,0 +1,23 @@
+.dentist-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+}
+
+.dentist-page__main {
+  flex: 1;
+  min-height: 100vh;
+  margin-left: 260px;
+}
+
+.dentist-page__content {
+  padding: calc(var(--header-height) + var(--space-6)) var(--space-6)
+    var(--space-10);
+}
+
+@media (max-width: 768px) {
+  .dentist-page__main {
+    margin-left: 0;
+  }
+}

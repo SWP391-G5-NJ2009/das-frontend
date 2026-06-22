@@ -1,5 +1,5 @@
 export const PATIENT_NAV_ITEMS = [
-  { icon: "person", label: "Personal Profile", to: "/patient/profile" },
+  { icon: "person", label: "Manage Profile", to: "/patient/profile" },
   { icon: "calendar_plus", label: "Book Appointment", to: "/patient/booking" },
   {
     icon: "calendar_today",

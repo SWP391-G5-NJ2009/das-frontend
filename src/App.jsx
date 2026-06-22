@@ -14,6 +14,7 @@ import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPag
 import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
+import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -107,10 +108,26 @@ function App() {
             }
           />
           <Route
+            path="/receptionist/profile"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dentist/dashboard"
             element={
               <ProtectedRoute allowedRoles={["dentist"]}>
                 <RoleDashboardPage title="Dentist Dashboard" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dentist/profile"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <ManageProfilePage />
               </ProtectedRoute>
             }
           />
@@ -123,10 +140,26 @@ function App() {
             }
           />
           <Route
+            path="/owner/profile"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/accounts"
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminAccountsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ManageProfilePage />
               </ProtectedRoute>
             }
           />
