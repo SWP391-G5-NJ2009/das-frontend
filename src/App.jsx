@@ -9,10 +9,11 @@ import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
-import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
+import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
+import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -37,7 +38,7 @@ function App() {
             path="/patient/profile"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
-                <ProfilePage />
+                <ManageProfilePage />
               </ProtectedRoute>
             }
           />
@@ -90,10 +91,26 @@ function App() {
             }
           />
           <Route
+            path="/receptionist/patient-registration"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <PatientRegistrationPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/receptionist/book-appointment"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <ReceptionistBookAppointmentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/receptionist/profile"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <ManageProfilePage />
               </ProtectedRoute>
             }
           />
@@ -106,6 +123,14 @@ function App() {
             }
           />
           <Route
+            path="/dentist/profile"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/owner/services-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
@@ -114,10 +139,26 @@ function App() {
             }
           />
           <Route
+            path="/owner/profile"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/accounts"
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminAccountsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ManageProfilePage />
               </ProtectedRoute>
             }
           />

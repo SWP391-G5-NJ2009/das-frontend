@@ -24,6 +24,11 @@ export const OWNER_NAV_ITEMS = [
     label: "Revenue",
     to: "/owner/revenue",
   },
+  {
+    icon: "person",
+    label: "Manage Profile",
+    to: "/owner/profile",
+  },
 ];
 
 export const OWNER_FOOTER_ITEMS = [

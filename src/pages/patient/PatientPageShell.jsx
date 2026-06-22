@@ -9,13 +9,20 @@ import "./patientPageShell.css";
 function PatientPageShell({ children }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const footerItems = {
+    ...PATIENT_FOOTER_ITEMS[0],
+    onClick: () => {
+      logout();
+      navigate("/login", { replace: true });
+    },
+  };
 
   return (
     <div className="patient-page">
       <RoleSidebar
         ariaLabel="Patient navigation"
         navItems={PATIENT_NAV_ITEMS}
-        footerItems={PATIENT_FOOTER_ITEMS}
+        footerItems={[footerItems]}
       />
 
       <main className="patient-page__main">
@@ -23,7 +30,6 @@ function PatientPageShell({ children }) {
           isFixed
           mobileNavItems={PATIENT_NAV_ITEMS}
           roleLabel={user?.role || "patient"}
-          searchLabel="Search patient area"
         />
         <div className="patient-page__content">{children}</div>
       </main>

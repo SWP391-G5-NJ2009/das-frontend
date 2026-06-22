@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Edit,
@@ -23,15 +22,9 @@ import "./AdminAccountsPage.css";
 
 function AdminAccountsPage() {
   const { accounts, isLoading, error, refetch } = useAccounts();
-  const [toastVisible, setToastVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
-
-  const showToast = () => {
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 3000);
-  };
 
   return (
     <AdminPageShell onNotificationClick={showToast}>

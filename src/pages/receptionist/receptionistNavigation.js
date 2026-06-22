@@ -15,9 +15,19 @@ export const RECEPTIONIST_NAV_ITEMS = [
     to: "/receptionist/payments",
   },
   {
+    icon: "person_add",
+    label: "Patient Registration",
+    to: "/receptionist/patient-registration",
+  },
+  {
     icon: "meeting_room",
     label: "Rooms",
     to: "/receptionist/rooms",
+  },
+  {
+    icon: "person",
+    label: "Manage Profile",
+    to: "/receptionist/profile",
   },
 ];
 

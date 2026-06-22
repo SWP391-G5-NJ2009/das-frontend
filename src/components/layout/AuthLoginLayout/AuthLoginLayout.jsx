@@ -128,7 +128,6 @@ AuthLoginLayout.propTypes = {
 
 AuthLoginLayout.defaultProps = {
   error: null,
-  forgotPasswordPath: "/forgot-password",
   isSubmitting: false,
 };
 

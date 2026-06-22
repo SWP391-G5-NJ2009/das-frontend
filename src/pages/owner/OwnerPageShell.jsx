@@ -9,6 +9,13 @@ import "./ownerPageShell.css";
 function OwnerPageShell({ children, contentClassName }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const footerItems = {
+    ...OWNER_FOOTER_ITEMS[0],
+    onClick: () => {
+      logout();
+      navigate("/staff/login", { replace: true });
+    },
+  };
 
   return (
     <div
@@ -17,7 +24,7 @@ function OwnerPageShell({ children, contentClassName }) {
       <RoleSidebar
         ariaLabel="Clinic owner navigation"
         navItems={OWNER_NAV_ITEMS}
-        footerItems={OWNER_FOOTER_ITEMS}
+        footerItems={[footerItems]}
       />
 
       <main className="owner-page__main">
@@ -25,8 +32,6 @@ function OwnerPageShell({ children, contentClassName }) {
           isFixed
           mobileNavItems={OWNER_NAV_ITEMS}
           roleLabel={user?.role || "owner"}
-          searchLabel="Search clinic owner area"
-          showHelp
         />
         <div className="owner-page__content">{children}</div>
       </main>
