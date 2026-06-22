@@ -27,12 +27,11 @@ function getInitials(name) {
 }
 
 const ROLE_LABELS = {
-  admin: "Quan tri vien",
-  dentist: "Nha si",
-  owner: "Chu phong kham",
-  patient: "Benh nhan",
-  receptionist: "Le tan",
-  staff: "Nhan vien",
+  admin: "Admin",
+  dentist: "Dentist",
+  owner: "Clinic Owner",
+  patient: "Patient",
+  receptionist: "Receptionist",
 };
 
 function getRoleLabel(roleLabel) {
@@ -74,7 +73,7 @@ function RoleHeader({
           {isMobileMenuOpen && (
             <nav
               className="role-header__mobile-menu"
-              aria-label="Dieu huong nhanh"
+              aria-label="Quick navigation"
             >
               {mobileNavItems.map((item) => (
                 <NavLink
@@ -95,15 +94,6 @@ function RoleHeader({
       )}
 
       <div className="role-header__actions">
-        <button
-          className="role-header__icon-btn"
-          type="button"
-          onClick={onNotificationClick}
-          aria-label="Thông báo"
-        >
-          <Bell size={20} aria-hidden="true" />
-        </button>
-
         <div className="role-header__divider" />
 
         <div className="role-header__profile">

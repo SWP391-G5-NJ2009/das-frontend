@@ -18,13 +18,13 @@
 
 .payment-list__heading h1 {
   margin: 0;
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-2xl);
   line-height: var(--line-height-tight);
   color: var(--color-neutral-900);
 }
 
 .payment-list__heading p {
   margin: 0;
-  font-size: var(--font-size-md);
-  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
 }

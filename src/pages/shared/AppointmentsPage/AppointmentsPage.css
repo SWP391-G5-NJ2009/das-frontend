@@ -82,37 +82,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: var(--space-3);
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border-color);
+  margin-top: var(--space-6);
 }
 
 .appts-page__pagination-info {
-  font-size: var(--font-size-sm);
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   color: var(--color-neutral-500);
 }
 
 .appts-page__pagination-controls {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+  gap: var(--space-1);
 }
 
 .appts-page__page-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.25rem;
-  height: 2.25rem;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--border-color);
+  min-width: 36px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-md);
-  background-color: #ffffff;
-  color: var(--color-neutral-700);
-  font-size: var(--font-size-sm);
+  background: none;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-xs);
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
@@ -124,9 +120,7 @@
 }
 
 .appts-page__page-btn:hover:not(:disabled) {
-  border-color: var(--color-primary-400);
-  background-color: var(--color-primary-50);
-  color: var(--color-primary-700);
+  background-color: var(--color-neutral-50);
 }
 
 .appts-page__page-btn:focus-visible {
@@ -138,8 +132,6 @@
   background-color: var(--color-primary-700);
   border-color: var(--color-primary-700);
   color: #ffffff;
-  font-weight: var(--font-weight-semibold);
-  box-shadow: var(--shadow-sm);
 }
 
 .appts-page__page-btn--active:hover {

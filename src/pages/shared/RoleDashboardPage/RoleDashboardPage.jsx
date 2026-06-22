@@ -10,11 +10,11 @@ import {
 import "./RoleDashboardPage.css";
 
 const ADMIN_NAV_ITEMS = [
-  { icon: "person", label: "Quản lý tài khoản", to: "/admin/accounts" },
-  { icon: "dashboard", label: "Bảng điều khiển", to: "/admin/dashboard" },
-  { icon: "calendar_today", label: "Lịch hẹn", to: "/admin/appointments" },
-  { icon: "assessment", label: "Báo cáo", to: "/admin/reports" },
-  { icon: "settings", label: "Cài đặt", to: "/admin/settings" },
+  { icon: "person", label: "Account Management", to: "/admin/accounts" },
+  { icon: "dashboard", label: "Dashboard", to: "/admin/dashboard" },
+  { icon: "calendar_today", label: "Appointments", to: "/admin/appointments" },
+  { icon: "assessment", label: "Reports", to: "/admin/reports" },
+  { icon: "settings", label: "Settings", to: "/admin/settings" },
 ];
 
 function RoleDashboardPage({ title }) {
@@ -25,7 +25,7 @@ function RoleDashboardPage({ title }) {
   const navItems = isOwner ? OWNER_NAV_ITEMS : ADMIN_NAV_ITEMS;
   const footerItems = isOwner
     ? getOwnerFooterItems(logout)
-    : [{ icon: "logout", label: "Đăng xuất", onClick: logout }];
+    : [{ icon: "logout", label: "Log out", onClick: logout }];
 
   return (
     <div
@@ -33,7 +33,7 @@ function RoleDashboardPage({ title }) {
     >
       {hasSidebar && (
         <RoleSidebar
-          ariaLabel="Điều hướng theo vai trò"
+          ariaLabel="Role navigation"
           navItems={navItems}
           footerItems={footerItems}
         />
@@ -48,14 +48,14 @@ function RoleDashboardPage({ title }) {
         />
         <main className="role-dashboard__content">
           <h1>{title}</h1>
-          <p>Xin chào, {user?.fullName || user?.email}.</p>
+          <p>Hello, {user?.fullName || user?.email}.</p>
           <button type="button" onClick={logout}>
-            Đăng xuất
+            Log out
           </button>
           {user?.role === "owner" && (
-            <Link to="/owner/services">Quản lý dịch vụ nha khoa</Link>
+            <Link to="/owner/services">Manage dental services</Link>
           )}
-          <Link to="/">Về trang chủ</Link>
+          <Link to="/">Back to home</Link>
         </main>
       </div>
     </div>

@@ -304,8 +304,8 @@ function OwnerServiceCatalog() {
                         <td className="price-cell">
                           {Number(
                             service.unit_price || service.price || 0,
-                          ).toLocaleString("vi-VN")}{" "}
-                          đ
+                          ).toLocaleString("en-US")}{" "}
+                          VND
                         </td>
                         <td>
                           {service.slot_occupied || 1}{" "}

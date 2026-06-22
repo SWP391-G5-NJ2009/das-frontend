@@ -1,13 +1,13 @@
 export const RECEPTIONIST_NAV_ITEMS = [
   {
-    icon: "calendar_today",
-    label: "Appointments",
-    to: "/receptionist/appointments",
-  },
-  {
     icon: "assignment",
     label: "Consultation Requests",
     to: "/receptionist/consultation-request",
+  },
+  {
+    icon: "calendar_today",
+    label: "Appointments",
+    to: "/receptionist/appointments",
   },
   {
     icon: "payments",

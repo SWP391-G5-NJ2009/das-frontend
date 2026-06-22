@@ -24,7 +24,7 @@ function StaffLoginPage() {
       });
       navigate(ROLE_HOME[user.role] || "/staff/login", { replace: true });
     } catch (err) {
-      setError(err.message || "Đăng nhập thất bại.");
+      setError(err.message || "Login failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -32,12 +32,12 @@ function StaffLoginPage() {
 
   return (
     <AuthLoginLayout
-      title="Đăng nhập nhân viên"
-      subtitle="Vui lòng đăng nhập bằng tài khoản nội bộ của bạn."
-      credentialLabel="Tên đăng nhập"
+      title="Staff login"
+      subtitle="Please log in with your internal account."
+      credentialLabel="Username"
       credentialName="username"
       credentialType="text"
-      credentialPlaceholder="Nhập tên đăng nhập"
+      credentialPlaceholder="Enter username"
       CredentialIcon={User}
       error={error}
       forgotPasswordPath="/staff/forgot-password"

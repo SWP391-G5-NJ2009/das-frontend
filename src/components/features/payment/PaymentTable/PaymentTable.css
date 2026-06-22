@@ -1,8 +1,8 @@
 .payment-table {
   overflow-x: auto;
-  background-color: var(--color-neutral-50);
-  border: thin solid var(--border-color);
-  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
@@ -11,22 +11,38 @@
   min-width: 58rem;
   border-collapse: collapse;
   font-size: var(--font-size-sm);
+  font-family: var(--font-family-base);
 }
 
-.payment-table__table th,
-.payment-table__table td {
-  padding: var(--space-4);
-  border-bottom: thin solid var(--border-color);
-  color: var(--color-neutral-700);
-  text-align: left;
-  vertical-align: middle;
+.payment-table__table thead tr {
+  background-color: var(--color-secondary-100);
 }
 
 .payment-table__table th {
-  background-color: var(--color-neutral-100);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-primary-700);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-neutral-900);
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   white-space: nowrap;
+}
+
+.payment-table__table th:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.payment-table__table th:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.payment-table__table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-neutral-200);
+  color: var(--color-neutral-600);
+  text-align: left;
+  vertical-align: middle;
 }
 
 .payment-table__table tbody tr {

@@ -9,21 +9,34 @@ function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
   if (appointments.length === 0) return null;
 
   return (
-    <div className="appt-table__wrap" role="region" aria-label="Appointment list">
+    <div
+      className="appt-table__wrap"
+      role="region"
+      aria-label="Appointment list"
+    >
       <table className="appt-table">
         <thead className="appt-table__head">
           <tr>
-            <th className="appt-table__th" scope="col">#</th>
+            <th className="appt-table__th" scope="col">
+              #
+            </th>
             {showPatientInfo && (
-              <th className="appt-table__th" scope="col">Patient</th>
+              <th className="appt-table__th" scope="col">
+                Patient
+              </th>
             )}
-            <th className="appt-table__th" scope="col">Service</th>
-            <th className="appt-table__th" scope="col">Dentist</th>
+            <th className="appt-table__th" scope="col">
+              Service
+            </th>
+            <th className="appt-table__th" scope="col">
+              Dentist
+            </th>
             <th className="appt-table__th appt-table__th--sortable" scope="col">
               <span>Date &amp; Time</span>
-              <ArrowUpDown size={14} aria-hidden="true" />
             </th>
-            <th className="appt-table__th" scope="col">Status</th>
+            <th className="appt-table__th" scope="col">
+              Status
+            </th>
             <th className="appt-table__th appt-table__th--actions" scope="col">
               Actions
             </th>

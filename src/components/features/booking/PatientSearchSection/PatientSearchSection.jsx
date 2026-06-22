@@ -21,7 +21,7 @@ function PatientSearchSection({
         {/* Search Field */}
         <div className="patient-search__field">
           <label htmlFor="patient-search-input" className="patient-search__label">
-            {isReceptionist ? "Tìm bệnh nhân" : "Thông tin bệnh nhân"}
+            {isReceptionist ? "Find patient" : "Patient information"}
           </label>
           <div className="patient-search__input-wrapper">
             <Search size={16} className="patient-search__input-icon" aria-hidden="true" />
@@ -34,7 +34,7 @@ function PatientSearchSection({
                     type="button"
                     className="patient-search__clear-btn"
                     onClick={onClearPatient}
-                    aria-label="Xóa bệnh nhân đã chọn"
+                    aria-label="Clear selected patient"
                   >
                     <X size={14} />
                   </button>
@@ -45,18 +45,18 @@ function PatientSearchSection({
                 id="patient-search-input"
                 type="text"
                 className="patient-search__input"
-                placeholder={isReceptionist ? "Tìm theo tên hoặc SĐT..." : "Họ tên bệnh nhân"}
+                placeholder={isReceptionist ? "Search by name or phone..." : "Patient full name"}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 autoComplete="off"
                 readOnly={!isReceptionist}
-                aria-label="Tìm kiếm bệnh nhân"
+                aria-label="Search patients"
               />
             )}
 
             {/* Dropdown results */}
             {isReceptionist && !selectedPatient && searchResults.length > 0 && (
-              <ul className="patient-search__dropdown" role="listbox" aria-label="Kết quả tìm kiếm">
+              <ul className="patient-search__dropdown" role="listbox" aria-label="Search results">
                 {searchResults.map((p) => (
                   <li
                     key={p.id}
@@ -80,10 +80,10 @@ function PatientSearchSection({
               type="button"
               className="patient-search__add-btn"
               onClick={onAddNewPatient}
-              aria-label="Thêm bệnh nhân mới"
+              aria-label="Add new patient"
             >
               <UserPlus size={14} aria-hidden="true" />
-              Thêm bệnh nhân mới
+              Add new patient
             </button>
           )}
         </div>
@@ -91,7 +91,7 @@ function PatientSearchSection({
         {/* Phone Field */}
         <div className="patient-search__field">
           <label htmlFor="patient-phone-input" className="patient-search__label">
-            Số điện thoại
+            Phone number
           </label>
           <div className="patient-search__input-wrapper">
             <input
@@ -109,7 +109,7 @@ function PatientSearchSection({
 
       {isSearching && (
         <p className="patient-search__searching" aria-live="polite">
-          Đang tìm kiếm...
+          Searching...
         </p>
       )}
     </div>

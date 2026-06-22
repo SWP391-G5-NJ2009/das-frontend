@@ -13,7 +13,7 @@ function PatientPageShell({ children }) {
   return (
     <div className="patient-page">
       <RoleSidebar
-        ariaLabel="Dieu huong benh nhan"
+        ariaLabel="Patient navigation"
         navItems={PATIENT_NAV_ITEMS}
         footerItems={PATIENT_FOOTER_ITEMS}
       />
@@ -23,7 +23,7 @@ function PatientPageShell({ children }) {
           isFixed
           mobileNavItems={PATIENT_NAV_ITEMS}
           roleLabel={user?.role || "patient"}
-          searchLabel="Tim kiem trong khu vuc benh nhan"
+          searchLabel="Search patient area"
         />
         <div className="patient-page__content">{children}</div>
       </main>

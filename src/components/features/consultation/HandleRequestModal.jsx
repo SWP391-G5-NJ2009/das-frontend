@@ -49,7 +49,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
     >
       <div className="handle-request-modal">
         <div className="handle-request-modal__header">
-          <h3 className="handle-request-modal__title">Xử lý yêu cầu</h3>
+          <h3 className="handle-request-modal__title">Handle request</h3>
           <button
             className="handle-request-modal__close"
             type="button"
@@ -64,11 +64,12 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
 
           <div className="handle-request-modal__column handle-request-modal__column--readonly">
             <span className="handle-request-modal__submitted-at">
-              Gửi lúc {new Date(request.created_at).toLocaleString("vi-VN")}
+              Submitted at{" "}
+              {new Date(request.created_at).toLocaleString("en-US")}
             </span>
 
             <label className="handle-request-modal__field">
-              <span className="handle-request-modal__label">Họ và tên</span>
+              <span className="handle-request-modal__label">Full name</span>
               <input name="full_name" value={form.full_name} readOnly />
             </label>
 
@@ -78,19 +79,19 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
             </label>
 
             <label className="handle-request-modal__field">
-              <span className="handle-request-modal__label">Số điện thoại</span>
+              <span className="handle-request-modal__label">Phone number</span>
               <input name="phone" type="tel" value={form.phone} readOnly />
             </label>
 
             <label className="handle-request-modal__field handle-request-modal__field--description">
-              <span className="handle-request-modal__label">Mô tả</span>
+              <span className="handle-request-modal__label">Description</span>
               <textarea name="description" value={form.description} readOnly />
             </label>
           </div>
 
           <div className="handle-request-modal__column handle-request-modal__column--editable">
             <label className="handle-request-modal__field">
-              <span className="handle-request-modal__label">Trạng thái</span>
+              <span className="handle-request-modal__label">Status</span>
               <select name="status" value={form.status} onChange={handleChange}>
                 {STATUSES.map((status) => (
                   <option key={status} value={status}>
@@ -101,7 +102,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
             </label>
 
             <label className="handle-request-modal__field handle-request-modal__field--note">
-              <span className="handle-request-modal__label">Ghi chú</span>
+              <span className="handle-request-modal__label">Note</span>
               <textarea name="note" value={form.note} onChange={handleChange} />
             </label>
 
@@ -109,7 +110,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
               className="handle-request-modal__btn handle-request-modal__btn--schedule"
               type="button"
             >
-              Đặt lịch hẹn
+              Book appointment
             </button>
 
             <div className="handle-request-modal__actions">
@@ -118,14 +119,14 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
                 type="button"
                 onClick={onClose}
               >
-                Hủy
+                Cancel
               </button>
               <button
                 className="handle-request-modal__btn handle-request-modal__btn--submit"
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+                {isSubmitting ? "Saving..." : "Save changes"}
               </button>
             </div>
           </div>

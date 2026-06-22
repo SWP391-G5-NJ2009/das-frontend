@@ -7,7 +7,7 @@ function AdminPageShell({ children, onNotificationClick }) {
   return (
     <div className="admin-accounts">
       <RoleSidebar
-        ariaLabel="Dieu huong quan tri vien"
+        ariaLabel="Admin navigation"
         navItems={ADMIN_NAV_ITEMS}
         footerItems={ADMIN_FOOTER_ITEMS}
       />

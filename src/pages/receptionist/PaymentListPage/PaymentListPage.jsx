@@ -14,29 +14,29 @@ function PaymentListPage() {
     >
       <div className="payment-list__header">
         <div className="payment-list__heading">
-          <h1 id="payment-list-title">Danh sách thanh toán</h1>
+          <h1 id="payment-list-title">Payment list</h1>
           <p>
-            Theo dõi các giao dịch thanh toán đã ghi nhận trong hệ thống.
+            Track recorded payment transactions in the system.
           </p>
         </div>
       </div>
 
       {isLoading && (
-        <PaymentState isLoading message="Đang tải danh sách thanh toán..." />
+        <PaymentState isLoading message="Loading payments..." />
       )}
 
       {!isLoading && error && (
         <PaymentState
-          title="Không thể tải danh sách thanh toán"
-          message={error.message || "Vui lòng thử lại sau."}
+          title="Unable to load payments"
+          message={error.message || "Please try again later."}
           variant="error"
         />
       )}
 
       {!isLoading && !error && payments.length === 0 && (
         <PaymentState
-          title="Chưa có thanh toán nào"
-          message="Không tìm thấy bản ghi thanh toán phù hợp."
+          title="No payments yet"
+          message="No matching payment records found."
         />
       )}
 

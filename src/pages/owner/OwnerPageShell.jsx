@@ -15,7 +15,7 @@ function OwnerPageShell({ children, contentClassName }) {
       className={`owner-page${contentClassName ? ` ${contentClassName}` : ""}`}
     >
       <RoleSidebar
-        ariaLabel="Dieu huong chu phong kham"
+        ariaLabel="Clinic owner navigation"
         navItems={OWNER_NAV_ITEMS}
         footerItems={OWNER_FOOTER_ITEMS}
       />
@@ -25,7 +25,7 @@ function OwnerPageShell({ children, contentClassName }) {
           isFixed
           mobileNavItems={OWNER_NAV_ITEMS}
           roleLabel={user?.role || "owner"}
-          searchLabel="Tim kiem trong khu vuc chu phong kham"
+          searchLabel="Search clinic owner area"
           showHelp
         />
         <div className="owner-page__content">{children}</div>

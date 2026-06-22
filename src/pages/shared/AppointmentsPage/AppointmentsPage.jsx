@@ -43,10 +43,14 @@ const ROLE_CONFIG = {
 
 /* ── Hook selector ── */
 function useAppointmentsByRole(role, filters) {
-  const patient = useMyAppointments(role === "patient" ? filters : {});
-  const receptionist = useAllAppointments(
-    role === "receptionist" ? filters : {},
-  );
+  const isPatient = role === "patient";
+  const isReceptionist = role === "receptionist";
+  const patient = useMyAppointments(isPatient ? filters : {}, {
+    enabled: isPatient,
+  });
+  const receptionist = useAllAppointments(isReceptionist ? filters : {}, {
+    enabled: isReceptionist,
+  });
   return role === "patient" ? patient : receptionist;
 }
 

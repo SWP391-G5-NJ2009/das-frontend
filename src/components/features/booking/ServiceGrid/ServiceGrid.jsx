@@ -51,7 +51,7 @@ function ServiceGrid({ services, selectedServiceId, onSelect }) {
       )}
 
       {/* ── Service Cards ── */}
-      <div className="service-grid" role="list" aria-label="Danh sách dịch vụ nha khoa">
+      <div className="service-grid" role="list" aria-label="Dental service list">
         {filtered.length === 0 ? (
           <p className="service-grid__empty">No services in this category.</p>
         ) : (
@@ -64,12 +64,12 @@ function ServiceGrid({ services, selectedServiceId, onSelect }) {
                 className={`service-grid__card${isSelected ? " service-grid__card--selected" : ""}`}
                 onClick={() => onSelect(service)}
                 aria-pressed={isSelected}
-                aria-label={`${service.name}, thời gian ${service.duration} phút`}
+                aria-label={`${service.name}, duration ${service.duration} minutes`}
                 role="listitem"
               >
                 <span className="service-grid__icon" aria-hidden="true">🦷</span>
                 <span className="service-grid__name">{service.name}</span>
-                <span className="service-grid__duration">{service.duration} phút</span>
+                <span className="service-grid__duration">{service.duration} minutes</span>
               </button>
             );
           })

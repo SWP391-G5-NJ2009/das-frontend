@@ -6,7 +6,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "business",
-    label: "Clinic Info",
+    label: "Clinic Information",
     to: "/owner/clinic-info",
   },
   {
@@ -27,5 +27,5 @@ export const OWNER_NAV_ITEMS = [
 ];
 
 export const OWNER_FOOTER_ITEMS = [
-  { icon: "logout", label: "Logout", to: "/staff/login" },
+  { icon: "logout", label: "Log out", to: "/staff/login" },
 ];

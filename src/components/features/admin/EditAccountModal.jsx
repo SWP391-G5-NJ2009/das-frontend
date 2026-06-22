@@ -6,10 +6,10 @@ import "./AddAccountModal.css";
 
 const ROLES = [
   { value: "Admin", label: "Quan tri vien" },
-  { value: "Dentist", label: "Nha si" },
+  { value: "Dentist", label: "Dentist" },
   { value: "Receptionist", label: "Le tan" },
-  { value: "Owner", label: "Chu phong kham" },
-  { value: "Patient", label: "Benh nhan" },
+  { value: "Owner", label: "Clinic Owner" },
+  { value: "Patient", label: "Patient" },
 ];
 
 function EditAccountModal({ account, onClose, onSuccess }) {
@@ -57,7 +57,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
     >
       <div className="add-account-modal">
         <div className="add-account-modal__header">
-          <h3 className="add-account-modal__title">Chỉnh sửa tài khoản</h3>
+          <h3 className="add-account-modal__title">Edit account</h3>
           <button
             className="add-account-modal__close"
             type="button"
@@ -71,7 +71,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
           {error && <p className="add-account-modal__error">{error}</p>}
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Tên đăng nhập</span>
+            <span className="add-account-modal__label">Username</span>
             <input
               name="username"
               value={form.username}
@@ -90,7 +90,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Số điện thoại</span>
+            <span className="add-account-modal__label">Phone number</span>
             <input
               name="phone"
               type="tel"
@@ -101,7 +101,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
 
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">
-              Mật khẩu mới (để trống nếu không đổi)
+              New password (leave blank to keep current)
             </span>
             <input
               name="password"
@@ -112,7 +112,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Vai trò</span>
+            <span className="add-account-modal__label">Role</span>
             <select
               name="role_name"
               value={form.role_name}
@@ -127,7 +127,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Trạng thái</span>
+            <span className="add-account-modal__label">Status</span>
             <select name="status" value={form.status} onChange={handleChange}>
               <option value="Active">Active</option>
               <option value="Banned">Banned</option>
@@ -140,14 +140,14 @@ function EditAccountModal({ account, onClose, onSuccess }) {
               type="button"
               onClick={onClose}
             >
-              Hủy
+              Cancel
             </button>
             <button
               className="add-account-modal__btn add-account-modal__btn--submit"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+              {isSubmitting ? "Saving..." : "Save changes"}
             </button>
           </div>
         </form>
