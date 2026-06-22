@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { ArrowUpDown, Ban, Pencil } from "lucide-react";
+import { Ban, Pencil } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 

@@ -1,7 +1,7 @@
 export const OWNER_NAV_ITEMS = [
   {
     icon: "medical_services",
-    label: "Services nha khoa",
+    label: "Dental Services",
     to: "/owner/services",
   },
   {
@@ -21,13 +21,11 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "payments",
-    label: "Doanh thu",
+    label: "Revenue",
     to: "/owner/revenue",
   },
 ];
 
-export const OWNER_FOOTER_ITEMS = {
-  icon: "logout",
-  label: "Log out",
-  to: "/staff/login",
-};
+export const OWNER_FOOTER_ITEMS = [
+  { icon: "logout", label: "Log out", to: "/staff/login" },
+];

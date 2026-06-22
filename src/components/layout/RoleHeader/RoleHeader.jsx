@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Bell, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import "./RoleHeader.css";
@@ -38,12 +38,7 @@ function getRoleLabel(roleLabel) {
   return ROLE_LABELS[String(roleLabel).toLowerCase()] || roleLabel;
 }
 
-function RoleHeader({
-  isFixed,
-  mobileNavItems,
-  onNotificationClick,
-  roleLabel,
-}) {
+function RoleHeader({ isFixed, mobileNavItems, roleLabel }) {
   const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const displayName = getDisplayName(user);
@@ -121,14 +116,12 @@ RoleHeader.propTypes = {
       to: PropTypes.string.isRequired,
     }),
   ),
-  onNotificationClick: PropTypes.func,
   roleLabel: PropTypes.string.isRequired,
 };
 
 RoleHeader.defaultProps = {
   isFixed: false,
   mobileNavItems: [],
-  onNotificationClick: undefined,
 };
 
 export default RoleHeader;

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Edit,
@@ -23,18 +22,12 @@ import "./AdminAccountsPage.css";
 
 function AdminAccountsPage() {
   const { accounts, isLoading, error, refetch } = useAccounts();
-  const [toastVisible, setToastVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
 
-  const showToast = () => {
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 3000);
-  };
-
   return (
-    <AdminPageShell onNotificationClick={showToast}>
+    <AdminPageShell>
           <div className="admin-accounts__page-header">
             <div>
               <h2 className="admin-accounts__page-title">Account Management</h2>
@@ -241,17 +234,6 @@ function AdminAccountsPage() {
             </div>
           </div>
       
-
-      <div
-        className={`admin-accounts__toast${toastVisible ? " admin-accounts__toast--visible" : ""}`}
-      >
-        <CheckCircle
-          className="admin-accounts__toast-icon"
-          size={20}
-          aria-hidden="true"
-        />
-        <span>Action completed successfully</span>
-      </div>
       {showModal && (
         <AddAccountModal
           onClose={() => setShowModal(false)}

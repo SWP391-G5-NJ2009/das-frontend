@@ -9,8 +9,6 @@ export const PATIENT_NAV_ITEMS = [
   { icon: "history", label: "Treatment History", to: "/patient/history" },
 ];
 
-export const PATIENT_FOOTER_ITEMS = {
-  icon: "logout",
-  label: "Log out",
-  to: "/login",
-};
+export const PATIENT_FOOTER_ITEMS = [
+  { icon: "logout", label: "Log out", to: "/login" },
+];

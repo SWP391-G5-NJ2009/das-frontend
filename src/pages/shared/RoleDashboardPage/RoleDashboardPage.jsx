@@ -30,12 +30,12 @@ function RoleDashboardPage({ title }) {
       replace: true,
     });
   };
-  const footerItems = {
+  const footerItems = [{
     ...(isOwner
       ? OWNER_FOOTER_ITEMS[0]
       : { icon: "logout", label: "Log out", to: "/staff/login" }),
     onClick: handleLogout,
-  };
+  }];
 
   return (
     <div
@@ -45,7 +45,7 @@ function RoleDashboardPage({ title }) {
         <RoleSidebar
           ariaLabel="Role navigation"
           navItems={navItems}
-          footerItems={[footerItems]}
+          footerItems={footerItems}
         />
       )}
 
@@ -54,7 +54,6 @@ function RoleDashboardPage({ title }) {
           isFixed={hasSidebar}
           mobileNavItems={hasSidebar ? navItems : []}
           roleLabel={user?.role || "Staff"}
-          showHelp
         />
         <main className="role-dashboard__content">
           <h1>{title}</h1>

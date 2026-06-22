@@ -5,11 +5,11 @@ import RoleSidebar from "../../components/layout/RoleSidebar/RoleSidebar";
 import { useAuth } from "../../context/AuthContext";
 import { ADMIN_FOOTER_ITEMS, ADMIN_NAV_ITEMS } from "./adminNavigation";
 
-function AdminPageShell({ children, onNotificationClick }) {
+function AdminPageShell({ children }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const footerItems = {
-    ...ADMIN_FOOTER_ITEMS,
+    ...ADMIN_FOOTER_ITEMS[0],
     onClick: () => {
       logout();
       navigate("/staff/login", { replace: true });
@@ -21,14 +21,13 @@ function AdminPageShell({ children, onNotificationClick }) {
       <RoleSidebar
         ariaLabel="Admin navigation"
         navItems={ADMIN_NAV_ITEMS}
-        footerItems={[footerItems]}
+        footerItems={footerItems}
       />
 
       <main className="admin-accounts__main">
         <RoleHeader
           isFixed
           mobileNavItems={ADMIN_NAV_ITEMS}
-          onNotificationClick={onNotificationClick}
           roleLabel="admin"
         />
         <div className="admin-accounts__content">{children}</div>
@@ -39,11 +38,6 @@ function AdminPageShell({ children, onNotificationClick }) {
 
 AdminPageShell.propTypes = {
   children: PropTypes.node.isRequired,
-  onNotificationClick: PropTypes.func,
-};
-
-AdminPageShell.defaultProps = {
-  onNotificationClick: undefined,
 };
 
 export default AdminPageShell;

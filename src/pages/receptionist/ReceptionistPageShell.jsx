@@ -17,7 +17,7 @@ function ReceptionistPageShell({
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const footerItems = {
-    ...RECEPTIONIST_FOOTER_ITEMS,
+    ...RECEPTIONIST_FOOTER_ITEMS[0],
     onClick: () => {
       logout();
       navigate("/staff/login", { replace: true });
@@ -29,7 +29,7 @@ function ReceptionistPageShell({
       <RoleSidebar
         ariaLabel="Receptionist navigation"
         navItems={RECEPTIONIST_NAV_ITEMS}
-        footerItems={[footerItems]}
+        footerItems={footerItems}
       />
 
       <main className="receptionist-page__main">
@@ -37,8 +37,6 @@ function ReceptionistPageShell({
           isFixed
           mobileNavItems={RECEPTIONIST_NAV_ITEMS}
           roleLabel={user?.role || "receptionist"}
-          searchLabel="Search receptionist area"
-          showHelp
         />
         <section
           className={`receptionist-page__content${contentClassName ? ` ${contentClassName}` : ""}`}

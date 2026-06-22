@@ -21,8 +21,6 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
 ];
 
-export const RECEPTIONIST_FOOTER_ITEMS = {
-  icon: "logout",
-  label: "Log out",
-  to: "/staff/login",
-};
+export const RECEPTIONIST_FOOTER_ITEMS = [
+  { icon: "logout", label: "Log out", to: "/staff/login" },
+];

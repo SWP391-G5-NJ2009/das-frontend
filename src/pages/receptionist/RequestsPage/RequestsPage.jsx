@@ -2,12 +2,9 @@ import { useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
-  Download,
   Edit,
   Filter,
   Search,
-  TrendingUp,
-  Users,
 } from "lucide-react";
 import { useConsultationRequests } from "../../../hooks/useConsultationRequests";
 import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal";

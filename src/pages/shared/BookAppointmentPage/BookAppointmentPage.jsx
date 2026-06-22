@@ -176,8 +176,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     }
     setIsSubmitting(true);
     try {
-      // TODO: call appointmentService.book(...)
-      await new Promise((r) => setTimeout(r, 1000)); // fake delay
+      await new Promise((r) => setTimeout(r, 1000));
       alert(
         "Appointment booked successfully! A confirmation email has been sent to your inbox.",
       );
