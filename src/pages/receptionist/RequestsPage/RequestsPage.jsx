@@ -30,7 +30,7 @@ function ReceptionistRequestsPage() {
               className="receptionist-requests__page-title"
               id="receptionist-requests-title"
             >
-              Quản lý yêu cầu tư vấn
+              Manage consultation requests
             </h1>
             <p className="receptionist-requests__page-desc">
               View and update consultation requests.
@@ -42,13 +42,13 @@ function ReceptionistRequestsPage() {
           <div className="receptionist-requests__card-header">
             <div className="receptionist-requests__card-title-group">
               <h2 className="receptionist-requests__card-title">
-                Danh sách yêu cầu tư vấn
+                Consultation request list
               </h2>
             </div>
             <div className="receptionist-requests__card-toolbar">
               <div className="receptionist-requests__table-search">
                 <Search size={18} aria-hidden="true" />
-                <input placeholder="Tìm trong danh sách..." type="text" />
+                <input placeholder="Search the list..." type="text" />
               </div>
               <button className="receptionist-requests__tool-btn" type="button">
                 <Filter size={18} aria-hidden="true" />
@@ -61,21 +61,21 @@ function ReceptionistRequestsPage() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Họ và tên</th>
-                  <th>Số điện thoại</th>
+                  <th>Full name</th>
+                  <th>Phone number</th>
                   <th>Email</th>
-                  <th>Mô tả</th>
-                  <th>Ngày tạo</th>
-                  <th>Trạng thái</th>
-                  <th>Người xử lý</th>
-                  <th>Thao tác</th>
+                  <th>Description</th>
+                  <th>Created date</th>
+                  <th>Status</th>
+                  <th>Handler</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Đang tải yêu cầu...
+                      Loading requests...
                     </td>
                   </tr>
                 )}
@@ -83,7 +83,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && error && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Lỗi: {error.message}
+                      Error: {error.message}
                     </td>
                   </tr>
                 )}
@@ -91,7 +91,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && !error && requests.length === 0 && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Không tìm thấy yêu cầu nào
+                      No requests found
                     </td>
                   </tr>
                 )}
@@ -129,7 +129,7 @@ function ReceptionistRequestsPage() {
                         {request.description}
                       </td>
                       <td className="receptionist-requests__cell">
-                        {new Date(request.created_at).toLocaleString("vi-VN")}
+                        {new Date(request.created_at).toLocaleString("en-US")}
                       </td>
                       <td className="receptionist-requests__cell">
                         {request.status}
@@ -154,8 +154,8 @@ function ReceptionistRequestsPage() {
 
           <div className="receptionist-requests__pagination">
             <p className="receptionist-requests__pagination-info">
-              Hiển thị 1-{Math.min(requests.length, 6)} trong tổng số{" "}
-              {requests.length} yêu cầu
+              Showing 1-{Math.min(requests.length, 6)} of {requests.length}{" "}
+              requests
             </p>
             <div className="receptionist-requests__pagination-controls">
               <button className="receptionist-requests__page-btn" type="button">
