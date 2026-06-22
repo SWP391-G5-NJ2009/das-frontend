@@ -26,6 +26,8 @@ export const OWNER_NAV_ITEMS = [
   },
 ];
 
-export const OWNER_FOOTER_ITEMS = [
-  { icon: "logout", label: "Log out", to: "/staff/login" },
-];
+export const OWNER_FOOTER_ITEMS = {
+  icon: "logout",
+  label: "Log out",
+  to: "/staff/login",
+};

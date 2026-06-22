@@ -16,13 +16,20 @@ function ReceptionistPageShell({
 }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const footerItems = {
+    ...RECEPTIONIST_FOOTER_ITEMS,
+    onClick: () => {
+      logout();
+      navigate("/staff/login", { replace: true });
+    },
+  };
 
   return (
     <div className="receptionist-page">
       <RoleSidebar
         ariaLabel="Receptionist navigation"
         navItems={RECEPTIONIST_NAV_ITEMS}
-        footerItems={RECEPTIONIST_FOOTER_ITEMS}
+        footerItems={[footerItems]}
       />
 
       <main className="receptionist-page__main">

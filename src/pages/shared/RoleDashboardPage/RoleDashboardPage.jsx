@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import RoleHeader from "../../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../../components/layout/RoleSidebar/RoleSidebar";
@@ -19,13 +19,23 @@ const ADMIN_NAV_ITEMS = [
 
 function RoleDashboardPage({ title }) {
   const { logout, user } = useAuth();
+  const navigate = useNavigate();
   const isAdmin = user?.role === "admin";
   const isOwner = user?.role === "owner";
   const hasSidebar = isAdmin || isOwner;
   const navItems = isOwner ? OWNER_NAV_ITEMS : ADMIN_NAV_ITEMS;
-  const footerItems = isOwner
-    ? getOwnerFooterItems(logout)
-    : [{ icon: "logout", label: "Log out", onClick: logout }];
+  const handleLogout = () => {
+    logout();
+    navigate(user?.role === "patient" ? "/login" : "/staff/login", {
+      replace: true,
+    });
+  };
+  const footerItems = {
+    ...(isOwner
+      ? OWNER_FOOTER_ITEMS[0]
+      : { icon: "logout", label: "Log out", to: "/staff/login" }),
+    onClick: handleLogout,
+  };
 
   return (
     <div
@@ -35,7 +45,7 @@ function RoleDashboardPage({ title }) {
         <RoleSidebar
           ariaLabel="Role navigation"
           navItems={navItems}
-          footerItems={footerItems}
+          footerItems={[footerItems]}
         />
       )}
 
@@ -49,7 +59,7 @@ function RoleDashboardPage({ title }) {
         <main className="role-dashboard__content">
           <h1>{title}</h1>
           <p>Hello, {user?.fullName || user?.email}.</p>
-          <button type="button" onClick={logout}>
+          <button type="button" onClick={handleLogout}>
             Log out
           </button>
           {user?.role === "owner" && (

@@ -59,7 +59,7 @@ function RoleHeader({
             type="button"
             aria-expanded={isMobileMenuOpen}
             aria-label={
-              isMobileMenuOpen ? "Dong menu dieu huong" : "Mo menu dieu huong"
+              isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
             }
             onClick={() => setIsMobileMenuOpen((current) => !current)}
           >

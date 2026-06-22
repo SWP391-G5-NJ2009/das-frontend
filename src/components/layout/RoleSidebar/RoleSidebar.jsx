@@ -85,36 +85,21 @@ function RoleSidebar({ ariaLabel, brand, footerItems, navItems }) {
         ))}
       </nav>
 
-      {footerItems.length > 0 && (
-        <div className="role-sidebar__footer">
-          {footerItems.map((item) => {
-            if (item.onClick) {
-              return (
-                <button
-                  key={item.label}
-                  className="role-sidebar__nav-item"
-                  type="button"
-                  onClick={item.onClick}
-                >
-                  {renderIcon(item)}
-                  <span>{item.label}</span>
-                </button>
-              );
-            }
-
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className="role-sidebar__nav-item"
-              >
-                {renderIcon(item)}
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          })}
-        </div>
-      )}
+      <div className="role-sidebar__footer">
+        {footerItems.map((item) => {
+          return (
+            <button
+              key={item.label}
+              className="role-sidebar__nav-item"
+              type="button"
+              onClick={item.onClick}
+            >
+              {renderIcon(item)}
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </aside>
   );
 }

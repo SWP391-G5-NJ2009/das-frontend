@@ -5,6 +5,8 @@ export const ADMIN_NAV_ITEMS = [
   { icon: "settings", label: "Settings", to: "/admin/settings" },
 ];
 
-export const ADMIN_FOOTER_ITEMS = [
-  { icon: "logout", label: "Log out", to: "/staff/login" },
-];
+export const ADMIN_FOOTER_ITEMS = {
+  icon: "logout",
+  label: "Log out",
+  to: "/staff/login",
+};
