@@ -12,6 +12,7 @@ import {
   Trash2,
   UserPlus,
   Users,
+  CheckCircle,
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
@@ -27,7 +28,7 @@ function AdminAccountsPage() {
   const [deleteAccount, setDeleteAccount] = useState(null);
 
   return (
-    <AdminPageShell onNotificationClick={showToast}>
+    <AdminPageShell>
       <div className="admin-accounts__page-header">
         <div>
           <h2 className="admin-accounts__page-title">Account Management</h2>
@@ -221,9 +222,7 @@ function AdminAccountsPage() {
         </div>
       </div>
 
-      <div
-        className={`admin-accounts__toast${toastVisible ? " admin-accounts__toast--visible" : ""}`}
-      >
+      <div className={`admin-accounts__toast`}>
         <CheckCircle
           className="admin-accounts__toast-icon"
           size={20}
