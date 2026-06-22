@@ -9,8 +9,14 @@ import {
 } from "lucide-react";
 import PropTypes from "prop-types";
 
-import { usePublicServices, useDentistsByService } from "../../../hooks/useDentalServices";
+import {
+  usePublicServices,
+  useDentistsByService,
+} from "../../../hooks/useDentalServices";
 import { useAuth } from "../../../context/AuthContext";
+import { usePatientSearch } from "../../../hooks/usePatientSearch";
+import { useAvailableSlots } from "../../../hooks/useAvailableSlots";
+import { appointmentService } from "../../../services/appointment.service";
 import PatientSearchSection from "../../../components/features/booking/PatientSearchSection/PatientSearchSection";
 import ServiceGrid from "../../../components/features/booking/ServiceGrid/ServiceGrid";
 import DentistGrid from "../../../components/features/booking/DentistGrid/DentistGrid";
@@ -22,33 +28,12 @@ import Spinner from "../../../components/common/Spinner/Spinner";
 
 import "./BookAppointmentPage.css";
 
-
-const MOCK_SLOTS = [
-  { id: "t1", time: "08:00", status: "available" },
-  { id: "t2", time: "08:30", status: "available" },
-  { id: "t3", time: "09:00", status: "available" },
-  { id: "t4", time: "09:30", status: "booked" },
-  { id: "t5", time: "10:00", status: "available" },
-  { id: "t6", time: "10:30", status: "booked" },
-  { id: "t7", time: "11:00", status: "available" },
-  { id: "t8", time: "11:30", status: "available" },
-  { id: "t9", time: "13:30", status: "available" },
-  { id: "t10", time: "14:00", status: "available" },
-  { id: "t11", time: "14:30", status: "available" },
-  { id: "t12", time: "15:00", status: "booked" },
-];
-
-const MOCK_PATIENTS = [
-  { id: "p1", fullName: "Tran Van Nam", phone: "0901234567" },
-  { id: "p2", fullName: "Nguyen Thi Lan", phone: "0912345678" },
-  { id: "p3", fullName: "Le Quoc Bao", phone: "0923456789" },
-];
-
 /* ─────────────────────────────────────────────
    MAIN COMPONENT
 ───────────────────────────────────────────── */
 function BookAppointmentPage({ isReceptionist, Shell }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   /* ── Services from API ── */
   const {
@@ -57,13 +42,17 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     error: servicesError,
   } = usePublicServices();
 
-  const { user } = useAuth();
-
-  /* ── State ── */
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  /* ── Patient Search (receptionist only — real API) ── */
+  const {
+    searchQuery,
+    searchResults,
+    isSearching,
+    selectedPatient,
+    setSelectedPatient,
+    handleSearchChange,
+    handleSelectPatient,
+    handleClearPatient,
+  } = usePatientSearch();
 
   /* Auto-fill patient info from logged-in user (patient role only) */
   useEffect(() => {
@@ -74,8 +63,9 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         phone: user.phone || "",
       });
     }
-  }, [isReceptionist, user]);
+  }, [isReceptionist, user, setSelectedPatient]);
 
+  /* ── Booking Step State ── */
   const [selectedService, setSelectedService] = useState(null);
   const [selectedDentist, setSelectedDentist] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -91,52 +81,33 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     error: dentistsError,
   } = useDentistsByService(selectedService?.id ?? null);
 
-  const slots = selectedDate && selectedDentist ? MOCK_SLOTS : [];
+  /* ── Available Slots from API (re-fetches when dentist or date changes) ── */
+  const {
+    slots,
+    isLoading: isSlotsLoading,
+    error: slotsError,
+  } = useAvailableSlots(selectedDentist?.id ?? null, selectedDate ?? null);
+
   const phoneNumber = selectedPatient?.phone || "";
 
   /* ── Handlers ── */
-  const handleSearchChange = useCallback((query) => {
-    setSearchQuery(query);
-    if (query.trim().length < 2) {
-      setSearchResults([]);
-      return;
-    }
-    setIsSearching(true);
-    // Simulate async search
-    setTimeout(() => {
-      const q = query.toLowerCase();
-      setSearchResults(
-        MOCK_PATIENTS.filter(
-          (p) => p.fullName.toLowerCase().includes(q) || p.phone.includes(q),
-        ),
-      );
-      setIsSearching(false);
-    }, 300);
-  }, []);
+  const handleSaveNewPatient = useCallback(
+    (newPatient) => {
+      setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
+    },
+    [setSelectedPatient],
+  );
 
-  const handleSelectPatient = useCallback((patient) => {
-    setSelectedPatient(patient);
-    setSearchQuery("");
-    setSearchResults([]);
-  }, []);
-
-  const handleClearPatient = useCallback(() => {
-    setSelectedPatient(null);
-    setSearchQuery("");
-    setSearchResults([]);
-  }, []);
-
-  const handleSaveNewPatient = useCallback((newPatient) => {
-    setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
-  }, []);
-
-  const handlePhoneChange = useCallback((phone) => {
-    setSelectedPatient((prev) => (prev ? { ...prev, phone } : prev));
-  }, []);
+  const handlePhoneChange = useCallback(
+    (phone) => {
+      setSelectedPatient((prev) => (prev ? { ...prev, phone } : prev));
+    },
+    [setSelectedPatient],
+  );
 
   const handleSelectService = useCallback((service) => {
     setSelectedService(service);
-    setSelectedDentist(null); // Reset dentist when service changes
+    setSelectedDentist(null);
     setSelectedDate(null);
     setSelectedSlot(null);
   }, []);
@@ -158,9 +129,9 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
 
   const handleCancel = useCallback(() => {
     if (isReceptionist) {
-      navigate("/receptionist/dashboard");
+      navigate("/receptionist/appointments");
     } else {
-      navigate("/patient/dashboard");
+      navigate("/patient/appointments");
     }
   }, [navigate, isReceptionist]);
 
@@ -176,7 +147,22 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     }
     setIsSubmitting(true);
     try {
-      await new Promise((r) => setTimeout(r, 1000));
+      await appointmentService.book({
+        slotId: Number(selectedSlot.id),
+        serviceId: Number(selectedService.id),
+        note: "",
+        // Receptionist: send patientId for existing patients, or newPatient for walk-ins
+        ...(isReceptionist
+          ? String(selectedPatient.id).startsWith("new-")
+            ? {
+                newPatient: {
+                  fullName: selectedPatient.fullName,
+                  phone: selectedPatient.phone,
+                },
+              }
+            : { patientId: Number(selectedPatient.id) }
+          : {}),
+      });
       alert(
         "Appointment booked successfully! A confirmation email has been sent to your inbox.",
       );
@@ -185,8 +171,8 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
       } else {
         navigate("/patient/appointments");
       }
-    } catch {
-      alert("Appointment booked fail. Please retry!");
+    } catch (err) {
+      alert(err?.message || "Booking failed. Please try again!");
     } finally {
       setIsSubmitting(false);
     }
@@ -239,9 +225,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
               onSelectPatient={handleSelectPatient}
               onClearPatient={handleClearPatient}
               onAddNewPatient={
-                isReceptionist
-                  ? () => setIsAddPatientModalOpen(true)
-                  : null
+                isReceptionist ? () => setIsAddPatientModalOpen(true) : null
               }
               isSearching={isSearching}
               phoneNumber={phoneNumber}
@@ -314,13 +298,24 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
                 Please select a dentist first to view available slots.
               </p>
             ) : (
-              <DateTimePicker
-                selectedDate={selectedDate}
-                onSelectDate={handleSelectDate}
-                selectedSlotId={selectedSlot?.id || null}
-                onSelectSlot={handleSelectSlot}
-                slots={slots}
-              />
+              <>
+                {isSlotsLoading && <Spinner />}
+                {slotsError && (
+                  <p className="book-appointment__locked-msg">
+                    Could not load available slots. Please try again.
+                  </p>
+                )}
+                {!isSlotsLoading && !slotsError && (
+                  <DateTimePicker
+                    selectedDate={selectedDate}
+                    onSelectDate={handleSelectDate}
+                    selectedSlotId={selectedSlot?.id || null}
+                    onSelectSlot={handleSelectSlot}
+                    slots={slots}
+                    enforceTimingRule={!isReceptionist}
+                  />
+                )}
+              </>
             )}
           </section>
         </div>

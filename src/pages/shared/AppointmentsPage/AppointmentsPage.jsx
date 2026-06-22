@@ -20,14 +20,6 @@ import "./AppointmentsPage.css";
 const ITEMS_PER_PAGE = 8;
 
 /* ── Role-specific config ── */
-const PATIENT_STATUS_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "Confirmed", label: "Confirmed" },
-  { value: "Completed", label: "Completed" },
-  { value: "Conflict", label: "Conflict" },
-  { value: "Cancelled", label: "Cancelled" },
-];
-
 const ROLE_CONFIG = {
   patient: {
     title: "My Appointments",
@@ -36,7 +28,7 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
-    statusOptions: PATIENT_STATUS_OPTIONS,
+    statusOptions: null, // use AppointmentFilters default (all statuses)
   },
   receptionist: {
     title: "Appointment List",
@@ -89,9 +81,24 @@ function AppointmentsPage() {
   const config = ROLE_CONFIG[role] ?? ROLE_CONFIG.patient;
   const navigate = useNavigate();
 
+  const today = new Date();
+  const todayYear = String(today.getFullYear());
+  const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
+  const todayDay = String(today.getDate()).padStart(2, "0");
+
+  // Display state for the three dropdowns
+  const [dateParts, setDateParts] = useState({
+    year: todayYear,
+    month: todayMonth,
+    day: todayDay,
+  });
+
+  // Backend filter state derived from dateParts
   const [filters, setFilters] = useState({
     status: "all",
-    date: "",
+    date: `${todayYear}-${todayMonth}-${todayDay}`, // exact day YYYY-MM-DD
+    month: "",        // YYYY-MM (set when day is empty)
+    year: "",         // YYYY   (set when month is empty too)
     search: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
@@ -151,14 +158,45 @@ function AppointmentsPage() {
     (status) => setFilters((prev) => ({ ...prev, status })),
     [],
   );
-  const handleDateChange = useCallback(
-    (date) => setFilters((prev) => ({ ...prev, date })),
+
+  /**
+   * Called by AppointmentFilters when any of year/month/day changes.
+   * Updates both the dropdown display state and the backend filter state.
+   */
+  const handleDatePartsChange = useCallback(
+    ({ year, month, day }) => {
+      setDateParts({ year, month, day });
+      setFilters((prev) => ({
+        ...prev,
+        // Exact day match
+        date: year && month && day ? `${year}-${month}-${day}` : "",
+        // Month match (YYYY-MM) — only when day is empty
+        month: year && month && !day ? `${year}-${month}` : "",
+        // Year match — only when both month and day are empty
+        year: year && !month ? year : "",
+      }));
+    },
     [],
   );
+
   const handleSearchChange = useCallback(
     (search) => setFilters((prev) => ({ ...prev, search })),
     [],
   );
+
+  /* ── Today shortcut ── */
+  const handleTodayClick = useCallback(() => {
+    setDateParts({ year: todayYear, month: todayMonth, day: todayDay });
+    setFilters((prev) => ({
+      ...prev,
+      date: `${todayYear}-${todayMonth}-${todayDay}`,
+      month: "",
+      year: "",
+    }));
+  }, [todayYear, todayMonth, todayDay]);
+
+  const isTodayActive =
+    filters.date === `${todayYear}-${todayMonth}-${todayDay}`;
 
   /* ── Cancel handlers ── */
   const handleRequestCancel = useCallback((appointment) => {
@@ -225,10 +263,12 @@ function AppointmentsPage() {
 
         {/* Filters */}
         <AppointmentFilters
-          filters={filters}
+          filters={{ ...filters, ...dateParts }}
           onStatusChange={handleStatusChange}
-          onDateChange={handleDateChange}
+          onDatePartsChange={handleDatePartsChange}
           onSearchChange={handleSearchChange}
+          onTodayClick={handleTodayClick}
+          isTodayActive={isTodayActive}
           statusOptions={config.statusOptions}
         />
 

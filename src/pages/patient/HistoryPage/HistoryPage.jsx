@@ -33,7 +33,10 @@ function HistoryPage() {
 
   return (
     <PatientPageShell>
-      <section className="patient-history-section" aria-labelledby="patient-history-title">
+      <section
+        className="patient-history-section"
+        aria-labelledby="patient-history-title"
+      >
         <article className="patient-history-card">
           <div className="patient-history-card__header">
             <h1 id="patient-history-title">Treatment History</h1>

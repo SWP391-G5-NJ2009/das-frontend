@@ -77,7 +77,15 @@ function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
 
                 <td className="appt-table__td appt-table__td--datetime">
                   <span className="appt-table__date">{displayDate}</span>
-                  <span className="appt-table__time">{appt.scheduledTime}</span>
+                  <span className="appt-table__time">
+                    {appt.scheduledTime}
+                    {appt.scheduledTimeEnd && ` – ${appt.scheduledTimeEnd}`}
+                  </span>
+                  {appt.slotOccupied > 1 && (
+                    <span className="appt-table__slot-count">
+                      {appt.slotOccupied} slots
+                    </span>
+                  )}
                 </td>
 
                 <td className="appt-table__td">
@@ -129,6 +137,8 @@ AppointmentTable.propTypes = {
       dentistName: PropTypes.string.isRequired,
       scheduledDate: PropTypes.string.isRequired,
       scheduledTime: PropTypes.string.isRequired,
+      scheduledTimeEnd: PropTypes.string,
+      slotOccupied: PropTypes.number,
       status: PropTypes.string.isRequired,
     }),
   ).isRequired,

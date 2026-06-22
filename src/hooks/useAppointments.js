@@ -24,7 +24,12 @@ export function useMyAppointments(filters = {}, options = {}) {
     setError(null);
     try {
       const data = await appointmentService.getMyAppointments(filters);
-      setAppointments(data || []);
+      const sorted = (data || []).slice().sort((a, b) => {
+        const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
+        const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
+        return dateB.localeCompare(dateA);
+      });
+      setAppointments(sorted);
     } catch (err) {
       setError(err);
     } finally {
@@ -78,7 +83,12 @@ export function useAllAppointments(filters = {}, options = {}) {
     setError(null);
     try {
       const data = await appointmentService.getAll(filters);
-      setAppointments(data || []);
+      const sorted = (data || []).slice().sort((a, b) => {
+        const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
+        const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
+        return dateB.localeCompare(dateA);
+      });
+      setAppointments(sorted);
     } catch (err) {
       setError(err);
     } finally {

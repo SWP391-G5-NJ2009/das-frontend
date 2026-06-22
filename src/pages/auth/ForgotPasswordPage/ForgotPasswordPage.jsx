@@ -80,7 +80,9 @@ function ForgotPasswordPage({ mode }) {
     }
 
     if (!resetAccountId) {
-      setError("No password reset session was found. Please request a new OTP.");
+      setError(
+        "No password reset session was found. Please request a new OTP.",
+      );
       setIsSubmitting(false);
       return;
     }
@@ -141,7 +143,9 @@ function ForgotPasswordPage({ mode }) {
       .split("");
 
     digits.forEach((digit, offset) => {
-      const input = document.querySelector(`[name="${otpSlots[index + offset]}"]`);
+      const input = document.querySelector(
+        `[name="${otpSlots[index + offset]}"]`,
+      );
 
       if (input) {
         input.value = digit;
