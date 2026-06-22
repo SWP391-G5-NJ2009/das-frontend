@@ -29,7 +29,10 @@ function AuthLoginLayout({
 
   return (
     <main className="auth-login">
-      <section className="auth-login__hero" aria-label="DentalCare clinic space">
+      <section
+        className="auth-login__hero"
+        aria-label="DentalCare clinic space"
+      >
         <img src={heroLogin} alt="Dental chair at DentalCare clinic" />
       </section>
 
@@ -77,7 +80,9 @@ function AuthLoginLayout({
               />
               <button
                 type="button"
-                aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                aria-label={
+                  isPasswordVisible ? "Hide password" : "Show password"
+                }
                 onClick={() => setIsPasswordVisible((current) => !current)}
               >
                 {isPasswordVisible ? (
@@ -93,7 +98,11 @@ function AuthLoginLayout({
             Forgot password?
           </Link>
 
-          <button className="auth-login__submit" type="submit" disabled={isSubmitting}>
+          <button
+            className="auth-login__submit"
+            type="submit"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Logging in..." : "Log in"}
             <ArrowRight size={20} aria-hidden="true" />
           </button>
@@ -119,7 +128,6 @@ AuthLoginLayout.propTypes = {
 
 AuthLoginLayout.defaultProps = {
   error: null,
-  forgotPasswordPath: "/forgot-password",
   isSubmitting: false,
 };
 

@@ -40,6 +40,7 @@ function PatientLoginPage() {
       credentialPlaceholder="Enter phone number"
       CredentialIcon={Phone}
       error={error}
+      forgotPasswordPath="/forgot-password"
       isSubmitting={isSubmitting}
       onSubmit={handleSubmit}
     />
