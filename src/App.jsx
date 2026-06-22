@@ -11,6 +11,7 @@ import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import ProfilePage from "./pages/patient/ProfilePage/ProfilePage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
+import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
 import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
@@ -86,6 +87,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <PaymentListPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/receptionist/patient-registration"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <PatientRegistrationPage />
               </ProtectedRoute>
             }
           />

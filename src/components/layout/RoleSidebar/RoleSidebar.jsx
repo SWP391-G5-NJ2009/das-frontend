@@ -19,6 +19,7 @@ import {
   Shield,
   Stethoscope,
   User,
+  UserPlus,
   Users,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -42,6 +43,7 @@ const ICONS = {
   notifications: Bell,
   payments: CreditCard,
   person: User,
+  person_add: UserPlus,
   security: Shield,
   settings: Settings,
   support_agent: Headphones,
