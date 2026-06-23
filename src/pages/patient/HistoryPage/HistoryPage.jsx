@@ -1,6 +1,6 @@
-import { useMemo } from "react";
 import { usePatientTreatments } from "../../../hooks/usePatientTreatments";
 import PatientPageShell from "../PatientPageShell";
+import "./HistoryPage.css";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   currency: "VND",
@@ -22,14 +22,6 @@ function formatCurrency(value) {
 
 function HistoryPage() {
   const { error, isLoading, treatments } = usePatientTreatments();
-  const totalCost = useMemo(
-    () =>
-      treatments.reduce(
-        (sum, record) => sum + Number(record.cost || 0),
-        0,
-      ),
-    [treatments],
-  );
 
   return (
     <PatientPageShell>
@@ -59,34 +51,55 @@ function HistoryPage() {
 
           {!isLoading && !error && treatments.length > 0 && (
             <>
-              <div className="patient-history-table-wrap">
+              <div
+                className="patient-history-table__wrap"
+                role="region"
+                aria-label="Treatment history list"
+              >
                 <table className="patient-history-table">
-                  <thead>
+                  <thead className="patient-history-table__head">
                     <tr>
-                      <th>Date</th>
-                      <th>Treatment</th>
-                      <th>Diagnosis</th>
-                      <th>Dentist</th>
-                      <th>Cost</th>
+                      <th className="patient-history-table__th" scope="col">
+                        Date
+                      </th>
+                      <th className="patient-history-table__th" scope="col">
+                        Treatment
+                      </th>
+                      <th className="patient-history-table__th" scope="col">
+                        Diagnosis
+                      </th>
+                      <th className="patient-history-table__th" scope="col">
+                        Dentist
+                      </th>
+                      <th className="patient-history-table__th" scope="col">
+                        Cost
+                      </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="patient-history-table__body">
                     {treatments.map((record) => (
-                      <tr key={record.id}>
-                        <td>{formatDate(record.date)}</td>
-                        <td>{record.treatment}</td>
-                        <td>{record.diagnosis || "Not updated"}</td>
-                        <td>{record.dentist || "Not updated"}</td>
-                        <td>{formatCurrency(record.cost)}</td>
+                      <tr className="patient-history-table__row" key={record.id}>
+                        <td className="patient-history-table__td patient-history-table__td--date">
+                          {formatDate(record.date)}
+                        </td>
+                        <td className="patient-history-table__td patient-history-table__td--treatment">
+                          {record.treatment}
+                        </td>
+                        <td className="patient-history-table__td patient-history-table__td--diagnosis">
+                          {record.diagnosis || "Not updated"}
+                        </td>
+                        <td className="patient-history-table__td">
+                          {record.dentist || "Not updated"}
+                        </td>
+                        <td className="patient-history-table__td patient-history-table__td--cost">
+                          {formatCurrency(record.cost)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <p className="patient-history-card__total">
-                Total treatment cost: <strong>{formatCurrency(totalCost)}</strong>
-              </p>
             </>
           )}
         </article>
