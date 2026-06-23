@@ -168,7 +168,7 @@ function AppointmentFilters({
           <div className="appt-filters__select-wrap">
             <select
               id="appt-filter-year"
-              className="appt-filters__select"
+              className={`appt-filters__select${year ? " appt-filters__select--active" : ""}`}
               value={year}
               onChange={handleYearChange}
               aria-label="Filter by year"
@@ -187,7 +187,7 @@ function AppointmentFilters({
                 aria-label="Clear year filter"
                 onClick={clearYear}
               >
-                <X size={12} aria-hidden="true" />
+                <X size={14} aria-hidden="true" />
               </button>
             )}
           </div>
@@ -196,7 +196,13 @@ function AppointmentFilters({
           <div className="appt-filters__select-wrap">
             <select
               id="appt-filter-month"
-              className={`appt-filters__select${!year ? " appt-filters__select--disabled" : ""}`}
+              className={`appt-filters__select${
+                !year
+                  ? " appt-filters__select--disabled"
+                  : month
+                  ? " appt-filters__select--active"
+                  : ""
+              }`}
               value={month}
               onChange={handleMonthChange}
               disabled={!year}
@@ -216,7 +222,7 @@ function AppointmentFilters({
                 aria-label="Clear month filter"
                 onClick={clearMonth}
               >
-                <X size={12} aria-hidden="true" />
+                <X size={14} aria-hidden="true" />
               </button>
             )}
           </div>
@@ -225,7 +231,13 @@ function AppointmentFilters({
           <div className="appt-filters__select-wrap">
             <select
               id="appt-filter-day"
-              className={`appt-filters__select${!month ? " appt-filters__select--disabled" : ""}`}
+              className={`appt-filters__select${
+                !month
+                  ? " appt-filters__select--disabled"
+                  : day
+                  ? " appt-filters__select--active"
+                  : ""
+              }`}
               value={day}
               onChange={handleDayChange}
               disabled={!month}
@@ -245,7 +257,7 @@ function AppointmentFilters({
                 aria-label="Clear day filter"
                 onClick={clearDay}
               >
-                <X size={12} aria-hidden="true" />
+                <X size={14} aria-hidden="true" />
               </button>
             )}
           </div>
