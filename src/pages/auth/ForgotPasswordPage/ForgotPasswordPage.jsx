@@ -8,6 +8,47 @@ import "./ForgotPasswordPage.css";
 
 const otpSlots = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"];
 
+const FORGOT_PASSWORD_CONFIG = {
+  patient: {
+    IdentifierIcon: Phone,
+    identifierLabel: "Phone number",
+    identifierPlaceholder: "Enter phone number",
+    identifierType: "tel",
+    loginPath: "/login",
+    requestHelp: "Enter your phone number to receive an OTP.",
+  },
+  staff: {
+    IdentifierIcon: UserRound,
+    identifierLabel: "Username",
+    identifierPlaceholder: "Enter your staff username",
+    identifierType: "text",
+    loginPath: "/staff/login",
+    requestHelp:
+      "Enter your username to receive an OTP on the phone number linked to your staff account.",
+  },
+};
+
+const PASSWORD_FIELDS = [
+  {
+    hideLabel: "Hide new password",
+    label: "New password",
+    name: "newPassword",
+    placeholder: "Enter new password",
+    showLabel: "Show new password",
+  },
+  {
+    hideLabel: "Hide password confirmation",
+    label: "Confirm new password",
+    name: "confirmPassword",
+    placeholder: "Re-enter new password",
+    showLabel: "Show password confirmation",
+  },
+];
+
+function getOtpValue(formData) {
+  return otpSlots.map((slot) => formData.get(slot) || "").join("");
+}
+
 function ForgotPasswordPage({ mode }) {
   const navigate = useNavigate();
   const [step, setStep] = useState("request");
@@ -22,12 +63,14 @@ function ForgotPasswordPage({ mode }) {
   });
 
   const isStaffMode = mode === "staff";
-  const loginPath = isStaffMode ? "/staff/login" : "/login";
-  const identifierLabel = isStaffMode ? "Username" : "Phone number";
-  const identifierPlaceholder = isStaffMode
-    ? "Enter your staff username"
-    : "Enter phone number";
-  const IdentifierIcon = isStaffMode ? UserRound : Phone;
+  const {
+    IdentifierIcon,
+    identifierLabel,
+    identifierPlaceholder,
+    identifierType,
+    loginPath,
+    requestHelp,
+  } = FORGOT_PASSWORD_CONFIG[mode];
 
   const focusOtpSlot = (index) => {
     const nextInput = document.querySelector(`[name="${otpSlots[index]}"]`);
@@ -69,7 +112,7 @@ function ForgotPasswordPage({ mode }) {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
-    const otp = otpSlots.map((slot) => formData.get(slot) || "").join("");
+    const otp = getOtpValue(formData);
     const newPassword = formData.get("newPassword");
     const confirmPassword = formData.get("confirmPassword");
 
@@ -185,11 +228,7 @@ function ForgotPasswordPage({ mode }) {
           <form className="forgot-password__form" onSubmit={handleRequestOtp}>
             <div className="forgot-password__heading">
               <h2 id="forgot-password-title">Forgot password?</h2>
-              <p>
-                {isStaffMode
-                  ? "Enter your username to receive an OTP on the phone number linked to your staff account."
-                  : "Enter your phone number to receive an OTP."}
-              </p>
+              <p>{requestHelp}</p>
             </div>
 
             {error && <p className="forgot-password__error">{error}</p>}
@@ -199,7 +238,7 @@ function ForgotPasswordPage({ mode }) {
               <div className="forgot-password__control">
                 <IdentifierIcon size={18} aria-hidden="true" />
                 <input
-                  type={isStaffMode ? "text" : "tel"}
+                  type={identifierType}
                   name="identifier"
                   placeholder={identifierPlaceholder}
                   required
@@ -259,59 +298,31 @@ function ForgotPasswordPage({ mode }) {
               </button>
             </p>
 
-            <label className="forgot-password__field">
-              <span>New password</span>
-              <div className="forgot-password__control forgot-password__control--password">
-                <input
-                  type={visiblePasswords.newPassword ? "text" : "password"}
-                  name="newPassword"
-                  placeholder="Enter new password"
-                  required
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    visiblePasswords.newPassword
-                      ? "Hide new password"
-                      : "Show new password"
-                  }
-                  onClick={() => handleTogglePassword("newPassword")}
-                >
-                  {visiblePasswords.newPassword ? (
-                    <EyeOff size={16} aria-hidden="true" />
-                  ) : (
-                    <Eye size={16} aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-            </label>
+            {PASSWORD_FIELDS.map((field) => {
+              const isVisible = visiblePasswords[field.name];
+              const VisibilityIcon = isVisible ? EyeOff : Eye;
 
-            <label className="forgot-password__field">
-              <span>Confirm new password</span>
-              <div className="forgot-password__control forgot-password__control--password">
-                <input
-                  type={visiblePasswords.confirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  placeholder="Re-enter new password"
-                  required
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    visiblePasswords.confirmPassword
-                      ? "Hide password confirmation"
-                      : "Show password confirmation"
-                  }
-                  onClick={() => handleTogglePassword("confirmPassword")}
-                >
-                  {visiblePasswords.confirmPassword ? (
-                    <EyeOff size={16} aria-hidden="true" />
-                  ) : (
-                    <Eye size={16} aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-            </label>
+              return (
+                <label className="forgot-password__field" key={field.name}>
+                  <span>{field.label}</span>
+                  <div className="forgot-password__control forgot-password__control--password">
+                    <input
+                      type={isVisible ? "text" : "password"}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      required
+                    />
+                    <button
+                      type="button"
+                      aria-label={isVisible ? field.hideLabel : field.showLabel}
+                      onClick={() => handleTogglePassword(field.name)}
+                    >
+                      <VisibilityIcon size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                </label>
+              );
+            })}
 
             <button
               className="forgot-password__submit"
