@@ -62,16 +62,26 @@ Public pages:
 Patient pages:
 
 ```text
-/patient/dashboard
+/patient/profile
+/patient/booking
+/patient/appointments
+/patient/history
 ```
 
-Staff placeholders:
+Staff pages:
 
 ```text
-/receptionist/dashboard
-/dentist/dashboard
-/owner/dashboard
-/admin/dashboard
+/receptionist/consultation-request
+/receptionist/appointments
+/receptionist/payments
+/receptionist/patient-registration
+/receptionist/book-appointment
+/receptionist/profile
+/dentist/profile
+/owner/services-management
+/owner/profile
+/admin/accounts
+/admin/profile
 ```
 
 Protected routes use `AuthContext` and `ProtectedRoute`. Users are redirected based on their role after login.

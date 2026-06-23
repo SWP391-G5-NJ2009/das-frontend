@@ -14,7 +14,6 @@ import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPag
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
-import RoleDashboardPage from "./pages/shared/RoleDashboardPage/RoleDashboardPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import ProtectedRoute from "./router/ProtectedRoute";
@@ -111,14 +110,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <ManageProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dentist/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["dentist"]}>
-                <RoleDashboardPage title="Dentist Dashboard" />
               </ProtectedRoute>
             }
           />
