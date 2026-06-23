@@ -2,7 +2,7 @@ export const OWNER_NAV_ITEMS = [
   {
     icon: "medical_services",
     label: "Dental Services",
-    to: "/owner/services",
+    to: "/owner/services-management",
   },
   {
     icon: "business",
