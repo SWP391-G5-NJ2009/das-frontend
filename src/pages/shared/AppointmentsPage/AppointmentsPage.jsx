@@ -10,6 +10,7 @@ import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
+import Toast from "../../../components/common/Toast/Toast";
 import {
   useMyAppointments,
   useAllAppointments,
@@ -104,6 +105,7 @@ function AppointmentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [toast, setToast] = useState(null); // { type, message }
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
@@ -209,6 +211,11 @@ function AppointmentsPage() {
       setIsCancelling(true);
       try {
         await cancelAppointment(appointmentToCancel.id, reason);
+        setToast({
+          type: "success",
+          message:
+            "The appointment has been cancelled successfully! A notification email has been sent to the patient.",
+        });
       } finally {
         setIsCancelling(false);
         setAppointmentToCancel(null);
@@ -217,24 +224,23 @@ function AppointmentsPage() {
     [appointmentToCancel, cancelAppointment],
   );
 
+
   const handleCloseModal = useCallback(() => {
     if (!isCancelling) setAppointmentToCancel(null);
   }, [isCancelling]);
 
-  /* ── Cancel label ── */
-  const cancelLabel = appointmentToCancel
-    ? role === "receptionist"
-      ? `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
-          ?.split("-")
-          .reverse()
-          .join(
-            "/",
-          )} at ${appointmentToCancel.scheduledTime} (${appointmentToCancel.patientName})`
-      : `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
-          ?.split("-")
-          .reverse()
-          .join("/")} at ${appointmentToCancel.scheduledTime}`
-    : "";
+  /* ── Within-24h toast ── */
+  const handleWithin24hCancel = useCallback(() => {
+    setToast({
+      type: "warning",
+      message:
+        "Appointments can only be cancelled at least 24 hours in advance. Please contact the receptionist directly for assistance.",
+    });
+  }, []);
+
+  const handleDismissToast = useCallback(() => setToast(null), []);
+
+
 
   return (
     <PageShell role={role}>
@@ -288,7 +294,9 @@ function AppointmentsPage() {
             <AppointmentTable
               appointments={paginatedAppointments}
               onCancel={handleRequestCancel}
+              onWithin24hCancel={handleWithin24hCancel}
               showPatientInfo={config.showPatientInfo}
+              actorRole={role}
             />
 
             {totalPages > 1 && (
@@ -360,11 +368,22 @@ function AppointmentsPage() {
       {/* Cancel Modal */}
       <CancelConfirmModal
         isOpen={!!appointmentToCancel}
-        appointmentLabel={cancelLabel}
+        appointment={appointmentToCancel}
+        actorRole={role}
         onConfirm={handleConfirmCancel}
         onClose={handleCloseModal}
         isLoading={isCancelling}
       />
+
+      {/* Within-24h warning toast */}
+      {toast && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={handleDismissToast}
+          duration={5000}
+        />
+      )}
     </PageShell>
   );
 }

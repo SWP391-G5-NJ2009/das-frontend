@@ -1,11 +1,19 @@
 import PropTypes from "prop-types";
-import { Ban, Pencil } from "lucide-react";
+import { Ban, MessageSquare, Pencil } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
 const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in"];
 
-function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
+/** BR-13: returns true if appointment starts within 24 hours from now */
+function isWithin24Hours(scheduledDate, scheduledTime) {
+  if (!scheduledDate || !scheduledTime) return false;
+  const slotDateTime = new Date(`${scheduledDate}T${scheduledTime}:00`);
+  const diffMs = slotDateTime.getTime() - Date.now();
+  return diffMs < 24 * 60 * 60 * 1000;
+}
+
+function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, showPatientInfo, actorRole }) {
   if (appointments.length === 0) return null;
 
   return (
@@ -49,6 +57,9 @@ function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
               ? appt.scheduledDate.split("-").reverse().join("/")
               : "";
             const canCancel = CANCELLABLE_STATUSES.includes(appt.status);
+            const within24h =
+              actorRole === "patient" &&
+              isWithin24Hours(appt.scheduledDate, appt.scheduledTime);
 
             return (
               <tr key={appt.id} className="appt-table__row">
@@ -88,8 +99,19 @@ function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
                   )}
                 </td>
 
-                <td className="appt-table__td">
+                <td className="appt-table__td appt-table__td--status">
                   <Badge status={appt.status} />
+                  {appt.notes && (
+                    <span
+                      className="appt-table__cancel-note"
+                      title={appt.notes}
+                    >
+                      <MessageSquare size={11} aria-hidden="true" />
+                      <span className="appt-table__cancel-note-text">
+                        {appt.notes}
+                      </span>
+                    </span>
+                  )}
                 </td>
 
                 <td className="appt-table__td appt-table__td--actions">
@@ -109,9 +131,24 @@ function AppointmentTable({ appointments, onCancel, onEdit, showPatientInfo }) {
                       <button
                         id={`tbl-cancel-${appt.id}`}
                         type="button"
-                        className="appt-table__action-btn appt-table__action-btn--cancel"
-                        aria-label={`Cancel appointment for ${appt.patientName}`}
-                        onClick={() => onCancel?.(appt)}
+                        className={
+                          within24h
+                            ? "appt-table__action-btn appt-table__action-btn--cancel appt-table__action-btn--restricted"
+                            : "appt-table__action-btn appt-table__action-btn--cancel"
+                        }
+                        aria-label={
+                          within24h
+                            ? "Cannot cancel — within 24 hours of appointment"
+                            : `Cancel appointment for ${appt.patientName}`
+                        }
+                        title={
+                          within24h
+                            ? "Within 24 hours — contact reception to cancel"
+                            : "Cancel appointment"
+                        }
+                        onClick={() =>
+                          within24h ? onWithin24hCancel?.() : onCancel?.(appt)
+                        }
                       >
                         <Ban size={15} aria-hidden="true" />
                       </button>
@@ -140,17 +177,22 @@ AppointmentTable.propTypes = {
       scheduledTimeEnd: PropTypes.string,
       slotOccupied: PropTypes.number,
       status: PropTypes.string.isRequired,
+      notes: PropTypes.string,
     }),
   ).isRequired,
   onCancel: PropTypes.func,
+  onWithin24hCancel: PropTypes.func,
   onEdit: PropTypes.func,
   showPatientInfo: PropTypes.bool,
+  actorRole: PropTypes.string,
 };
 
 AppointmentTable.defaultProps = {
   onCancel: null,
+  onWithin24hCancel: null,
   onEdit: null,
   showPatientInfo: true,
+  actorRole: "receptionist",
 };
 
 export default AppointmentTable;

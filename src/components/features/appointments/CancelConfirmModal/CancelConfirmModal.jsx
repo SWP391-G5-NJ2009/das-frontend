@@ -1,28 +1,83 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, X, User, Stethoscope, Phone, Calendar, Clock, TriangleAlert } from "lucide-react";
+import Badge from "../../../common/Badge/Badge";
 import "./CancelConfirmModal.css";
 
-function CancelConfirmModal({
-  isOpen,
-  appointmentLabel,
-  onConfirm,
-  onClose,
-  isLoading,
-}) {
-  const [reason, setReason] = useState("");
+/**
+ * Compute whether the appointment is within the 24-hour BR-13 window.
+ * Returns true if the scheduled time is less than 24 hours away.
+ */
+function isWithin24Hours(scheduledDate, scheduledTime) {
+  if (!scheduledDate || !scheduledTime) return false;
+  const slotDateTime = new Date(`${scheduledDate}T${scheduledTime}:00`);
+  const diffMs = slotDateTime.getTime() - Date.now();
+  return diffMs < 24 * 60 * 60 * 1000;
+}
 
-  if (!isOpen) return null;
+function formatDisplayDate(dateStr) {
+  if (!dateStr) return "—";
+  const [y, m, d] = dateStr.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Appointment Summary Card — read-only section displayed at the top of the modal
+───────────────────────────────────────────────────────────────────────────── */
+function SummaryRow({ icon: Icon, label, value }) {
+  return (
+    <div className="cancel-modal__summary-row">
+      <span className="cancel-modal__summary-icon" aria-hidden="true">
+        <Icon size={14} />
+      </span>
+      <span className="cancel-modal__summary-label">{label}</span>
+      <span className="cancel-modal__summary-value">{value || "—"}</span>
+    </div>
+  );
+}
+
+SummaryRow.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string,
+};
+
+SummaryRow.defaultProps = {
+  value: "",
+};
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CancelConfirmModal — Main component
+───────────────────────────────────────────────────────────────────────────── */
+function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading, actorRole }) {
+  const [note, setNote] = useState("");
+
+  const within24h = useMemo(
+    () =>
+      actorRole === "patient" &&
+      isWithin24Hours(appointment?.scheduledDate, appointment?.scheduledTime),
+    [actorRole, appointment?.scheduledDate, appointment?.scheduledTime],
+  );
+
+  const isCancelDisabled = isLoading || within24h;
+
+  if (!isOpen || !appointment) return null;
 
   const handleConfirm = () => {
-    onConfirm(reason.trim());
-    setReason("");
+    if (isCancelDisabled) return;
+    onConfirm(note.trim());
+    setNote("");
   };
 
   const handleClose = () => {
-    setReason("");
+    if (isLoading) return;
+    setNote("");
     onClose();
   };
+
+  const timeDisplay = appointment.scheduledTime
+    ? `${appointment.scheduledTime}${appointment.scheduledTimeEnd ? ` – ${appointment.scheduledTimeEnd}` : ""}`
+    : "—";
 
   return (
     <div
@@ -37,9 +92,8 @@ function CancelConfirmModal({
         open
         aria-modal="true"
         aria-labelledby="cancel-modal-title"
-        aria-describedby="cancel-modal-desc"
       >
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="cancel-modal__header">
           <div className="cancel-modal__title-row">
             <span className="cancel-modal__icon" aria-hidden="true">
@@ -54,52 +108,124 @@ function CancelConfirmModal({
             className="cancel-modal__close"
             aria-label="Close"
             onClick={handleClose}
+            disabled={isLoading}
           >
             <X size={18} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Body */}
+        {/* ── Body ── */}
         <div className="cancel-modal__body">
-          <p id="cancel-modal-desc" className="cancel-modal__desc">
-            Are you sure you want to cancel{" "}
-            {appointmentLabel && (
-              <strong>&ldquo;{appointmentLabel}&rdquo;</strong>
-            )}
-            ? This action cannot be undone.
-          </p>
 
-          <label htmlFor="cancel-reason" className="cancel-modal__label">
-            Reason <span className="cancel-modal__optional">(optional)</span>
-          </label>
-          <textarea
-            id="cancel-reason"
-            className="cancel-modal__textarea"
-            rows={3}
-            placeholder="Enter cancellation reason..."
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-          />
+          {/* Appointment Summary Card */}
+          <section
+            className="cancel-modal__summary-card"
+            aria-label="Appointment details"
+          >
+            <div className="cancel-modal__summary-header">
+              <span className="cancel-modal__summary-heading">Appointment Summary</span>
+              <Badge status={appointment.status || "Confirmed"} />
+            </div>
+
+            <div className="cancel-modal__summary-rows">
+              <SummaryRow
+                icon={User}
+                label="Patient"
+                value={appointment.patientName}
+              />
+              <SummaryRow
+                icon={Phone}
+                label="Phone"
+                value={appointment.patientPhone}
+              />
+              <SummaryRow
+                icon={Stethoscope}
+                label="Dentist"
+                value={appointment.dentistName}
+              />
+              <SummaryRow
+                icon={Stethoscope}
+                label="Service"
+                value={appointment.serviceName}
+              />
+              <SummaryRow
+                icon={Calendar}
+                label="Date"
+                value={formatDisplayDate(appointment.scheduledDate)}
+              />
+              <SummaryRow
+                icon={Clock}
+                label="Time"
+                value={timeDisplay}
+              />
+            </div>
+          </section>
+
+          {/* BR-13 warning — shown to patients only when within 24h */}
+          {within24h && (
+            <div className="cancel-modal__br13-notice" role="alert">
+              <TriangleAlert size={16} aria-hidden="true" />
+              <p>
+                <strong>Self-service cancellation is unavailable</strong> within 24 hours
+                of your appointment. Please contact the receptionist directly for assistance.
+              </p>
+            </div>
+          )}
+
+          {/* Operational Warning Box */}
+          <div className="cancel-modal__warning-box" role="note">
+            <AlertTriangle size={16} aria-hidden="true" className="cancel-modal__warning-icon" />
+            <p className="cancel-modal__warning-text">
+              <strong>Heads up:</strong> Confirming this cancellation will{" "}
+              <strong>immediately release</strong> the associated time slot and reopen
+              it for public booking. A cancellation notification email will also be
+              sent to the patient automatically.
+            </p>
+          </div>
+
+          {/* Additional Note */}
+          <div className="cancel-modal__note-field">
+            <label htmlFor="cancel-modal-note" className="cancel-modal__label">
+              Additional Note{" "}
+              <span className="cancel-modal__optional">(optional)</span>
+            </label>
+            <textarea
+              id="cancel-modal-note"
+              className="cancel-modal__textarea"
+              rows={3}
+              placeholder="Log any specific context or remarks from the client..."
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              disabled={isCancelDisabled}
+            />
+          </div>
         </div>
 
-        {/* Footer */}
+        {/* ── Footer ── */}
         <div className="cancel-modal__footer">
           <button
             type="button"
             className="cancel-modal__btn cancel-modal__btn--secondary"
             onClick={handleClose}
             disabled={isLoading}
+            id="cancel-modal-back-btn"
           >
-            Keep Appointment
+            Back
           </button>
           <button
             type="button"
             className="cancel-modal__btn cancel-modal__btn--danger"
             onClick={handleConfirm}
-            disabled={isLoading}
+            disabled={isCancelDisabled}
             aria-busy={isLoading}
+            title={
+              within24h
+                ? "Cannot self-cancel within 24 hours — contact the receptionist"
+                : "Confirm appointment cancellation"
+            }
+            id="cancel-modal-confirm-btn"
           >
-            {isLoading ? "Cancelling..." : "Confirm Cancel"}
+            {isLoading ? "Cancelling…" : "Cancel Appointment"}
           </button>
         </div>
       </dialog>
@@ -109,15 +235,27 @@ function CancelConfirmModal({
 
 CancelConfirmModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  appointmentLabel: PropTypes.string,
+  appointment: PropTypes.shape({
+    id: PropTypes.string,
+    patientName: PropTypes.string,
+    patientPhone: PropTypes.string,
+    dentistName: PropTypes.string,
+    serviceName: PropTypes.string,
+    scheduledDate: PropTypes.string,
+    scheduledTime: PropTypes.string,
+    scheduledTimeEnd: PropTypes.string,
+    status: PropTypes.string,
+  }),
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
+  actorRole: PropTypes.string,
 };
 
 CancelConfirmModal.defaultProps = {
-  appointmentLabel: "",
+  appointment: null,
   isLoading: false,
+  actorRole: "receptionist",
 };
 
 export default CancelConfirmModal;
