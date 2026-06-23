@@ -10,28 +10,13 @@ import { useMyProfile } from "../../../hooks/useMyProfile";
 import { authService } from "../../../services/auth.service";
 import "./ManageProfilePage.css";
 
-const COMMON_FIELDS = [
+const PROFILE_FIELDS = [
   { name: "fullName", label: "Full name" },
   { name: "email", label: "Email", type: "email" },
-  { name: "phone", label: "Phone number", type: "tel" },
   { name: "birthDate", label: "Date of birth", type: "date" },
   { name: "gender", label: "Gender", options: ["Male", "Female"] },
   { name: "address", label: "Address", wide: true },
 ];
-
-const ROLE_FIELDS = {
-  admin: COMMON_FIELDS,
-  dentist: [
-    ...COMMON_FIELDS,
-    { name: "speciality", label: "Speciality", wide: true },
-  ],
-  owner: COMMON_FIELDS,
-  patient: [
-    ...COMMON_FIELDS,
-    { name: "noShowCount", label: "No-show count", readOnly: true },
-  ],
-  receptionist: COMMON_FIELDS,
-};
 
 const EMPTY_PASSWORD_FORM = {
   oldPassword: "",
@@ -40,18 +25,24 @@ const EMPTY_PASSWORD_FORM = {
 };
 
 function formatValue(value) {
-  return value === 0 ? "0" : value || "Not updated";
+  return value || "Not updated";
 }
 
 function normalizeGender(value) {
   if (value === "Nam") return "Male";
-  if (value === "Nữ" || value === "Nu") return "Female";
+  if (value === "Nu") return "Female";
   return value || "";
 }
 
 function getFieldValue(field, profile) {
   const value = profile?.[field.name];
   return field.name === "gender" ? normalizeGender(value) : value;
+}
+
+function getDraft(profile) {
+  return Object.fromEntries(
+    PROFILE_FIELDS.map((field) => [field.name, getFieldValue(field, profile)]),
+  );
 }
 
 function RoleShell({ children, role }) {
@@ -74,35 +65,20 @@ RoleShell.defaultProps = {
   role: "patient",
 };
 
-function getEditableFields(fields) {
-  return fields.filter((field) => !field.readOnly);
-}
-
-function getDraft(profile, fields) {
-  return Object.fromEntries(
-    getEditableFields(fields).map((field) => [
-      field.name,
-      getFieldValue(field, profile),
-    ]),
-  );
-}
-
 function ProfileField({ field, value, onChange }) {
   if (field.options) {
     return (
-      <fieldset
-        className={`manage-profile__field manage-profile__field--radio${field.wide ? " manage-profile__field--wide" : ""}`}
-      >
+      <fieldset className="manage-profile__field manage-profile__field--radio">
         <legend>{field.label}</legend>
         <div className="manage-profile__radio-group">
           {field.options.map((option) => (
             <label className="manage-profile__radio" key={option}>
               <input
+                checked={value === option}
                 name={field.name}
+                onChange={onChange}
                 type="radio"
                 value={option}
-                checked={value === option}
-                onChange={onChange}
               />
               <span>{option}</span>
             </label>
@@ -119,9 +95,9 @@ function ProfileField({ field, value, onChange }) {
       <span>{field.label}</span>
       <input
         name={field.name}
+        onChange={onChange}
         type={field.type || "text"}
         value={value}
-        onChange={onChange}
       />
     </label>
   );
@@ -143,11 +119,9 @@ function ManageProfilePage() {
   const { user } = useAuth();
   const { error, isLoading, profile, updateProfile } = useMyProfile();
   const role = profile?.role || user?.role || "patient";
-  const fields = ROLE_FIELDS[role] || COMMON_FIELDS;
-  const editableFields = getEditableFields(fields);
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState({});
-  const [profileStatus, setProfileStatus] = useState({
+  const [status, setStatus] = useState({
     isLoading: false,
     error: "",
     success: "",
@@ -160,40 +134,40 @@ function ManageProfilePage() {
   });
 
   useEffect(() => {
-    setDraft(getDraft(profile, fields));
-  }, [fields, profile]);
+    setDraft(getDraft(profile));
+  }, [profile]);
 
   const startEdit = () => {
-    setProfileStatus({ isLoading: false, error: "", success: "" });
+    setStatus({ isLoading: false, error: "", success: "" });
     setIsEditing(true);
   };
 
   const cancelEdit = () => {
-    setDraft(getDraft(profile, fields));
-    setProfileStatus({ isLoading: false, error: "", success: "" });
+    setDraft(getDraft(profile));
+    setStatus({ isLoading: false, error: "", success: "" });
     setIsEditing(false);
   };
 
   const changeDraft = (event) => {
     const { name, value } = event.target;
     setDraft((current) => ({ ...current, [name]: value }));
-    setProfileStatus({ isLoading: false, error: "", success: "" });
+    setStatus({ isLoading: false, error: "", success: "" });
   };
 
   const saveProfile = async (event) => {
     event.preventDefault();
-    setProfileStatus({ isLoading: true, error: "", success: "" });
+    setStatus({ isLoading: true, error: "", success: "" });
 
     try {
       await updateProfile(draft);
       setIsEditing(false);
-      setProfileStatus({
+      setStatus({
         isLoading: false,
         error: "",
         success: "Profile updated successfully.",
       });
     } catch (err) {
-      setProfileStatus({
+      setStatus({
         isLoading: false,
         error: err.message || "Unable to update profile.",
         success: "",
@@ -258,8 +232,8 @@ function ManageProfilePage() {
             {!isEditing && profile && (
               <button
                 className="manage-profile__edit"
-                type="button"
                 onClick={startEdit}
+                type="button"
               >
                 Edit
               </button>
@@ -275,35 +249,35 @@ function ManageProfilePage() {
 
           {!isLoading && !error && profile && (
             <>
-              {profileStatus.error && (
+              {status.error && (
                 <p className="manage-profile__message manage-profile__message--error">
-                  {profileStatus.error}
+                  {status.error}
                 </p>
               )}
-              {profileStatus.success && (
+              {status.success && (
                 <p className="manage-profile__message manage-profile__message--success">
-                  {profileStatus.success}
+                  {status.success}
                 </p>
               )}
 
               {isEditing ? (
                 <form className="manage-profile__form" onSubmit={saveProfile}>
-                  {editableFields.map((field) => (
+                  {PROFILE_FIELDS.map((field) => (
                     <ProfileField
                       field={field}
                       key={field.name}
-                      value={draft[field.name] || ""}
                       onChange={changeDraft}
+                      value={draft[field.name] || ""}
                     />
                   ))}
                   <div className="manage-profile__actions">
-                    <button type="submit" disabled={profileStatus.isLoading}>
-                      {profileStatus.isLoading ? "Saving..." : "Save changes"}
+                    <button disabled={status.isLoading} type="submit">
+                      {status.isLoading ? "Saving..." : "Save changes"}
                     </button>
                     <button
-                      type="button"
-                      disabled={profileStatus.isLoading}
+                      disabled={status.isLoading}
                       onClick={cancelEdit}
+                      type="button"
                     >
                       Cancel
                     </button>
@@ -311,7 +285,7 @@ function ManageProfilePage() {
                 </form>
               ) : (
                 <dl className="manage-profile__details">
-                  {fields.map((field) => (
+                  {PROFILE_FIELDS.map((field) => (
                     <div
                       className={field.wide ? "manage-profile__details-full" : ""}
                       key={field.name}
@@ -338,36 +312,38 @@ function ManageProfilePage() {
             <label>
               <span>Current password</span>
               <input
-                required
                 name="oldPassword"
+                onChange={changePasswordForm}
                 placeholder="Enter current password"
+                required
                 type="password"
                 value={passwordForm.oldPassword}
-                onChange={changePasswordForm}
               />
             </label>
+
             <label>
               <span>New password</span>
               <input
-                required
                 minLength={8}
                 name="newPassword"
-                pattern="^(?=.*[A-Za-z])(?=.*\d).+$"
+                onChange={changePasswordForm}
+                pattern="^(?=.*[A-Za-z])(?=.*\\d).+$"
                 placeholder="Enter new password"
+                required
                 type="password"
                 value={passwordForm.newPassword}
-                onChange={changePasswordForm}
               />
             </label>
+
             <label>
               <span>Confirm new password</span>
               <input
-                required
                 name="confirmPassword"
+                onChange={changePasswordForm}
                 placeholder="Re-enter new password"
+                required
                 type="password"
                 value={passwordForm.confirmPassword}
-                onChange={changePasswordForm}
               />
             </label>
 
@@ -383,13 +359,13 @@ function ManageProfilePage() {
             )}
 
             <div className="manage-profile__actions manage-profile__actions--password">
-              <button type="submit" disabled={passwordStatus.isLoading}>
+              <button disabled={passwordStatus.isLoading} type="submit">
                 {passwordStatus.isLoading ? "Saving..." : "Save password"}
               </button>
               <button
-                type="button"
                 disabled={passwordStatus.isLoading}
                 onClick={resetPasswordForm}
+                type="button"
               >
                 Cancel
               </button>

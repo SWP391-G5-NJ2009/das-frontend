@@ -5,7 +5,7 @@ import { authService } from "../services/auth.service";
 const AuthContext = createContext(null);
 
 export const ROLE_HOME = {
-  patient: "/patient/profile",
+  patient: "/patient/booking",
   receptionist: "/receptionist/consultation-request",
   dentist: "/dentist/profile",
   owner: "/owner/services-management",
