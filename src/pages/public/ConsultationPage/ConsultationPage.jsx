@@ -16,6 +16,7 @@ function ConsultationPage() {
     description: "",
   })
 
+  const [loadedAt] = useState(Date.now());
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(null);
@@ -29,8 +30,8 @@ function ConsultationPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      await consultationService.create(form);
-      setForm({ full_name: "", phone: "", email: "", description: ""});
+      await consultationService.create({ ...form, loadedAt });
+      setForm({ full_name: "", phone: "", email: "", description: "" });
       setSuccess("Gửi yêu cầu tư vấn thành công!");
     } catch (err) {
       setError(err.message);
@@ -107,6 +108,16 @@ function ConsultationPage() {
                   required
                 />
               </label>
+
+              <input
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ position: "absolute", left: "-9999px" }}
+                value={form.website}
+                onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+              />
 
               <button className="consultation-panel__submit" type="submit" disabled={isSubmitting}>
                 <Send size={18} aria-hidden="true" />

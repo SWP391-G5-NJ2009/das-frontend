@@ -16,7 +16,7 @@ export function useMyAppointments(filters = {}) {
     setError(null);
     try {
       const data = await appointmentService.getMyAppointments(filters);
-      setAppointments(data || []);
+      setAppointments(data);
     } catch (err) {
       setError(err);
     } finally {
