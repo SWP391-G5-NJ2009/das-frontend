@@ -8,12 +8,15 @@ export function useConsultationRequests(filters = {}) {
 
     const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
+    const [total, setTotal] = useState(0);
+
     const fetchRequests = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
             const data = await consultationService.get(filters);
-            setRequests(data);
+            setRequests(data.items || []);
+            setTotal(data.total || 0);
         } catch (err) {
             setError(err);
         } finally {
@@ -27,6 +30,7 @@ export function useConsultationRequests(filters = {}) {
 
     return {
         requests,
+        total,
         isLoading,
         error,
         refetch: fetchRequests
