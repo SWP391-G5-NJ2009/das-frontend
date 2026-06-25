@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { useOwnerDentalServices } from "../../../hooks/useDentalServices";
 import OwnerPageShell from "../OwnerPageShell";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import "./ServiceCatalogPage.css";
+
+const PAGE_SIZE = 8;
 
 function OwnerServiceCatalog() {
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -125,7 +129,7 @@ function OwnerServiceCatalog() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const filteredServices = services.filter((service) => {
+  const filteredServices = useMemo(() => services.filter((service) => {
     const matchesCategory =
       filterCategory === "All" ||
       service.service_categories?.category_name === filterCategory;
@@ -136,7 +140,13 @@ function OwnerServiceCatalog() {
       service.description?.toLowerCase().includes(searchLower);
 
     return matchesCategory && matchesSearch;
-  });
+  }), [services, filterCategory, searchTerm]);
+
+  const totalPage = Math.max(1, Math.ceil(filteredServices.length / PAGE_SIZE));
+  const paginatedServices = useMemo(
+    () => filteredServices.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filteredServices, currentPage],
+  );
 
 
   return (
@@ -166,7 +176,7 @@ function OwnerServiceCatalog() {
                   type="text"
                   placeholder="Search by service name or description..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                   className="search-service-input"
                   style={{
                     width: "100%",
@@ -206,7 +216,7 @@ function OwnerServiceCatalog() {
                 id="category-filter"
                 className="filter-select"
                 value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
+                onChange={(e) => { setFilterCategory(e.target.value); setCurrentPage(1); }}
               >
                 <option value="All">All</option>
                 {dbCategories.map((cat) => (
@@ -249,7 +259,7 @@ function OwnerServiceCatalog() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredServices.map((service) => (
+                   {paginatedServices.map((service) => (
                       <tr key={service.service_id}>
                         <td>
                           <div className="service-title-cell">
@@ -320,6 +330,16 @@ function OwnerServiceCatalog() {
                     )}
                   </tbody>
                 </table>
+                <div className="catalog-pagination">
+                  <p className="catalog-pagination__info">
+                    Showing {Math.min((currentPage - 1) * PAGE_SIZE + 1, filteredServices.length)}–{Math.min(currentPage * PAGE_SIZE, filteredServices.length)} of {filteredServices.length} services
+                  </p>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPage={totalPage}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
               </div>
             )}
 
