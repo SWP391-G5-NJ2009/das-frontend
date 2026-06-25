@@ -12,15 +12,15 @@ export function useMyAppointments(filters = {}, options = {}) {
 
   const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
-  const fetchAppointments = useCallback(async () => {
+  const fetchAppointments = useCallback(async (isBackground = false) => {
     if (!isEnabled) {
       setAppointments([]);
-      setIsLoading(false);
+      if (!isBackground) setIsLoading(false);
       setError(null);
       return;
     }
 
-    setIsLoading(true);
+    if (!isBackground) setIsLoading(true);
     setError(null);
     try {
       const data = await appointmentService.getMyAppointments(filters);
@@ -31,15 +31,22 @@ export function useMyAppointments(filters = {}, options = {}) {
       });
       setAppointments(sorted);
     } catch (err) {
-      setError(err);
+      if (!isBackground) setError(err);
     } finally {
-      setIsLoading(false);
+      if (!isBackground) setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEnabled, serializedFilters]);
 
   useEffect(() => {
     fetchAppointments();
+
+    // Polling: auto-refresh every 30 seconds silently
+    const interval = setInterval(() => {
+      fetchAppointments(true);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [fetchAppointments]);
 
   const cancelAppointment = useCallback(
@@ -71,15 +78,15 @@ export function useAllAppointments(filters = {}, options = {}) {
 
   const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
-  const fetchAppointments = useCallback(async () => {
+  const fetchAppointments = useCallback(async (isBackground = false) => {
     if (!isEnabled) {
       setAppointments([]);
-      setIsLoading(false);
+      if (!isBackground) setIsLoading(false);
       setError(null);
       return;
     }
 
-    setIsLoading(true);
+    if (!isBackground) setIsLoading(true);
     setError(null);
     try {
       const data = await appointmentService.getAll(filters);
@@ -90,15 +97,22 @@ export function useAllAppointments(filters = {}, options = {}) {
       });
       setAppointments(sorted);
     } catch (err) {
-      setError(err);
+      if (!isBackground) setError(err);
     } finally {
-      setIsLoading(false);
+      if (!isBackground) setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEnabled, serializedFilters]);
 
   useEffect(() => {
     fetchAppointments();
+
+    // Polling: auto-refresh every 30 seconds silently
+    const interval = setInterval(() => {
+      fetchAppointments(true);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [fetchAppointments]);
 
   const cancelAppointment = useCallback(
