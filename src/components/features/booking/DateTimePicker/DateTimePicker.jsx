@@ -243,16 +243,27 @@ function DateTimePicker({
                   onClick={() => isAvailable && onSelectSlot(slot)}
                   disabled={!isAvailable}
                   aria-pressed={isSelected}
+                  title={
+                    isAvailable
+                      ? `Select time ${slot.time}`
+                      : past
+                        ? `${slot.time} - unavailable (time has passed)`
+                        : tooSoon
+                          ? `${slot.time} - unavailable (less than 30 minutes away)`
+                          : slot.status === "Booked"
+                            ? `${slot.time} - booked`
+                            : `${slot.time} - unavailable`
+                  }
                   aria-label={
                     isAvailable
                       ? `Select time ${slot.time}`
                       : past
-                        ? `${slot.time} — unavailable (time has passed)`
+                        ? `${slot.time} - unavailable (time has passed)`
                         : tooSoon
-                          ? `${slot.time} — unavailable (less than 30 minutes away)`
+                          ? `${slot.time} - unavailable (less than 30 minutes away)`
                           : slot.status === "Booked"
-                            ? `${slot.time} — booked`
-                            : `${slot.time} — unavailable`
+                            ? `${slot.time} - booked`
+                            : `${slot.time} - unavailable`
                   }
                 >
                   {slot.time}
