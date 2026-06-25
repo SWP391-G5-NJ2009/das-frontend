@@ -46,11 +46,7 @@ function PatientRegistrationPage() {
 
     try {
       const patient = await patientService.createPatientAccount(form);
-      const smsNotice =
-        patient.passwordSmsDelivery === "textbee_failed"
-          ? " The password SMS could not be sent."
-          : " The default password was sent by SMS.";
-      setSuccess(`${patient.fullName} was registered successfully.${smsNotice}`);
+      setSuccess(`Registered patient successfully.`);
       setForm(getInitialForm());
     } catch (err) {
       setError(err.message);
@@ -190,7 +186,5 @@ function PatientRegistrationPage() {
     </ReceptionistPageShell>
   );
 }
-
-PatientRegistrationPage.propTypes = {};
 
 export default PatientRegistrationPage;
