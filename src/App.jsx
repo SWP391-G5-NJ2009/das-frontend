@@ -7,6 +7,7 @@ import LandingPage from "./pages/public/LandingPage/LandingPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
+import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
 import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
@@ -118,6 +119,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["dentist"]}>
                 <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dentist/patients"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <DentistWaitingPatientsPage />
               </ProtectedRoute>
             }
           />

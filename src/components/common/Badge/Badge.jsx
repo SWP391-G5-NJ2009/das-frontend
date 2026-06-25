@@ -3,6 +3,7 @@ import "./Badge.css";
 
 const STATUS_CLASS = {
   Confirmed: "confirmed",
+  Waiting: "waiting",
   "Checked-in": "checked-in",
   Cancelled: "cancelled",
   "No-Show": "no-show",
@@ -16,6 +17,7 @@ const STATUS_CLASS = {
 
 const STATUS_LABEL = {
   Confirmed: "Confirmed",
+  Waiting: "Waiting",
   "Checked-in": "Checked-in",
   Cancelled: "Cancelled",
   "No-Show": "No-Show",
