@@ -53,24 +53,24 @@ function Pagination({
                 {currentPage}
             </button>
             <button
-                className={`btn${currentPage > 29 ? " hidden" : ""}`}
+                className={`btn${currentPage > totalPage-1 ? " hidden" : ""}`}
                 type="button"
                 onClick={() => onPageChange(currentPage + 1)}
             >
                 {currentPage + 1}
             </button>
             <button
-                className={`btn${currentPage > 28 ? " hidden" : ""}`}
+                className={`btn${currentPage > totalPage-2 ? " hidden" : ""}`}
                 type="button"
                 onClick={() => onPageChange(currentPage + 2)}
             >
                 {currentPage + 2}
             </button>
-            <span className={`ellipsis${currentPage > 27 ? " hidden" : ""}`}>
+            <span className={`ellipsis${currentPage > totalPage-3 ? " hidden" : ""}`}>
                 <MoreHorizontal size={18} />
             </span>
             <button
-                className={`btn${currentPage > 27 ? " hidden" : ""}`}
+                className={`btn${currentPage > totalPage-3 ? " hidden" : ""}`}
                 type="button"
                 onClick={() => onPageChange(totalPage)}
             >
