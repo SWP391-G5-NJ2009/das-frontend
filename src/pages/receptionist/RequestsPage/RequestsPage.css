@@ -599,7 +599,6 @@
   color: var(--color-neutral-500);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -609,6 +608,7 @@
 
 .receptionist-requests__page-btn:hover {
   background-color: var(--color-neutral-50);
+  cursor: pointer;
 }
 
 .receptionist-requests__page-btn--active {
@@ -616,6 +616,11 @@
   color: #ffffff;
   border-color: var(--color-primary-700);
 }
+
+.receptionist-requests__page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
 /* ===== Stats ===== */
 .receptionist-requests__stats {
@@ -723,6 +728,8 @@
   font-size: 20px;
 }
 
+
+
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .receptionist-requests__stats {
@@ -766,4 +773,7 @@
     align-items: flex-start;
     gap: var(--space-4);
   }
+
+  
+  
 }
