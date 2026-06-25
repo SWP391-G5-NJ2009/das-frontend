@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Bell, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import "./RoleHeader.css";
@@ -27,24 +27,18 @@ function getInitials(name) {
 }
 
 const ROLE_LABELS = {
-  admin: "Quan tri vien",
-  dentist: "Nha si",
-  owner: "Chu phong kham",
-  patient: "Benh nhan",
-  receptionist: "Le tan",
-  staff: "Nhan vien",
+  admin: "Admin",
+  dentist: "Dentist",
+  owner: "Clinic Owner",
+  patient: "Patient",
+  receptionist: "Receptionist",
 };
 
 function getRoleLabel(roleLabel) {
   return ROLE_LABELS[String(roleLabel).toLowerCase()] || roleLabel;
 }
 
-function RoleHeader({
-  isFixed,
-  mobileNavItems,
-  onNotificationClick,
-  roleLabel,
-}) {
+function RoleHeader({ isFixed, mobileNavItems, roleLabel }) {
   const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const displayName = getDisplayName(user);
@@ -60,7 +54,7 @@ function RoleHeader({
             type="button"
             aria-expanded={isMobileMenuOpen}
             aria-label={
-              isMobileMenuOpen ? "Dong menu dieu huong" : "Mo menu dieu huong"
+              isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
             }
             onClick={() => setIsMobileMenuOpen((current) => !current)}
           >
@@ -74,7 +68,7 @@ function RoleHeader({
           {isMobileMenuOpen && (
             <nav
               className="role-header__mobile-menu"
-              aria-label="Dieu huong nhanh"
+              aria-label="Quick navigation"
             >
               {mobileNavItems.map((item) => (
                 <NavLink
@@ -95,15 +89,6 @@ function RoleHeader({
       )}
 
       <div className="role-header__actions">
-        <button
-          className="role-header__icon-btn"
-          type="button"
-          onClick={onNotificationClick}
-          aria-label="Thông báo"
-        >
-          <Bell size={20} aria-hidden="true" />
-        </button>
-
         <div className="role-header__divider" />
 
         <div className="role-header__profile">
@@ -131,14 +116,12 @@ RoleHeader.propTypes = {
       to: PropTypes.string.isRequired,
     }),
   ),
-  onNotificationClick: PropTypes.func,
   roleLabel: PropTypes.string.isRequired,
 };
 
 RoleHeader.defaultProps = {
   isFixed: false,
   mobileNavItems: [],
-  onNotificationClick: undefined,
 };
 
 export default RoleHeader;

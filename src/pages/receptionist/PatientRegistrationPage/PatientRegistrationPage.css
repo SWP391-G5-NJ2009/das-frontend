@@ -1,0 +1,192 @@
+.patient-registration {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.patient-registration__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.patient-registration__header h1 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.patient-registration__header p {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}
+
+.patient-registration__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: min(100%, var(--content-max-width));
+  padding: var(--space-6);
+  background: var(--color-neutral-50);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.patient-registration__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+.patient-registration__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.patient-registration__field strong {
+  color: var(--color-error);
+}
+
+.patient-registration__field input {
+  width: 100%;
+  min-height: var(--space-10);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-neutral-50);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-800);
+  font: inherit;
+  font-weight: var(--font-weight-regular);
+}
+
+.patient-registration__field input:focus-visible,
+.patient-registration__generate:focus-visible,
+.patient-registration__actions button:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.patient-registration__field--wide {
+  grid-column: 1 / -1;
+}
+
+.patient-registration__field--radio {
+  display: flex;
+  flex-direction: row;
+  border: 0;
+  padding: 0;
+}
+
+.patient-registration__field--radio legend {
+  margin-bottom: var(--space-2);
+}
+
+.patient-registration__field--radio label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: var(--space-4);
+  color: var(--color-neutral-800);
+  font-weight: var(--font-weight-regular);
+}
+
+.patient-registration__field--radio input {
+  width: var(--space-4);
+  min-height: var(--space-4);
+  accent-color: var(--color-secondary-700);
+}
+
+.patient-registration__field--password {
+  max-width: 30rem;
+}
+
+.patient-registration__password-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.patient-registration__password-row input {
+  flex: 1 1 14rem;
+}
+
+.patient-registration__generate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-10);
+  padding: 0 var(--space-4);
+  background: var(--color-secondary-100);
+  border: 1px solid var(--color-secondary-200);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-800);
+  font: inherit;
+  cursor: pointer;
+}
+
+.patient-registration__message {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.patient-registration__message--error {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.patient-registration__message--success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.patient-registration__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-color);
+}
+
+.patient-registration__actions button {
+  min-height: var(--space-10);
+  padding: 0 var(--space-6);
+  border: 1px solid var(--color-neutral-500);
+  border-radius: var(--radius-md);
+  background: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+  font: inherit;
+  cursor: pointer;
+}
+
+.patient-registration__actions button[type="submit"] {
+  border-color: var(--color-secondary-700);
+  background: var(--color-secondary-700);
+  color: var(--color-neutral-50);
+}
+
+.patient-registration__actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+  .patient-registration__form {
+    padding: var(--space-8);
+  }
+
+  .patient-registration__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

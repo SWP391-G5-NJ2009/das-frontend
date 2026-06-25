@@ -1,12 +1,27 @@
 import PropTypes from "prop-types";
-import { User, Stethoscope, UserCheck, CalendarClock, Info } from "lucide-react";
+import {
+  User,
+  Stethoscope,
+  UserCheck,
+  CalendarClock,
+  Info,
+} from "lucide-react";
 import "./BookingSummary.css";
 
-function BookingSummary({ patient, service, dentist, date, slot, onConfirm, onCancel, isSubmitting }) {
+function BookingSummary({
+  patient,
+  service,
+  dentist,
+  date,
+  slot,
+  onConfirm,
+  onCancel,
+  isSubmitting,
+}) {
   const hasAll = patient && service && dentist && date && slot;
 
   const formattedDate = date
-    ? date.toLocaleDateString("vi-VN", {
+    ? date.toLocaleDateString("en-US", {
         weekday: "short",
         day: "2-digit",
         month: "2-digit",
@@ -15,81 +30,110 @@ function BookingSummary({ patient, service, dentist, date, slot, onConfirm, onCa
     : null;
 
   const formattedFee = service?.price
-    ? new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(service.price)
+    ? new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "VND",
+      }).format(service.price)
     : null;
 
   return (
-    <aside className="booking-summary" aria-label="Tóm tắt lịch hẹn">
+    <aside className="booking-summary" aria-label="Appointment Summary">
       <div className="booking-summary__header">
         <CalendarClock size={18} aria-hidden="true" />
-        <h3 className="booking-summary__title">Tóm tắt lịch hẹn</h3>
+        <h3 className="booking-summary__title">Appointment Summary</h3>
       </div>
 
       <div className="booking-summary__body">
         {/* Patient */}
-        <div className={`booking-summary__row${patient ? "" : " booking-summary__row--empty"}`}>
+        <div
+          className={`booking-summary__row${patient ? "" : " booking-summary__row--empty"}`}
+        >
           <div className="booking-summary__row-icon" aria-hidden="true">
             <User size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">BỆNH NHÂN</span>
+            <span className="booking-summary__row-label">PATIENT</span>
             {patient ? (
               <>
-                <span className="booking-summary__row-value">{patient.fullName}</span>
-                <span className="booking-summary__row-sub">{patient.phone}</span>
+                <span className="booking-summary__row-value">
+                  {patient.fullName}
+                </span>
+                <span className="booking-summary__row-sub">
+                  {patient.phone}
+                </span>
               </>
             ) : (
-              <span className="booking-summary__row-placeholder">Chưa chọn bệnh nhân</span>
+              <span className="booking-summary__row-placeholder">
+                No patient selected
+              </span>
             )}
           </div>
         </div>
 
         {/* Service */}
-        <div className={`booking-summary__row${service ? "" : " booking-summary__row--empty"}`}>
+        <div
+          className={`booking-summary__row${service ? "" : " booking-summary__row--empty"}`}
+        >
           <div className="booking-summary__row-icon" aria-hidden="true">
             <Stethoscope size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">DỊCH VỤ</span>
+            <span className="booking-summary__row-label">SERVICE</span>
             {service ? (
               <>
-                <span className="booking-summary__row-value">{service.name}</span>
-                <span className="booking-summary__row-sub">{service.duration} phút</span>
+                <span className="booking-summary__row-value">
+                  {service.name}
+                </span>
+                <span className="booking-summary__row-sub">
+                  {service.duration} minutes
+                </span>
               </>
             ) : (
-              <span className="booking-summary__row-placeholder">Chưa chọn dịch vụ</span>
+              <span className="booking-summary__row-placeholder">
+                No service selected
+              </span>
             )}
           </div>
         </div>
 
         {/* Dentist */}
-        <div className={`booking-summary__row${dentist ? "" : " booking-summary__row--empty"}`}>
+        <div
+          className={`booking-summary__row${dentist ? "" : " booking-summary__row--empty"}`}
+        >
           <div className="booking-summary__row-icon" aria-hidden="true">
             <UserCheck size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">BÁC SĨ</span>
+            <span className="booking-summary__row-label">DENTIST</span>
             {dentist ? (
-              <span className="booking-summary__row-value">{dentist.fullName}</span>
+              <span className="booking-summary__row-value">
+                {dentist.fullName}
+              </span>
             ) : (
-              <span className="booking-summary__row-placeholder">Chưa chọn bác sĩ</span>
+              <span className="booking-summary__row-placeholder">
+                No dentist selected
+              </span>
             )}
           </div>
         </div>
 
         {/* Date & Time */}
-        <div className={`booking-summary__row${date && slot ? "" : " booking-summary__row--empty"}`}>
+        <div
+          className={`booking-summary__row${date && slot ? "" : " booking-summary__row--empty"}`}
+        >
           <div className="booking-summary__row-icon" aria-hidden="true">
             <CalendarClock size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">THỜI GIAN</span>
+            <span className="booking-summary__row-label">DATE & TIME</span>
             {date && slot ? (
               <span className="booking-summary__row-value">
                 {slot.time}, {formattedDate}
               </span>
             ) : (
-              <span className="booking-summary__row-placeholder">Chưa chọn ngày/giờ</span>
+              <span className="booking-summary__row-placeholder">
+                No date/time selected
+              </span>
             )}
           </div>
         </div>
@@ -97,7 +141,7 @@ function BookingSummary({ patient, service, dentist, date, slot, onConfirm, onCa
         {/* Fee */}
         {formattedFee && (
           <div className="booking-summary__fee">
-            <span className="booking-summary__fee-label">Phí dự kiến:</span>
+            <span className="booking-summary__fee-label">Estimated fee:</span>
             <span className="booking-summary__fee-value">{formattedFee}</span>
           </div>
         )}
@@ -113,7 +157,7 @@ function BookingSummary({ patient, service, dentist, date, slot, onConfirm, onCa
           disabled={!hasAll || isSubmitting}
           aria-disabled={!hasAll || isSubmitting}
         >
-          {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
+          {isSubmitting ? "Processing..." : "Confirm Booking"}
         </button>
         <button
           type="button"
@@ -122,7 +166,7 @@ function BookingSummary({ patient, service, dentist, date, slot, onConfirm, onCa
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Hủy bỏ
+          Cancel
         </button>
       </div>
 
@@ -130,7 +174,8 @@ function BookingSummary({ patient, service, dentist, date, slot, onConfirm, onCa
       <div className="booking-summary__notice" role="note">
         <Info size={14} aria-hidden="true" />
         <p className="booking-summary__notice-text">
-          Hệ thống sẽ tự động gửi email xác nhận lịch hẹn đến địa chỉ email của bệnh nhân sau khi bạn nhấn Xác nhận.
+          The system will automatically send a booking confirmation email to the
+          patient's email address after you click Confirm.
         </p>
       </div>
     </aside>

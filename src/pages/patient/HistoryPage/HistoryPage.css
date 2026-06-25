@@ -1,0 +1,103 @@
+.patient-history-section {
+  margin: 0 auto;
+}
+
+.patient-history-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.patient-history-card__header h1 {
+  margin: 0 0 var(--space-1) 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.patient-history-card__header p {
+  margin: 0;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-sm);
+}
+
+.patient-history-table__wrap {
+  overflow-x: auto;
+  background-color: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.patient-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.patient-history-table__head {
+  background-color: var(--color-secondary-100);
+}
+
+.patient-history-table__th {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-primary-700);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.patient-history-table__th:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.patient-history-table__th:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.patient-history-table__row {
+  border-bottom: 1px solid var(--color-neutral-200);
+  transition: background-color var(--transition-fast);
+}
+
+.patient-history-table__row:last-child {
+  border-bottom: none;
+}
+
+.patient-history-table__row:hover {
+  background-color: var(--color-primary-50);
+}
+
+.patient-history-table__td {
+  padding: var(--space-4);
+  color: var(--color-neutral-600);
+  vertical-align: middle;
+}
+
+.patient-history-table__td--date,
+.patient-history-table__td--cost {
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-medium);
+}
+
+.patient-history-table__td--treatment,
+.patient-history-table__td--diagnosis {
+  max-width: 24rem;
+  color: var(--color-neutral-900);
+  white-space: normal;
+}
+
+.patient-history-table__td--diagnosis {
+  color: var(--color-neutral-600);
+}
+
+@media (max-width: 640px) {
+  .patient-history-card {
+    gap: var(--space-4);
+  }
+}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -10,21 +10,17 @@ import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
+import Toast from "../../../components/common/Toast/Toast";
 import {
   useMyAppointments,
   useAllAppointments,
 } from "../../../hooks/useAppointments";
 import "./AppointmentsPage.css";
 
-/* ── Role-specific config ── */
-const PATIENT_STATUS_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "Confirmed", label: "Confirmed" },
-  { value: "Completed", label: "Completed" },
-  { value: "Conflict", label: "Conflict" },
-  { value: "Cancelled", label: "Cancelled" },
-];
+/* ── Constants ── */
+const ITEMS_PER_PAGE = 8;
 
+/* ── Role-specific config ── */
 const ROLE_CONFIG = {
   patient: {
     title: "My Appointments",
@@ -33,7 +29,7 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
-    statusOptions: PATIENT_STATUS_OPTIONS,
+    statusOptions: null, // use AppointmentFilters default (all statuses)
   },
   receptionist: {
     title: "Appointment List",
@@ -48,10 +44,14 @@ const ROLE_CONFIG = {
 
 /* ── Hook selector ── */
 function useAppointmentsByRole(role, filters) {
-  const patient = useMyAppointments(role === "patient" ? filters : {});
-  const receptionist = useAllAppointments(
-    role === "receptionist" ? filters : {},
-  );
+  const isPatient = role === "patient";
+  const isReceptionist = role === "receptionist";
+  const patient = useMyAppointments(isPatient ? filters : {}, {
+    enabled: isPatient,
+  });
+  const receptionist = useAllAppointments(isReceptionist ? filters : {}, {
+    enabled: isReceptionist,
+  });
   return role === "patient" ? patient : receptionist;
 }
 
@@ -82,30 +82,123 @@ function AppointmentsPage() {
   const config = ROLE_CONFIG[role] ?? ROLE_CONFIG.patient;
   const navigate = useNavigate();
 
+  const today = new Date();
+  const todayYear = String(today.getFullYear());
+  const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
+  const todayDay = String(today.getDate()).padStart(2, "0");
+
+  // Display state for the three dropdowns
+  const [dateParts, setDateParts] = useState({
+    year: todayYear,
+    month: todayMonth,
+    day: todayDay,
+  });
+
+  // Backend filter state derived from dateParts
   const [filters, setFilters] = useState({
     status: "all",
-    date: "",
+    date: `${todayYear}-${todayMonth}-${todayDay}`, // exact day YYYY-MM-DD
+    month: "",        // YYYY-MM (set when day is empty)
+    year: "",         // YYYY   (set when month is empty too)
     search: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [toast, setToast] = useState(null); // { type, message }
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
+
+  /* ── Reset page when filters change ── */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
+  /* ── Pagination calculations ── */
+  const totalPages = Math.ceil(appointments.length / ITEMS_PER_PAGE);
+  const indexOfFirst = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedAppointments = appointments.slice(
+    indexOfFirst,
+    indexOfFirst + ITEMS_PER_PAGE,
+  );
+
+  /* ── Truncated pagination range ── */
+  const getPaginationRange = () => {
+    const totalNumbers = 7;
+
+    if (totalPages <= totalNumbers) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const isNearFirstPage = currentPage <= 4;
+    const isNearLastPage = currentPage >= totalPages - 3;
+
+    if (isNearFirstPage) {
+      return [1, 2, 3, 4, 5, "...", totalPages];
+    }
+
+    if (isNearLastPage) {
+      return [
+        1,
+        "...",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
+  };
+
+  const paginationRange = getPaginationRange();
 
   /* ── Filter handlers ── */
   const handleStatusChange = useCallback(
     (status) => setFilters((prev) => ({ ...prev, status })),
     [],
   );
-  const handleDateChange = useCallback(
-    (date) => setFilters((prev) => ({ ...prev, date })),
+
+  /**
+   * Called by AppointmentFilters when any of year/month/day changes.
+   * Updates both the dropdown display state and the backend filter state.
+   */
+  const handleDatePartsChange = useCallback(
+    ({ year, month, day }) => {
+      setDateParts({ year, month, day });
+      setFilters((prev) => ({
+        ...prev,
+        // Exact day match
+        date: year && month && day ? `${year}-${month}-${day}` : "",
+        // Month match (YYYY-MM) — only when day is empty
+        month: year && month && !day ? `${year}-${month}` : "",
+        // Year match — only when both month and day are empty
+        year: year && !month ? year : "",
+      }));
+    },
     [],
   );
+
   const handleSearchChange = useCallback(
     (search) => setFilters((prev) => ({ ...prev, search })),
     [],
   );
+
+  /* ── Today shortcut ── */
+  const handleTodayClick = useCallback(() => {
+    setDateParts({ year: todayYear, month: todayMonth, day: todayDay });
+    setFilters((prev) => ({
+      ...prev,
+      date: `${todayYear}-${todayMonth}-${todayDay}`,
+      month: "",
+      year: "",
+    }));
+  }, [todayYear, todayMonth, todayDay]);
+
+  const isTodayActive =
+    filters.date === `${todayYear}-${todayMonth}-${todayDay}`;
 
   /* ── Cancel handlers ── */
   const handleRequestCancel = useCallback((appointment) => {
@@ -118,6 +211,11 @@ function AppointmentsPage() {
       setIsCancelling(true);
       try {
         await cancelAppointment(appointmentToCancel.id, reason);
+        setToast({
+          type: "success",
+          message:
+            "The appointment has been cancelled successfully! A notification email has been sent to the patient.",
+        });
       } finally {
         setIsCancelling(false);
         setAppointmentToCancel(null);
@@ -126,24 +224,23 @@ function AppointmentsPage() {
     [appointmentToCancel, cancelAppointment],
   );
 
+
   const handleCloseModal = useCallback(() => {
     if (!isCancelling) setAppointmentToCancel(null);
   }, [isCancelling]);
 
-  /* ── Cancel label ── */
-  const cancelLabel = appointmentToCancel
-    ? role === "receptionist"
-      ? `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
-          ?.split("-")
-          .reverse()
-          .join(
-            "/",
-          )} lúc ${appointmentToCancel.scheduledTime} (${appointmentToCancel.patientName})`
-      : `${appointmentToCancel.serviceName} — ${appointmentToCancel.scheduledDate
-          ?.split("-")
-          .reverse()
-          .join("/")} lúc ${appointmentToCancel.scheduledTime}`
-    : "";
+  /* ── Within-24h toast ── */
+  const handleWithin24hCancel = useCallback(() => {
+    setToast({
+      type: "warning",
+      message:
+        "Appointments can only be cancelled at least 24 hours in advance. Please contact the receptionist directly for assistance.",
+    });
+  }, []);
+
+  const handleDismissToast = useCallback(() => setToast(null), []);
+
+
 
   return (
     <PageShell role={role}>
@@ -172,10 +269,12 @@ function AppointmentsPage() {
 
         {/* Filters */}
         <AppointmentFilters
-          filters={filters}
+          filters={{ ...filters, ...dateParts }}
           onStatusChange={handleStatusChange}
-          onDateChange={handleDateChange}
+          onDatePartsChange={handleDatePartsChange}
           onSearchChange={handleSearchChange}
+          onTodayClick={handleTodayClick}
+          isTodayActive={isTodayActive}
           statusOptions={config.statusOptions}
         />
 
@@ -191,22 +290,100 @@ function AppointmentsPage() {
         )}
 
         {!isLoading && !error && appointments.length > 0 && (
-          <AppointmentTable
-            appointments={appointments}
-            onCancel={handleRequestCancel}
-            showPatientInfo={config.showPatientInfo}
-          />
+          <>
+            <AppointmentTable
+              appointments={paginatedAppointments}
+              onCancel={handleRequestCancel}
+              onWithin24hCancel={handleWithin24hCancel}
+              showPatientInfo={config.showPatientInfo}
+              actorRole={role}
+            />
+
+            {totalPages > 1 && (
+              <div
+                className="appts-page__pagination"
+                aria-label="Appointment list pagination"
+              >
+                <span className="appts-page__pagination-info">
+                  Showing {indexOfFirst + 1}–
+                  {Math.min(indexOfFirst + ITEMS_PER_PAGE, appointments.length)}{" "}
+                  of {appointments.length} appointments
+                </span>
+
+                <div className="appts-page__pagination-controls">
+                  <button
+                    type="button"
+                    className="appts-page__page-btn appts-page__page-btn--prev"
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    disabled={currentPage === 1}
+                    aria-label="Previous page"
+                  >
+                    ‹ Previous
+                  </button>
+
+                  {paginationRange.map((page, index) => {
+                    if (page === "...") {
+                      return (
+                        <span
+                          key={`dots-${index}`}
+                          className="appts-page__page-dots"
+                          aria-hidden="true"
+                        >
+                          &hellip;
+                        </span>
+                      );
+                    }
+                    return (
+                      <button
+                        key={page}
+                        type="button"
+                        className={`appts-page__page-btn${currentPage === page ? " appts-page__page-btn--active" : ""}`}
+                        onClick={() => setCurrentPage(page)}
+                        aria-label={`Page ${page}`}
+                        aria-current={currentPage === page ? "page" : undefined}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    className="appts-page__page-btn appts-page__page-btn--next"
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(p + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                    aria-label="Next page"
+                  >
+                    Next ›
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </section>
 
       {/* Cancel Modal */}
       <CancelConfirmModal
         isOpen={!!appointmentToCancel}
-        appointmentLabel={cancelLabel}
+        appointment={appointmentToCancel}
+        actorRole={role}
         onConfirm={handleConfirmCancel}
         onClose={handleCloseModal}
         isLoading={isCancelling}
       />
+
+      {/* Within-24h warning toast */}
+      {toast && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={handleDismissToast}
+          duration={5000}
+        />
+      )}
     </PageShell>
   );
 }

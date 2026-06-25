@@ -8,7 +8,7 @@ function SiteFooter() {
         <Link className="site-footer__brand" to="/">
           DentalCare
         </Link>
-        <p>© 2026 DentalCare. Bảo lưu mọi quyền.</p>
+        <p>© 2026 DentalCare. All rights reserved.</p>
       </div>
     </footer>
   );

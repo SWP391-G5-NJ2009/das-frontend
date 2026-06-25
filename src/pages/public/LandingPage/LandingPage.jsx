@@ -33,7 +33,7 @@ function LandingPage() {
     try {
       await consultationService.create(form);
       setForm({ full_name: "", phone: "", email: "", description: ""});
-      setSuccess("Gửi yêu cầu tư vấn thành công!");
+      setSuccess("Consultation request sent successfully!");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -51,37 +51,37 @@ function LandingPage() {
             <div className="landing-hero__content">
               <p className="landing-hero__eyebrow">
                 <ShieldCheck size={16} aria-hidden="true" />
-                Nha khoa uy tín hàng đầu
+                Trusted dental care
               </p>
               <h1 className="landing-hero__title">
-                Đặt lịch khám răng <span>dễ dàng</span> chỉ trong vài phút
+                Book your dental visit <span>easily</span> in just a few minutes
               </h1>
               <p className="landing-hero__text">
-                DentalCare giúp bạn chủ động đặt lịch hẹn với bác sĩ nha khoa,
-                theo dõi lịch khám và chăm sóc nụ cười khỏe đẹp mỗi ngày.
+                DentalCare helps you book appointments with dentists,
+                track visits, and care for a healthy smile every day.
               </p>
               <div className="landing-hero__actions">
                 <Link className="landing-button landing-button--primary" to="/consultation">
                   <CalendarDays size={16} aria-hidden="true" />
-                  Đặt lịch ngay
+                  Book now
                 </Link>
                 <Link className="landing-button landing-button--secondary" to="/services">
-                  Tìm hiểu thêm
+                  Learn more
                 </Link>
               </div>
             </div>
             <div className="landing-hero__media">
-              <img src={heroDentist} alt="Bác sĩ nha khoa tại phòng khám DentalCare" />
+              <img src={heroDentist} alt="Dentist at DentalCare clinic" />
             </div>
           </div>
         </section>
 
         <section className="landing-services" id="services">
           <div className="landing-services__header">
-            <h2>Dịch vụ của chúng tôi</h2>
+            <h2>Our services</h2>
             <p>
-              Đa dạng dịch vụ nha khoa với đội ngũ bác sĩ giàu kinh nghiệm và
-              trang thiết bị hiện đại.
+              A broad range of dental services from experienced dentists and
+              modern equipment.
             </p>
           </div>
           <div className="landing-services__grid">
@@ -100,10 +100,10 @@ function LandingPage() {
         <section className="landing-consultation" id="consultation">
           <div className="landing-consultation__inner">
             <div className="landing-consultation__content">
-              <h2>Đăng ký tư vấn</h2>
+              <h2>Request a consultation</h2>
               <p>
-                Để lại thông tin, đội ngũ DentalCare sẽ liên hệ tư vấn miễn phí
-                và sắp xếp lịch hẹn phù hợp cho bạn.
+                Leave your information and the DentalCare team will contact you for a free consultation
+                and help arrange a suitable appointment.
               </p>
               <ul className="landing-contact">
                 <li>
@@ -116,7 +116,7 @@ function LandingPage() {
                 </li>
                 <li>
                   <MapPin size={20} aria-hidden="true" />
-                  <span>123 Đường Nguyễn Huệ, Quận 1, TP.HCM</span>
+                  <span>123 Nguyen Hue Street, District 1, Ho Chi Minh City</span>
                 </li>
               </ul>
             </div>
@@ -124,19 +124,19 @@ function LandingPage() {
             <form className="consultation-form" onSubmit={handleSubmit}>
               {error && <p>{error}</p>}
               <label className="consultation-form__field">
-                <input type="text" name="full_name" value={form.full_name} placeholder="Họ và tên" onChange={handleChange} required />
+                <input type="text" name="full_name" value={form.full_name} placeholder="Full name" onChange={handleChange} required />
               </label>
               <label className="consultation-form__field">
-                <input type="tel" name="phone" value={form.phone} placeholder="Số điện thoại" onChange={handleChange} required />
+                <input type="tel" name="phone" value={form.phone} placeholder="Phone number" onChange={handleChange} required />
               </label>
               <label className="consultation-form__field">
                 <input type="email" name="email" value={form.email} placeholder="Email" onChange={handleChange} />
               </label>
               <label className="consultation-form__field">
-                <textarea name="description" value={form.description} placeholder="Nội dung cần tư vấn" rows="5" onChange={handleChange} required />
+                <textarea name="description" value={form.description} placeholder="Consultation details" rows="5" onChange={handleChange} required />
               </label>
               <button className="consultation-form__submit" type="submit" disabled={isSubmitting}>
-                Gửi yêu cầu tư vấn
+                Send consultation request
               </button>
               {success && <Toast type="success" message={success} />}
             </form>

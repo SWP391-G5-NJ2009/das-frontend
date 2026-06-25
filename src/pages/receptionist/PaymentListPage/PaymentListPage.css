@@ -18,94 +18,13 @@
 
 .payment-list__heading h1 {
   margin: 0;
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-2xl);
   line-height: var(--line-height-tight);
   color: var(--color-neutral-900);
 }
 
 .payment-list__heading p {
   margin: 0;
-  font-size: var(--font-size-md);
-  color: var(--color-neutral-600);
-}
-
-.payment-list__state {
-  display: grid;
-  justify-items: center;
-  gap: var(--space-3);
-  padding: var(--space-10) var(--space-6);
-  background-color: var(--color-neutral-50);
-  border: thin solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  color: var(--color-neutral-700);
-  text-align: center;
-}
-
-.payment-list__state h2 {
-  font-size: var(--font-size-lg);
-  color: var(--color-neutral-900);
-}
-
-.payment-list__state p {
   font-size: var(--font-size-sm);
-}
-
-.payment-list__state--error {
-  background-color: var(--color-error-bg);
-  border-color: var(--color-error);
-  color: var(--color-error);
-}
-
-.payment-list__state--error h2 {
-  color: var(--color-error);
-}
-
-.payment-list__table-wrap {
-  overflow-x: auto;
-  background-color: var(--color-neutral-50);
-  border: thin solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
-
-.payment-list__table {
-  width: 100%;
-  min-width: 58rem;
-  border-collapse: collapse;
-  font-size: var(--font-size-sm);
-}
-
-.payment-list__table th,
-.payment-list__table td {
-  padding: var(--space-4);
-  border-bottom: thin solid var(--border-color);
-  color: var(--color-neutral-700);
-  text-align: left;
-  vertical-align: middle;
-}
-
-.payment-list__table th {
-  background-color: var(--color-neutral-100);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-neutral-900);
-  white-space: nowrap;
-}
-
-.payment-list__table tbody tr {
-  transition: background-color var(--transition-fast);
-}
-
-.payment-list__table tbody tr:hover {
-  background-color: var(--color-primary-50);
-}
-
-.payment-list__table tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-.payment-list__amount {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-secondary-800);
-  white-space: nowrap;
+  color: var(--color-neutral-500);
 }

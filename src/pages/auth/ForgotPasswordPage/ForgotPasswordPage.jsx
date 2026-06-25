@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowLeft, Eye, EyeOff, Send, UserRound } from "lucide-react";
+import PropTypes from "prop-types";
+import { ArrowLeft, Eye, EyeOff, Phone, Send, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import heroLogin from "../../../assets/images/hero-login.jpg";
 import { authService } from "../../../services/auth.service";
@@ -7,10 +8,52 @@ import "./ForgotPasswordPage.css";
 
 const otpSlots = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"];
 
-function ForgotPasswordPage() {
+const FORGOT_PASSWORD_CONFIG = {
+  patient: {
+    IdentifierIcon: Phone,
+    identifierLabel: "Phone number",
+    identifierPlaceholder: "Enter phone number",
+    identifierType: "tel",
+    loginPath: "/login",
+    requestHelp: "Enter your phone number to receive an OTP.",
+  },
+  staff: {
+    IdentifierIcon: UserRound,
+    identifierLabel: "Username",
+    identifierPlaceholder: "Enter your staff username",
+    identifierType: "text",
+    loginPath: "/staff/login",
+    requestHelp:
+      "Enter your username to receive an OTP on the phone number linked to your staff account.",
+  },
+};
+
+const PASSWORD_FIELDS = [
+  {
+    hideLabel: "Hide new password",
+    label: "New password",
+    name: "newPassword",
+    placeholder: "Enter new password",
+    showLabel: "Show new password",
+  },
+  {
+    hideLabel: "Hide password confirmation",
+    label: "Confirm new password",
+    name: "confirmPassword",
+    placeholder: "Re-enter new password",
+    showLabel: "Show password confirmation",
+  },
+];
+
+function getOtpValue(formData) {
+  return otpSlots.map((slot) => formData.get(slot) || "").join("");
+}
+
+function ForgotPasswordPage({ mode }) {
   const navigate = useNavigate();
   const [step, setStep] = useState("request");
   const [identifier, setIdentifier] = useState("");
+  const [resetAccountId, setResetAccountId] = useState(null);
   const [devOtp, setDevOtp] = useState(null);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,9 +62,27 @@ function ForgotPasswordPage() {
     confirmPassword: false,
   });
 
+  const isStaffMode = mode === "staff";
+  const {
+    IdentifierIcon,
+    identifierLabel,
+    identifierPlaceholder,
+    identifierType,
+    loginPath,
+    requestHelp,
+  } = FORGOT_PASSWORD_CONFIG[mode];
+
   const focusOtpSlot = (index) => {
     const nextInput = document.querySelector(`[name="${otpSlots[index]}"]`);
     nextInput?.focus();
+  };
+
+  const requestOtp = (nextIdentifier) => {
+    if (isStaffMode) {
+      return authService.staffForgotPassword({ username: nextIdentifier });
+    }
+
+    return authService.forgotPassword({ identifier: nextIdentifier });
   };
 
   const handleRequestOtp = async (event) => {
@@ -33,14 +94,13 @@ function ForgotPasswordPage() {
     const nextIdentifier = formData.get("identifier");
 
     try {
-      const data = await authService.forgotPassword({
-        identifier: nextIdentifier,
-      });
+      const data = await requestOtp(nextIdentifier);
       setIdentifier(nextIdentifier);
+      setResetAccountId(data.accountId);
       setDevOtp(data.devOtp || null);
       setStep("reset");
     } catch (err) {
-      setError(err.message || "Không thể gửi mã OTP.");
+      setError(err.message || "Unable to send OTP.");
     } finally {
       setIsSubmitting(false);
     }
@@ -52,21 +112,33 @@ function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
-    const otp = otpSlots.map((slot) => formData.get(slot) || "").join("");
+    const otp = getOtpValue(formData);
     const newPassword = formData.get("newPassword");
     const confirmPassword = formData.get("confirmPassword");
 
     if (newPassword !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp.");
+      setError("Password confirmation does not match.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!resetAccountId) {
+      setError(
+        "No password reset session was found. Please request a new OTP.",
+      );
       setIsSubmitting(false);
       return;
     }
 
     try {
-      await authService.resetPassword({ identifier, otp, newPassword });
-      navigate("/login", { replace: true });
+      await authService.resetPassword({
+        accountId: resetAccountId,
+        otp,
+        newPassword,
+      });
+      navigate(loginPath, { replace: true });
     } catch (err) {
-      setError(err.message || "Không thể đặt lại mật khẩu.");
+      setError(err.message || "Unable to reset password.");
     } finally {
       setIsSubmitting(false);
     }
@@ -78,10 +150,11 @@ function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     try {
-      const data = await authService.forgotPassword({ identifier });
+      const data = await requestOtp(identifier);
+      setResetAccountId(data.accountId);
       setDevOtp(data.devOtp || null);
     } catch (err) {
-      setError(err.message || "Không thể gửi lại mã OTP.");
+      setError(err.message || "Unable to resend OTP.");
     } finally {
       setIsSubmitting(false);
     }
@@ -113,7 +186,9 @@ function ForgotPasswordPage() {
       .split("");
 
     digits.forEach((digit, offset) => {
-      const input = document.querySelector(`[name="${otpSlots[index + offset]}"]`);
+      const input = document.querySelector(
+        `[name="${otpSlots[index + offset]}"]`,
+      );
 
       if (input) {
         input.value = digit;
@@ -135,40 +210,37 @@ function ForgotPasswordPage() {
     <main className="forgot-password">
       <section
         className="forgot-password__hero"
-        aria-label="Không gian phòng khám DentalCare"
+        aria-label="DentalCare clinic space"
       >
-        <img src={heroLogin} alt="Ghế nha khoa tại phòng khám DentalCare" />
+        <img src={heroLogin} alt="Dental chair at DentalCare clinic" />
       </section>
 
       <section
         className="forgot-password__panel"
         aria-labelledby="forgot-password-title"
       >
-        <Link className="forgot-password__back" to="/login">
+        <Link className="forgot-password__back" to={loginPath}>
           <ArrowLeft size={18} aria-hidden="true" />
-          Quay lại
+          Back
         </Link>
 
         {step === "request" ? (
           <form className="forgot-password__form" onSubmit={handleRequestOtp}>
             <div className="forgot-password__heading">
-              <h2 id="forgot-password-title">Quên mật khẩu?</h2>
-              <p>
-                Vui lòng nhập tên đăng nhập hoặc số điện thoại để nhận mã xác
-                thực OTP.
-              </p>
+              <h2 id="forgot-password-title">Forgot password?</h2>
+              <p>{requestHelp}</p>
             </div>
 
             {error && <p className="forgot-password__error">{error}</p>}
 
             <label className="forgot-password__field">
-              <span>Tên đăng nhập / Số điện thoại</span>
+              <span>{identifierLabel}</span>
               <div className="forgot-password__control">
-                <UserRound size={18} aria-hidden="true" />
+                <IdentifierIcon size={18} aria-hidden="true" />
                 <input
-                  type="text"
+                  type={identifierType}
                   name="identifier"
-                  placeholder="Nhập ID hoặc số điện thoại..."
+                  placeholder={identifierPlaceholder}
                   required
                 />
               </div>
@@ -179,7 +251,7 @@ function ForgotPasswordPage() {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang gửi..." : "Gửi mã OTP"}
+              {isSubmitting ? "Sending..." : "Send OTP"}
               <Send size={18} aria-hidden="true" />
             </button>
           </form>
@@ -189,22 +261,22 @@ function ForgotPasswordPage() {
             onSubmit={handleResetPassword}
           >
             <div className="forgot-password__heading">
-              <h2 id="forgot-password-title">Xác thực & Đặt lại mật khẩu</h2>
+              <h2 id="forgot-password-title">Verify and reset password</h2>
               <p>
-                Mã OTP đã được tạo cho tài khoản của bạn. Vui lòng nhập mã bên
-                dưới.
+                An OTP has been created for your account. Please enter the code
+                below.
               </p>
             </div>
 
             {devOtp && (
-              <p className="forgot-password__dev-otp">Mã OTP dev: {devOtp}</p>
+              <p className="forgot-password__dev-otp">Dev OTP: {devOtp}</p>
             )}
             {error && <p className="forgot-password__error">{error}</p>}
 
-            <div className="forgot-password__otp" aria-label="Nhập mã OTP">
+            <div className="forgot-password__otp" aria-label="Enter OTP">
               {otpSlots.map((slot, index) => (
                 <input
-                  aria-label="Một chữ số OTP"
+                  aria-label="One OTP digit"
                   autoComplete={index === 0 ? "one-time-code" : "off"}
                   inputMode="numeric"
                   key={slot}
@@ -220,72 +292,44 @@ function ForgotPasswordPage() {
             </div>
 
             <p className="forgot-password__resend">
-              Chưa nhận được mã?{" "}
+              Did not receive the code?{" "}
               <button type="button" onClick={handleResendOtp}>
-                Gửi lại mã
+                Resend code
               </button>
             </p>
 
-            <label className="forgot-password__field">
-              <span>Mật khẩu mới</span>
-              <div className="forgot-password__control forgot-password__control--password">
-                <input
-                  type={visiblePasswords.newPassword ? "text" : "password"}
-                  name="newPassword"
-                  placeholder="Nhập mật khẩu mới"
-                  required
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    visiblePasswords.newPassword
-                      ? "Ẩn mật khẩu mới"
-                      : "Hiện mật khẩu mới"
-                  }
-                  onClick={() => handleTogglePassword("newPassword")}
-                >
-                  {visiblePasswords.newPassword ? (
-                    <EyeOff size={16} aria-hidden="true" />
-                  ) : (
-                    <Eye size={16} aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-            </label>
+            {PASSWORD_FIELDS.map((field) => {
+              const isVisible = visiblePasswords[field.name];
+              const VisibilityIcon = isVisible ? EyeOff : Eye;
 
-            <label className="forgot-password__field">
-              <span>Xác nhận mật khẩu mới</span>
-              <div className="forgot-password__control forgot-password__control--password">
-                <input
-                  type={visiblePasswords.confirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  placeholder="Nhập lại mật khẩu mới"
-                  required
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    visiblePasswords.confirmPassword
-                      ? "Ẩn xác nhận mật khẩu mới"
-                      : "Hiện xác nhận mật khẩu mới"
-                  }
-                  onClick={() => handleTogglePassword("confirmPassword")}
-                >
-                  {visiblePasswords.confirmPassword ? (
-                    <EyeOff size={16} aria-hidden="true" />
-                  ) : (
-                    <Eye size={16} aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-            </label>
+              return (
+                <label className="forgot-password__field" key={field.name}>
+                  <span>{field.label}</span>
+                  <div className="forgot-password__control forgot-password__control--password">
+                    <input
+                      type={isVisible ? "text" : "password"}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      required
+                    />
+                    <button
+                      type="button"
+                      aria-label={isVisible ? field.hideLabel : field.showLabel}
+                      onClick={() => handleTogglePassword(field.name)}
+                    >
+                      <VisibilityIcon size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                </label>
+              );
+            })}
 
             <button
               className="forgot-password__submit"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang xử lý..." : "Xác nhận & Đổi mật khẩu"}
+              {isSubmitting ? "Processing..." : "Confirm and change password"}
             </button>
           </form>
         )}
@@ -293,5 +337,13 @@ function ForgotPasswordPage() {
     </main>
   );
 }
+
+ForgotPasswordPage.propTypes = {
+  mode: PropTypes.oneOf(["patient", "staff"]),
+};
+
+ForgotPasswordPage.defaultProps = {
+  mode: "patient",
+};
 
 export default ForgotPasswordPage;

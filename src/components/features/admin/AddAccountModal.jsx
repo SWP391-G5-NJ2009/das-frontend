@@ -6,10 +6,10 @@ import "./AddAccountModal.css";
 
 const ROLES = [
   { value: "Admin", label: "Quan tri vien" },
-  { value: "Dentist", label: "Nha si" },
+  { value: "Dentist", label: "Dentist" },
   { value: "Receptionist", label: "Le tan" },
-  { value: "Owner", label: "Chu phong kham" },
-  { value: "Patient", label: "Benh nhan" },
+  { value: "Owner", label: "Clinic Owner" },
+  { value: "Patient", label: "Patient" },
 ];
 
 function AddAccountModal({ onClose, onSuccess }) {
@@ -43,11 +43,20 @@ function AddAccountModal({ onClose, onSuccess }) {
   };
 
   return (
-    <div className="add-account-modal__overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div
+      className="add-account-modal__overlay"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="add-account-modal">
         <div className="add-account-modal__header">
-          <h3 className="add-account-modal__title">Thêm tài khoản mới</h3>
-          <button className="add-account-modal__close" type="button" onClick={onClose}>
+          <h3 className="add-account-modal__title">Add new account</h3>
+          <button
+            className="add-account-modal__close"
+            type="button"
+            onClick={onClose}
+          >
             <X size={20} aria-hidden="true" />
           </button>
         </div>
@@ -56,28 +65,55 @@ function AddAccountModal({ onClose, onSuccess }) {
           {error && <p className="add-account-modal__error">{error}</p>}
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Tên đăng nhập *</span>
-            <input name="username" value={form.username} onChange={handleChange} required />
+            <span className="add-account-modal__label">Username *</span>
+            <input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">Email *</span>
-            <input name="email" type="email" value={form.email} onChange={handleChange} required />
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Số điện thoại *</span>
-            <input name="phone" type="tel" value={form.phone} onChange={handleChange} required />
+            <span className="add-account-modal__label">Phone number *</span>
+            <input
+              name="phone"
+              type="tel"
+              value={form.phone}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Mật khẩu *</span>
-            <input name="password" type="password" value={form.password} onChange={handleChange} required />
+            <span className="add-account-modal__label">Password *</span>
+            <input
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Vai trò *</span>
-            <select name="role_name" value={form.role_name} onChange={handleChange}>
+            <span className="add-account-modal__label">Role *</span>
+            <select
+              name="role_name"
+              value={form.role_name}
+              onChange={handleChange}
+            >
               {ROLES.map((role) => (
                 <option key={role.value} value={role.value}>
                   {role.label}
@@ -87,7 +123,7 @@ function AddAccountModal({ onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Trạng thái</span>
+            <span className="add-account-modal__label">Status</span>
             <select name="status" value={form.status} onChange={handleChange}>
               <option value="Active">Active</option>
               <option value="Banned">Banned</option>
@@ -95,15 +131,19 @@ function AddAccountModal({ onClose, onSuccess }) {
           </label>
 
           <div className="add-account-modal__actions">
-            <button className="add-account-modal__btn add-account-modal__btn--cancel" type="button" onClick={onClose}>
-              Hủy
+            <button
+              className="add-account-modal__btn add-account-modal__btn--cancel"
+              type="button"
+              onClick={onClose}
+            >
+              Cancel
             </button>
             <button
               className="add-account-modal__btn add-account-modal__btn--submit"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang tạo..." : "Tạo tài khoản"}
+              {isSubmitting ? "Creating..." : "Create account"}
             </button>
           </div>
         </form>

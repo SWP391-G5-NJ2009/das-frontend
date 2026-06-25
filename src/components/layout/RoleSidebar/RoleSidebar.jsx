@@ -13,12 +13,12 @@ import {
   Headphones,
   HelpCircle,
   History,
-  LayoutDashboard,
   LogOut,
   Settings,
   Shield,
   Stethoscope,
   User,
+  UserPlus,
   Users,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -32,7 +32,6 @@ const ICONS = {
   calendar_month: CalendarRange,
   calendar_plus: CalendarPlus,
   calendar_today: CalendarDays,
-  dashboard: LayoutDashboard,
   group: Users,
   help: HelpCircle,
   history: History,
@@ -42,6 +41,7 @@ const ICONS = {
   notifications: Bell,
   payments: CreditCard,
   person: User,
+  person_add: UserPlus,
   security: Shield,
   settings: Settings,
   support_agent: Headphones,
@@ -85,36 +85,19 @@ function RoleSidebar({ ariaLabel, brand, footerItems, navItems }) {
         ))}
       </nav>
 
-      {footerItems.length > 0 && (
-        <div className="role-sidebar__footer">
-          {footerItems.map((item) => {
-            if (item.onClick) {
-              return (
-                <button
-                  key={item.label}
-                  className="role-sidebar__nav-item"
-                  type="button"
-                  onClick={item.onClick}
-                >
-                  {renderIcon(item)}
-                  <span>{item.label}</span>
-                </button>
-              );
-            }
-
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className="role-sidebar__nav-item"
-              >
-                {renderIcon(item)}
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          })}
-        </div>
-      )}
+      <div className="role-sidebar__footer">
+        {footerItems.map((item) => (
+          <button
+            key={item.label}
+            className="role-sidebar__nav-item"
+            type="button"
+            onClick={item.onClick}
+          >
+            {renderIcon(item)}
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </div>
     </aside>
   );
 }

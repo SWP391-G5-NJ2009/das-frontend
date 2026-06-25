@@ -1,45 +1,34 @@
-import { useState } from "react";
 import { Phone } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import AuthLoginLayout from "../../../components/layout/AuthLoginLayout/AuthLoginLayout";
-import { ROLE_HOME, useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
+import { useLoginForm } from "../../../hooks/useLoginForm";
+
+function getPatientCredentials(formData) {
+  return {
+    phone: formData.get("phone"),
+    password: formData.get("password"),
+  };
+}
 
 function PatientLoginPage() {
   const { loginPatient } = useAuth();
-  const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
-
-    const formData = new FormData(event.currentTarget);
-
-    try {
-      const user = await loginPatient({
-        phone: formData.get("phone"),
-        password: formData.get("password"),
-      });
-      navigate(ROLE_HOME[user.role] || "/patient/profile", { replace: true });
-    } catch (err) {
-      setError(err.message || "Đăng nhập thất bại.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const { error, handleSubmit, isSubmitting } = useLoginForm({
+    fallbackPath: "/patient/profile",
+    getCredentials: getPatientCredentials,
+    login: loginPatient,
+  });
 
   return (
     <AuthLoginLayout
-      title="Chào mừng trở lại"
-      subtitle="Vui lòng đăng nhập để quản lý hồ sơ của bạn."
-      credentialLabel="Số điện thoại"
+      title="Welcome back"
+      subtitle="Please log in to manage your profile."
+      credentialLabel="Phone number"
       credentialName="phone"
       credentialType="tel"
-      credentialPlaceholder="Nhập số điện thoại"
+      credentialPlaceholder="Enter phone number"
       CredentialIcon={Phone}
       error={error}
+      forgotPasswordPath="/forgot-password"
       isSubmitting={isSubmitting}
       onSubmit={handleSubmit}
     />

@@ -30,4 +30,11 @@ export const appointmentService = {
   /** Edit an appointment (service, dentist, or slot) — FE stub only, BE not yet implemented */
   edit: (appointmentId, payload) =>
     api.patch(`/appointments/${appointmentId}`, payload),
+
+  /**
+   * Book a new appointment.
+   * @param {{ slotId, serviceId, note, patientId? }} payload
+   *   patientId is only required when called by a receptionist.
+   */
+  book: (payload) => api.post("/appointments", payload),
 };

@@ -16,13 +16,20 @@ function ReceptionistPageShell({
 }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const footerItems = {
+    ...RECEPTIONIST_FOOTER_ITEMS[0],
+    onClick: () => {
+      logout();
+      navigate("/staff/login", { replace: true });
+    },
+  };
 
   return (
     <div className="receptionist-page">
       <RoleSidebar
-        ariaLabel="Dieu huong le tan"
+        ariaLabel="Receptionist navigation"
         navItems={RECEPTIONIST_NAV_ITEMS}
-        footerItems={RECEPTIONIST_FOOTER_ITEMS}
+        footerItems={[footerItems]}
       />
 
       <main className="receptionist-page__main">
@@ -30,8 +37,6 @@ function ReceptionistPageShell({
           isFixed
           mobileNavItems={RECEPTIONIST_NAV_ITEMS}
           roleLabel={user?.role || "receptionist"}
-          searchLabel="Tim kiem trong khu vuc le tan"
-          showHelp
         />
         <section
           className={`receptionist-page__content${contentClassName ? ` ${contentClassName}` : ""}`}

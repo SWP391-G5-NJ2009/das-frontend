@@ -31,7 +31,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
     setIsSubmitting(true);
 
     try {
-      await consultationService.update(request.id, {...form});
+      await consultationService.update(request.id, { ...form });
       onSuccess();
     } catch (err) {
       setError(err.message);
@@ -41,11 +41,20 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
   };
 
   return (
-    <div className="handle-request-modal__overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div
+      className="handle-request-modal__overlay"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="handle-request-modal">
         <div className="handle-request-modal__header">
-          <h3 className="handle-request-modal__title">Xử lý yêu cầu</h3>
-          <button className="handle-request-modal__close" type="button" onClick={onClose}>
+          <h3 className="handle-request-modal__title">Handle request</h3>
+          <button
+            className="handle-request-modal__close"
+            type="button"
+            onClick={onClose}
+          >
             <X size={20} aria-hidden="true" />
           </button>
         </div>
@@ -54,58 +63,70 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
           {error && <p className="handle-request-modal__error">{error}</p>}
 
           <div className="handle-request-modal__column handle-request-modal__column--readonly">
-            <span className="handle-request-modal__submitted-at">Gửi lúc {new Date(request.created_at).toLocaleString("vi-VN")}</span>
+            <span className="handle-request-modal__submitted-at">
+              Submitted at{" "}
+              {new Date(request.created_at).toLocaleString("en-US")}
+            </span>
 
             <label className="handle-request-modal__field">
-              <span className="handle-request-modal__label">Họ và tên</span>
-              <input name="full_name" value={form.full_name} readOnly/>
+              <span className="handle-request-modal__label">Full name</span>
+              <input name="full_name" value={form.full_name} readOnly />
             </label>
 
             <label className="handle-request-modal__field">
               <span className="handle-request-modal__label">Email</span>
-              <input name="email" type="email" value={form.email} readOnly/>
+              <input name="email" type="email" value={form.email} readOnly />
             </label>
 
             <label className="handle-request-modal__field">
-              <span className="handle-request-modal__label">Số điện thoại</span>
-              <input name="phone" type="tel" value={form.phone} readOnly/>
+              <span className="handle-request-modal__label">Phone number</span>
+              <input name="phone" type="tel" value={form.phone} readOnly />
             </label>
 
             <label className="handle-request-modal__field handle-request-modal__field--description">
-              <span className="handle-request-modal__label">Mô tả</span>
-              <textarea name="description" value={form.description} readOnly/>
+              <span className="handle-request-modal__label">Description</span>
+              <textarea name="description" value={form.description} readOnly />
             </label>
           </div>
 
           <div className="handle-request-modal__column handle-request-modal__column--editable">
             <label className="handle-request-modal__field">
-              <span className="handle-request-modal__label">Trạng thái</span>
+              <span className="handle-request-modal__label">Status</span>
               <select name="status" value={form.status} onChange={handleChange}>
                 {STATUSES.map((status) => (
-                  <option key={status} value={status}>{status}</option>
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
                 ))}
               </select>
             </label>
 
             <label className="handle-request-modal__field handle-request-modal__field--note">
-              <span className="handle-request-modal__label">Ghi chú</span>
+              <span className="handle-request-modal__label">Note</span>
               <textarea name="note" value={form.note} onChange={handleChange} />
             </label>
 
-            <button className="handle-request-modal__btn handle-request-modal__btn--schedule" type="button">
-              Đặt lịch hẹn
+            <button
+              className="handle-request-modal__btn handle-request-modal__btn--schedule"
+              type="button"
+            >
+              Book appointment
             </button>
 
             <div className="handle-request-modal__actions">
-              <button className="handle-request-modal__btn handle-request-modal__btn--cancel" type="button" onClick={onClose}>
-                Hủy
+              <button
+                className="handle-request-modal__btn handle-request-modal__btn--cancel"
+                type="button"
+                onClick={onClose}
+              >
+                Cancel
               </button>
               <button
                 className="handle-request-modal__btn handle-request-modal__btn--submit"
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+                {isSubmitting ? "Saving..." : "Save changes"}
               </button>
             </div>
           </div>

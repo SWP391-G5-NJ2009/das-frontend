@@ -5,13 +5,13 @@ function DentistGrid({ dentists, selectedDentistId, onSelect }) {
   if (!dentists || dentists.length === 0) {
     return (
       <p className="dentist-grid__empty">
-        Vui lòng chọn dịch vụ trước để xem danh sách bác sĩ phù hợp.
+        Please select a service first to see suitable dentists.
       </p>
     );
   }
 
   return (
-    <div className="dentist-grid" role="list" aria-label="Danh sách bác sĩ">
+    <div className="dentist-grid" role="list" aria-label="Dentist list">
       {dentists.map((dentist) => {
         const isSelected = dentist.id === selectedDentistId;
         return (
@@ -21,7 +21,7 @@ function DentistGrid({ dentists, selectedDentistId, onSelect }) {
             className={`dentist-grid__card${isSelected ? " dentist-grid__card--selected" : ""}`}
             onClick={() => onSelect(dentist)}
             aria-pressed={isSelected}
-            aria-label={`Chọn ${dentist.fullName}, ${dentist.specialization}`}
+            aria-label={`Select ${dentist.fullName}, ${dentist.specialization}`}
             role="listitem"
           >
             <div className="dentist-grid__info">
