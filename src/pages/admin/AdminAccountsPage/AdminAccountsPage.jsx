@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -19,13 +19,39 @@ import AddAccountModal from "../../../components/features/admin/AddAccountModal"
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
 import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
 import AdminPageShell from "../AdminPageShell";
+import PropTypes from "prop-types";
+import AccountFilters from "../../../components/features/admin/AccountFilters/AccountFilters"
+import Pagination from "../../../components/common/Pagination/Pagination"
 import "./AdminAccountsPage.css";
 
 function AdminAccountsPage() {
-  const { accounts, isLoading, error, refetch } = useAccounts();
+
+  const [filters, setFilters] = useState({
+    status: "All",
+    date: "",
+    search: "",
+    pagination: 1,
+  });
+  const MAX_PAGE = 20;
+
+  const { accounts, total, isLoading, error, refetch } = useAccounts(filters);
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
+
+  const handleStatusChange = useCallback(
+    (status) => setFilters((prev) => ({ ...prev, status })),
+    [],
+  );
+
+  const handleDateChange = useCallback(
+    (date) => setFilters((prev) => ({ ...prev, date, pagination: 1 })),
+    [],
+  );
+  const handleSearchChange = useCallback(
+    (search) => setFilters((prev) => ({ ...prev, search, pagination: 1 })),
+    [],
+  );
 
   return (
     <AdminPageShell>
@@ -46,69 +72,21 @@ function AdminAccountsPage() {
         </button>
       </div>
 
-      <div className="admin-accounts__stats">
-        <div className="admin-accounts__stat-card">
-          <div className="admin-accounts__stat-icon admin-accounts__stat-icon--primary">
-            <Shield size={24} aria-hidden="true" />
-          </div>
-          <div>
-            <p className="admin-accounts__stat-label">Administrators</p>
-            <p className="admin-accounts__stat-value">12</p>
-          </div>
-        </div>
-        <div className="admin-accounts__stat-card">
-          <div className="admin-accounts__stat-icon admin-accounts__stat-icon--primary-container">
-            <Stethoscope size={24} aria-hidden="true" />
-          </div>
-          <div>
-            <p className="admin-accounts__stat-label">Dentists</p>
-            <p className="admin-accounts__stat-value">45</p>
-          </div>
-        </div>
-        <div className="admin-accounts__stat-card">
-          <div className="admin-accounts__stat-icon admin-accounts__stat-icon--tertiary">
-            <Landmark size={24} aria-hidden="true" />
-          </div>
-          <div>
-            <p className="admin-accounts__stat-label">Clinic owners</p>
-            <p className="admin-accounts__stat-value">5</p>
-          </div>
-        </div>
-        <div className="admin-accounts__stat-card">
-          <div className="admin-accounts__stat-icon admin-accounts__stat-icon--secondary">
-            <Headphones size={24} aria-hidden="true" />
-          </div>
-          <div>
-            <p className="admin-accounts__stat-label">Staff</p>
-            <p className="admin-accounts__stat-value">28</p>
-          </div>
-        </div>
-        <div className="admin-accounts__stat-card">
-          <div className="admin-accounts__stat-icon admin-accounts__stat-icon--secondary">
-            <Users size={24} aria-hidden="true" />
-          </div>
-          <div>
-            <p className="admin-accounts__stat-label">Patients</p>
-            <p className="admin-accounts__stat-value">1,163</p>
-          </div>
-        </div>
-      </div>
+
 
       <div className="admin-accounts__card">
         <div className="admin-accounts__card-header">
           <div className="admin-accounts__card-title-group">
             <h4 className="admin-accounts__card-title">Account list</h4>
           </div>
-          <div className="admin-accounts__card-toolbar">
-            <div className="admin-accounts__table-search">
-              <Search size={18} aria-hidden="true" />
-              <input placeholder="Search the list..." type="text" />
-            </div>
-            <button className="admin-accounts__tool-btn" type="button">
-              <Filter size={18} aria-hidden="true" />
-            </button>
-          </div>
         </div>
+
+        <AccountFilters
+          filters={filters}
+          onStatusChange={handleStatusChange}
+          onDateChange={handleDateChange}
+          onSearchChange={handleSearchChange}
+        />
 
         <div className="admin-accounts__table-wrapper">
           <table className="admin-accounts__table">
@@ -197,27 +175,13 @@ function AdminAccountsPage() {
 
         <div className="admin-accounts__pagination">
           <p className="admin-accounts__pagination-info">
-            Showing 1-6 of 1,248 accounts
+            Showing {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} of {total} accounts
           </p>
           <div className="admin-accounts__pagination-controls">
-            <button className="admin-accounts__page-btn" type="button">
-              <ChevronLeft size={18} aria-hidden="true" />
-            </button>
-            <button
-              className="admin-accounts__page-btn admin-accounts__page-btn--active"
-              type="button"
-            >
-              1
-            </button>
-            <button className="admin-accounts__page-btn" type="button">
-              2
-            </button>
-            <button className="admin-accounts__page-btn" type="button">
-              3
-            </button>
-            <button className="admin-accounts__page-btn" type="button">
-              <ChevronRight size={18} aria-hidden="true" />
-            </button>
+            <Pagination
+              currentPage={filters.pagination}
+              totalPage={Math.ceil(total / 20)}
+              onPageChange={(page) => setFilters((prev) => ({ ...prev, pagination: page }))} />
           </div>
         </div>
       </div>
