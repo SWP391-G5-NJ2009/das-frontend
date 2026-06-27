@@ -22,7 +22,7 @@ export const OWNER_NAV_ITEMS = [
   {
     icon: "meeting_room",
     label: "Rooms Management",
-    to: "/owner/rooms-mangagement",
+    to: "/owner/rooms-management",
   },
   {
     icon: "payments",
