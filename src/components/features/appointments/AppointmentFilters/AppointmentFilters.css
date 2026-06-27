@@ -98,7 +98,9 @@
   font-size: var(--font-size-sm);
   font-family: var(--font-family-base);
   color: var(--color-neutral-900);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .appt-filters__search::placeholder {
@@ -176,16 +178,16 @@
 }
 
 .appt-filters__today-btn--active {
-  background-color: var(--color-secondary-700);
-  border-color: var(--color-secondary-700);
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
   color: #ffffff;
   font-weight: var(--font-weight-semibold);
   box-shadow: var(--shadow-sm);
 }
 
 .appt-filters__today-btn--active:hover {
-  background-color: var(--color-secondary-800);
-  border-color: var(--color-secondary-800);
+  background-color: var(--color-primary-800);
+  border-color: var(--color-primary-800);
   color: #ffffff;
 }
 
@@ -206,7 +208,10 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-700);
   cursor: pointer;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
   /* chevron icon via background SVG */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231976d2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -252,7 +257,9 @@
   background-color: var(--color-primary-200);
   color: var(--color-primary-800);
   cursor: pointer;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
   z-index: 1;
 }
 
@@ -261,7 +268,6 @@
   color: #ffffff;
   transform: scale(1.1);
 }
-
 
 /* Responsive */
 @media (max-width: 640px) {
