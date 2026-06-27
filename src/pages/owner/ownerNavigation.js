@@ -20,6 +20,11 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/analytics",
   },
   {
+    icon: "meeting_room",
+    label: "Rooms Management",
+    to: "/owner/rooms-mangagement",
+  },
+  {
     icon: "payments",
     label: "Revenue",
     to: "/owner/revenue",
