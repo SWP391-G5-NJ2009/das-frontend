@@ -128,7 +128,7 @@ function BookingSummary({
             <span className="booking-summary__row-label">DATE & TIME</span>
             {date && slot ? (
               <span className="booking-summary__row-value">
-                {slot.time}, {formattedDate}
+                {slot.time}{slot.timeEnd ? ` – ${slot.timeEnd}` : ""}, {formattedDate}
               </span>
             ) : (
               <span className="booking-summary__row-placeholder">
@@ -202,6 +202,7 @@ BookingSummary.propTypes = {
   slot: PropTypes.shape({
     id: PropTypes.string.isRequired,
     time: PropTypes.string.isRequired,
+    timeEnd: PropTypes.string,
   }),
   onConfirm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,

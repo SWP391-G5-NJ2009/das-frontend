@@ -119,6 +119,7 @@ export function usePublicServices() {
           price: s.unit_price,
           description: s.description || "",
           category: s.service_categories?.category_name || "",
+          slotOccupied: s.slot_occupied ?? 1,
         }));
       setServices(mapped);
     } catch (err) {
