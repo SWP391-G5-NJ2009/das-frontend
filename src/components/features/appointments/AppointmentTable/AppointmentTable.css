@@ -225,6 +225,16 @@
   transform: scale(1.1);
 }
 
+/* Lift Ban — teal/secondary to signal a positive unlock action */
+.appt-table__action-btn--lift-ban {
+  color: var(--color-secondary-700);
+}
+
+.appt-table__action-btn--lift-ban:hover {
+  background-color: var(--color-secondary-100);
+  transform: scale(1.1);
+}
+
 
 /* Cancellation / booking note shown below the status badge */
 .appt-table__td--status {

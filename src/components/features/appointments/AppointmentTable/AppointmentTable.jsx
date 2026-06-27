@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Ban, MessageSquare, Pencil, ShieldBan } from "lucide-react";
+import { Ban, MessageSquare, Pencil, ShieldBan, UnlockKeyhole } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
@@ -13,7 +13,7 @@ function isWithin24Hours(scheduledDate, scheduledTime) {
   return diffMs < 24 * 60 * 60 * 1000;
 }
 
-function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, showPatientInfo, actorRole }) {
+function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, onLiftBan, showPatientInfo, actorRole }) {
   if (appointments.length === 0) return null;
 
   return (
@@ -133,6 +133,19 @@ function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, s
                     >
                       <Pencil size={15} aria-hidden="true" />
                     </button>
+                    {/* Lift Ban button — only for banned patients, only for receptionist */}
+                    {appt.patientNoShowCount >= 3 && actorRole === "receptionist" && (
+                      <button
+                        id={`tbl-liftban-${appt.id}`}
+                        type="button"
+                        className="appt-table__action-btn appt-table__action-btn--lift-ban"
+                        aria-label={`Lift booking ban for ${appt.patientName}`}
+                        title="Lift Booking Ban"
+                        onClick={() => onLiftBan?.(appt)}
+                      >
+                        <UnlockKeyhole size={15} aria-hidden="true" />
+                      </button>
+                    )}
                     {canCancel && (
                       <button
                         id={`tbl-cancel-${appt.id}`}
@@ -190,6 +203,7 @@ AppointmentTable.propTypes = {
   onCancel: PropTypes.func,
   onWithin24hCancel: PropTypes.func,
   onEdit: PropTypes.func,
+  onLiftBan: PropTypes.func,
   showPatientInfo: PropTypes.bool,
   actorRole: PropTypes.string,
 };
@@ -198,6 +212,7 @@ AppointmentTable.defaultProps = {
   onCancel: null,
   onWithin24hCancel: null,
   onEdit: null,
+  onLiftBan: null,
   showPatientInfo: true,
   actorRole: "receptionist",
 };
