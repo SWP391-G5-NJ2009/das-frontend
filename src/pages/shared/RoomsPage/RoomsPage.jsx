@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { Edit, Trash2, X } from "lucide-react";
-import Button from "../../../components/common/Button/Button";
+import { AlertCircle, Edit, Trash2, X } from "lucide-react";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { useAuth } from "../../../context/AuthContext";
 import { useRooms } from "../../../hooks/useRooms";
@@ -125,12 +124,113 @@ RoomFormModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
+function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
+  return (
+    <div className="modal-overlay" role="presentation">
+      <div
+        className="rooms-delete-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-room-title"
+      >
+        <div className="rooms-delete-modal__header">
+          <h2 className="rooms-delete-modal__title" id="delete-room-title">
+            Delete room
+          </h2>
+          <p className="rooms-delete-modal__subtitle">
+            This action can not be undo.
+          </p>
+        </div>
+
+        <div className="rooms-delete-modal__body">
+          <section
+            className="rooms-delete-modal__details"
+            aria-label="Room details"
+          >
+            <h3 className="rooms-delete-modal__details-title">
+              Room details:
+            </h3>
+            <div className="rooms-delete-modal__detail-grid">
+              <div className="rooms-delete-modal__detail-item">
+                <span className="rooms-delete-modal__detail-label">
+                  Room name
+                </span>
+                <strong className="rooms-delete-modal__room-name">
+                  {room.room_name}
+                </strong>
+              </div>
+              <div className="rooms-delete-modal__detail-item">
+                <span className="rooms-delete-modal__detail-label">
+                  Specialization
+                </span>
+                <span className="rooms-delete-modal__detail-value">
+                  {room.specialization || "Unassigned"}
+                </span>
+              </div>
+              <div className="rooms-delete-modal__detail-item">
+                <span className="rooms-delete-modal__detail-label">
+                  Status
+                </span>
+                <span className="rooms-delete-modal__status">
+                  <span className="rooms-delete-modal__status-dot" />
+                  {formatRoomStatus(room.status)}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <div className="rooms-delete-modal__warning" role="alert">
+            <AlertCircle size={24} aria-hidden="true" />
+            <span>
+              Warning: You have to move all the appointments of this room first
+            </span>
+          </div>
+        </div>
+
+        <div className="rooms-delete-modal__actions">
+          <button
+            className="rooms-delete-modal__cancel-btn"
+            type="button"
+            onClick={onClose}
+            disabled={isDeleting}
+          >
+            Cancel
+          </button>
+          <button
+            className="rooms-delete-modal__delete-btn"
+            type="button"
+            onClick={onConfirm}
+            disabled={isDeleting}
+          >
+            <Trash2 size={18} aria-hidden="true" />
+            {isDeleting ? "Deleting" : "Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+DeleteRoomModal.propTypes = {
+  isDeleting: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  room: PropTypes.shape({
+    room_id: PropTypes.number.isRequired,
+    room_name: PropTypes.string.isRequired,
+    specialization: PropTypes.string,
+    status: PropTypes.string,
+  }).isRequired,
+};
+
 function RoomsPageContent({ canManage }) {
   const { createRoom, deleteRoom, error, isLoading, rooms, updateRoom } =
     useRooms();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentRoomId, setCurrentRoomId] = useState(null);
+  const [roomPendingDelete, setRoomPendingDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
 
   const sortedRooms = useMemo(
@@ -191,17 +291,27 @@ function RoomsPageContent({ canManage }) {
     }
   };
 
-  const handleDeleteRoom = async (room) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete room "${room.room_name}"?`,
-    );
+  const openDeleteModal = (room) => {
+    setRoomPendingDelete(room);
+  };
 
-    if (!confirmDelete) return;
+  const closeDeleteModal = () => {
+    if (!isDeleting) {
+      setRoomPendingDelete(null);
+    }
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!roomPendingDelete) return;
+
+    setIsDeleting(true);
     try {
-      await deleteRoom(room.room_id);
+      await deleteRoom(roomPendingDelete.room_id);
+      setRoomPendingDelete(null);
     } catch (err) {
       window.alert(err.message || "Unable to delete room.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -217,9 +327,9 @@ function RoomsPageContent({ canManage }) {
           </p>
         </div>
         {canManage && (
-          <Button type="button" variant="primary" onClick={openAddModal}>
+          <button className="btn-add-service" type="button" onClick={openAddModal}>
             Create new room
-          </Button>
+          </button>
         )}
       </div>
 
@@ -229,7 +339,9 @@ function RoomsPageContent({ canManage }) {
             <Spinner />
           </div>
         ) : (
-          <table className="catalog-table">
+          <table
+            className={`catalog-table rooms-table${canManage ? "" : " rooms-table--readonly"}`}
+          >
             <thead>
               <tr>
                 <th>Room</th>
@@ -274,7 +386,7 @@ function RoomsPageContent({ canManage }) {
                           type="button"
                           title="Delete room"
                           aria-label={`Delete room ${room.room_name}`}
-                          onClick={() => handleDeleteRoom(room)}
+                          onClick={() => openDeleteModal(room)}
                         >
                           <Trash2 size={18} aria-hidden="true" />
                         </button>
@@ -301,6 +413,14 @@ function RoomsPageContent({ canManage }) {
           onChange={handleInputChange}
           onClose={closeModal}
           onSubmit={handleSubmit}
+        />
+      )}
+      {canManage && roomPendingDelete && (
+        <DeleteRoomModal
+          isDeleting={isDeleting}
+          onClose={closeDeleteModal}
+          onConfirm={handleConfirmDelete}
+          room={roomPendingDelete}
         />
       )}
     </div>
