@@ -3,13 +3,28 @@ import { Link } from "react-router-dom";
 import heroDentist from "../../../assets/images/hero-dentist.jpg";
 import SiteFooter from "../../../components/layout/SiteFooter/SiteFooter";
 import SiteHeader from "../../../components/layout/SiteHeader/SiteHeader";
-import { dentalServices } from "../../../data/dentalServices";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./LandingPage.css";
 import { consultationService } from "../../../services/consultation.service";
+import { dentalServiceService } from "../../../services/dentalService.service";
 import Toast from "../../../components/common/Toast/Toast";
 
 function LandingPage() {
+
+  const [activeServices, setActiveServices] = useState([]);
+
+  useEffect(() => {
+    dentalServiceService.getAll()
+      .then((data) => {
+        const active = (data || []).filter(
+          (s) => s.status?.toLowerCase() === "active"
+        );
+        setActiveServices(active);
+      })
+      .catch(() => {
+        // Silently fail — landing page services section simply stays empty
+      });
+  }, []);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -85,13 +100,13 @@ function LandingPage() {
             </p>
           </div>
           <div className="landing-services__grid">
-            {dentalServices.map(({ title, description, Icon }) => (
-              <article className="service-card" key={title}>
+            {activeServices.map((s) => (
+              <article className="service-card" key={s.service_id}>
                 <div className="service-card__icon">
-                  <Icon size={24} aria-hidden="true" />
+                  <ShieldCheck size={24} aria-hidden="true" />
                 </div>
-                <h3>{title}</h3>
-                <p>{description}</p>
+                <h3>{s.service_name}</h3>
+                <p>{s.description || ""}</p>
               </article>
             ))}
           </div>
