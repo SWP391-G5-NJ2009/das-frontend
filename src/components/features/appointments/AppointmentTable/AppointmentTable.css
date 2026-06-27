@@ -103,6 +103,22 @@
   margin-top: 2px;
 }
 
+/* Booking Banned badge — shown below patient name for no-show restricted patients */
+.appt-table__booking-banned {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  padding: 2px var(--space-2);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  cursor: default;
+}
+
 .appt-table__td--service {
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-900);

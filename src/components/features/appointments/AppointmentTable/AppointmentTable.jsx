@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Ban, MessageSquare, Pencil } from "lucide-react";
+import { Ban, MessageSquare, Pencil, ShieldBan } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
@@ -75,6 +75,12 @@ function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, s
                     <span className="appt-table__patient-phone">
                       {appt.patientPhone}
                     </span>
+                    {appt.patientNoShowCount >= 3 && (
+                      <span className="appt-table__booking-banned" title="This patient is banned from booking online (3+ no-shows)">
+                        <ShieldBan size={10} aria-hidden="true" />
+                        Booking Banned
+                      </span>
+                    )}
                   </td>
                 )}
 
@@ -170,6 +176,7 @@ AppointmentTable.propTypes = {
       id: PropTypes.string.isRequired,
       patientName: PropTypes.string.isRequired,
       patientPhone: PropTypes.string,
+      patientNoShowCount: PropTypes.number,
       serviceName: PropTypes.string.isRequired,
       dentistName: PropTypes.string.isRequired,
       scheduledDate: PropTypes.string.isRequired,
