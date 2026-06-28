@@ -8,6 +8,7 @@ import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogP
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
+import PatientTreatmentHistoryPage from "./pages/dentist/PatientTreatmentHistoryPage/PatientTreatmentHistoryPage";
 import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
@@ -127,6 +128,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["dentist"]}>
                 <DentistWaitingPatientsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dentist/patients/:patientId/treatment-history"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <PatientTreatmentHistoryPage />
               </ProtectedRoute>
             }
           />
