@@ -10,12 +10,14 @@ import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
+import LiftBanModal from "../../../components/features/appointments/LiftBanModal/LiftBanModal";
 import Toast from "../../../components/common/Toast/Toast";
 import Pagination from "../../../components/common/Pagination/Pagination";
 import {
   useMyAppointments,
   useAllAppointments,
 } from "../../../hooks/useAppointments";
+import { patientService } from "../../../services/patient.service";
 import "./AppointmentsPage.css";
 
 const PAGE_SIZE = 10;
@@ -106,6 +108,8 @@ function AppointmentsPage() {
 
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [liftBanTarget, setLiftBanTarget] = useState(null);
+  const [isLiftingBan, setIsLiftingBan] = useState(false);
   const [toast, setToast] = useState(null); // { type, message }
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -206,6 +210,31 @@ function AppointmentsPage() {
 
   const handleDismissToast = useCallback(() => setToast(null), []);
 
+  /* ── Lift Ban handlers ── */
+  const handleRequestLiftBan = useCallback((appt) => {
+    setLiftBanTarget(appt);
+  }, []);
+
+  const handleConfirmLiftBan = useCallback(async () => {
+    if (!liftBanTarget) return;
+    setIsLiftingBan(true);
+    try {
+      await patientService.liftBan(liftBanTarget.patientId);
+      setToast({ type: "success", message: "Update form status successfully." });
+      setLiftBanTarget(null);
+      // Refetch to reflect updated noShowCount
+      window.location.reload();
+    } catch {
+      setToast({ type: "error", message: "Failed to lift booking ban. Please try again." });
+    } finally {
+      setIsLiftingBan(false);
+    }
+  }, [liftBanTarget]);
+
+  const handleCloseLiftBanModal = useCallback(() => {
+    if (!isLiftingBan) setLiftBanTarget(null);
+  }, [isLiftingBan]);
+
   /* ── Pagination ── */
   const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
   const paginatedAppointments = useMemo(
@@ -268,6 +297,7 @@ function AppointmentsPage() {
               appointments={paginatedAppointments}
               onCancel={handleRequestCancel}
               onWithin24hCancel={handleWithin24hCancel}
+              onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
               showPatientInfo={config.showPatientInfo}
               actorRole={role}
             />
@@ -293,6 +323,15 @@ function AppointmentsPage() {
         onConfirm={handleConfirmCancel}
         onClose={handleCloseModal}
         isLoading={isCancelling}
+      />
+
+      {/* Lift Ban Modal */}
+      <LiftBanModal
+        isOpen={!!liftBanTarget}
+        patient={liftBanTarget}
+        onConfirm={handleConfirmLiftBan}
+        onClose={handleCloseLiftBanModal}
+        isLoading={isLiftingBan}
       />
 
       {/* Within-24h warning toast */}
