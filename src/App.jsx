@@ -15,6 +15,7 @@ import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPag
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
+import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import ProtectedRoute from "./router/ProtectedRoute";
@@ -107,6 +108,14 @@ function App() {
             }
           />
           <Route
+            path="/receptionist/rooms"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <RoomsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/receptionist/profile"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
@@ -135,6 +144,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ServiceCatalogPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/rooms-management"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <RoomsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/rooms-mangagement"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <RoomsPage />
               </ProtectedRoute>
             }
           />

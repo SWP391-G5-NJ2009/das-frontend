@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -11,11 +11,14 @@ import AppointmentFilters from "../../../components/features/appointments/Appoin
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
 import Toast from "../../../components/common/Toast/Toast";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import {
   useMyAppointments,
   useAllAppointments,
 } from "../../../hooks/useAppointments";
 import "./AppointmentsPage.css";
+
+const PAGE_SIZE = 10;
 
 
 /* ── Role-specific config ── */
@@ -104,6 +107,7 @@ function AppointmentsPage() {
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
   const [toast, setToast] = useState(null); // { type, message }
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
@@ -111,7 +115,10 @@ function AppointmentsPage() {
 
   /* ── Filter handlers ── */
   const handleStatusChange = useCallback(
-    (status) => setFilters((prev) => ({ ...prev, status })),
+    (status) => {
+      setFilters((prev) => ({ ...prev, status }));
+      setCurrentPage(1);
+    },
     [],
   );
 
@@ -131,12 +138,16 @@ function AppointmentsPage() {
         // Year match — only when both month and day are empty
         year: year && !month ? year : "",
       }));
+      setCurrentPage(1);
     },
     [],
   );
 
   const handleSearchChange = useCallback(
-    (search) => setFilters((prev) => ({ ...prev, search })),
+    (search) => {
+      setFilters((prev) => ({ ...prev, search }));
+      setCurrentPage(1);
+    },
     [],
   );
 
@@ -149,6 +160,7 @@ function AppointmentsPage() {
       month: "",
       year: "",
     }));
+    setCurrentPage(1);
   }, [todayYear, todayMonth, todayDay]);
 
   const isTodayActive =
@@ -193,6 +205,13 @@ function AppointmentsPage() {
   }, []);
 
   const handleDismissToast = useCallback(() => setToast(null), []);
+
+  /* ── Pagination ── */
+  const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
+  const paginatedAppointments = useMemo(
+    () => appointments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [appointments, currentPage],
+  );
 
 
 
@@ -244,13 +263,25 @@ function AppointmentsPage() {
         )}
 
         {!isLoading && !error && appointments.length > 0 && (
-          <AppointmentTable
-            appointments={appointments}
-            onCancel={handleRequestCancel}
-            onWithin24hCancel={handleWithin24hCancel}
-            showPatientInfo={config.showPatientInfo}
-            actorRole={role}
-          />
+          <>
+            <AppointmentTable
+              appointments={paginatedAppointments}
+              onCancel={handleRequestCancel}
+              onWithin24hCancel={handleWithin24hCancel}
+              showPatientInfo={config.showPatientInfo}
+              actorRole={role}
+            />
+            <div className="appts-page__pagination">
+              <p className="appts-page__pagination-info">
+                Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} of {appointments.length} appointments
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPage={totalPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          </>
         )}
       </section>
 

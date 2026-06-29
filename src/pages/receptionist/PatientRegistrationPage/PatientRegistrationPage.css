@@ -28,7 +28,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
-  width: min(100%, var(--content-max-width));
   padding: var(--space-6);
   background: var(--color-neutral-50);
   border: 1px solid var(--border-color);
@@ -102,7 +101,7 @@
 .patient-registration__field--radio input {
   width: var(--space-4);
   min-height: var(--space-4);
-  accent-color: var(--color-secondary-700);
+  accent-color: var(--color-primary-700);
 }
 
 .patient-registration__field--password {
@@ -126,8 +125,8 @@
   gap: var(--space-2);
   min-height: var(--space-10);
   padding: 0 var(--space-4);
-  background: var(--color-secondary-100);
-  border: 1px solid var(--color-secondary-200);
+  background: var(--color-primary-100);
+  border: 1px solid var(--color-primary-200);
   border-radius: var(--radius-md);
   color: var(--color-neutral-800);
   font: inherit;
@@ -171,8 +170,8 @@
 }
 
 .patient-registration__actions button[type="submit"] {
-  border-color: var(--color-secondary-700);
-  background: var(--color-secondary-700);
+  border-color: var(--color-primary-700);
+  background: var(--color-primary-700);
   color: var(--color-neutral-50);
 }
 

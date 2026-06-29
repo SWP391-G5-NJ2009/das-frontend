@@ -230,3 +230,88 @@
   cursor: not-allowed;
   text-decoration: line-through;
 }
+
+/*
+ * Slot is individually Available but cannot be a multi-slot start
+ * because there are not enough consecutive slots after it.
+ * Visually distinct from --disabled (no strikethrough, dashed border).
+ */
+.date-time-picker__slot--insufficient {
+  background-color: #ffffff;
+  border: 1.5px dashed var(--color-neutral-300);
+  color: var(--color-neutral-400);
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+/* ── Multi-slot range styles ── */
+
+/* The user-clicked start slot of a multi-slot selection (same as --selected) */
+.date-time-picker__slot--range-start {
+  border-color: var(--color-primary-700);
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.date-time-picker__slot--range-start:hover {
+  background-color: var(--color-primary-800);
+  border-color: var(--color-primary-800);
+  color: #ffffff;
+}
+
+/* Auto-selected follow-on slots — softer highlight, not interactive */
+.date-time-picker__slot--in-range {
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-800);
+  cursor: default;
+  box-shadow: none;
+}
+
+.date-time-picker__slot--in-range:hover {
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-800);
+}
+
+/* Follow-on slot that can also be a valid start — clickable to shift the selection */
+.date-time-picker__slot--in-range-clickable {
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-800);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.date-time-picker__slot--in-range-clickable:hover {
+  border-color: var(--color-primary-600);
+  background-color: var(--color-primary-200);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-sm);
+}
+
+.date-time-picker__slot--in-range-clickable:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+/* Info chip shown below the slots label when slotOccupied > 1 */
+.date-time-picker__slot-info {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-primary-50);
+  border: 1px solid var(--color-primary-200);
+  border-radius: var(--radius-md);
+  color: var(--color-primary-800);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.date-time-picker__slot-info svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--color-primary-700);
+}
