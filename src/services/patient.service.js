@@ -9,7 +9,6 @@ export const patientService = {
   search: (q) => api.get(`/patients/search?q=${encodeURIComponent(q)}`),
   createPatientAccount: (payload) => api.post("/patients", payload),
   getMyTreatmentHistory: () => api.get("/patients/me/treatments"),
-  /** BR-12: Lift booking ban — resolves all No-Show appointments for patient */
+  getTreatmentHistory: (patientId) => api.get(`/patients/${patientId}/treatments`),
   liftBan: (patientId) => api.patch(`/patients/${patientId}/lift-ban`),
 };
-

@@ -33,23 +33,101 @@
   gap: var(--space-3);
 }
 
-.dentist-waiting-patients__filter-group {
-  display: inline-flex;
-  padding: var(--space-1);
+.dentist-waiting-patients__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.dentist-waiting-patients__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(100%, 28rem);
+  min-height: var(--space-10);
+  padding: 0 var(--space-3);
   background-color: var(--color-neutral-50);
   border: thin solid var(--border-color);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-400);
   box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.dentist-waiting-patients__search:focus-within {
+  border-color: var(--color-primary-700);
+  box-shadow: 0 0 0 var(--space-1) var(--color-primary-100);
+}
+
+.dentist-waiting-patients__search input {
+  width: 100%;
+  min-width: 0;
+  background-color: transparent;
+  border: 0;
+  color: var(--color-neutral-800);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  outline: 0;
+}
+
+.dentist-waiting-patients__search input::placeholder {
+  color: var(--color-neutral-400);
+}
+
+.dentist-waiting-patients__toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-10);
+  padding: 0 var(--space-4);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-700);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.dentist-waiting-patients__toolbar-button:hover {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-200);
+  color: var(--color-primary-700);
+}
+
+.dentist-waiting-patients__toolbar-button:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.dentist-waiting-patients__tabs {
+  display: flex;
+  border-bottom: thin solid var(--border-color);
+}
+
+.dentist-waiting-patients__filter-group {
+  display: inline-flex;
+  gap: var(--space-5);
 }
 
 .dentist-waiting-patients__filter-button {
   display: inline-flex;
   align-items: center;
-  min-height: var(--space-8);
-  padding: var(--space-1) var(--space-3);
+  min-height: var(--space-10);
+  padding: 0;
   background-color: transparent;
   border: 0;
-  border-radius: var(--radius-full);
+  border-bottom: var(--space-1) solid transparent;
+  border-radius: 0;
   color: var(--color-neutral-600);
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
@@ -61,7 +139,6 @@
 }
 
 .dentist-waiting-patients__filter-button:hover {
-  background-color: var(--color-primary-50);
   color: var(--color-primary-700);
 }
 
@@ -71,13 +148,12 @@
 }
 
 .dentist-waiting-patients__filter-button--active {
-  background-color: var(--color-primary-700);
-  color: var(--color-neutral-50);
+  border-bottom-color: var(--color-primary-700);
+  color: var(--color-primary-700);
 }
 
 .dentist-waiting-patients__filter-button--active:hover {
-  background-color: var(--color-primary-800);
-  color: var(--color-neutral-50);
+  color: var(--color-primary-700);
 }
 
 .dentist-waiting-patients__count {
@@ -98,7 +174,7 @@
   overflow-x: auto;
   background-color: var(--color-neutral-50);
   border: thin solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
@@ -115,7 +191,7 @@
 
 .dentist-waiting-patients__table th,
 .dentist-waiting-patients__table td {
-  padding: var(--space-4);
+  padding: var(--space-5);
   border-bottom: thin solid var(--border-color);
   text-align: left;
   vertical-align: middle;
@@ -140,7 +216,8 @@
 
 .dentist-waiting-patients__patient-name,
 .dentist-waiting-patients__time,
-.dentist-waiting-patients__date {
+.dentist-waiting-patients__date,
+.dentist-waiting-patients__muted-info {
   display: block;
 }
 
@@ -156,6 +233,91 @@
   font-size: var(--font-size-xs);
 }
 
+.dentist-waiting-patients__muted-info {
+  margin-top: var(--space-1);
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.dentist-waiting-patients__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+.dentist-waiting-patients__action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-primary-700);
+  border: thin solid var(--color-primary-700);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-50);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.dentist-waiting-patients__action-button:hover:not(:disabled) {
+  background-color: var(--color-primary-800);
+  color: var(--color-neutral-50);
+  box-shadow: var(--shadow-sm);
+}
+
+.dentist-waiting-patients__action-button:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.dentist-waiting-patients__action-button:disabled {
+  color: var(--color-neutral-400);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.dentist-waiting-patients__icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  padding: 0;
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.dentist-waiting-patients__icon-action:hover:not(:disabled) {
+  background-color: var(--color-secondary-100);
+  color: var(--color-secondary-700);
+}
+
+.dentist-waiting-patients__icon-action:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.dentist-waiting-patients__icon-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 @media (max-width: 768px) {
   .dentist-waiting-patients__header {
     flex-direction: column;
@@ -164,5 +326,18 @@
   .dentist-waiting-patients__header-actions {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .dentist-waiting-patients__toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dentist-waiting-patients__search {
+    width: 100%;
+  }
+
+  .dentist-waiting-patients__tabs {
+    overflow-x: auto;
   }
 }
