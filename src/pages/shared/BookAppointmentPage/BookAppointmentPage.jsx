@@ -86,6 +86,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     slots,
     isLoading: isSlotsLoading,
     error: slotsError,
+    refetch: refetchSlots,
   } = useAvailableSlots(selectedDentist?.id ?? null, selectedDate ?? null);
 
   const phoneNumber = selectedPatient?.phone || "";
@@ -194,7 +195,18 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         navigate("/patient/appointments");
       }
     } catch (err) {
-      alert(err?.message || "Booking failed. Please try again!");
+      // BR-02: Slot was claimed by another user between selection and confirmation.
+      // Refetch slots so the taken slot turns dark/disabled, then show MSG02.
+      if (err?.code === "SLOT_TAKEN") {
+        setSelectedSlot(null);
+        refetchSlots();
+        alert(
+          "This time slot has just been booked by another user.\n" +
+            "The availability has been updated — please select a different time.",
+        );
+      } else {
+        alert(err?.message || "Booking failed. Please try again!");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -206,6 +218,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     selectedSlot,
     navigate,
     isReceptionist,
+    refetchSlots,
   ]);
 
   /* ── Render ── */
