@@ -124,8 +124,29 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
   }, []);
 
   const handleSelectSlot = useCallback((slot) => {
-    setSelectedSlot(slot);
-  }, []);
+    // For multi-slot services, compute the end time of the LAST truly consecutive slot
+    const slotOccupied = selectedService?.slotOccupied ?? 1;
+    if (slotOccupied > 1) {
+      const startIdx = slots.findIndex((s) => s.id === slot.id);
+      let lastIdx = startIdx;
+
+      // Walk forward, only counting slots that are truly time-adjacent (no lunch break gaps)
+      for (let k = 1; k < slotOccupied; k++) {
+        const nextIdx = lastIdx + 1;
+        if (nextIdx >= slots.length) break; // no more slots
+        const prevTimeEnd = slots[lastIdx]?.timeEnd;
+        const nextTime = slots[nextIdx]?.time;
+        // Stop if there's a gap (e.g., lunch break) or time data is missing
+        if (!prevTimeEnd || !nextTime || prevTimeEnd !== nextTime) break;
+        lastIdx = nextIdx;
+      }
+
+      const lastSlot = slots[lastIdx];
+      setSelectedSlot({ ...slot, timeEnd: lastSlot?.timeEnd || slot.timeEnd });
+    } else {
+      setSelectedSlot(slot);
+    }
+  }, [selectedService, slots]);
 
   const handleCancel = useCallback(() => {
     if (isReceptionist) {
@@ -151,6 +172,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         slotId: Number(selectedSlot.id),
         serviceId: Number(selectedService.id),
         note: "",
+        slotOccupied: selectedService.slotOccupied ?? 1,
         // Receptionist: send patientId for existing patients, or newPatient for walk-ins
         ...(isReceptionist
           ? String(selectedPatient.id).startsWith("new-")
@@ -313,6 +335,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
                     onSelectSlot={handleSelectSlot}
                     slots={slots}
                     enforceTimingRule={!isReceptionist}
+                    slotOccupied={selectedService?.slotOccupied ?? 1}
                   />
                 )}
               </>

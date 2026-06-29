@@ -1,0 +1,240 @@
+﻿/* LiftBanModal — BEM */
+
+/* Overlay */
+.lift-ban-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+  animation: lift-ban-overlay-in var(--transition-base) ease;
+}
+
+@keyframes lift-ban-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Dialog */
+.lift-ban-modal {
+  width: 100%;
+  max-width: 480px;
+  border: none;
+  border-radius: var(--radius-xl);
+  background-color: #ffffff;
+  box-shadow: var(--shadow-xl);
+  padding: 0;
+  animation: lift-ban-modal-in var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+@keyframes lift-ban-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Header */
+.lift-ban-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--color-neutral-50);
+}
+
+.lift-ban-modal__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lift-ban-modal__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  flex-shrink: 0;
+}
+
+.lift-ban-modal__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.lift-ban-modal__close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.lift-ban-modal__close-btn:hover:not(:disabled) {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+}
+
+.lift-ban-modal__close-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Body */
+.lift-ban-modal__body {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Patient section */
+.lift-ban-modal__patient-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.lift-ban-modal__patient-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-400);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lift-ban-modal__patient-info {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.lift-ban-modal__patient-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+}
+
+.lift-ban-modal__patient-id {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Reason box — pink tinted */
+.lift-ban-modal__reason-box {
+  padding: var(--space-3) var(--space-4);
+  background-color: #fff0f0;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  line-height: var(--line-height-base);
+}
+
+/* Info callout */
+.lift-ban-modal__info-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-primary-50);
+  border: 1px solid var(--color-primary-200);
+  border-radius: var(--radius-md);
+}
+
+.lift-ban-modal__info-icon {
+  flex-shrink: 0;
+  color: var(--color-primary-700);
+  margin-top: 2px;
+}
+
+.lift-ban-modal__info-text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-700);
+  line-height: var(--line-height-base);
+}
+
+/* Footer */
+.lift-ban-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--color-neutral-50);
+}
+
+/* Buttons */
+.lift-ban-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.lift-ban-modal__btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.lift-ban-modal__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Cancel — outlined */
+.lift-ban-modal__btn--cancel {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--color-neutral-700);
+}
+
+.lift-ban-modal__btn--cancel:hover:not(:disabled) {
+  background-color: var(--color-neutral-100);
+}
+
+/* Confirm — solid teal/success */
+.lift-ban-modal__btn--confirm {
+  background-color: var(--color-secondary-700);
+  border: 1px solid var(--color-secondary-700);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.lift-ban-modal__btn--confirm:hover:not(:disabled) {
+  background-color: var(--color-secondary-800);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}

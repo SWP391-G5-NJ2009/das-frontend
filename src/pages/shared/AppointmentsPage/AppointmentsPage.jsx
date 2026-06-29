@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -10,15 +10,18 @@ import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
+import LiftBanModal from "../../../components/features/appointments/LiftBanModal/LiftBanModal";
 import Toast from "../../../components/common/Toast/Toast";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import {
   useMyAppointments,
   useAllAppointments,
 } from "../../../hooks/useAppointments";
+import { patientService } from "../../../services/patient.service";
 import "./AppointmentsPage.css";
 
-/* ── Constants ── */
-const ITEMS_PER_PAGE = 8;
+const PAGE_SIZE = 10;
+
 
 /* ── Role-specific config ── */
 const ROLE_CONFIG = {
@@ -102,62 +105,24 @@ function AppointmentsPage() {
     year: "",         // YYYY   (set when month is empty too)
     search: "",
   });
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [liftBanTarget, setLiftBanTarget] = useState(null);
+  const [isLiftingBan, setIsLiftingBan] = useState(false);
   const [toast, setToast] = useState(null); // { type, message }
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
 
-  /* ── Reset page when filters change ── */
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters]);
-
-  /* ── Pagination calculations ── */
-  const totalPages = Math.ceil(appointments.length / ITEMS_PER_PAGE);
-  const indexOfFirst = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedAppointments = appointments.slice(
-    indexOfFirst,
-    indexOfFirst + ITEMS_PER_PAGE,
-  );
-
-  /* ── Truncated pagination range ── */
-  const getPaginationRange = () => {
-    const totalNumbers = 7;
-
-    if (totalPages <= totalNumbers) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    const isNearFirstPage = currentPage <= 4;
-    const isNearLastPage = currentPage >= totalPages - 3;
-
-    if (isNearFirstPage) {
-      return [1, 2, 3, 4, 5, "...", totalPages];
-    }
-
-    if (isNearLastPage) {
-      return [
-        1,
-        "...",
-        totalPages - 4,
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-        totalPages,
-      ];
-    }
-
-    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
-  };
-
-  const paginationRange = getPaginationRange();
 
   /* ── Filter handlers ── */
   const handleStatusChange = useCallback(
-    (status) => setFilters((prev) => ({ ...prev, status })),
+    (status) => {
+      setFilters((prev) => ({ ...prev, status }));
+      setCurrentPage(1);
+    },
     [],
   );
 
@@ -177,12 +142,16 @@ function AppointmentsPage() {
         // Year match — only when both month and day are empty
         year: year && !month ? year : "",
       }));
+      setCurrentPage(1);
     },
     [],
   );
 
   const handleSearchChange = useCallback(
-    (search) => setFilters((prev) => ({ ...prev, search })),
+    (search) => {
+      setFilters((prev) => ({ ...prev, search }));
+      setCurrentPage(1);
+    },
     [],
   );
 
@@ -195,6 +164,7 @@ function AppointmentsPage() {
       month: "",
       year: "",
     }));
+    setCurrentPage(1);
   }, [todayYear, todayMonth, todayDay]);
 
   const isTodayActive =
@@ -239,6 +209,38 @@ function AppointmentsPage() {
   }, []);
 
   const handleDismissToast = useCallback(() => setToast(null), []);
+
+  /* ── Lift Ban handlers ── */
+  const handleRequestLiftBan = useCallback((appt) => {
+    setLiftBanTarget(appt);
+  }, []);
+
+  const handleConfirmLiftBan = useCallback(async () => {
+    if (!liftBanTarget) return;
+    setIsLiftingBan(true);
+    try {
+      await patientService.liftBan(liftBanTarget.patientId);
+      setToast({ type: "success", message: "Update form status successfully." });
+      setLiftBanTarget(null);
+      // Refetch to reflect updated noShowCount
+      window.location.reload();
+    } catch {
+      setToast({ type: "error", message: "Failed to lift booking ban. Please try again." });
+    } finally {
+      setIsLiftingBan(false);
+    }
+  }, [liftBanTarget]);
+
+  const handleCloseLiftBanModal = useCallback(() => {
+    if (!isLiftingBan) setLiftBanTarget(null);
+  }, [isLiftingBan]);
+
+  /* ── Pagination ── */
+  const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
+  const paginatedAppointments = useMemo(
+    () => appointments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [appointments, currentPage],
+  );
 
 
 
@@ -295,72 +297,20 @@ function AppointmentsPage() {
               appointments={paginatedAppointments}
               onCancel={handleRequestCancel}
               onWithin24hCancel={handleWithin24hCancel}
+              onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
               showPatientInfo={config.showPatientInfo}
               actorRole={role}
             />
-
-            {totalPages > 1 && (
-              <div
-                className="appts-page__pagination"
-                aria-label="Appointment list pagination"
-              >
-                <span className="appts-page__pagination-info">
-                  Showing {indexOfFirst + 1}–
-                  {Math.min(indexOfFirst + ITEMS_PER_PAGE, appointments.length)}{" "}
-                  of {appointments.length} appointments
-                </span>
-
-                <div className="appts-page__pagination-controls">
-                  <button
-                    type="button"
-                    className="appts-page__page-btn appts-page__page-btn--prev"
-                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                    disabled={currentPage === 1}
-                    aria-label="Previous page"
-                  >
-                    ‹ Previous
-                  </button>
-
-                  {paginationRange.map((page, index) => {
-                    if (page === "...") {
-                      return (
-                        <span
-                          key={`dots-${index}`}
-                          className="appts-page__page-dots"
-                          aria-hidden="true"
-                        >
-                          &hellip;
-                        </span>
-                      );
-                    }
-                    return (
-                      <button
-                        key={page}
-                        type="button"
-                        className={`appts-page__page-btn${currentPage === page ? " appts-page__page-btn--active" : ""}`}
-                        onClick={() => setCurrentPage(page)}
-                        aria-label={`Page ${page}`}
-                        aria-current={currentPage === page ? "page" : undefined}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    type="button"
-                    className="appts-page__page-btn appts-page__page-btn--next"
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(p + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                    aria-label="Next page"
-                  >
-                    Next ›
-                  </button>
-                </div>
-              </div>
-            )}
+            <div className="appts-page__pagination">
+              <p className="appts-page__pagination-info">
+                Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} of {appointments.length} appointments
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPage={totalPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </>
         )}
       </section>
@@ -373,6 +323,15 @@ function AppointmentsPage() {
         onConfirm={handleConfirmCancel}
         onClose={handleCloseModal}
         isLoading={isCancelling}
+      />
+
+      {/* Lift Ban Modal */}
+      <LiftBanModal
+        isOpen={!!liftBanTarget}
+        patient={liftBanTarget}
+        onConfirm={handleConfirmLiftBan}
+        onClose={handleCloseLiftBanModal}
+        isLoading={isLiftingBan}
       />
 
       {/* Within-24h warning toast */}

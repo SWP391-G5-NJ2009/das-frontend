@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { useOwnerDentalServices } from "../../../hooks/useDentalServices";
 import OwnerPageShell from "../OwnerPageShell";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import "./ServiceCatalogPage.css";
+
+const PAGE_SIZE = 8;
 
 function OwnerServiceCatalog() {
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [servicesPerPage] = useState(5);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -42,9 +44,6 @@ function OwnerServiceCatalog() {
     }
   }, [dbCategories, formData.category_id]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filterCategory, searchTerm]);
 
   const openAddModal = () => {
     setIsEditMode(false);
@@ -130,7 +129,7 @@ function OwnerServiceCatalog() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const filteredServices = services.filter((service) => {
+  const filteredServices = useMemo(() => services.filter((service) => {
     const matchesCategory =
       filterCategory === "All" ||
       service.service_categories?.category_name === filterCategory;
@@ -141,39 +140,14 @@ function OwnerServiceCatalog() {
       service.description?.toLowerCase().includes(searchLower);
 
     return matchesCategory && matchesSearch;
-  });
+  }), [services, filterCategory, searchTerm]);
 
-  const indexOfLastService = currentPage * servicesPerPage;
-  const indexOfFirstService = indexOfLastService - servicesPerPage;
-
-  const currentServices = filteredServices.slice(
-    indexOfFirstService,
-    indexOfLastService,
+  const totalPage = Math.max(1, Math.ceil(filteredServices.length / PAGE_SIZE));
+  const paginatedServices = useMemo(
+    () => filteredServices.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filteredServices, currentPage],
   );
-  const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
 
-  const getPaginationRange = () => {
-    const totalNumbers = 7;
-    if (totalPages <= totalNumbers) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-    const isNearFirstPage = currentPage <= 4;
-    const isNearLastPage = currentPage >= totalPages - 3;
-    if (isNearFirstPage) return [1, 2, 3, 4, 5, "...", totalPages];
-    if (isNearLastPage)
-      return [
-        1,
-        "...",
-        totalPages - 4,
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-        totalPages,
-      ];
-    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
-  };
-
-  const paginationRange = getPaginationRange();
 
   return (
     <OwnerPageShell contentClassName="owner-catalog-page">
@@ -202,7 +176,7 @@ function OwnerServiceCatalog() {
                   type="text"
                   placeholder="Search by service name or description..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                   className="search-service-input"
                   style={{
                     width: "100%",
@@ -242,7 +216,7 @@ function OwnerServiceCatalog() {
                 id="category-filter"
                 className="filter-select"
                 value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
+                onChange={(e) => { setFilterCategory(e.target.value); setCurrentPage(1); }}
               >
                 <option value="All">All</option>
                 {dbCategories.map((cat) => (
@@ -285,7 +259,7 @@ function OwnerServiceCatalog() {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentServices.map((service) => (
+                   {paginatedServices.map((service) => (
                       <tr key={service.service_id}>
                         <td>
                           <div className="service-title-cell">
@@ -343,7 +317,7 @@ function OwnerServiceCatalog() {
                         </td>
                       </tr>
                     ))}
-                    {currentServices.length === 0 && (
+                    {filteredServices.length === 0 && (
                       <tr>
                         <td
                           colSpan="6"
@@ -356,109 +330,19 @@ function OwnerServiceCatalog() {
                     )}
                   </tbody>
                 </table>
-              </div>
-            )}
-
-            {totalPages > 1 && (
-              <div
-                className="pagination-container"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: "20px",
-                  padding: "10px 0",
-                  borderTop: "1px solid #eee",
-                }}
-              >
-                <div
-                  className="pagination-info"
-                  style={{ color: "#666", fontSize: "14px" }}
-                >
-                  Showing {indexOfFirstService + 1} to{" "}
-                  {Math.min(indexOfLastService, filteredServices.length)} of{" "}
-                  {filteredServices.length} services
-                </div>
-
-                <div
-                  className="pagination-buttons"
-                  style={{ display: "flex", gap: "5px" }}
-                >
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                    style={{
-                      padding: "6px 12px",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      background: currentPage === 1 ? "#f5f5f5" : "#fff",
-                      cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                      color: currentPage === 1 ? "#aaa" : "#333",
-                    }}
-                  >
-                    &laquo; Previous
-                  </button>
-
-                  {paginationRange.map((page, index) => {
-                    if (page === "...") {
-                      return (
-                        <span
-                          key={`dots-${index}`}
-                          style={{
-                            padding: "6px 8px",
-                            color: "#999",
-                            fontSize: "14px",
-                            userSelect: "none",
-                          }}
-                          aria-hidden="true"
-                        >
-                          &hellip;
-                        </span>
-                      );
-                    }
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        style={{
-                          padding: "6px 12px",
-                          border: "1px solid",
-                          borderColor: currentPage === page ? "#0f766e" : "#ccc",
-                          borderRadius: "4px",
-                          background: currentPage === page ? "#0f766e" : "#fff",
-                          color: currentPage === page ? "#fff" : "#333",
-                          fontWeight: currentPage === page ? "bold" : "normal",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                    style={{
-                      padding: "6px 12px",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      background:
-                        currentPage === totalPages ? "#f5f5f5" : "#fff",
-                      cursor:
-                        currentPage === totalPages ? "not-allowed" : "pointer",
-                      color: currentPage === totalPages ? "#aaa" : "#333",
-                    }}
-                  >
-                    Next &raquo;
-                  </button>
+                <div className="catalog-pagination">
+                  <p className="catalog-pagination__info">
+                    Showing {Math.min((currentPage - 1) * PAGE_SIZE + 1, filteredServices.length)}–{Math.min(currentPage * PAGE_SIZE, filteredServices.length)} of {filteredServices.length} services
+                  </p>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPage={totalPage}
+                    onPageChange={setCurrentPage}
+                  />
                 </div>
               </div>
             )}
+
           </div>
       
 

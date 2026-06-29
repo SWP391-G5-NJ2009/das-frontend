@@ -1,0 +1,246 @@
+.rooms-table th:nth-child(1) {
+  width: 15%;
+}
+
+.rooms-table th:nth-child(2) {
+  width: 45%;
+}
+
+.rooms-table th:nth-child(3) {
+  width: 20%;
+}
+
+.rooms-table th:nth-child(4) {
+  width: 20%;
+}
+
+.rooms-table--readonly th:nth-child(1) {
+  width: 20%;
+}
+
+.rooms-table--readonly th:nth-child(2) {
+  width: 55%;
+}
+
+.rooms-table--readonly th:nth-child(3) {
+  width: 25%;
+}
+
+.catalog-table th:last-child {
+  text-align: left;
+}
+
+.catalog-table .actions-cell {
+  text-align: left;
+}
+
+.rooms-delete-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(720px, calc(100vw - var(--space-8)));
+  max-height: calc(100vh - var(--space-8));
+  overflow: hidden;
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.rooms-delete-modal__header {
+  padding: var(--space-8);
+  background-color: var(--color-error-bg);
+  border-bottom: thin solid var(--border-color);
+}
+
+.rooms-delete-modal__title {
+  margin: 0 0 var(--space-4);
+  color: var(--color-error);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.rooms-delete-modal__subtitle {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-base);
+}
+
+.rooms-delete-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  overflow-y: auto;
+  background-color: var(--color-neutral-50);
+}
+
+.rooms-delete-modal__details {
+  padding: var(--space-6);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.rooms-delete-modal__details-title {
+  margin: 0 0 var(--space-5);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+}
+
+.rooms-delete-modal__detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+.rooms-delete-modal__detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rooms-delete-modal__detail-label {
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+}
+
+.rooms-delete-modal__room-name {
+  color: var(--color-secondary-700);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.rooms-delete-modal__detail-value {
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-tight);
+}
+
+.rooms-delete-modal__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  color: var(--color-success);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.rooms-delete-modal__status-dot {
+  width: var(--space-3);
+  height: var(--space-3);
+  background-color: var(--color-success);
+  border-radius: var(--radius-full);
+}
+
+.rooms-delete-modal__warning {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background-color: var(--color-warning-bg);
+  border: thin solid var(--color-warning);
+  border-radius: var(--radius-lg);
+  color: var(--color-warning);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-base);
+}
+
+.rooms-delete-modal__warning svg {
+  flex: 0 0 auto;
+}
+
+.rooms-delete-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  background-color: var(--color-neutral-100);
+  border-top: thin solid var(--border-color);
+}
+
+.rooms-delete-modal__cancel-btn,
+.rooms-delete-modal__delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-12);
+  padding: var(--space-3) var(--space-8);
+  border: thin solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.rooms-delete-modal__cancel-btn {
+  background-color: var(--color-neutral-50);
+  border-color: var(--border-color);
+  color: var(--color-neutral-700);
+}
+
+.rooms-delete-modal__delete-btn {
+  background-color: var(--color-error);
+  color: var(--color-neutral-50);
+}
+
+.rooms-delete-modal__cancel-btn:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.rooms-delete-modal__delete-btn:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.rooms-delete-modal__cancel-btn:focus-visible,
+.rooms-delete-modal__delete-btn:focus-visible {
+  outline: thin solid var(--color-primary-700);
+  outline-offset: var(--space-1);
+}
+
+.rooms-delete-modal__cancel-btn:disabled,
+.rooms-delete-modal__delete-btn:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-neutral-200);
+  border-color: var(--color-neutral-200);
+  color: var(--color-neutral-500);
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .rooms-delete-modal__detail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .rooms-delete-modal__header,
+  .rooms-delete-modal__body,
+  .rooms-delete-modal__actions {
+    padding: var(--space-5);
+  }
+
+  .rooms-delete-modal__actions {
+    flex-direction: column;
+  }
+
+  .rooms-delete-modal__cancel-btn,
+  .rooms-delete-modal__delete-btn {
+    width: 100%;
+  }
+}

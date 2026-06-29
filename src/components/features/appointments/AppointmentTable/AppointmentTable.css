@@ -103,6 +103,22 @@
   margin-top: 2px;
 }
 
+/* Booking Banned badge — shown below patient name for no-show restricted patients */
+.appt-table__booking-banned {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  padding: 2px var(--space-2);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  cursor: default;
+}
+
 .appt-table__td--service {
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-900);
@@ -209,6 +225,16 @@
   transform: scale(1.1);
 }
 
+/* Lift Ban — teal/secondary to signal a positive unlock action */
+.appt-table__action-btn--lift-ban {
+  color: var(--color-secondary-700);
+}
+
+.appt-table__action-btn--lift-ban:hover {
+  background-color: var(--color-secondary-100);
+  transform: scale(1.1);
+}
+
 
 /* Cancellation / booking note shown below the status badge */
 .appt-table__td--status {
@@ -235,6 +261,7 @@
 .appt-table__cancel-note-text {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

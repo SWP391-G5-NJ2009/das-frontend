@@ -10,4 +10,5 @@ export const patientService = {
   createPatientAccount: (payload) => api.post("/patients", payload),
   getMyTreatmentHistory: () => api.get("/patients/me/treatments"),
   getTreatmentHistory: (patientId) => api.get(`/patients/${patientId}/treatments`),
+  liftBan: (patientId) => api.patch(`/patients/${patientId}/lift-ban`),
 };

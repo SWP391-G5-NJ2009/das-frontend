@@ -21,7 +21,7 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "meeting_room",
-    label: "Rooms",
+    label: "Rooms Availability",
     to: "/receptionist/rooms",
   },
   {
