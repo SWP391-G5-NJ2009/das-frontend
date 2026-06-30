@@ -47,7 +47,7 @@ function LandingPage() {
     setIsSubmitting(true);
     try {
       await consultationService.create(form);
-      setForm({ full_name: "", phone: "", email: "", description: ""});
+      setForm({ full_name: "", phone: "", email: "", description: "" });
       setSuccess("Consultation request sent successfully!");
     } catch (err) {
       setError(err.message);
@@ -150,12 +150,23 @@ function LandingPage() {
               <label className="consultation-form__field">
                 <textarea name="description" value={form.description} placeholder="Consultation details" rows="5" onChange={handleChange} required />
               </label>
+
+              <input
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ position: "absolute", left: "-9999px" }}
+                value={form.website}
+                onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+              />
+
               <button className="consultation-form__submit" type="submit" disabled={isSubmitting}>
                 Send consultation request
               </button>
               {success && <Toast type="success" message={success} />}
             </form>
-            
+
           </div>
         </section>
       </main>
