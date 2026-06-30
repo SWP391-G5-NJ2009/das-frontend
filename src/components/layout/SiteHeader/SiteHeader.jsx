@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import "./SiteHeader.css";
 
-function SiteHeader() {
+function SiteHeader({ brandName = "DentalCare" }) {
   return (
     <header className="site-header">
       <nav className="site-header__inner" aria-label="Main navigation">
         <Link className="site-header__brand" to="/">
-          DentalCare
+          {brandName}
         </Link>
         <div className="site-header__links">
           <Link to="/">Home</Link>

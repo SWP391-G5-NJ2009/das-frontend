@@ -22,6 +22,7 @@ async function request(method, endpoint, data = null) {
   if (!response.ok) {
     const error = new Error(json.message || "Request failed");
     error.code = json.code;
+    error.details = json.details;
     throw error;
   }
 

@@ -15,7 +15,9 @@ import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPag
 import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
+import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
+import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApprovalPage";
 import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
@@ -149,6 +151,14 @@ function App() {
             }
           />
           <Route
+            path="/dentist/schedule"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <DentistScheduleManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/owner/services-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
@@ -169,6 +179,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <RoomsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/clinic-schedule"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <ScheduleApprovalPage />
               </ProtectedRoute>
             }
           />

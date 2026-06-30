@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 export const ROLE_HOME = {
   patient: "/patient/booking",
   receptionist: "/receptionist/consultation-request",
-  dentist: "/dentist/profile",
+  dentist: "/dentist/schedule",
   owner: "/owner/services-management",
   admin: "/admin/accounts",
 };

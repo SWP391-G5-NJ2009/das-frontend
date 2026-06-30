@@ -15,6 +15,7 @@ export const dentalServiceService = {
     const query = toQueryString(filters);
     return api.get(`/services${query ? `?${query}` : ""}`);
   },
+  getPublic: () => api.get("/services/public"),
   getCategories: () => api.get("/services/categories"),
   getDentistsByService: (serviceId) => api.get(`/services/${serviceId}/dentists`),
   create: (payload) => api.post("/services", payload),

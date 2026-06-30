@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { CalendarPlus } from "lucide-react";
+import { AlertTriangle, CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../../../context/AuthContext";
@@ -83,6 +83,7 @@ function AppointmentsPage() {
   const { user } = useAuth();
   const role = user?.role ?? "patient";
   const config = ROLE_CONFIG[role] ?? ROLE_CONFIG.patient;
+  const isReceptionist = role === "receptionist";
   const navigate = useNavigate();
 
   const today = new Date();
@@ -115,6 +116,10 @@ function AppointmentsPage() {
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
+  const conflictAlerts = useAllAppointments(
+    isReceptionist ? { status: "Conflict" } : {},
+    { enabled: isReceptionist },
+  );
 
 
   /* ── Filter handlers ── */
@@ -154,6 +159,18 @@ function AppointmentsPage() {
     },
     [],
   );
+
+  const handleViewConflictAppointments = useCallback(() => {
+    setDateParts({ year: "", month: "", day: "" });
+    setFilters((prev) => ({
+      ...prev,
+      status: "Conflict",
+      date: "",
+      month: "",
+      year: "",
+    }));
+    setCurrentPage(1);
+  }, []);
 
   /* ── Today shortcut ── */
   const handleTodayClick = useCallback(() => {
@@ -268,6 +285,27 @@ function AppointmentsPage() {
             Book New Appointment
           </button>
         </div>
+
+        {isReceptionist && conflictAlerts.appointments.length > 0 && (
+          <div className="appts-page__urgent-alert" role="alert">
+            <AlertTriangle size={20} aria-hidden="true" />
+            <div className="appts-page__urgent-copy">
+              <strong>Urgent rescheduling task</strong>
+              <span>
+                {conflictAlerts.appointments.length} conflict appointment
+                {conflictAlerts.appointments.length === 1 ? "" : "s"} need
+                receptionist follow-up.
+              </span>
+            </div>
+            <button
+              className="appts-page__urgent-action"
+              type="button"
+              onClick={handleViewConflictAppointments}
+            >
+              View conflicts
+            </button>
+          </div>
+        )}
 
         {/* Filters */}
         <AppointmentFilters
