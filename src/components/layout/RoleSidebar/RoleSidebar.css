@@ -87,6 +87,113 @@
   font-size: var(--font-size-xs);
 }
 
+.role-sidebar__logout-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: color-mix(
+    in srgb,
+    var(--color-neutral-900) 36%,
+    transparent
+  );
+}
+
+.role-sidebar__logout-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(calc(var(--space-10) * 9), 100%);
+  padding: var(--space-6);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+}
+
+.role-sidebar__logout-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-12);
+  height: var(--space-12);
+  margin-bottom: var(--space-4);
+  background-color: var(--color-primary-100);
+  border-radius: var(--radius-full);
+  color: var(--color-primary-700);
+}
+
+.role-sidebar__logout-title {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.role-sidebar__logout-message {
+  margin: var(--space-3) 0 0;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.role-sidebar__logout-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-top: var(--space-6);
+}
+
+.role-sidebar__logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--space-10);
+  padding: var(--space-2) var(--space-5);
+  border: thin solid transparent;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.role-sidebar__logout-btn--cancel {
+  background-color: var(--color-neutral-50);
+  border-color: var(--border-color);
+  color: var(--color-neutral-700);
+}
+
+.role-sidebar__logout-btn--confirm {
+  background-color: var(--color-primary-700);
+  color: var(--color-neutral-50);
+}
+
+.role-sidebar__logout-btn:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.role-sidebar__logout-btn--confirm:hover {
+  background-color: var(--color-primary-800);
+}
+
+.role-sidebar__logout-btn:focus-visible {
+  outline: thin solid var(--color-primary-700);
+  outline-offset: var(--space-1);
+}
+
 @media (max-width: 768px) {
   .role-sidebar {
     display: none;
