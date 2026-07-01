@@ -28,14 +28,10 @@ import Spinner from "../../../components/common/Spinner/Spinner";
 
 import "./BookAppointmentPage.css";
 
-/* ─────────────────────────────────────────────
-   MAIN COMPONENT
-───────────────────────────────────────────── */
 function BookAppointmentPage({ isReceptionist, Shell }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  /* ── Services from API ── */
   const {
     services,
     isLoading: isServicesLoading,
@@ -124,30 +120,36 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     setSelectedSlot(null);
   }, []);
 
-  const handleSelectSlot = useCallback((slot) => {
-    // For multi-slot services, compute the end time of the LAST truly consecutive slot
-    const slotOccupied = selectedService?.slotOccupied ?? 1;
-    if (slotOccupied > 1) {
-      const startIdx = slots.findIndex((s) => s.id === slot.id);
-      let lastIdx = startIdx;
+  const handleSelectSlot = useCallback(
+    (slot) => {
+      // For multi-slot services, compute the end time of the LAST truly consecutive slot
+      const slotOccupied = selectedService?.slotOccupied ?? 1;
+      if (slotOccupied > 1) {
+        const startIdx = slots.findIndex((s) => s.id === slot.id);
+        let lastIdx = startIdx;
 
-      // Walk forward, only counting slots that are truly time-adjacent (no lunch break gaps)
-      for (let k = 1; k < slotOccupied; k++) {
-        const nextIdx = lastIdx + 1;
-        if (nextIdx >= slots.length) break; // no more slots
-        const prevTimeEnd = slots[lastIdx]?.timeEnd;
-        const nextTime = slots[nextIdx]?.time;
-        // Stop if there's a gap (e.g., lunch break) or time data is missing
-        if (!prevTimeEnd || !nextTime || prevTimeEnd !== nextTime) break;
-        lastIdx = nextIdx;
+        // Walk forward, only counting slots that are truly time-adjacent (no lunch break gaps)
+        for (let k = 1; k < slotOccupied; k++) {
+          const nextIdx = lastIdx + 1;
+          if (nextIdx >= slots.length) break; // no more slots
+          const prevTimeEnd = slots[lastIdx]?.timeEnd;
+          const nextTime = slots[nextIdx]?.time;
+          // Stop if there's a gap (e.g., lunch break) or time data is missing
+          if (!prevTimeEnd || !nextTime || prevTimeEnd !== nextTime) break;
+          lastIdx = nextIdx;
+        }
+
+        const lastSlot = slots[lastIdx];
+        setSelectedSlot({
+          ...slot,
+          timeEnd: lastSlot?.timeEnd || slot.timeEnd,
+        });
+      } else {
+        setSelectedSlot(slot);
       }
-
-      const lastSlot = slots[lastIdx];
-      setSelectedSlot({ ...slot, timeEnd: lastSlot?.timeEnd || slot.timeEnd });
-    } else {
-      setSelectedSlot(slot);
-    }
-  }, [selectedService, slots]);
+    },
+    [selectedService, slots],
+  );
 
   const handleCancel = useCallback(() => {
     if (isReceptionist) {

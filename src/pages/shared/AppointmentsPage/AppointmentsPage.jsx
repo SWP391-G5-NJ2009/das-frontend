@@ -22,8 +22,6 @@ import "./AppointmentsPage.css";
 
 const PAGE_SIZE = 10;
 
-
-/* ── Role-specific config ── */
 const ROLE_CONFIG = {
   patient: {
     title: "My Appointments",
@@ -32,7 +30,7 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
-    statusOptions: null, // use AppointmentFilters default (all statuses)
+    statusOptions: null,
   },
   receptionist: {
     title: "Appointment List",
@@ -41,11 +39,10 @@ const ROLE_CONFIG = {
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
     showPatientInfo: true,
-    statusOptions: null, // use AppointmentFilters default (all statuses)
+    statusOptions: null,
   },
 };
 
-/* ── Hook selector ── */
 function useAppointmentsByRole(role, filters) {
   const isPatient = role === "patient";
   const isReceptionist = role === "receptionist";
@@ -58,7 +55,6 @@ function useAppointmentsByRole(role, filters) {
   return role === "patient" ? patient : receptionist;
 }
 
-/* ── Shell selector ── */
 function PageShell({ role, children }) {
   if (role === "receptionist") {
     return (
@@ -78,7 +74,6 @@ PageShell.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-/* ── Main component ── */
 function AppointmentsPage() {
   const { user } = useAuth();
   const role = user?.role ?? "patient";
@@ -91,19 +86,17 @@ function AppointmentsPage() {
   const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
   const todayDay = String(today.getDate()).padStart(2, "0");
 
-  // Display state for the three dropdowns
   const [dateParts, setDateParts] = useState({
     year: todayYear,
     month: todayMonth,
     day: todayDay,
   });
 
-  // Backend filter state derived from dateParts
   const [filters, setFilters] = useState({
     status: "all",
-    date: `${todayYear}-${todayMonth}-${todayDay}`, // exact day YYYY-MM-DD
-    month: "",        // YYYY-MM (set when day is empty)
-    year: "",         // YYYY   (set when month is empty too)
+    date: `${todayYear}-${todayMonth}-${todayDay}`,
+    month: "",
+    year: "",
     search: "",
   });
 
@@ -111,7 +104,7 @@ function AppointmentsPage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [liftBanTarget, setLiftBanTarget] = useState(null);
   const [isLiftingBan, setIsLiftingBan] = useState(false);
-  const [toast, setToast] = useState(null); // { type, message }
+  const [toast, setToast] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { appointments, isLoading, error, cancelAppointment } =
@@ -121,8 +114,6 @@ function AppointmentsPage() {
     { enabled: isReceptionist },
   );
 
-
-  /* ── Filter handlers ── */
   const handleStatusChange = useCallback(
     (status) => {
       setFilters((prev) => ({ ...prev, status }));
@@ -131,20 +122,13 @@ function AppointmentsPage() {
     [],
   );
 
-  /**
-   * Called by AppointmentFilters when any of year/month/day changes.
-   * Updates both the dropdown display state and the backend filter state.
-   */
   const handleDatePartsChange = useCallback(
     ({ year, month, day }) => {
       setDateParts({ year, month, day });
       setFilters((prev) => ({
         ...prev,
-        // Exact day match
         date: year && month && day ? `${year}-${month}-${day}` : "",
-        // Month match (YYYY-MM) — only when day is empty
         month: year && month && !day ? `${year}-${month}` : "",
-        // Year match — only when both month and day are empty
         year: year && !month ? year : "",
       }));
       setCurrentPage(1);
@@ -172,7 +156,6 @@ function AppointmentsPage() {
     setCurrentPage(1);
   }, []);
 
-  /* ── Today shortcut ── */
   const handleTodayClick = useCallback(() => {
     setDateParts({ year: todayYear, month: todayMonth, day: todayDay });
     setFilters((prev) => ({
@@ -187,7 +170,6 @@ function AppointmentsPage() {
   const isTodayActive =
     filters.date === `${todayYear}-${todayMonth}-${todayDay}`;
 
-  /* ── Cancel handlers ── */
   const handleRequestCancel = useCallback((appointment) => {
     setAppointmentToCancel(appointment);
   }, []);
@@ -211,12 +193,10 @@ function AppointmentsPage() {
     [appointmentToCancel, cancelAppointment],
   );
 
-
   const handleCloseModal = useCallback(() => {
     if (!isCancelling) setAppointmentToCancel(null);
   }, [isCancelling]);
 
-  /* ── Within-24h toast ── */
   const handleWithin24hCancel = useCallback(() => {
     setToast({
       type: "warning",
@@ -227,7 +207,6 @@ function AppointmentsPage() {
 
   const handleDismissToast = useCallback(() => setToast(null), []);
 
-  /* ── Lift Ban handlers ── */
   const handleRequestLiftBan = useCallback((appt) => {
     setLiftBanTarget(appt);
   }, []);
@@ -239,7 +218,6 @@ function AppointmentsPage() {
       await patientService.liftBan(liftBanTarget.patientId);
       setToast({ type: "success", message: "Update form status successfully." });
       setLiftBanTarget(null);
-      // Refetch to reflect updated noShowCount
       window.location.reload();
     } catch {
       setToast({ type: "error", message: "Failed to lift booking ban. Please try again." });
@@ -252,14 +230,11 @@ function AppointmentsPage() {
     if (!isLiftingBan) setLiftBanTarget(null);
   }, [isLiftingBan]);
 
-  /* ── Pagination ── */
   const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
   const paginatedAppointments = useMemo(
     () => appointments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
     [appointments, currentPage],
   );
-
-
 
   return (
     <PageShell role={role}>
@@ -267,7 +242,6 @@ function AppointmentsPage() {
         className="appts-page__section"
         aria-labelledby={config.headingId}
       >
-        {/* Page header */}
         <div className="appts-page__header">
           <div className="appts-page__heading">
             <h1 id={config.headingId}>{config.title}</h1>
@@ -307,7 +281,6 @@ function AppointmentsPage() {
           </div>
         )}
 
-        {/* Filters */}
         <AppointmentFilters
           filters={{ ...filters, ...dateParts }}
           onStatusChange={handleStatusChange}
@@ -318,7 +291,6 @@ function AppointmentsPage() {
           statusOptions={config.statusOptions}
         />
 
-        {/* Content states */}
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
@@ -353,7 +325,6 @@ function AppointmentsPage() {
         )}
       </section>
 
-      {/* Cancel Modal */}
       <CancelConfirmModal
         isOpen={!!appointmentToCancel}
         appointment={appointmentToCancel}
@@ -363,7 +334,6 @@ function AppointmentsPage() {
         isLoading={isCancelling}
       />
 
-      {/* Lift Ban Modal */}
       <LiftBanModal
         isOpen={!!liftBanTarget}
         patient={liftBanTarget}
@@ -372,7 +342,6 @@ function AppointmentsPage() {
         isLoading={isLiftingBan}
       />
 
-      {/* Within-24h warning toast */}
       {toast && (
         <Toast
           type={toast.type}
