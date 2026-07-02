@@ -159,6 +159,14 @@ function App() {
             }
           />
           <Route
+            path="/dentist/appointments"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <AppointmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/owner/services-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
