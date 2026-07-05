@@ -51,14 +51,17 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
 
           <div className="lift-ban-modal__reason-box">
             <strong>Reason for Ban:</strong> Automatic ban triggered by 3 No-Shows.
+            The patient&apos;s account has been set to <strong>Restricted</strong>,
+            preventing login and online booking.
           </div>
 
           <div className="lift-ban-modal__info-callout">
             <Info size={15} className="lift-ban-modal__info-icon" aria-hidden="true" />
             <p className="lift-ban-modal__info-text">
               By lifting this ban, the existing No-Show records will be marked
-              as <strong>&quot;Resolved No-Show&quot;</strong>. The patient will regain
-              full access to the booking system.
+              as <strong>&quot;Resolved No-Show&quot;</strong> and the patient&apos;s
+              account status will be restored to <strong>Active</strong>, allowing
+              them to log in and book appointments again.
             </p>
           </div>
         </div>
