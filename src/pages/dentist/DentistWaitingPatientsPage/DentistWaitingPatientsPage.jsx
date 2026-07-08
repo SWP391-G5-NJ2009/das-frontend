@@ -72,7 +72,9 @@ function getMatchingAppointment(appointments, statuses) {
 }
 
 function buildPatientRow(patientAppointments, statuses) {
-  const sortedAppointments = patientAppointments.slice().sort(compareAppointmentsDesc);
+  const sortedAppointments = patientAppointments
+    .slice()
+    .sort(compareAppointmentsDesc);
   const queueAppointment = getMatchingAppointment(sortedAppointments, statuses);
 
   if (!queueAppointment) return null;
@@ -92,7 +94,9 @@ function buildPatientRow(patientAppointments, statuses) {
 
 function buildPatientRows(appointments, statuses) {
   return Array.from(groupAppointmentsByPatient(appointments).values())
-    .map((patientAppointments) => buildPatientRow(patientAppointments, statuses))
+    .map((patientAppointments) =>
+      buildPatientRow(patientAppointments, statuses),
+    )
     .filter(Boolean)
     .sort((a, b) =>
       getAppointmentDateTime(a.queueAppointment).localeCompare(
@@ -131,6 +135,10 @@ function DentistWaitingPatientsPage() {
             String(appointment.dentistId) === String(user.profileId),
         )
       : appointments;
+    //Lọc appointment theo từng dentist
+    // const ownAppointments = appointments.filter(
+    //   (appointment) => String(appointment.dentistId) === String(user.profileId),
+    // );
 
     return buildPatientRows(ownAppointments, filterConfig.statuses).filter(
       (patient) => matchesSearch(patient, searchTerm),
@@ -184,26 +192,26 @@ function DentistWaitingPatientsPage() {
         </div>
 
         <div className="dentist-waiting-patients__tabs">
-            <div
-              className="dentist-waiting-patients__filter-group"
-              aria-label="Filter patient queue"
-              role="group"
-            >
-              {Object.entries(FILTERS).map(([key, filter]) => (
-                <button
-                  className={`dentist-waiting-patients__filter-button${
-                    activeFilter === key
-                      ? " dentist-waiting-patients__filter-button--active"
-                      : ""
-                  }`}
-                  key={key}
-                  onClick={() => setActiveFilter(key)}
-                  type="button"
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
+          <div
+            className="dentist-waiting-patients__filter-group"
+            aria-label="Filter patient queue"
+            role="group"
+          >
+            {Object.entries(FILTERS).map(([key, filter]) => (
+              <button
+                className={`dentist-waiting-patients__filter-button${
+                  activeFilter === key
+                    ? " dentist-waiting-patients__filter-button--active"
+                    : ""
+                }`}
+                key={key}
+                onClick={() => setActiveFilter(key)}
+                type="button"
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {isLoading && <Spinner />}
