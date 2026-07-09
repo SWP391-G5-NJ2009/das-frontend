@@ -21,6 +21,7 @@ import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApp
 import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
+import OwnerStaffPage from "./pages/owner/OwnerStaffPage/OwnerStaffPage";
 import ProtectedRoute from "./router/ProtectedRoute";
 
 function App() {
@@ -211,6 +212,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/staff"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <OwnerStaffPage />
               </ProtectedRoute>
             }
           />
