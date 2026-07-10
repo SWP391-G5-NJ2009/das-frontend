@@ -4,4 +4,5 @@ export const patientAnalyticsService = {
     getNewPatient: () => api.get("/reports/patient/newPatient"),
     getNoShowRate: () => api.get("/reports/patient/noShowRate"),
     getReturningPatient: () => api.get("/reports/patient/returningPatient"),
+    getMonthlyNewPatient: () => api.get("/reports/patient/newPatientMonthly"),
 }

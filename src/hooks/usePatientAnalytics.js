@@ -96,3 +96,35 @@ export function useReturningPatient() {
 
     return { data, isLoading, error };
 }
+
+export function useMonthlyNewPatient() {
+    const [data, setData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
+    useEffect(() => {
+        let isMounted = true;
+
+        async function fetchRevenue() {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const result = await patientAnalyticsService.getMonthlyNewPatient();
+                if (isMounted) setData(result);
+            } catch (err) {
+                if (isMounted) {
+                    setError(err);
+                    setData(null);
+                }
+            } finally {
+                if (isMounted) setIsLoading(false);
+            }
+        }
+
+        fetchRevenue();
+        return () => { isMounted = false; };
+    }, []);
+
+    return { data, isLoading, error };
+}
