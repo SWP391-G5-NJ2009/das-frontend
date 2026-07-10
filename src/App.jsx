@@ -20,6 +20,7 @@ import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import ProtectedRoute from "./router/ProtectedRoute";
+import RevenuePage from "./pages/owner/RevenuePage/RevenuePage";
 
 function App() {
   return (
@@ -165,18 +166,18 @@ function App() {
             }
           />
           <Route
-            path="/owner/rooms-mangagement"
-            element={
-              <ProtectedRoute allowedRoles={["owner"]}>
-                <RoomsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/owner/profile"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/revenue"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <RevenuePage />
               </ProtectedRoute>
             }
           />
