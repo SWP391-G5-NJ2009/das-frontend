@@ -1,9 +1,15 @@
 import PropTypes from "prop-types";
-import { Ban, MessageSquare, Pencil, ShieldBan, UnlockKeyhole } from "lucide-react";
+import {
+  Ban,
+  MessageSquare,
+  Pencil,
+  ShieldBan,
+  UnlockKeyhole,
+} from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
-const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in"];
+const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict"];
 
 /** BR-13: returns true if appointment starts within 24 hours from now */
 function isWithin24Hours(scheduledDate, scheduledTime) {
@@ -13,7 +19,15 @@ function isWithin24Hours(scheduledDate, scheduledTime) {
   return diffMs < 24 * 60 * 60 * 1000;
 }
 
-function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, onLiftBan, showPatientInfo, actorRole }) {
+function AppointmentTable({
+  appointments,
+  onCancel,
+  onWithin24hCancel,
+  onEdit,
+  onLiftBan,
+  showPatientInfo,
+  actorRole,
+}) {
   if (appointments.length === 0) return null;
 
   return (
@@ -76,7 +90,10 @@ function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, o
                       {appt.patientPhone}
                     </span>
                     {appt.patientAccountStatus === "Restricted" && (
-                      <span className="appt-table__booking-banned" title="This patient's account is restricted due to 3+ no-shows">
+                      <span
+                        className="appt-table__booking-banned"
+                        title="This patient's account is restricted due to 3+ no-shows"
+                      >
                         <ShieldBan size={10} aria-hidden="true" />
                         Restricted Account
                       </span>
@@ -134,18 +151,19 @@ function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, o
                       <Pencil size={15} aria-hidden="true" />
                     </button>
                     {/* Lift Ban button — only for restricted patients, only for receptionist */}
-                    {appt.patientAccountStatus === "Restricted" && actorRole === "receptionist" && (
-                      <button
-                        id={`tbl-liftban-${appt.id}`}
-                        type="button"
-                        className="appt-table__action-btn appt-table__action-btn--lift-ban"
-                        aria-label={`Lift account restriction for ${appt.patientName}`}
-                        title="Lift Account Restriction"
-                        onClick={() => onLiftBan?.(appt)}
-                      >
-                        <UnlockKeyhole size={15} aria-hidden="true" />
-                      </button>
-                    )}
+                    {appt.patientAccountStatus === "Restricted" &&
+                      actorRole === "receptionist" && (
+                        <button
+                          id={`tbl-liftban-${appt.id}`}
+                          type="button"
+                          className="appt-table__action-btn appt-table__action-btn--lift-ban"
+                          aria-label={`Lift account restriction for ${appt.patientName}`}
+                          title="Lift Account Restriction"
+                          onClick={() => onLiftBan?.(appt)}
+                        >
+                          <UnlockKeyhole size={15} aria-hidden="true" />
+                        </button>
+                      )}
                     {canCancel && (
                       <button
                         id={`tbl-cancel-${appt.id}`}
