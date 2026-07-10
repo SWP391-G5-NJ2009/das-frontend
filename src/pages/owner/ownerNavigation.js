@@ -31,6 +31,11 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "person",
+    label: "Patient",
+    to: "/owner/patient",
+  },
+  {
+    icon: "person",
     label: "Manage Profile",
     to: "/owner/profile",
   },

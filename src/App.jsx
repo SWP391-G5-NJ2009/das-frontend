@@ -21,6 +21,7 @@ import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import ProtectedRoute from "./router/ProtectedRoute";
 import RevenuePage from "./pages/owner/RevenuePage/RevenuePage";
+import PatientPage from "./pages/owner/PatientPage/PatientPage";
 
 function App() {
   return (
@@ -178,6 +179,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <RevenuePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/patient"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <PatientPage />
               </ProtectedRoute>
             }
           />
