@@ -4,6 +4,7 @@ import NoShowRate from "./NoShowRate";
 import ReturningPatientCount from "./ReturningPatient";
 import MonthlyNewPatientCount from "./MonthlyNewPatient";
 import MonthlyReturningPatientCount from "./MonthlyReturningPatient";
+import MonthlyNoShowRate from "./MonthlyNoShowRate";
 import "./PatientPage.css";
 
 function RevenuePage() {
@@ -28,6 +29,7 @@ function RevenuePage() {
       <div>
         <MonthlyNewPatientCount/>
         <MonthlyReturningPatientCount/>
+        <MonthlyNoShowRate/>
       </div>
     </OwnerPageShell>
   );
