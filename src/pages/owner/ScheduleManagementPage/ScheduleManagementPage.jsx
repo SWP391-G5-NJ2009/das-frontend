@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   CalendarDays,
@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import OwnerPageShell from "../OwnerPageShell";
+import { useWorkingHour } from "../../../hooks/useClinicScheduleManagement";
 import "./ScheduleManagementPage.css";
 
 const DAYS = [
@@ -27,14 +28,14 @@ const DAYS = [
   "Sunday",
 ];
 
-const INITIAL_HOURS = {
-  Monday: { open: "08:00", close: "17:00", isOpen: true },
-  Tuesday: { open: "08:00", close: "17:00", isOpen: true },
-  Wednesday: { open: "08:00", close: "17:00", isOpen: true },
-  Thursday: { open: "08:00", close: "19:00", isOpen: true },
-  Friday: { open: "08:00", close: "17:00", isOpen: true },
-  Saturday: { open: "", close: "", isOpen: false },
-  Sunday: { open: "", close: "", isOpen: false },
+const DAY_NAMES = {
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday",
+  7: "Sunday",
 };
 
 const HOLIDAYS_INITIAL = [
@@ -43,74 +44,42 @@ const HOLIDAYS_INITIAL = [
   { date: "Jan 01", label: "New Year's Day", fullDate: "2025-01-01" },
 ];
 
-function DayRow({ day, hours, onChange }) {
+function DayRow({ dayLabel, shifts }) {
+  const isClosed = shifts.length === 0;
   return (
     <div
-      className={`schedule-config__day-row${!hours.isOpen ? " schedule-config__day-row--closed" : ""}`}
+      className={`schedule-config__day-row${isClosed ? " schedule-config__day-row--closed" : ""}`}
     >
       <div className="schedule-config__day-label">
-        <span className="schedule-config__day-name">{day}</span>
+        <span className="schedule-config__day-name">{dayLabel}</span>
       </div>
       <div className="schedule-config__day-controls">
-        <input
-          className="schedule-config__time-input"
-          type="time"
-          value={hours.open}
-          disabled={!hours.isOpen}
-          onChange={(e) => onChange(day, "open", e.target.value)}
-        />
-        <span className="schedule-config__time-separator">to</span>
-        <input
-          className="schedule-config__time-input"
-          type="time"
-          value={hours.close}
-          disabled={!hours.isOpen}
-          onChange={(e) => onChange(day, "close", e.target.value)}
-        />
-        <div className="schedule-config__toggle-group">
-          <label className="schedule-config__toggle">
-            <input
-              className="schedule-config__toggle-input"
-              type="checkbox"
-              checked={hours.isOpen}
-              onChange={(e) => onChange(day, "isOpen", e.target.checked)}
-            />
-            <span className="schedule-config__toggle-track" />
-          </label>
-          <span className="schedule-config__toggle-label">
-            {hours.isOpen ? "Open" : "Closed"}
-          </span>
-        </div>
+        {isClosed ? (
+          <span className="schedule-config__closed-text">Closed</span>
+        ) : (
+          shifts.map((shift, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <span className="schedule-config__shift-separator">&</span>}
+              <span className="schedule-config__shift-time">
+                {shift.start_time.slice(0, 5)} - {shift.end_time.slice(0, 5)}
+              </span>
+            </React.Fragment>
+          ))
+        )}
       </div>
     </div>
   );
 }
 
 DayRow.propTypes = {
-  day: PropTypes.string.isRequired,
-  hours: PropTypes.shape({
-    open: PropTypes.string,
-    close: PropTypes.string,
-    isOpen: PropTypes.bool,
-  }).isRequired,
-  onChange: PropTypes.func.isRequired,
+  dayLabel: PropTypes.string.isRequired,
+  shifts: PropTypes.arrayOf(
+    PropTypes.shape({
+      start_time: PropTypes.string.isRequired,
+      end_time: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
 };
-
-const TIME_SLOTS = [
-  "08:00 AM",
-  "08:30 AM",
-  "09:00 AM",
-  "09:30 AM",
-  "10:00 AM",
-  "10:30 AM",
-  "11:00 AM",
-  "11:30 AM",
-  "BREAK",
-  "01:00 PM",
-  "01:30 PM",
-  "02:00 PM",
-  "02:30 PM",
-];
 
 const CALENDAR_DAYS = [
   { day: 24, faded: true },
@@ -154,20 +123,30 @@ const CALENDAR_DAYS = [
 ];
 
 function ScheduleManagementPage() {
-  const [hours, setHours] = useState(INITIAL_HOURS);
-  const [appointmentDuration, setAppointmentDuration] = useState("30");
+  const { data: workingHour, isLoading, error } = useWorkingHour();
+
+  const [appointmentDuration, setAppointmentDuration] = useState(30);
+  const [timeSlot, setTimeSlot] = useState([
+    "08:00 AM",
+    "08:30 AM",
+    "09:00 AM",
+    "09:30 AM",
+    "10:00 AM",
+    "10:30 AM",
+    "11:00 AM",
+    "11:30 AM",
+    "BREAK",
+    "01:00 PM",
+    "01:30 PM",
+    "02:00 PM",
+    "02:30 PM",
+  ]);
+
   const [shiftBreak, setShiftBreak] = useState("60");
   const [appointmentBuffer, setAppointmentBuffer] = useState("0");
   const [allowOverbooking, setAllowOverbooking] = useState(false);
   const [holidays, setHolidays] = useState(HOLIDAYS_INITIAL);
   const [saveState, setSaveState] = useState("idle");
-
-  const handleHourChange = (day, field, value) => {
-    setHours((prev) => ({
-      ...prev,
-      [day]: { ...prev[day], [field]: value },
-    }));
-  };
 
   const handleDeleteHoliday = (index) => {
     setHolidays((prev) => prev.filter((_, i) => i !== index));
@@ -182,7 +161,6 @@ function ScheduleManagementPage() {
   };
 
   const handleReset = () => {
-    setHours(INITIAL_HOURS);
     setAppointmentDuration("30");
     setShiftBreak("60");
     setAppointmentBuffer("0");
@@ -237,14 +215,17 @@ function ScheduleManagementPage() {
                 </h2>
               </div>
               <div className="schedule-config__day-list">
-                {DAYS.map((day) => (
-                  <DayRow
-                    key={day}
-                    day={day}
-                    hours={hours[day]}
-                    onChange={handleHourChange}
-                  />
-                ))}
+                {DAYS.map((day) => {
+                  const dayNum = Object.entries(DAY_NAMES).find(([, v]) => v === day)?.[0];
+                  const shifts = workingHour?.filter((s) => String(s.day_of_week) === dayNum) ?? [];
+                  return (
+                    <DayRow
+                      key={day}
+                      dayLabel={day}
+                      shifts={shifts}
+                    />
+                  );
+                })}
               </div>
             </section>
 
@@ -352,7 +333,9 @@ function ScheduleManagementPage() {
                 </div>
               </div>
             </section>
+          </div>
 
+          <div className="schedule-config__right">
             <section className="schedule-config__card">
               <div className="schedule-config__card-header">
                 <div className="schedule-config__card-header-row">
@@ -368,7 +351,7 @@ function ScheduleManagementPage() {
                 </div>
               </div>
               <div className="schedule-config__preview-grid">
-                {TIME_SLOTS.map((slot, i) =>
+                {timeSlot.map((slot, i) =>
                   slot === "BREAK" ? (
                     <div
                       key={i}
@@ -391,9 +374,6 @@ function ScheduleManagementPage() {
                 * Preview based on 30-minute duration and 60-minute shift break.
               </p>
             </section>
-          </div>
-
-          <div className="schedule-config__right">
             <section className="schedule-config__card schedule-config__card--sticky">
               <div className="schedule-config__holiday-header">
                 <div className="schedule-config__card-header">
