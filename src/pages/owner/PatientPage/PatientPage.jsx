@@ -3,6 +3,7 @@ import NewPatientCount from "./NewPatient";
 import NoShowRate from "./NoShowRate";
 import ReturningPatientCount from "./ReturningPatient";
 import MonthlyNewPatientCount from "./MonthlyNewPatient";
+import MonthlyReturningPatientCount from "./MonthlyReturningPatient";
 import "./PatientPage.css";
 
 function RevenuePage() {
@@ -21,11 +22,12 @@ function RevenuePage() {
 
       <div className="patient-page__cards">
         <NewPatientCount/>
-        <NoShowRate/>
         <ReturningPatientCount/>
+        <NoShowRate/>
       </div>
       <div>
         <MonthlyNewPatientCount/>
+        <MonthlyReturningPatientCount/>
       </div>
     </OwnerPageShell>
   );
