@@ -1,6 +1,9 @@
-import { RefreshCw, Search } from "lucide-react";
+import { Plus, RefreshCw, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import Spinner from "../../../components/common/Spinner/Spinner";
+import DentistProfileCreateModal from "../../../components/features/staff/DentistProfileCreateModal/DentistProfileCreateModal";
+import DentistProfileModal from "../../../components/features/staff/DentistProfileModal/DentistProfileModal";
+import StaffState from "../../../components/features/staff/StaffState/StaffState";
+import StaffTable from "../../../components/features/staff/StaffTable/StaffTable";
 import { useStaff } from "../../../hooks/useStaff";
 import OwnerPageShell from "../OwnerPageShell";
 import "./OwnerStaffPage.css";
@@ -17,40 +20,11 @@ const STATUS_OPTIONS = [
   { value: "Banned", label: "Banned" },
 ];
 
-function getRoleLabel(role) {
-  const normalizedRole = role?.toLowerCase();
-
-  if (normalizedRole === "dentist") return "Dentist";
-  if (normalizedRole === "receptionist") return "Receptionist";
-
-  return role || "Unknown";
-}
-
-function getStatusLabel(status) {
-  const normalizedStatus = status?.toLowerCase();
-
-  if (normalizedStatus === "active") return "Active";
-  if (normalizedStatus === "banned") return "Banned";
-
-  return "Unknown";
-}
-
-function getStatusClass(status) {
-  const normalizedStatus = status?.toLowerCase();
-
-  if (normalizedStatus === "active") {
-    return "owner-staff__status owner-staff__status--active";
-  }
-
-  if (normalizedStatus === "banned") {
-    return "owner-staff__status owner-staff__status--banned";
-  }
-
-  return "owner-staff__status owner-staff__status--inactive";
-}
-
 function OwnerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
+  const [selectedDentist, setSelectedDentist] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [filters, setFilters] = useState({
     search: "",
     role: "all",
@@ -81,37 +55,49 @@ function OwnerStaffPage() {
     }));
   };
 
-  const handleRoleChange = (event) => {
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+
     setFilters((currentFilters) => ({
       ...currentFilters,
-      role: event.target.value,
+      [name]: value,
     }));
   };
 
-  const handleStatusChange = (event) => {
-    setFilters((currentFilters) => ({
-      ...currentFilters,
-      status: event.target.value,
-    }));
+  const handleProfileCreated = async () => {
+    setIsCreateModalOpen(false);
+    setSuccessMessage("Dentist profile created successfully.");
+    await refetch();
   };
 
   return (
     <OwnerPageShell>
       <div className="owner-staff">
         <header className="owner-staff__header">
-          <div>
-            <h1>Staff Management</h1>
-          </div>
+          <h1>Staff Management</h1>
 
-          <button
-            className="owner-staff__refresh-button"
-            type="button"
-            onClick={refetch}
-            disabled={isLoading}
-          >
-            <RefreshCw size={16} aria-hidden="true" />
-            Refresh
-          </button>
+          <div className="owner-staff__header-actions">
+            <button
+              className="owner-staff__refresh-button"
+              type="button"
+              onClick={refetch}
+              disabled={isLoading}
+            >
+              <RefreshCw size={16} aria-hidden="true" />
+              Refresh
+            </button>
+            <button
+              className="owner-staff__add-button"
+              type="button"
+              onClick={() => {
+                setSuccessMessage("");
+                setIsCreateModalOpen(true);
+              }}
+            >
+              <Plus size={16} aria-hidden="true" />
+              Add New Dentist
+            </button>
+          </div>
         </header>
 
         <section
@@ -160,7 +146,11 @@ function OwnerStaffPage() {
           <label className="owner-staff__filter">
             <span>Role</span>
 
-            <select value={filters.role} onChange={handleRoleChange}>
+            <select
+              name="role"
+              value={filters.role}
+              onChange={handleFilterChange}
+            >
               {ROLE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -172,7 +162,11 @@ function OwnerStaffPage() {
           <label className="owner-staff__filter">
             <span>Status</span>
 
-            <select value={filters.status} onChange={handleStatusChange}>
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+            >
               {STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -182,63 +176,51 @@ function OwnerStaffPage() {
           </label>
         </section>
 
-        {error ? (
-          <div
-            className="owner-staff__notice owner-staff__notice--error"
-            role="alert"
-          >
-            {error.message || "Unable to load the staff list."}
+        {successMessage ? (
+          <div className="owner-staff__notice owner-staff__notice--success" role="status">
+            {successMessage}
           </div>
         ) : null}
 
-        <section className="owner-staff__table-wrap">
-          {isLoading ? (
-            <div className="owner-staff__loading">
-              <Spinner />
-            </div>
-          ) : (
-            <table className="owner-staff__table">
-              <thead>
-                <tr>
-                  <th scope="col">Username</th>
-                  <th scope="col">Role</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
+        {isLoading && <StaffState isLoading message="Loading staff..." />}
 
-              <tbody>
-                {staff.map((item) => (
-                  <tr key={item.accountId}>
-                    <td>
-                      {item.username ||
-                        item.fullName ||
-                        "Not updated"}
-                    </td>
+        {!isLoading && error && (
+          <StaffState
+            title="Unable to load staff"
+            message={error.message || "Please try again later."}
+            variant="error"
+          />
+        )}
 
-                    <td>{getRoleLabel(item.role)}</td>
+        {!isLoading && !error && staff.length === 0 && (
+          <StaffState
+            title="No staff found"
+            message="No matching staff members were found."
+          />
+        )}
 
-                    <td>
-                      <span className={getStatusClass(item.status)}>
-                        {getStatusLabel(item.status)}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+        {!isLoading && !error && staff.length > 0 && (
+          <StaffTable staff={staff} onViewDentist={setSelectedDentist} />
+        )}
 
-                {!error && staff.length === 0 ? (
-                  <tr>
-                    <td className="owner-staff__empty" colSpan={3}>
-                      No matching staff members were found.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          )}
-        </section>
+        {selectedDentist && (
+          <DentistProfileModal
+            dentist={selectedDentist}
+            onClose={() => setSelectedDentist(null)}
+          />
+        )}
+
+        {isCreateModalOpen && (
+          <DentistProfileCreateModal
+            onClose={() => setIsCreateModalOpen(false)}
+            onCreated={handleProfileCreated}
+          />
+        )}
       </div>
     </OwnerPageShell>
   );
 }
+
+OwnerStaffPage.propTypes = {};
 
 export default OwnerStaffPage;
