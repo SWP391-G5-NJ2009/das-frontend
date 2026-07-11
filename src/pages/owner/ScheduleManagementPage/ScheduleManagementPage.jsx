@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   CalendarDays,
@@ -125,28 +125,42 @@ const CALENDAR_DAYS = [
 function ScheduleManagementPage() {
   const { data: workingHour, isLoading, error } = useWorkingHour();
 
-  const [appointmentDuration, setAppointmentDuration] = useState(30);
-  const [timeSlot, setTimeSlot] = useState([
-    "08:00 AM",
-    "08:30 AM",
-    "09:00 AM",
-    "09:30 AM",
-    "10:00 AM",
-    "10:30 AM",
-    "11:00 AM",
-    "11:30 AM",
-    "BREAK",
-    "01:00 PM",
-    "01:30 PM",
-    "02:00 PM",
-    "02:30 PM",
-  ]);
-
+  const [appointmentDuration, setAppointmentDuration] = useState("30");
   const [shiftBreak, setShiftBreak] = useState("60");
   const [appointmentBuffer, setAppointmentBuffer] = useState("0");
   const [allowOverbooking, setAllowOverbooking] = useState(false);
   const [holidays, setHolidays] = useState(HOLIDAYS_INITIAL);
   const [saveState, setSaveState] = useState("idle");
+
+  const mondayShifts = workingHour?.filter((s) => String(s.day_of_week) === "1") ?? [];
+
+  const timeSlots = useMemo(() => {
+    if (!mondayShifts.length) return [];
+    const duration = Number(appointmentDuration);
+    const slots = [];
+
+    mondayShifts.forEach((shift, si) => {
+      if (si > 0) {
+        const prevEnd = mondayShifts[si - 1].end_time.slice(0, 5);
+        const currStart = shift.start_time.slice(0, 5);
+        slots.push({ type: "break", label: `Shift Break (${prevEnd} - ${currStart})` });
+      }
+
+      const [startH, startM] = shift.start_time.slice(0, 5).split(":").map(Number);
+      const [endH, endM] = shift.end_time.slice(0, 5).split(":").map(Number);
+      const startMinutes = startH * 60 + startM;
+      const endMinutes = endH * 60 + endM;
+
+      for (let m = startMinutes; m + duration <= endMinutes; m += duration) {
+        const h = Math.floor(m / 60);
+        const min = m % 60;
+        const label = `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+        slots.push({ type: "slot", label });
+      }
+    });
+
+    return slots;
+  }, [mondayShifts, appointmentDuration]);
 
   const handleDeleteHoliday = (index) => {
     setHolidays((prev) => prev.filter((_, i) => i !== index));
@@ -351,27 +365,29 @@ function ScheduleManagementPage() {
                 </div>
               </div>
               <div className="schedule-config__preview-grid">
-                {timeSlot.map((slot, i) =>
-                  slot === "BREAK" ? (
+                {timeSlots.length === 0 ? (
+                  <p className="schedule-config__empty-text">No schedule data for Monday.</p>
+                ) : timeSlots.map((slot, i) =>
+                  slot.type === "break" ? (
                     <div
                       key={i}
                       className="schedule-config__preview-break"
                     >
                       <Coffee size={20} className="schedule-config__preview-break-icon" />
-                      <span>Shift Break (12:00 PM - 01:00 PM)</span>
+                      <span>{slot.label}</span>
                     </div>
                   ) : (
                     <div
                       key={i}
                       className="schedule-config__preview-slot"
                     >
-                      {slot}
+                      {slot.label}
                     </div>
                   ),
                 )}
               </div>
               <p className="schedule-config__preview-note">
-                * Preview based on 30-minute duration and 60-minute shift break.
+                * Preview based on {appointmentDuration}-minute duration and Monday's operational hours.
               </p>
             </section>
             <section className="schedule-config__card schedule-config__card--sticky">
