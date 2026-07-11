@@ -18,6 +18,7 @@ import {
 import OwnerPageShell from "../OwnerPageShell";
 import { useWorkingHour, useClinicSetting, useClinicClosures } from "../../../hooks/useClinicScheduleManagement";
 import { clinicScheduleManagementService } from "../../../services/clinicScheduleManagement.service";
+import EffectiveDateModal from "../../../components/features/owner/EffectiveDateModal/EffectiveDateModal";
 import "./ScheduleManagementPage.css";
 
 const DAYS = [
@@ -194,13 +195,19 @@ function generateCalendarDays(year, month, holidays, closedDays) {
 }
 
 function ScheduleManagementPage() {
-  const { data: workingHour } = useWorkingHour();
-  const { data: clinicSetting } = useClinicSetting();
+  const { data: workingHourData, refetch: refetchWorkingHour } = useWorkingHour();
+  const { data: clinicSettingData, refetch: refetchClinicSetting } = useClinicSetting();
   const { data: closures, refetch: refetchClosures } = useClinicClosures();
+
+  const workingHour = workingHourData?.current ?? workingHourData;
+  const pendingWorkingHour = workingHourData?.pending ?? null;
+  const clinicSetting = clinicSettingData?.current ?? clinicSettingData;
+  const pendingSetting = clinicSettingData?.pending ?? null;
+
+  const hasPendingSchedule = (pendingWorkingHour && pendingWorkingHour.length > 0) || !!pendingSetting;
 
   const [appointmentDuration, setAppointmentDuration] = useState("30");
   const [appointmentBuffer, setAppointmentBuffer] = useState("0");
-  const [allowOverbooking, setAllowOverbooking] = useState(false);
   const [bookingLeadDays, setBookingLeadDays] = useState("30");
   const [maxBookingPerSlot, setMaxBookingPerSlot] = useState("1");
   const [holidays, setHolidays] = useState([]);
@@ -217,6 +224,9 @@ function ScheduleManagementPage() {
   const [addClosureReason, setAddClosureReason] = useState("");
   const [addClosureError, setAddClosureError] = useState(null);
   const [addClosureSubmitting, setAddClosureSubmitting] = useState(false);
+  const [showEffectiveDateModal, setShowEffectiveDateModal] = useState(false);
+  const [lastBookedDate, setLastBookedDate] = useState(null);
+  const [pendingSavePayload, setPendingSavePayload] = useState(null);
 
   useEffect(() => {
     if (clinicSetting) {
@@ -265,28 +275,50 @@ function ScheduleManagementPage() {
 
   function handleShiftChange(dayLabel, shiftIndex, field, value) {
     const dayNum = Object.entries(DAY_NAMES).find(([, v]) => v === dayLabel)?.[0];
-    setEditableShifts((prev) =>
-      prev.map((s, i) =>
-        String(s.day_of_week) === dayNum && i === shiftIndex
-          ? { ...s, [field === "start_time" ? "shift_start" : "shift_end"]: value }
-          : s,
-      ),
-    );
+    setEditableShifts((prev) => {
+      let dayCount = 0;
+      return prev.map((s) => {
+        if (String(s.day_of_week) === dayNum) {
+          if (dayCount === shiftIndex) {
+            dayCount++;
+            return { ...s, [field === "start_time" ? "shift_start" : "shift_end"]: value };
+          }
+          dayCount++;
+        }
+        return s;
+      });
+    });
   }
 
   function handleAddShift(dayLabel) {
     const dayNum = Object.entries(DAY_NAMES).find(([, v]) => v === dayLabel)?.[0];
-    setEditableShifts((prev) => [
-      ...prev,
-      { day_of_week: Number(dayNum), working_hour_id: null, shift_start: "08:00", shift_end: "17:00" },
-    ]);
+    setEditableShifts((prev) => {
+      const dayShifts = prev.filter((s) => String(s.day_of_week) === dayNum);
+      const lastEnd = dayShifts.length > 0
+        ? dayShifts[dayShifts.length - 1].shift_end
+        : "00:00";
+      return [
+        ...prev,
+        { day_of_week: Number(dayNum), working_hour_id: null, shift_start: lastEnd, shift_end: "23:59" },
+      ];
+    });
   }
 
   function handleRemoveShift(dayLabel, shiftIndex) {
     const dayNum = Object.entries(DAY_NAMES).find(([, v]) => v === dayLabel)?.[0];
-    setEditableShifts((prev) =>
-      prev.filter((s, i) => !(String(s.day_of_week) === dayNum && i === shiftIndex)),
-    );
+    setEditableShifts((prev) => {
+      let dayCount = 0;
+      return prev.filter((s) => {
+        if (String(s.day_of_week) === dayNum) {
+          if (dayCount === shiftIndex) {
+            dayCount++;
+            return false;
+          }
+          dayCount++;
+        }
+        return true;
+      });
+    });
   }
 
   const timeSlots = useMemo(() => {
@@ -349,20 +381,150 @@ function ScheduleManagementPage() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async (effectiveDate = null) => {
+    for (const shift of editableShifts) {
+      if (shift.shift_start >= shift.shift_end) {
+        setSaveState("idle");
+        alert(`Invalid time range for ${DAY_NAMES[shift.day_of_week]}: start must be before end.`);
+        return;
+      }
+    }
+
     setSaveState("saving");
-    setTimeout(() => {
+    try {
+      const hoursPayload = editableShifts.map((s) => ({
+        day_of_week: s.day_of_week,
+        start_time: s.shift_start,
+        end_time: s.shift_end,
+      }));
+      await clinicScheduleManagementService.updateWorkingHours(hoursPayload, effectiveDate);
+
+      await clinicScheduleManagementService.updateClinicSetting(
+        clinicSetting?.setting_id || null,
+        {
+          slot_duration_minutes: Number(appointmentDuration),
+          appointment_buffer_minutes: Number(appointmentBuffer),
+          booking_lead_days: Number(bookingLeadDays),
+          max_booking_per_slot: Number(maxBookingPerSlot),
+        },
+        effectiveDate,
+      );
+
       setSaveState("saved");
+      setShowEffectiveDateModal(false);
+      setPendingSavePayload(null);
       setTimeout(() => setSaveState("idle"), 2000);
-    }, 1000);
+      refetchWorkingHour();
+      refetchClinicSetting();
+    } catch (err) {
+      if (err?.code === "SLOTS_HAVE_BOOKINGS") {
+        const bookedDate = err.details?.lastBookedDate || null;
+
+        const payload = {
+          hours: editableShifts.map((s) => ({
+            day_of_week: s.day_of_week,
+            start_time: s.shift_start,
+            end_time: s.shift_end,
+          })),
+          settingId: clinicSetting?.setting_id || null,
+          settingFields: {
+            slot_duration_minutes: Number(appointmentDuration),
+            appointment_buffer_minutes: Number(appointmentBuffer),
+            booking_lead_days: Number(bookingLeadDays),
+            max_booking_per_slot: Number(maxBookingPerSlot),
+          },
+        };
+        setLastBookedDate(bookedDate);
+        setPendingSavePayload(payload);
+        setShowEffectiveDateModal(true);
+        setSaveState("idle");
+      } else {
+        const detail = err?.code ? `[${err.code}] ` : "";
+        alert(`${detail}${err.message || "Failed to save changes. Please try again."}`);
+        setSaveState("idle");
+      }
+    }
   };
 
-  const handleReset = () => {
-    setAppointmentDuration("30");
-    setAppointmentBuffer("0");
-    setAllowOverbooking(false);
-    setBookingLeadDays("30");
-    setMaxBookingPerSlot("1");
+  async function handleConfirmEffectiveDate(date) {
+    if (!pendingSavePayload) return;
+    setSaveState("saving");
+    try {
+      await clinicScheduleManagementService.updateWorkingHours(pendingSavePayload.hours, date);
+      await clinicScheduleManagementService.updateClinicSetting(
+        pendingSavePayload.settingId,
+        pendingSavePayload.settingFields,
+        date,
+      );
+      setSaveState("saved");
+      setShowEffectiveDateModal(false);
+      setPendingSavePayload(null);
+      setTimeout(() => setSaveState("idle"), 2000);
+      refetchWorkingHour();
+      refetchClinicSetting();
+    } catch (err) {
+      const detail = err?.code ? `[${err.code}] ` : "";
+      alert(`${detail}${err.message || "Failed to schedule changes. Please try again."}`);
+      setSaveState("idle");
+    }
+  }
+
+  async function handleCancelPending() {
+    try {
+      await clinicScheduleManagementService.cancelPendingWorkingHours();
+      await clinicScheduleManagementService.cancelPendingClinicSetting();
+      refetchWorkingHour();
+      refetchClinicSetting();
+    } catch {
+      alert("Failed to cancel pending changes.");
+    }
+  }
+
+  const handleReset = async () => {
+    const defaults = {
+      slot_duration_minutes: 30,
+      appointment_buffer_minutes: 0,
+      booking_lead_days: 30,
+      max_booking_per_slot: 1,
+    };
+
+    setAppointmentDuration(String(defaults.slot_duration_minutes));
+    setAppointmentBuffer(String(defaults.appointment_buffer_minutes));
+    setBookingLeadDays(String(defaults.booking_lead_days));
+    setMaxBookingPerSlot(String(defaults.max_booking_per_slot));
+
+    setSaveState("saving");
+    try {
+      await clinicScheduleManagementService.updateClinicSetting(
+        clinicSetting?.setting_id || null,
+        defaults,
+      );
+      setSaveState("saved");
+      setTimeout(() => setSaveState("idle"), 2000);
+      refetchClinicSetting();
+    } catch (err) {
+      if (err?.code === "SLOTS_HAVE_BOOKINGS") {
+        const bookedDate = err.details?.lastBookedDate || null;
+
+        const payload = {
+          hours: editableShifts.map((s) => ({
+            day_of_week: s.day_of_week,
+            start_time: s.shift_start,
+            end_time: s.shift_end,
+          })),
+          settingId: clinicSetting?.setting_id || null,
+          settingFields: defaults,
+        };
+        setLastBookedDate(bookedDate);
+        setPendingSavePayload(payload);
+        setShowEffectiveDateModal(true);
+        setSaveState("idle");
+      } else {
+        const detail = err?.code ? `[${err.code}] ` : "";
+        alert(`${detail}${err.message || "Failed to reset to defaults. Please try again."}`);
+        setSaveState("idle");
+      }
+    }
   };
 
   const closedDays = useMemo(() => {
@@ -427,13 +589,13 @@ function ScheduleManagementPage() {
           <div className="schedule-config__header-actions">
             <button
               className="schedule-config__btn schedule-config__btn--secondary"
-              onClick={handleReset}
+              onClick={() => handleReset()}
             >
               Reset to Defaults
             </button>
             <button
               className={`schedule-config__btn schedule-config__btn--primary${saveState !== "idle" ? " schedule-config__btn--loading" : ""}`}
-              onClick={handleSave}
+              onClick={() => handleSave()}
               disabled={saveState !== "idle"}
             >
               {saveState === "saving" ? (
@@ -451,6 +613,20 @@ function ScheduleManagementPage() {
             </button>
           </div>
         </header>
+
+        {hasPendingSchedule && (
+          <div className="schedule-config__pending-banner">
+            <span className="schedule-config__pending-banner-text">
+              New schedule effective from {pendingSetting?.effective_date || pendingWorkingHour?.[0]?.effective_date || "a future date"}
+            </span>
+            <button
+              className="schedule-config__pending-banner-btn"
+              onClick={handleCancelPending}
+            >
+              Cancel Pending Changes
+            </button>
+          </div>
+        )}
 
         <div className="schedule-config__grid">
           <div className="schedule-config__left">
@@ -570,30 +746,6 @@ function ScheduleManagementPage() {
                   <p className="schedule-config__field-hint">
                     Maximum number of bookings per slot
                   </p>
-                </div>
-                <div className="schedule-config__field--full">
-                  <div className="schedule-config__toggle-row">
-                    <div>
-                      <p className="schedule-config__toggle-row-title">
-                        Allow Online Overbooking
-                      </p>
-                      <p className="schedule-config__toggle-row-desc">
-                        Enable patients to request slots during filled times for
-                        emergencies.
-                      </p>
-                    </div>
-                    <label className="schedule-config__toggle">
-                      <input
-                        className="schedule-config__toggle-input"
-                        type="checkbox"
-                        checked={allowOverbooking}
-                        onChange={(e) =>
-                          setAllowOverbooking(e.target.checked)
-                        }
-                      />
-                      <span className="schedule-config__toggle-track" />
-                    </label>
-                  </div>
                 </div>
               </div>
             </section>
@@ -850,6 +1002,17 @@ function ScheduleManagementPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {showEffectiveDateModal && (
+        <EffectiveDateModal
+          lastBookedDate={lastBookedDate}
+          onConfirm={handleConfirmEffectiveDate}
+          onCancel={() => {
+            setShowEffectiveDateModal(false);
+            setPendingSavePayload(null);
+          }}
+        />
       )}
     </OwnerPageShell>
   );

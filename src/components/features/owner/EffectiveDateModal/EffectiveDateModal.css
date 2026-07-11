@@ -1,0 +1,150 @@
+.effective-date-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+}
+
+.effective-date-modal {
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+}
+
+.effective-date-modal__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.effective-date-modal__icon {
+  color: var(--color-primary-700);
+  flex-shrink: 0;
+}
+
+.effective-date-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+  flex: 1;
+}
+
+.effective-date-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.effective-date-modal__close:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+.effective-date-modal__body {
+  padding: var(--space-6);
+}
+
+.effective-date-modal__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-relaxed);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.effective-date-modal__field {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.effective-date-modal__label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-700);
+  margin-bottom: var(--space-1);
+}
+
+.effective-date-modal__input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-900);
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast);
+}
+
+.effective-date-modal__input:focus {
+  outline: none;
+  border-color: var(--color-primary-700);
+  box-shadow: 0 0 0 2px var(--color-primary-100);
+}
+
+.effective-date-modal__error {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.effective-date-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--space-4);
+}
+
+.effective-date-modal__btn {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.effective-date-modal__btn--cancel {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+.effective-date-modal__btn--cancel:hover {
+  background-color: var(--color-neutral-200);
+}
+
+.effective-date-modal__btn--confirm {
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+}
+
+.effective-date-modal__btn--confirm:hover {
+  background-color: var(--color-primary-800);
+}
+
+.effective-date-modal__btn--confirm:focus-visible,
+.effective-date-modal__btn--cancel:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}

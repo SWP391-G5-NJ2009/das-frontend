@@ -6,30 +6,25 @@ export function useWorkingHour() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        let isMounted = true;
-
-        async function fetchData() {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const result = await clinicScheduleManagementService.getWorkingHour();
-                if (isMounted) setData(result);
-            } catch (err) {
-                if (isMounted) {
-                    setError(err);
-                    setData(null);
-                }
-            } finally {
-                if (isMounted) setIsLoading(false);
-            }
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await clinicScheduleManagementService.getWorkingHour();
+            setData(result);
+        } catch (err) {
+            setError(err);
+            setData(null);
+        } finally {
+            setIsLoading(false);
         }
-
-        fetchData();
-        return () => { isMounted = false; };
     }, []);
 
-    return { data, isLoading, error };
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return { data, isLoading, error, refetch: fetchData };
 }
 
 export function useClinicSetting() {
@@ -37,30 +32,25 @@ export function useClinicSetting() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        let isMounted = true;
-
-        async function fetchData() {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const result = await clinicScheduleManagementService.getClinicSetting();
-                if (isMounted) setData(result);
-            } catch (err) {
-                if (isMounted) {
-                    setError(err);
-                    setData(null);
-                }
-            } finally {
-                if (isMounted) setIsLoading(false);
-            }
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await clinicScheduleManagementService.getClinicSetting();
+            setData(result);
+        } catch (err) {
+            setError(err);
+            setData(null);
+        } finally {
+            setIsLoading(false);
         }
-
-        fetchData();
-        return () => { isMounted = false; };
     }, []);
 
-    return { data, isLoading, error };
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return { data, isLoading, error, refetch: fetchData };
 }
 
 export function useClinicClosures() {

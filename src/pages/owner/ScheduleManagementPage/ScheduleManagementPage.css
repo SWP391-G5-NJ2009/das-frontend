@@ -34,6 +34,39 @@
   gap: var(--space-3);
 }
 
+.schedule-config__pending-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--color-warning-bg);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-6);
+}
+
+.schedule-config__pending-banner-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-warning);
+}
+
+.schedule-config__pending-banner-btn {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+  background: none;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.schedule-config__pending-banner-btn:hover {
+  background-color: var(--color-error-bg);
+}
+
 .schedule-config__btn {
   display: inline-flex;
   align-items: center;
@@ -450,26 +483,6 @@
 
 .schedule-config__field-hint {
   font-size: 11px;
-  color: var(--color-neutral-500);
-  margin: 0;
-}
-
-/* Toggle row (overbooking) */
-.schedule-config__toggle-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.schedule-config__toggle-row-title {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-neutral-900);
-  margin: 0 0 var(--space-1) 0;
-}
-
-.schedule-config__toggle-row-desc {
-  font-size: var(--font-size-base);
   color: var(--color-neutral-500);
   margin: 0;
 }
