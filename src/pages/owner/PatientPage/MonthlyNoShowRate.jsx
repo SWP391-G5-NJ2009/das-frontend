@@ -9,7 +9,7 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import { useMonthlyNoShowRate } from "../../../hooks/usePatientAnalytics";
-import "./MonthlyNewPatient.css";
+import "./MonthlyNoShowRate.css";
 
 const MONTH_NAMES = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -32,9 +32,9 @@ function CustomTooltip({ active, payload, label }) {
     if (!active || !payload || !payload.length) return null;
 
     return (
-        <div className="monthly-new-patient__tooltip">
-            <p className="monthly-new-patient__tooltip-label">{label}</p>
-            <p className="monthly-new-patient__tooltip-value">
+        <div className="monthly-no-show-rate__tooltip">
+            <p className="monthly-no-show-rate__tooltip-label">{label}</p>
+            <p className="monthly-no-show-rate__tooltip-value">
                 {payload[0].value}%
             </p>
         </div>
@@ -60,10 +60,10 @@ function MonthlyNoShowRate() {
 
     if (isLoading) {
         return (
-            <section className="monthly-new-patient">
-                <div className="monthly-new-patient__skeleton">
-                    <div className="monthly-new-patient__skeleton-line monthly-new-patient__skeleton-line--short" />
-                    <div className="monthly-new-patient__skeleton-bar" />
+            <section className="monthly-no-show-rate">
+                <div className="monthly-no-show-rate__skeleton">
+                    <div className="monthly-no-show-rate__skeleton-line monthly-no-show-rate__skeleton-line--short" />
+                    <div className="monthly-no-show-rate__skeleton-bar" />
                 </div>
             </section>
         );
@@ -71,11 +71,11 @@ function MonthlyNoShowRate() {
 
     if (error) {
         return (
-            <section className="monthly-new-patient monthly-new-patient--error">
-                <div className="monthly-new-patient__header">
-                    <h2 className="monthly-new-patient__title">Last 12 Months&apos; No-Show Rate</h2>
+            <section className="monthly-no-show-rate monthly-no-show-rate--error">
+                <div className="monthly-no-show-rate__header">
+                    <h2 className="monthly-no-show-rate__title">Last 12 Months&apos; No-Show Rate</h2>
                 </div>
-                <p className="monthly-new-patient__error-text">
+                <p className="monthly-no-show-rate__error-text">
                     Unable to load data.
                 </p>
             </section>
@@ -84,11 +84,11 @@ function MonthlyNoShowRate() {
 
     if (!data || data.length === 0) {
         return (
-            <section className="monthly-new-patient">
-                <div className="monthly-new-patient__header">
-                    <h2 className="monthly-new-patient__title">Last 12 Months&apos; No-Show Rate</h2>
+            <section className="monthly-no-show-rate">
+                <div className="monthly-no-show-rate__header">
+                    <h2 className="monthly-no-show-rate__title">Last 12 Months&apos; No-Show Rate</h2>
                 </div>
-                <p className="monthly-new-patient__empty-text">No data available.</p>
+                <p className="monthly-no-show-rate__empty-text">No data available.</p>
             </section>
         );
     }
@@ -102,11 +102,11 @@ function MonthlyNoShowRate() {
     }));
 
     return (
-        <section className="monthly-new-patient">
-            <div className="monthly-new-patient__header">
-                <h2 className="monthly-new-patient__title">Last 12 Months&apos; No-Show Rate</h2>
+        <section className="monthly-no-show-rate">
+            <div className="monthly-no-show-rate__header">
+                <h2 className="monthly-no-show-rate__title">Last 12 Months&apos; No-Show Rate</h2>
             </div>
-            <div className="monthly-new-patient__chart-container">
+            <div className="monthly-no-show-rate__chart-container">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                         data={chartData}

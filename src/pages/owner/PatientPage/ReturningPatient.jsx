@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useReturningPatient } from "../../../hooks/usePatientAnalytics";
-import "./NewPatient.css";
+import "./ReturningPatient.css";
 
 function getCurrentMonthLabel() {
   return new Date().toLocaleDateString("en-US", {
@@ -14,10 +14,10 @@ function ReturningPatientCount() {
 
   if (isLoading) {
     return (
-      <section className="patient-summary">
-        <div className="patient-summary__skeleton">
-          <div className="patient-summary__skeleton-line patient-summary__skeleton-line--short" />
-          <div className="patient-summary__skeleton-line patient-summary__skeleton-line--long" />
+      <section className="returning-patient">
+        <div className="returning-patient__skeleton">
+          <div className="returning-patient__skeleton-line returning-patient__skeleton-line--short" />
+          <div className="returning-patient__skeleton-line returning-patient__skeleton-line--long" />
         </div>
       </section>
     );
@@ -25,11 +25,11 @@ function ReturningPatientCount() {
 
   if (error) {
     return (
-      <section className="patient-summary patient-summary--error">
-        <div className="patient-summary__header">
-          <h2 className="patient-summary__title">Returning Patients</h2>
+      <section className="returning-patient returning-patient--error">
+        <div className="returning-patient__header">
+          <h2 className="returning-patient__title">Returning Patients</h2>
         </div>
-        <p className="patient-summary__error-text">
+        <p className="returning-patient__error-text">
           Unable to load data.
         </p>
       </section>
@@ -37,12 +37,12 @@ function ReturningPatientCount() {
   }
 
   return (
-    <section className="patient-summary">
-      <div className="patient-summary__header">
-        <h2 className="patient-summary__title">Returning Patients</h2>
-        <span className="patient-summary__period">{getCurrentMonthLabel()}</span>
+    <section className="returning-patient">
+      <div className="returning-patient__header">
+        <h2 className="returning-patient__title">Returning Patients</h2>
+        <span className="returning-patient__period">{getCurrentMonthLabel()}</span>
       </div>
-      <p className="patient-summary__amount">{(data ?? 0)}</p>
+      <p className="returning-patient__amount">{(data ?? 0)}</p>
     </section>
   );
 }
