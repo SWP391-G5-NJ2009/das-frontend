@@ -131,22 +131,30 @@
 }
 
 .schedule-config__holiday-body {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-8);
 }
 
 .schedule-config__holiday-body .schedule-config__calendar {
-  flex: 1;
   min-width: 0;
+}
+
+.schedule-config__holiday-body .schedule-config__closure-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-top: var(--space-6);
+}
+
+.schedule-config__holiday-body .schedule-config__closure-column .schedule-config__empty-text {
+  padding: var(--space-4) 0;
 }
 
 .schedule-config__holiday-body .schedule-config__holiday-list {
-  flex: 1;
   min-width: 0;
-}
-
-.schedule-config__holiday-body .schedule-config__holiday-footer {
-  margin-top: var(--space-4);
+  padding: var(--space-6) 0 0;
 }
 
 .schedule-config__card-header {
@@ -632,6 +640,31 @@
   font-weight: var(--font-weight-bold);
 }
 
+.schedule-config__calendar-day--regular-closure {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-400);
+  border-radius: var(--radius-full);
+}
+
+.schedule-config__calendar-day--clickable {
+  cursor: pointer;
+}
+
+.schedule-config__calendar-day--clickable:hover {
+  background-color: var(--color-primary-50);
+  border-radius: var(--radius-full);
+}
+
+.schedule-config__calendar-day--selected {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-900);
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 1px;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
+}
+
+
 /* Holiday list */
 .schedule-config__holiday-list {
   padding: 0 var(--space-6) var(--space-6);
@@ -725,31 +758,135 @@
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
 }
 
-.schedule-config__holiday-footer {
-  padding: var(--space-6);
-  background-color: var(--color-neutral-100);
-  border-top: 1px solid var(--border-color);
+/* Add Closure Modal */
+.add-closure-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
 }
 
-.schedule-config__btn--import {
-  width: 100%;
-  padding: var(--space-2) var(--space-6);
+.add-closure-modal {
   background-color: #ffffff;
-  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-xl);
+}
+
+.add-closure-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.add-closure-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.add-closure-modal__close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: var(--radius-full);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+}
+
+.add-closure-modal__close:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.add-closure-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.add-closure-modal__error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  padding: var(--space-3);
   border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.add-closure-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.add-closure-modal__label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-700);
+}
+
+.add-closure-modal__field input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-900);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.add-closure-modal__field input:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 2px var(--color-primary-200);
+}
+
+.add-closure-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.add-closure-modal__btn {
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  border: none;
+  transition: opacity var(--transition-fast);
 }
 
-.schedule-config__btn--import:hover {
-  background-color: var(--color-neutral-50);
+.add-closure-modal__btn--cancel {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
 }
 
-.schedule-config__btn--import:focus-visible {
-  outline: 2px solid var(--color-primary-700);
-  outline-offset: 2px;
+.add-closure-modal__btn--cancel:hover {
+  background-color: var(--color-neutral-200);
+}
+
+.add-closure-modal__btn--submit {
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+}
+
+.add-closure-modal__btn--submit:hover {
+  opacity: 0.9;
+}
+
+.add-closure-modal__btn--submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

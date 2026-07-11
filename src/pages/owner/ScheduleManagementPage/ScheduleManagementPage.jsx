@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   CalendarDays,
@@ -13,9 +13,11 @@ import {
   Save,
   Timer,
   Trash2,
+  X,
 } from "lucide-react";
 import OwnerPageShell from "../OwnerPageShell";
-import { useWorkingHour, useClinicSetting } from "../../../hooks/useClinicScheduleManagement";
+import { useWorkingHour, useClinicSetting, useClinicClosures } from "../../../hooks/useClinicScheduleManagement";
+import { clinicScheduleManagementService } from "../../../services/clinicScheduleManagement.service";
 import "./ScheduleManagementPage.css";
 
 const DAYS = [
@@ -37,12 +39,6 @@ const DAY_NAMES = {
   6: "Saturday",
   7: "Sunday",
 };
-
-const HOLIDAYS_INITIAL = [
-  { date: "Dec 24", label: "Christmas Eve", fullDate: "2024-12-24" },
-  { date: "Dec 25", label: "Christmas Day", fullDate: "2024-12-25" },
-  { date: "Jan 01", label: "New Year's Day", fullDate: "2025-01-01" },
-];
 
 function ShiftInputRow({ startTime, endTime, onChange }) {
   return (
@@ -167,59 +163,60 @@ DayRow.defaultProps = {
   onRemoveShift: null,
 };
 
-const CALENDAR_DAYS = [
-  { day: 24, faded: true },
-  { day: 25, faded: true },
-  { day: 26, faded: true },
-  { day: 27, faded: true },
-  { day: 28, faded: true },
-  { day: 29, faded: true },
-  { day: 30, faded: true },
-  { day: 1, faded: false },
-  { day: 2, faded: false },
-  { day: 3, faded: false },
-  { day: 4, faded: false },
-  { day: 5, faded: false },
-  { day: 6, faded: false },
-  { day: 7, faded: false },
-  { day: 8, faded: false },
-  { day: 9, faded: false },
-  { day: 10, faded: false },
-  { day: 11, faded: false },
-  { day: 12, faded: false },
-  { day: 13, faded: false },
-  { day: 14, faded: false },
-  { day: 15, faded: false },
-  { day: 16, faded: false },
-  { day: 17, faded: false },
-  { day: 18, faded: false },
-  { day: 19, faded: false },
-  { day: 20, faded: false },
-  { day: 21, faded: false },
-  { day: 22, faded: false },
-  { day: 23, faded: false },
-  { day: 24, faded: false, holiday: true },
-  { day: 25, faded: false, holiday: true },
-  { day: 26, faded: false },
-  { day: 27, faded: false },
-  { day: 28, faded: false },
-  { day: 29, faded: false },
-  { day: 30, faded: false },
-  { day: 31, faded: false, holiday: true },
-];
+function generateCalendarDays(year, month, holidays, closedDays) {
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  const daysInMonth = lastDay.getDate();
+  const startWeekday = firstDay.getDay();
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  const days = [];
+
+  for (let i = 0; i < startWeekday; i++) {
+    days.push({ day: null, faded: true, holiday: false, regularClosure: false });
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${monthNames[month - 1]} ${d}`;
+    const isHoliday = holidays.some((h) => h.date === dateStr);
+    const jsDay = new Date(year, month - 1, d).getDay();
+    const dayOfWeek = (jsDay + 6) % 7 + 1;
+    const isRegularClosure = closedDays.has(dayOfWeek);
+    days.push({ day: d, faded: false, holiday: isHoliday, regularClosure: isRegularClosure });
+  }
+
+  const remaining = (7 - (days.length % 7)) % 7;
+  for (let i = 0; i < remaining; i++) {
+    days.push({ day: null, faded: true, holiday: false, regularClosure: false });
+  }
+
+  return { days, monthLabel: `${monthNames[month - 1]} ${year}` };
+}
 
 function ScheduleManagementPage() {
   const { data: workingHour } = useWorkingHour();
   const { data: clinicSetting } = useClinicSetting();
+  const { data: closures, refetch: refetchClosures } = useClinicClosures();
 
   const [appointmentDuration, setAppointmentDuration] = useState("30");
   const [appointmentBuffer, setAppointmentBuffer] = useState("0");
   const [allowOverbooking, setAllowOverbooking] = useState(false);
   const [bookingLeadDays, setBookingLeadDays] = useState("30");
   const [maxBookingPerSlot, setMaxBookingPerSlot] = useState("1");
-  const [holidays, setHolidays] = useState(HOLIDAYS_INITIAL);
+  const [holidays, setHolidays] = useState([]);
+  const holidaysRef = useRef([]);
   const [saveState, setSaveState] = useState("idle");
   const [selectedDay, setSelectedDay] = useState("Monday");
+  const now = new Date();
+  const [calendarYear, setCalendarYear] = useState(now.getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState(now.getMonth() + 1);
+  const [selectedClosure, setSelectedClosure] = useState(null);
+  const [selectedDayFullDate, setSelectedDayFullDate] = useState(null);
+  const [showAddClosure, setShowAddClosure] = useState(false);
+  const [addClosureDate, setAddClosureDate] = useState("");
+  const [addClosureReason, setAddClosureReason] = useState("");
+  const [addClosureError, setAddClosureError] = useState(null);
+  const [addClosureSubmitting, setAddClosureSubmitting] = useState(false);
 
   useEffect(() => {
     if (clinicSetting) {
@@ -242,6 +239,26 @@ function ScheduleManagementPage() {
       })));
     }
   }, [workingHour]);
+
+  useEffect(() => {
+    if (closures) {
+      const mapped = closures.map((c) => {
+        const dateOnly = String(c.closure_date).slice(0, 10);
+        const [y, m, dayNum] = dateOnly.split("-").map(Number);
+        const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        const dateStr = `${monthNames[m - 1]} ${dayNum}`;
+        return {
+          date: dateStr,
+          fullDate: dateOnly,
+          label: c.reason || "Closure",
+          closureId: c.closure_id,
+          isClosed: c.is_closed,
+        };
+      });
+      setHolidays(mapped);
+      holidaysRef.current = mapped;
+    }
+  }, [closures]);
 
   const selectedDayNum = Object.entries(DAY_NAMES).find(([, v]) => v === selectedDay)?.[0];
   const selectedShifts = editableShifts.filter((s) => String(s.day_of_week) === selectedDayNum) ?? [];
@@ -300,8 +317,36 @@ function ScheduleManagementPage() {
     return slots;
   }, [selectedShifts, appointmentDuration]);
 
-  const handleDeleteHoliday = (index) => {
-    setHolidays((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteHoliday = async (closureId) => {
+    try {
+      await clinicScheduleManagementService.deleteClosure(closureId);
+      const next = (prev) => prev.filter((h) => h.closureId !== closureId);
+      setHolidays(next);
+      holidaysRef.current = next(holidaysRef.current);
+    } catch {
+      // silently fail — API will log the error
+    }
+  };
+
+  const handleAddClosure = async (e) => {
+    e.preventDefault();
+    setAddClosureError(null);
+    if (!addClosureDate) {
+      setAddClosureError("Please select a date.");
+      return;
+    }
+    setAddClosureSubmitting(true);
+    try {
+      await clinicScheduleManagementService.createClosure(addClosureDate, addClosureReason || null);
+      setShowAddClosure(false);
+      setAddClosureDate("");
+      setAddClosureReason("");
+      await refetchClosures();
+    } catch (err) {
+      setAddClosureError(err.message);
+    } finally {
+      setAddClosureSubmitting(false);
+    }
   };
 
   const handleSave = () => {
@@ -318,6 +363,55 @@ function ScheduleManagementPage() {
     setAllowOverbooking(false);
     setBookingLeadDays("30");
     setMaxBookingPerSlot("1");
+  };
+
+  const closedDays = useMemo(() => {
+    const closed = new Set([1, 2, 3, 4, 5, 6, 7]);
+    editableShifts.forEach((s) => closed.delete(s.day_of_week));
+    return closed;
+  }, [editableShifts]);
+
+  const calendarData = useMemo(
+    () => generateCalendarDays(calendarYear, calendarMonth, holidays, closedDays),
+    [calendarYear, calendarMonth, holidays, closedDays],
+  );
+
+  const monthHolidays = useMemo(
+    () => holidays.filter((h) => {
+      const [y, m] = h.fullDate.split("-").map(Number);
+      return y === calendarYear && m === calendarMonth;
+    }),
+    [holidays, calendarYear, calendarMonth],
+  );
+
+  const handleDayClick = (dayItem) => {
+    if (dayItem.faded || dayItem.day == null) return;
+    const fullDate = `${calendarYear}-${String(calendarMonth).padStart(2, "0")}-${String(dayItem.day).padStart(2, "0")}`;
+    setSelectedDayFullDate(fullDate);
+    const closure = holidaysRef.current.find((h) => h.fullDate === fullDate) || null;
+    setSelectedClosure(closure);
+  };
+
+  const handlePrevMonth = () => {
+    setSelectedClosure(null);
+    setSelectedDayFullDate(null);
+    if (calendarMonth === 1) {
+      setCalendarYear((y) => y - 1);
+      setCalendarMonth(12);
+    } else {
+      setCalendarMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    setSelectedClosure(null);
+    setSelectedDayFullDate(null);
+    if (calendarMonth === 12) {
+      setCalendarYear((y) => y + 1);
+      setCalendarMonth(1);
+    } else {
+      setCalendarMonth((m) => m + 1);
+    }
   };
 
   return (
@@ -557,7 +651,7 @@ function ScheduleManagementPage() {
                 Clinic Holidays
               </h2>
             </div>
-            <button className="schedule-config__btn-add">
+            <button className="schedule-config__btn-add" onClick={() => setShowAddClosure(true)}>
               <Plus size={20} />
               Add Day
             </button>
@@ -567,41 +661,96 @@ function ScheduleManagementPage() {
             <div className="schedule-config__calendar">
               <div className="schedule-config__calendar-header">
                 <span className="schedule-config__calendar-month">
-                  December 2024
+                  {calendarData.monthLabel}
                 </span>
                 <div className="schedule-config__calendar-nav">
-                  <button className="schedule-config__calendar-nav-btn">
+                  <button className="schedule-config__calendar-nav-btn" onClick={handlePrevMonth}>
                     <ChevronLeft size={20} />
                   </button>
-                  <button className="schedule-config__calendar-nav-btn">
+                  <button className="schedule-config__calendar-nav-btn" onClick={handleNextMonth}>
                     <ChevronRight size={20} />
                   </button>
                 </div>
               </div>
               <div className="schedule-config__calendar-weekdays">
-                {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
                   <div key={d} className="schedule-config__calendar-weekday">
                     {d}
                   </div>
                 ))}
               </div>
               <div className="schedule-config__calendar-days">
-                {CALENDAR_DAYS.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`schedule-config__calendar-day${item.faded ? " schedule-config__calendar-day--faded" : ""}${item.holiday ? " schedule-config__calendar-day--holiday" : ""}`}
-                  >
-                    {item.day}
-                  </div>
-                ))}
+                {calendarData.days.map((item, i) => {
+                  const itemFullDate = item.day != null
+                    ? `${calendarYear}-${String(calendarMonth).padStart(2, "0")}-${String(item.day).padStart(2, "0")}`
+                    : null;
+                  const isSelectedDay = selectedDayFullDate && itemFullDate && selectedDayFullDate === itemFullDate;
+                  return (
+                    <div
+                      key={i}
+                      className={`schedule-config__calendar-day${item.faded ? " schedule-config__calendar-day--faded" : ""}${item.holiday ? " schedule-config__calendar-day--holiday" : ""}${item.regularClosure && !item.holiday ? " schedule-config__calendar-day--regular-closure" : ""}${isSelectedDay ? " schedule-config__calendar-day--selected" : ""}${!item.faded && item.day != null ? " schedule-config__calendar-day--clickable" : ""}`}
+                      onClick={() => handleDayClick(item)}
+                    >
+                      {item.day ?? ""}
+                    </div>
+                  );
+                })}
               </div>
+            </div>
+
+            <div className="schedule-config__closure-column">
+              <h3 className="schedule-config__holiday-list-title">Closure Detail</h3>
+              {selectedClosure ? (
+                <div className="schedule-config__holiday-item">
+                  <div className="schedule-config__holiday-item-left">
+                    <div className="schedule-config__holiday-date-box">
+                      <span className="schedule-config__holiday-date-month">
+                        {selectedClosure.date.split(" ")[0].slice(0, 3).toUpperCase()}
+                      </span>
+                      <span className="schedule-config__holiday-date-day">
+                        {selectedClosure.date.split(" ")[1]}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="schedule-config__holiday-name">
+                        {selectedClosure.label}
+                      </p>
+                      <p className="schedule-config__holiday-type">
+                        Closed all day
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    className="schedule-config__holiday-delete"
+                    onClick={() => { handleDeleteHoliday(selectedClosure.closureId); setSelectedClosure(null); setSelectedDayFullDate(null); }}
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              ) : selectedDayFullDate ? (() => {
+                const [sy, sm, sd] = selectedDayFullDate.split("-").map(Number);
+                const selectedJsDay = new Date(sy, sm - 1, sd).getDay();
+                const selectedDow = (selectedJsDay + 6) % 7 + 1;
+                const isRegularClosure = closedDays.has(selectedDow);
+                return (
+                  <p className="schedule-config__empty-text">
+                    {isRegularClosure
+                      ? "Regular closure — no working hours scheduled for this day."
+                      : "No closure recorded for this day."}
+                  </p>
+                );
+              })() : (
+                <p className="schedule-config__empty-text">Click a day to view closure details.</p>
+              )}
             </div>
 
             <div className="schedule-config__holiday-list">
               <h3 className="schedule-config__holiday-list-title">
                 Upcoming Closures
               </h3>
-              {holidays.map((h, i) => (
+              {monthHolidays.length === 0 ? (
+                <p className="schedule-config__empty-text">No closures this month.</p>
+              ) : monthHolidays.map((h, i) => (
                 <div
                   key={i}
                   className="schedule-config__holiday-item"
@@ -609,7 +758,7 @@ function ScheduleManagementPage() {
                 <div className="schedule-config__holiday-item-left">
                   <div className="schedule-config__holiday-date-box">
                     <span className="schedule-config__holiday-date-month">
-                      {h.date.split(" ")[0]}
+                      {h.date.split(" ")[0].slice(0, 3).toUpperCase()}
                     </span>
                     <span className="schedule-config__holiday-date-day">
                       {h.date.split(" ")[1]}
@@ -626,7 +775,7 @@ function ScheduleManagementPage() {
                 </div>
                 <button
                   className="schedule-config__holiday-delete"
-                  onClick={() => handleDeleteHoliday(i)}
+                    onClick={() => handleDeleteHoliday(h.closureId)}
                 >
                   <Trash2 size={20} />
                 </button>
@@ -634,14 +783,74 @@ function ScheduleManagementPage() {
             ))}
           </div>
         </div>
-
-        <div className="schedule-config__holiday-footer">
-          <button className="schedule-config__btn schedule-config__btn--import">
-            Import Public Holidays
-          </button>
-        </div>
         </section>
       </div>
+
+      {showAddClosure && (
+        <div
+          className="add-closure-modal__overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setShowAddClosure(false);
+          }}
+        >
+          <div className="add-closure-modal">
+            <div className="add-closure-modal__header">
+              <h3 className="add-closure-modal__title">Add Clinic Closure</h3>
+              <button
+                className="add-closure-modal__close"
+                type="button"
+                onClick={() => setShowAddClosure(false)}
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <form className="add-closure-modal__form" onSubmit={handleAddClosure}>
+              {addClosureError && (
+                <p className="add-closure-modal__error">{addClosureError}</p>
+              )}
+
+              <label className="add-closure-modal__field">
+                <span className="add-closure-modal__label">Date *</span>
+                <input
+                  type="date"
+                  value={addClosureDate}
+                  onChange={(e) => setAddClosureDate(e.target.value)}
+                  required
+                />
+              </label>
+
+              <label className="add-closure-modal__field">
+                <span className="add-closure-modal__label">Reason</span>
+                <input
+                  type="text"
+                  placeholder="e.g. Public Holiday"
+                  value={addClosureReason}
+                  onChange={(e) => setAddClosureReason(e.target.value)}
+                  maxLength={255}
+                />
+              </label>
+
+              <div className="add-closure-modal__actions">
+                <button
+                  className="add-closure-modal__btn add-closure-modal__btn--cancel"
+                  type="button"
+                  onClick={() => setShowAddClosure(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="add-closure-modal__btn add-closure-modal__btn--submit"
+                  type="submit"
+                  disabled={addClosureSubmitting}
+                >
+                  {addClosureSubmitting ? "Adding..." : "Add Closure"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </OwnerPageShell>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { clinicScheduleManagementService } from "../services/clinicScheduleManagement.service";
 
 export function useWorkingHour() {
@@ -6,11 +6,10 @@ export function useWorkingHour() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
     useEffect(() => {
         let isMounted = true;
 
-        async function fetchRevenue() {
+        async function fetchData() {
             setIsLoading(true);
             setError(null);
             try {
@@ -26,7 +25,7 @@ export function useWorkingHour() {
             }
         }
 
-        fetchRevenue();
+        fetchData();
         return () => { isMounted = false; };
     }, []);
 
@@ -41,7 +40,7 @@ export function useClinicSetting() {
     useEffect(() => {
         let isMounted = true;
 
-        async function fetchRevenue() {
+        async function fetchData() {
             setIsLoading(true);
             setError(null);
             try {
@@ -57,9 +56,35 @@ export function useClinicSetting() {
             }
         }
 
-        fetchRevenue();
+        fetchData();
         return () => { isMounted = false; };
     }, []);
 
     return { data, isLoading, error };
+}
+
+export function useClinicClosures() {
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await clinicScheduleManagementService.getClosures();
+            setData(result || []);
+        } catch (err) {
+            setError(err);
+            setData([]);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return { data, isLoading, error, refetch: fetchData };
 }
