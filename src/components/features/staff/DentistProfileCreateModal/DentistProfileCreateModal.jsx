@@ -1,0 +1,300 @@
+import { FilePlus2, X } from "lucide-react";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import Spinner from "../../../common/Spinner/Spinner";
+import { useCreateDentistProfile } from "../../../../hooks/useCreateDentistProfile";
+import "./DentistProfileCreateModal.css";
+
+const EMPTY_FORM = {
+  accountId: "",
+  fullName: "",
+  birthDate: "",
+  gender: "",
+  address: "",
+  speciality: "",
+  experience: "",
+};
+
+function validateForm(form, selectedAccount) {
+  const errors = {};
+
+  if (!form.accountId) errors.accountId = "Please select a Dentist account.";
+  if (!form.fullName.trim()) errors.fullName = "Full name is required.";
+  if (!selectedAccount?.email) {
+    errors.email = "The selected account has no email address.";
+  }
+  if (!selectedAccount?.phone) {
+    errors.phone = "The selected account has no phone number.";
+  }
+  if (!form.birthDate) errors.birthDate = "Birthdate is required.";
+  if (!form.gender) errors.gender = "Gender is required.";
+  if (!form.address.trim()) errors.address = "Address is required.";
+  if (!form.speciality.trim()) errors.speciality = "Speciality is required.";
+  if (!form.experience.trim()) errors.experience = "Experience is required.";
+
+  return errors;
+}
+
+function DentistProfileCreateModal({ onClose, onCreated }) {
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const {
+    availableAccounts,
+    isLoadingAccounts,
+    isCreating,
+    error,
+    fetchAvailableAccounts,
+    createProfile,
+  } = useCreateDentistProfile();
+
+  useEffect(() => {
+    fetchAvailableAccounts();
+  }, [fetchAvailableAccounts]);
+
+  const selectedAccount = availableAccounts.find(
+    (account) => account.accountId === form.accountId,
+  );
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setForm((currentForm) => ({ ...currentForm, [name]: value }));
+    setFieldErrors((currentErrors) => ({
+      ...currentErrors,
+      [name]: "",
+      ...(name === "accountId" ? { email: "", phone: "" } : {}),
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const nextErrors = validateForm(form, selectedAccount);
+    setFieldErrors(nextErrors);
+    if (Object.keys(nextErrors).length) return;
+
+    try {
+      const profile = await createProfile(form);
+      onCreated(profile);
+    } catch {
+      // The hook displays the API error.
+    }
+  };
+
+  return (
+    <div
+      className="dentist-profile-create__overlay"
+      role="presentation"
+      onClick={onClose}
+    >
+      <section
+        className="dentist-profile-create"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-dentist-profile-title"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <header className="dentist-profile-create__header">
+          <div className="dentist-profile-create__title">
+            <FilePlus2 size={20} aria-hidden="true" />
+            <div>
+              <h2 id="create-dentist-profile-title">Create Dentist Profile</h2>
+              <p>Link an available Dentist account to a new profile.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            disabled={isCreating}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
+        </header>
+
+        {isLoadingAccounts ? (
+          <div className="dentist-profile-create__state">
+            <Spinner />
+          </div>
+        ) : availableAccounts.length === 0 ? (
+          <div className="dentist-profile-create__empty">
+            <h3>No available Dentist account</h3>
+            <p>Please contact the System Administrator.</p>
+          </div>
+        ) : (
+          <form
+            className="dentist-profile-create__form"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            {error && (
+              <p className="dentist-profile-create__alert" role="alert">
+                {error.message}
+              </p>
+            )}
+
+            <label className="dentist-profile-create__field dentist-profile-create__field--wide">
+              <span>
+                Account <strong>*</strong>
+              </span>
+              <select
+                name="accountId"
+                value={form.accountId}
+                onChange={handleChange}
+                aria-invalid={Boolean(fieldErrors.accountId)}
+              >
+                <option value="">Select an available Dentist account</option>
+                {availableAccounts.map((account) => (
+                  <option key={account.accountId} value={account.accountId}>
+                    {account.username}
+                  </option>
+                ))}
+              </select>
+              {fieldErrors.accountId && <small>{fieldErrors.accountId}</small>}
+            </label>
+
+            {selectedAccount && (
+              <fieldset className="dentist-profile-create__account">
+                <legend>Selected Account Information</legend>
+                <dl>
+                  <div>
+                    <dt>Account ID</dt>
+                    <dd>{selectedAccount.accountId}</dd>
+                  </div>
+                  <div>
+                    <dt>Username</dt>
+                    <dd>{selectedAccount.username}</dd>
+                  </div>
+                  <div>
+                    <dt>Email</dt>
+                    <dd>{selectedAccount.email || "Not updated"}</dd>
+                  </div>
+                  <div>
+                    <dt>Phone Number</dt>
+                    <dd>{selectedAccount.phone || "Not updated"}</dd>
+                  </div>
+                  <div>
+                    <dt>Role</dt>
+                    <dd>Dentist</dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd>{selectedAccount.status}</dd>
+                  </div>
+                </dl>
+                {fieldErrors.email && <small>{fieldErrors.email}</small>}
+                {fieldErrors.phone && <small>{fieldErrors.phone}</small>}
+              </fieldset>
+            )}
+
+            <div className="dentist-profile-create__grid">
+              <label className="dentist-profile-create__field">
+                <span>
+                  Full name <strong>*</strong>
+                </span>
+                <input
+                  name="fullName"
+                  value={form.fullName}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fieldErrors.fullName)}
+                />
+                {fieldErrors.fullName && <small>{fieldErrors.fullName}</small>}
+              </label>
+              <label className="dentist-profile-create__field">
+                <span>
+                  Birthdate <strong>*</strong>
+                </span>
+                <input
+                  name="birthDate"
+                  type="date"
+                  value={form.birthDate}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fieldErrors.birthDate)}
+                />
+                {fieldErrors.birthDate && <small>{fieldErrors.birthDate}</small>}
+              </label>
+              <label className="dentist-profile-create__field">
+                <span>
+                  Gender <strong>*</strong>
+                </span>
+                <select
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fieldErrors.gender)}
+                >
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                {fieldErrors.gender && <small>{fieldErrors.gender}</small>}
+              </label>
+              <label className="dentist-profile-create__field">
+                <span>
+                  Speciality <strong>*</strong>
+                </span>
+                <input
+                  name="speciality"
+                  value={form.speciality}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fieldErrors.speciality)}
+                />
+                {fieldErrors.speciality && <small>{fieldErrors.speciality}</small>}
+              </label>
+              <label className="dentist-profile-create__field dentist-profile-create__field--wide">
+                <span>
+                  Experience <strong>*</strong>
+                </span>
+                <input
+                  name="experience"
+                  placeholder="e.g. 5 years"
+                  value={form.experience}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fieldErrors.experience)}
+                />
+                {fieldErrors.experience && <small>{fieldErrors.experience}</small>}
+              </label>
+              <label className="dentist-profile-create__field dentist-profile-create__field--wide">
+                <span>
+                  Address <strong>*</strong>
+                </span>
+                <textarea
+                  name="address"
+                  rows="3"
+                  value={form.address}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fieldErrors.address)}
+                />
+                {fieldErrors.address && <small>{fieldErrors.address}</small>}
+              </label>
+            </div>
+
+            <footer className="dentist-profile-create__footer">
+              <button
+                className="dentist-profile-create__cancel"
+                type="button"
+                onClick={onClose}
+                disabled={isCreating}
+              >
+                Cancel
+              </button>
+              <button
+                className="dentist-profile-create__submit"
+                type="submit"
+                disabled={isCreating}
+              >
+                {isCreating ? "Creating..." : "Create Profile"}
+              </button>
+            </footer>
+          </form>
+        )}
+      </section>
+    </div>
+  );
+}
+
+DentistProfileCreateModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onCreated: PropTypes.func.isRequired,
+};
+
+export default DentistProfileCreateModal;
