@@ -120,6 +120,35 @@
   top: 88px;
 }
 
+.schedule-config__preview--sticky {
+  position: sticky;
+  top: 88px;
+  align-self: flex-start;
+}
+
+.schedule-config__card--holidays {
+  margin-top: var(--space-8);
+}
+
+.schedule-config__holiday-body {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.schedule-config__holiday-body .schedule-config__calendar {
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-config__holiday-body .schedule-config__holiday-list {
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-config__holiday-body .schedule-config__holiday-footer {
+  margin-top: var(--space-4);
+}
+
 .schedule-config__card-header {
   display: flex;
   align-items: center;
@@ -161,10 +190,11 @@
 
 .schedule-config__day-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast);
 }
 
 .schedule-config__day-row:last-child {
@@ -179,22 +209,120 @@
   border-radius: var(--radius-md);
 }
 
+.schedule-config__day-row--active {
+  background-color: var(--color-primary-100);
+  margin: 0 calc(-1 * var(--space-3));
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  border-radius: var(--radius-md);
+  border-bottom-color: var(--color-primary-300);
+}
+
 .schedule-config__day-label {
-  width: 128px;
+  display: flex;
+  flex-direction: column;
+  min-width: 90px;
+  gap: var(--space-1);
 }
 
 .schedule-config__day-name {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutral-800);
+}
+
+.schedule-config__preview-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-700);
+  cursor: pointer;
+  font-family: inherit;
+  width: fit-content;
+  transition: all var(--transition-fast);
+}
+
+.schedule-config__preview-btn:hover {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-300);
 }
 
 .schedule-config__day-controls {
   display: flex;
-  align-items: center;
-  gap: var(--space-4);
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-end;
   flex: 1;
-  justify-content: flex-end;
+}
+
+.schedule-config__shift-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.schedule-config__shift-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-500);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  min-width: 3.5rem;
+}
+
+.schedule-config__shift-input-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.schedule-config__shift-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1);
+  color: var(--color-error);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.schedule-config__shift-action:hover {
+  background-color: var(--color-error-bg);
+}
+
+.schedule-config__shift-action--add {
+  color: var(--color-secondary-700);
+}
+
+.schedule-config__shift-action--add:hover {
+  background-color: var(--color-secondary-100);
+}
+
+.schedule-config__edit-toggle {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-primary-700);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.schedule-config__edit-toggle:hover {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-300);
+}
+
+.schedule-config__edit-toggle--active {
+  background-color: var(--color-primary-700);
+  color: white;
+  border-color: var(--color-primary-700);
+}
+
+.schedule-config__edit-toggle--active:hover {
+  background-color: var(--color-primary-800);
 }
 
 .schedule-config__time-input {
@@ -224,75 +352,6 @@
   font-size: var(--font-size-base);
 }
 
-/* Toggle switch */
-.schedule-config__toggle-group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-left: var(--space-4);
-}
-
-.schedule-config__toggle {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.schedule-config__toggle-input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.schedule-config__toggle-track {
-  width: 44px;
-  height: 24px;
-  background-color: var(--color-neutral-200);
-  border-radius: var(--radius-full);
-  transition: background-color var(--transition-fast);
-  position: relative;
-}
-
-.schedule-config__toggle-input:checked + .schedule-config__toggle-track {
-  background-color: var(--color-primary-700);
-}
-
-.schedule-config__toggle-track::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  border: 1px solid var(--border-color);
-  transition: transform var(--transition-fast);
-}
-
-.schedule-config__toggle-input:checked + .schedule-config__toggle-track::after {
-  transform: translateX(20px);
-  border-color: #ffffff;
-}
-
-.schedule-config__toggle-input:focus-visible + .schedule-config__toggle-track {
-  outline: 2px solid var(--color-primary-700);
-  outline-offset: 2px;
-}
-
-.schedule-config__toggle-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-neutral-500);
-}
-
-.schedule-config__shift-separator {
-  font-size: var(--font-size-sm);
-  color: var(--color-neutral-400);
-  font-weight: var(--font-weight-medium);
-}
-
 .schedule-config__shift-time {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-700);
@@ -307,12 +366,6 @@
   font-size: var(--font-size-sm);
   color: var(--color-neutral-400);
   font-weight: var(--font-weight-medium);
-}
-
-.schedule-config__day-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
 }
 
 .schedule-config__empty-text {
