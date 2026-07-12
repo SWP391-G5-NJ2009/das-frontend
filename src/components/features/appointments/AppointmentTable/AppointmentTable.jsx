@@ -138,59 +138,68 @@ function AppointmentTable({
                 </td>
 
                 <td className="appt-table__td appt-table__td--actions">
-                  <div className="appt-table__action-group">
-                    <button
-                      id={`tbl-edit-${appt.id}`}
-                      type="button"
-                      className="appt-table__action-btn appt-table__action-btn--edit"
-                      aria-label={`Edit appointment for ${appt.patientName}`}
-                      title="Edit feature coming soon"
-                      disabled
-                      onClick={() => onEdit?.(appt)}
+                  {actorRole === "dentist" ? (
+                    <span
+                      className="appt-table__view-only"
+                      aria-label="View only"
                     >
-                      <Pencil size={15} aria-hidden="true" />
-                    </button>
-                    {/* Lift Ban button — only for restricted patients, only for receptionist */}
-                    {appt.patientAccountStatus === "Restricted" &&
-                      actorRole === "receptionist" && (
+                      —
+                    </span>
+                  ) : (
+                    <div className="appt-table__action-group">
+                      <button
+                        id={`tbl-edit-${appt.id}`}
+                        type="button"
+                        className="appt-table__action-btn appt-table__action-btn--edit"
+                        aria-label={`Edit appointment for ${appt.patientName}`}
+                        title="Edit feature coming soon"
+                        disabled
+                        onClick={() => onEdit?.(appt)}
+                      >
+                        <Pencil size={15} aria-hidden="true" />
+                      </button>
+                      {/* Lift Ban button — only for restricted patients, only for receptionist */}
+                      {appt.patientAccountStatus === "Restricted" &&
+                        actorRole === "receptionist" && (
+                          <button
+                            id={`tbl-liftban-${appt.id}`}
+                            type="button"
+                            className="appt-table__action-btn appt-table__action-btn--lift-ban"
+                            aria-label={`Lift account restriction for ${appt.patientName}`}
+                            title="Lift Account Restriction"
+                            onClick={() => onLiftBan?.(appt)}
+                          >
+                            <UnlockKeyhole size={15} aria-hidden="true" />
+                          </button>
+                        )}
+                      {canCancel && (
                         <button
-                          id={`tbl-liftban-${appt.id}`}
+                          id={`tbl-cancel-${appt.id}`}
                           type="button"
-                          className="appt-table__action-btn appt-table__action-btn--lift-ban"
-                          aria-label={`Lift account restriction for ${appt.patientName}`}
-                          title="Lift Account Restriction"
-                          onClick={() => onLiftBan?.(appt)}
+                          className={
+                            within24h
+                              ? "appt-table__action-btn appt-table__action-btn--cancel appt-table__action-btn--restricted"
+                              : "appt-table__action-btn appt-table__action-btn--cancel"
+                          }
+                          aria-label={
+                            within24h
+                              ? "Cannot cancel — within 24 hours of appointment"
+                              : `Cancel appointment for ${appt.patientName}`
+                          }
+                          title={
+                            within24h
+                              ? "Within 24 hours — contact reception to cancel"
+                              : "Cancel appointment"
+                          }
+                          onClick={() =>
+                            within24h ? onWithin24hCancel?.() : onCancel?.(appt)
+                          }
                         >
-                          <UnlockKeyhole size={15} aria-hidden="true" />
+                          <Ban size={15} aria-hidden="true" />
                         </button>
                       )}
-                    {canCancel && (
-                      <button
-                        id={`tbl-cancel-${appt.id}`}
-                        type="button"
-                        className={
-                          within24h
-                            ? "appt-table__action-btn appt-table__action-btn--cancel appt-table__action-btn--restricted"
-                            : "appt-table__action-btn appt-table__action-btn--cancel"
-                        }
-                        aria-label={
-                          within24h
-                            ? "Cannot cancel — within 24 hours of appointment"
-                            : `Cancel appointment for ${appt.patientName}`
-                        }
-                        title={
-                          within24h
-                            ? "Within 24 hours — contact reception to cancel"
-                            : "Cancel appointment"
-                        }
-                        onClick={() =>
-                          within24h ? onWithin24hCancel?.() : onCancel?.(appt)
-                        }
-                      >
-                        <Ban size={15} aria-hidden="true" />
-                      </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </td>
               </tr>
             );

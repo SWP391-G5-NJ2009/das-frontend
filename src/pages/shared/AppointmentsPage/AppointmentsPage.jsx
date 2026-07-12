@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { useAuth } from "../../../context/AuthContext";
 import PatientPageShell from "../../patient/PatientPageShell";
 import ReceptionistPageShell from "../../receptionist/ReceptionistPageShell";
+import DentistPageShell from "../../dentist/DentistPageShell";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
@@ -30,6 +31,7 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
+    showBookBtn: true,
     statusOptions: null,
   },
   receptionist: {
@@ -39,20 +41,31 @@ const ROLE_CONFIG = {
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
     showPatientInfo: true,
+    showBookBtn: true,
+    statusOptions: null,
+  },
+  dentist: {
+    title: "My Appointments",
+    subtitle: "View all appointments assigned to you.",
+    bookRoute: null,
+    bookBtnId: null,
+    headingId: "appts-page-title",
+    showPatientInfo: true,
+    showBookBtn: false,
     statusOptions: null,
   },
 };
 
 function useAppointmentsByRole(role, filters) {
   const isPatient = role === "patient";
-  const isReceptionist = role === "receptionist";
+  const isStaff = role === "receptionist" || role === "dentist";
   const patient = useMyAppointments(isPatient ? filters : {}, {
     enabled: isPatient,
   });
-  const receptionist = useAllAppointments(isReceptionist ? filters : {}, {
-    enabled: isReceptionist,
+  const staff = useAllAppointments(isStaff ? filters : {}, {
+    enabled: isStaff,
   });
-  return role === "patient" ? patient : receptionist;
+  return role === "patient" ? patient : staff;
 }
 
 function PageShell({ role, children }) {
@@ -65,6 +78,9 @@ function PageShell({ role, children }) {
         {children}
       </ReceptionistPageShell>
     );
+  }
+  if (role === "dentist") {
+    return <DentistPageShell>{children}</DentistPageShell>;
   }
   return <PatientPageShell>{children}</PatientPageShell>;
 }
@@ -248,16 +264,18 @@ function AppointmentsPage() {
             <p>{config.subtitle}</p>
           </div>
 
-          <button
-            id={config.bookBtnId}
-            type="button"
-            className="appts-page__book-btn"
-            onClick={() => navigate(config.bookRoute)}
-            aria-label="Book new appointment"
-          >
-            <CalendarPlus size={18} aria-hidden="true" />
-            Book New Appointment
-          </button>
+          {config.showBookBtn && (
+            <button
+              id={config.bookBtnId}
+              type="button"
+              className="appts-page__book-btn"
+              onClick={() => navigate(config.bookRoute)}
+              aria-label="Book new appointment"
+            >
+              <CalendarPlus size={18} aria-hidden="true" />
+              Book New Appointment
+            </button>
+          )}
         </div>
 
         {isReceptionist && conflictAlerts.appointments.length > 0 && (
