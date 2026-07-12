@@ -1,0 +1,88 @@
+.staff-table {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.staff-table__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.staff-table__table th,
+.staff-table__table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--color-neutral-800);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.staff-table__table th {
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-700);
+  font-weight: var(--font-weight-semibold);
+}
+
+.staff-table__table tr:last-child td {
+  border-bottom: 0;
+}
+
+.staff-table__status {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-6);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.staff-table__status--active {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.staff-table__status--inactive {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+}
+
+.staff-table__status--banned {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.staff-table__view-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: var(--color-secondary-700);
+  color: white;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.staff-table__view-button:hover {
+  background-color: var(--color-secondary-800);
+}
+
+.staff-table__view-button--disabled,
+.staff-table__view-button--disabled:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-500);
+  cursor: not-allowed;
+}
+
+.staff-table__view-button:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}

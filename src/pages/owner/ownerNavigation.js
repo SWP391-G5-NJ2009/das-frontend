@@ -34,6 +34,11 @@ export const OWNER_NAV_ITEMS = [
     label: "Manage Profile",
     to: "/owner/profile",
   },
+  {
+    icon: "groups",
+    label: "Staff",
+    to: "/owner/staff",
+  },
 ];
 
 export const OWNER_FOOTER_ITEMS = [

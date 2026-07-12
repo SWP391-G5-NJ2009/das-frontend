@@ -1,0 +1,184 @@
+.dentist-profile-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background-color: rgba(38, 50, 56, 0.55);
+}
+
+.dentist-profile-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 42rem);
+  max-height: calc(100vh - var(--space-12));
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: white;
+  box-shadow: var(--shadow-xl);
+}
+
+.dentist-profile-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--color-neutral-50);
+}
+
+.dentist-profile-modal__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-secondary-700);
+}
+
+.dentist-profile-modal__title h2 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-profile-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-neutral-600);
+  cursor: pointer;
+}
+
+.dentist-profile-modal__close:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+}
+
+.dentist-profile-modal__close:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.dentist-profile-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+.dentist-profile-modal__summary,
+.dentist-profile-modal__panel {
+  padding: var(--space-4);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: white;
+}
+
+.dentist-profile-modal__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.dentist-profile-modal__heading h3 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.dentist-profile-modal__status {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-6);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-profile-modal__status--active {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.dentist-profile-modal__status--inactive {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+}
+
+.dentist-profile-modal__status--banned {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.dentist-profile-modal__panel {
+  padding: var(--space-5);
+}
+
+.dentist-profile-modal__panel h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  color: var(--color-secondary-700);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-profile-modal__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.dentist-profile-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dentist-profile-modal__field span {
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.dentist-profile-modal__field input {
+  width: 100%;
+  min-height: var(--space-10);
+  padding: var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-800);
+  font-size: var(--font-size-sm);
+}
+
+@media (min-width: 768px) {
+  .dentist-profile-modal__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dentist-profile-modal__field--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dentist-profile-modal__overlay {
+    align-items: stretch;
+    padding: var(--space-3);
+  }
+}
