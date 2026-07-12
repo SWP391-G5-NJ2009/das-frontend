@@ -1,4 +1,4 @@
-.effective-date-modal__overlay {
+.create-version-modal__overlay {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
@@ -9,8 +9,8 @@
   padding: var(--space-4);
 }
 
-.effective-date-modal {
-  background-color: #ffffff;
+.create-version-modal {
+  background-color: var(--color-neutral-50);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   width: 100%;
@@ -18,7 +18,7 @@
   overflow: hidden;
 }
 
-.effective-date-modal__header {
+.create-version-modal__header {
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -26,12 +26,12 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.effective-date-modal__icon {
+.create-version-modal__icon {
   color: var(--color-primary-700);
   flex-shrink: 0;
 }
 
-.effective-date-modal__title {
+.create-version-modal__title {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--color-neutral-900);
@@ -39,7 +39,7 @@
   flex: 1;
 }
 
-.effective-date-modal__close {
+.create-version-modal__close {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,28 +53,28 @@
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.effective-date-modal__close:hover {
+.create-version-modal__close:hover {
   background-color: var(--color-neutral-100);
   color: var(--color-neutral-700);
 }
 
-.effective-date-modal__body {
+.create-version-modal__body {
   padding: var(--space-6);
 }
 
-.effective-date-modal__description {
+.create-version-modal__description {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-600);
   line-height: var(--line-height-relaxed);
   margin: 0 0 var(--space-5) 0;
 }
 
-.effective-date-modal__field {
+.create-version-modal__field {
   display: block;
   margin-bottom: var(--space-4);
 }
 
-.effective-date-modal__label {
+.create-version-modal__label {
   display: block;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -82,31 +82,38 @@
   margin-bottom: var(--space-1);
 }
 
-.effective-date-modal__input {
+.create-version-modal__input {
   width: 100%;
   padding: var(--space-2) var(--space-3);
   font-size: var(--font-size-base);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   color: var(--color-neutral-900);
-  background-color: #ffffff;
+  background-color: var(--color-neutral-50);
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
 }
 
-.effective-date-modal__input:focus {
+.create-version-modal__input:focus {
   outline: none;
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 2px var(--color-primary-100);
 }
 
-.effective-date-modal__error {
+.create-version-modal__hint {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-500);
+  margin-top: var(--space-1);
+}
+
+.create-version-modal__error {
   font-size: var(--font-size-sm);
   color: var(--color-error);
   margin: 0 0 var(--space-4) 0;
 }
 
-.effective-date-modal__actions {
+.create-version-modal__actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-3);
@@ -115,7 +122,7 @@
   margin-top: var(--space-4);
 }
 
-.effective-date-modal__btn {
+.create-version-modal__btn {
   padding: var(--space-2) var(--space-5);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -125,26 +132,26 @@
   transition: background-color var(--transition-fast);
 }
 
-.effective-date-modal__btn--cancel {
+.create-version-modal__btn--cancel {
   background-color: var(--color-neutral-100);
   color: var(--color-neutral-700);
 }
 
-.effective-date-modal__btn--cancel:hover {
+.create-version-modal__btn--cancel:hover {
   background-color: var(--color-neutral-200);
 }
 
-.effective-date-modal__btn--confirm {
+.create-version-modal__btn--confirm {
   background-color: var(--color-primary-700);
-  color: #ffffff;
+  color: var(--color-neutral-50);
 }
 
-.effective-date-modal__btn--confirm:hover {
+.create-version-modal__btn--confirm:hover {
   background-color: var(--color-primary-800);
 }
 
-.effective-date-modal__btn--confirm:focus-visible,
-.effective-date-modal__btn--cancel:focus-visible {
+.create-version-modal__btn--confirm:focus-visible,
+.create-version-modal__btn--cancel:focus-visible {
   outline: 2px solid var(--color-primary-700);
   outline-offset: 2px;
 }

@@ -78,3 +78,29 @@ export function useClinicClosures() {
 
     return { data, isLoading, error, refetch: fetchData };
 }
+
+export function useVersions() {
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await clinicScheduleManagementService.getVersions();
+            setData(result || []);
+        } catch (err) {
+            setError(err);
+            setData([]);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return { data, isLoading, error, refetch: fetchData };
+}
