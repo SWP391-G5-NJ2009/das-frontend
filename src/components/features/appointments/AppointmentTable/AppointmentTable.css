@@ -235,6 +235,15 @@
   transform: scale(1.1);
 }
 
+/* Dentist read-only dash — replaces action buttons */
+.appt-table__view-only {
+  display: block;
+  text-align: center;
+  color: var(--color-neutral-300);
+  font-size: var(--font-size-base);
+  user-select: none;
+}
+
 
 /* Cancellation / booking note shown below the status badge */
 .appt-table__td--status {
