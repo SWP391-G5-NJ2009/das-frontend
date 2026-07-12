@@ -2,16 +2,13 @@ import { api } from "./api";
 
 export const clinicScheduleManagementService = {
     getWorkingHour: () => api.get("/schedule/management/workingHour"),
-    getClinicSetting: () => api.get("/schedule/management/setting"),
     getVersions: () => api.get("/schedule/management/versions"),
     createVersion: (name, effectiveDate) =>
         api.post("/schedule/management/versions", { name, effectiveDate }),
     updateWorkingHours: (versionId, hours) =>
         api.put("/schedule/management/workingHour", { versionId, hours }),
-    updateClinicSetting: (versionId, fields) =>
-        api.put("/schedule/management/setting", { versionId, ...fields }),
-    saveAll: (versionId, hours, settingFields, force = false) =>
-        api.put("/schedule/management/save-all", { versionId, hours, settingFields, force }),
+    saveAll: (versionId, hours, force = false) =>
+        api.put("/schedule/management/save-all", { versionId, hours, force }),
     cancelPendingVersion: () => api.delete("/schedule/management/pending"),
     activateVersion: (id) => api.patch(`/schedule/management/versions/${id}/activate`),
     deleteVersion: (id) => api.delete(`/schedule/management/versions/${id}`),

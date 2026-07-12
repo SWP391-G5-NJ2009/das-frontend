@@ -11,7 +11,6 @@ import {
   Plus,
   RefreshCw,
   Save,
-  Timer,
   Trash2,
 } from "lucide-react";
 import { clinicScheduleManagementService } from "../../../../services/clinicScheduleManagement.service";
@@ -270,20 +269,16 @@ function WorkingHoursSection({
   versions,
   activeHours,
   pendingHours,
-  activeSetting,
   focusVersionId,
   onShowCreateVersionModal,
   onRefetchAll,
   onReactivateVersion,
 }) {
-  const [bookingLeadDays, setBookingLeadDays] = useState("30");
-  const [maxBookingPerSlot, setMaxBookingPerSlot] = useState("1");
-  const [saveState, setSaveState] = useState("idle");
-  const [selectedDay, setSelectedDay] = useState("Monday");
-  const [conflictData, setConflictData] = useState(null);
-
-  const [editableShifts, setEditableShifts] = useState([]);
   const [sameHoursAllDays, setSameHoursAllDays] = useState(true);
+  const [selectedDay, setSelectedDay] = useState("Monday");
+  const [editableShifts, setEditableShifts] = useState([]);
+  const [saveState, setSaveState] = useState("idle");
+  const [conflictData, setConflictData] = useState(null);
 
   const [viewingVersion, setViewingVersion] = useState(null);
   const [viewingLoading, setViewingLoading] = useState(false);
@@ -291,13 +286,6 @@ function WorkingHoursSection({
   const [effectiveDate, setEffectiveDate] = useState("");
   const [minEffectiveDate, setMinEffectiveDate] = useState("");
   const [effectiveDateLoading, setEffectiveDateLoading] = useState(false);
-
-  useEffect(() => {
-    if (activeSetting) {
-      if (activeSetting.booking_lead_days) setBookingLeadDays(String(activeSetting.booking_lead_days));
-      if (activeSetting.max_booking_per_slot) setMaxBookingPerSlot(String(activeSetting.max_booking_per_slot));
-    }
-  }, [activeSetting]);
 
   useEffect(() => {
     if (viewingVersion) return;
@@ -340,11 +328,6 @@ function WorkingHoursSection({
           shift_start: s.start_time?.slice(0, 5) ?? "08:00",
           shift_end: s.end_time?.slice(0, 5) ?? "17:00",
         })));
-        const setting = res.setting;
-        if (setting) {
-          if (setting.booking_lead_days) setBookingLeadDays(String(setting.booking_lead_days));
-          if (setting.max_booking_per_slot) setMaxBookingPerSlot(String(setting.max_booking_per_slot));
-        }
         setViewingLoading(false);
       })
       .catch(() => {
@@ -646,11 +629,7 @@ function WorkingHoursSection({
       start_time: s.shift_start,
       end_time: s.shift_end,
     }));
-    const settingFields = {
-      booking_lead_days: Number(bookingLeadDays),
-      max_booking_per_slot: Number(maxBookingPerSlot),
-    };
-    return { hoursPayload, settingFields };
+    return { hoursPayload };
   };
 
   const handleSave = async () => {
@@ -670,9 +649,9 @@ function WorkingHoursSection({
 
     setSaveState("saving");
     try {
-      const { hoursPayload, settingFields } = buildPayloads();
+      const { hoursPayload } = buildPayloads();
       await Promise.all([
-        clinicScheduleManagementService.saveAll(versionId, hoursPayload, settingFields),
+        clinicScheduleManagementService.saveAll(versionId, hoursPayload),
         effectiveDate
           ? clinicScheduleManagementService.updateEffectiveDate(versionId, effectiveDate)
           : Promise.resolve(),
@@ -700,9 +679,9 @@ function WorkingHoursSection({
 
     setSaveState("saving");
     try {
-      const { hoursPayload, settingFields } = buildPayloads();
+      const { hoursPayload } = buildPayloads();
       await Promise.all([
-        clinicScheduleManagementService.saveAll(versionId, hoursPayload, settingFields, true),
+        clinicScheduleManagementService.saveAll(versionId, hoursPayload, true),
         effectiveDate
           ? clinicScheduleManagementService.updateEffectiveDate(versionId, effectiveDate)
           : Promise.resolve(),
@@ -911,41 +890,6 @@ function WorkingHoursSection({
                 </div>
               )}
             </section>
-
-            <section className="whs__card">
-              <div className="whs__card-header">
-                <Timer size={24} className="whs__card-icon" />
-                <h2 className="whs__card-title">Time Management Logic</h2>
-              </div>
-              <div className="whs__form-grid">
-                <div className="whs__field">
-                  <label className="whs__field-label">Booking Lead Days</label>
-                  <input
-                    className="whs__number-input"
-                    type="number"
-                    min="1"
-                    max="365"
-                    value={bookingLeadDays}
-                    onChange={(e) => setBookingLeadDays(e.target.value)}
-                    disabled={!isEditingAllowed}
-                  />
-                  <p className="whs__field-hint">How far in advance patients can book</p>
-                </div>
-                <div className="whs__field">
-                  <label className="whs__field-label">Max Bookings Per Slot</label>
-                  <input
-                    className="whs__number-input"
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={maxBookingPerSlot}
-                    onChange={(e) => setMaxBookingPerSlot(e.target.value)}
-                    disabled={!isEditingAllowed}
-                  />
-                  <p className="whs__field-hint">Maximum number of bookings per slot</p>
-                </div>
-              </div>
-            </section>
           </div>
 
           <div className="whs__right">
@@ -1052,10 +996,6 @@ WorkingHoursSection.propTypes = {
   ),
   activeHours: PropTypes.array,
   pendingHours: PropTypes.array,
-  activeSetting: PropTypes.shape({
-    booking_lead_days: PropTypes.number,
-    max_booking_per_slot: PropTypes.number,
-  }),
   focusVersionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onShowCreateVersionModal: PropTypes.func.isRequired,
   onRefetchAll: PropTypes.func.isRequired,
@@ -1069,7 +1009,6 @@ WorkingHoursSection.defaultProps = {
   versions: [],
   activeHours: [],
   pendingHours: [],
-  activeSetting: null,
   onReactivateVersion: null,
 };
 

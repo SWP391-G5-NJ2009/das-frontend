@@ -5,7 +5,7 @@ import {
   GitBranch,
 } from "lucide-react";
 import OwnerPageShell from "../OwnerPageShell";
-import { useWorkingHour, useClinicSetting, useClinicClosures, useVersions } from "../../../hooks/useClinicScheduleManagement";
+import { useWorkingHour, useClinicClosures, useVersions } from "../../../hooks/useClinicScheduleManagement";
 import { clinicScheduleManagementService } from "../../../services/clinicScheduleManagement.service";
 import CreateVersionModal from "../../../components/features/owner/CreateVersionModal/CreateVersionModal";
 import WorkingHoursSection from "../../../components/features/owner/WorkingHoursSection/WorkingHoursSection";
@@ -14,7 +14,6 @@ import "./ScheduleManagementPage.css";
 
 function ScheduleManagementPage() {
   const { data: workingHourData, refetch: refetchWorkingHour } = useWorkingHour();
-  const { data: clinicSettingData, refetch: refetchClinicSetting } = useClinicSetting();
   const { data: closures, refetch: refetchClosures } = useClinicClosures();
   const { data: versions, refetch: refetchVersions } = useVersions();
 
@@ -22,8 +21,6 @@ function ScheduleManagementPage() {
   const activeHours = workingHourData?.active?.hours ?? [];
   const pendingVersion = workingHourData?.pending?.version ?? null;
   const pendingHours = workingHourData?.pending?.hours ?? [];
-
-  const activeSetting = clinicSettingData?.active?.setting ?? null;
 
   const hasPendingVersion = !!pendingVersion;
   const noVersionExists = !activeVersion && !pendingVersion;
@@ -46,7 +43,6 @@ function ScheduleManagementPage() {
       setFocusVersionId(result.version.version_id);
       setShowCreateVersionModal(false);
       refetchWorkingHour();
-      refetchClinicSetting();
       refetchVersions();
     } catch (err) {
       const detail = err?.code ? `[${err.code}] ` : "";
@@ -56,7 +52,6 @@ function ScheduleManagementPage() {
 
   function handleRefetchAll() {
     refetchWorkingHour();
-    refetchClinicSetting();
     refetchVersions();
   }
 
@@ -120,7 +115,6 @@ function ScheduleManagementPage() {
             versions={versions}
             activeHours={activeHours}
             pendingHours={pendingHours}
-            activeSetting={activeSetting}
             focusVersionId={focusVersionId}
             onShowCreateVersionModal={() => setShowCreateVersionModal(true)}
             onRefetchAll={handleRefetchAll}
