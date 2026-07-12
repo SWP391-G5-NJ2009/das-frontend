@@ -12,7 +12,6 @@ import "./ManageProfilePage.css";
 
 const PROFILE_FIELDS = [
   { name: "fullName", label: "Full name" },
-  { name: "email", label: "Email", type: "email" },
   { name: "birthDate", label: "Date of birth", type: "date" },
   { name: "gender", label: "Gender", options: ["Male", "Female"] },
   { name: "address", label: "Address", wide: true },
