@@ -49,7 +49,7 @@ function getOtpValue(formData) {
   return otpSlots.map((slot) => formData.get(slot) || "").join("");
 }
 
-function ForgotPasswordPage({ mode }) {
+function ForgotPasswordPage({ mode = "patient" }) {
   const navigate = useNavigate();
   const [step, setStep] = useState("request");
   const [identifier, setIdentifier] = useState("");

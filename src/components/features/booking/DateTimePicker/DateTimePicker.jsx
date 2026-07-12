@@ -19,7 +19,6 @@ const MONTHS = [
   "December",
 ];
 
-// month is 1-indexed (1 = January, 3 = March)
 function getDaysInMonth(year, month) {
   return new Date(year, month, 0).getDate();
 }
@@ -59,14 +58,6 @@ function isSlotWithin30Min(slotTimeStr) {
   return diffMs > 0 && diffMs < 30 * 60 * 1000;
 }
 
-/**
- * enforceTimingRule — true for patients (blocks slots < 30 min away).
- *                     false for receptionists (only blocks already-past slots).
- *
- * slotOccupied — number of consecutive slots this service requires (default 1).
- *   When > 1, clicking a start slot auto-highlights the next n-1 slots too.
- *   A start slot is disabled if there aren't n consecutive Available slots from it.
- */
 function DateTimePicker({
   selectedDate,
   onSelectDate,
@@ -117,48 +108,35 @@ function DateTimePicker({
     viewYear > today.getFullYear() ||
     (viewYear === today.getFullYear() && viewMonth > today.getMonth());
 
-  // ── Multi-slot helpers ────────────────────────────────────────────────────
   const normalizedSlotCount = Math.max(1, Number(slotOccupied) || 1);
   const isMultiSlot = normalizedSlotCount > 1;
 
-  /**
-   * Build an availability map for each slot index.
-   * A slot is "usable as a start" only if it and the next (n-1) slots are all individually Available.
-   */
   const isTodayDate = selectedDate && isSameDay(selectedDate, today);
 
-  // Per-slot individual availability (ignoring multi-slot requirement)
   const slotAvailability = slots.map((slot) => {
     const past = isTodayDate && isSlotPast(slot.time);
-    const tooSoon = isTodayDate && enforceTimingRule && isSlotWithin30Min(slot.time);
+    const tooSoon =
+      isTodayDate && enforceTimingRule && isSlotWithin30Min(slot.time);
     return slot.status === "Available" && !past && !tooSoon;
   });
 
-  // For multi-slot: can this index be used as a START slot?
   function canBeStartSlot(idx) {
     if (!slotAvailability[idx]) return false;
     if (!isMultiSlot) return true;
-    // All n consecutive indices must be individually available AND truly time-adjacent
-    // (no gaps — e.g. lunch break). Verified by: slot[k].timeEnd === slot[k+1].time.
     for (let k = 0; k < normalizedSlotCount; k++) {
       if (idx + k >= slots.length || !slotAvailability[idx + k]) return false;
-      // Check time adjacency between consecutive pairs
       if (k > 0) {
         const prevTimeEnd = slots[idx + k - 1].timeEnd;
         const currTime = slots[idx + k].time;
-        // If timeEnd data is available, use it for strict gap check
         if (prevTimeEnd && prevTimeEnd !== currTime) return false;
       }
     }
     return true;
   }
 
-  // Find the index of the currently selected start slot
   const selectedStartIdx = selectedSlotId
     ? slots.findIndex((s) => s.id === selectedSlotId)
     : -1;
-
-  // Set of all slot IDs that are part of the current selection range
   const selectedRangeIds = new Set();
   if (selectedStartIdx >= 0) {
     for (let k = 0; k < normalizedSlotCount; k++) {
@@ -292,7 +270,6 @@ function DateTimePicker({
               const individuallyAvailable = slotAvailability[idx];
               const canStart = canBeStartSlot(idx);
 
-              // Determine role of this slot in the current selection range
               const isRangeStart =
                 selectedStartIdx >= 0 && idx === selectedStartIdx;
               const isRangeFollowOn =
@@ -300,32 +277,26 @@ function DateTimePicker({
                 idx > selectedStartIdx &&
                 selectedRangeIds.has(slot.id);
 
-              // A follow-on slot is clickable if it can itself be a valid start slot
-              // (i.e., it has enough consecutive slots after it too).
-              const isClickableFollowOn = isRangeFollowOn && canBeStartSlot(idx);
+              const isClickableFollowOn =
+                isRangeFollowOn && canBeStartSlot(idx);
 
-              // Detect the specific case: slot is available individually but
-              // can't be a start because not enough consecutive slots follow.
               const isInsufficientStart =
                 isMultiSlot &&
                 individuallyAvailable &&
                 !canStart &&
                 !isRangeFollowOn;
 
-              // Disable logic:
-              // - follow-on: only disable if it can't itself be a start slot
-              // - multi-slot non-follow-on: disable if not a valid start
-              // - single-slot: disable if not individually available
               const isDisabled = isRangeFollowOn
                 ? !isClickableFollowOn
                 : isMultiSlot
                   ? !canStart
                   : !individuallyAvailable;
 
-              // For display tooltip
               const past = isTodayDate && isSlotPast(slot.time);
               const tooSoon =
-                isTodayDate && enforceTimingRule && isSlotWithin30Min(slot.time);
+                isTodayDate &&
+                enforceTimingRule &&
+                isSlotWithin30Min(slot.time);
 
               const buildTitle = () => {
                 if (isClickableFollowOn)
@@ -357,9 +328,7 @@ function DateTimePicker({
                     isInsufficientStart
                       ? "date-time-picker__slot--insufficient"
                       : "",
-                    isRangeStart
-                      ? "date-time-picker__slot--range-start"
-                      : "",
+                    isRangeStart ? "date-time-picker__slot--range-start" : "",
                     isRangeFollowOn && !isClickableFollowOn
                       ? "date-time-picker__slot--in-range"
                       : "",
@@ -375,7 +344,8 @@ function DateTimePicker({
                       return;
                     }
                     if (isRangeFollowOn) return; // last follow-on, not a valid start
-                    if (!isMultiSlot && individuallyAvailable) onSelectSlot(slot);
+                    if (!isMultiSlot && individuallyAvailable)
+                      onSelectSlot(slot);
                     if (isMultiSlot && canStart) onSelectSlot(slot);
                   }}
                   disabled={isDisabled}
@@ -386,7 +356,6 @@ function DateTimePicker({
                   {slot.time}
                 </button>
               );
-
             })}
           </div>
         )}
@@ -409,9 +378,7 @@ DateTimePicker.propTypes = {
         .isRequired,
     }),
   ).isRequired,
-  /** true = apply 30-min buffer (patient); false = only block past slots (receptionist) */
   enforceTimingRule: PropTypes.bool,
-  /** Number of consecutive slots this service occupies (from dental_services.slot_occupied) */
   slotOccupied: PropTypes.number,
 };
 

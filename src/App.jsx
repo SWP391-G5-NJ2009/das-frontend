@@ -9,16 +9,20 @@ import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogP
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
+import PatientTreatmentHistoryPage from "./pages/dentist/PatientTreatmentHistoryPage/PatientTreatmentHistoryPage";
 import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
+import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
+import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApprovalPage";
 import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
+import OwnerStaffPage from "./pages/owner/OwnerStaffPage/OwnerStaffPage";
 import ProtectedRoute from "./router/ProtectedRoute";
 import RevenuePage from "./pages/owner/RevenuePage/RevenuePage";
 import PatientPage from "./pages/owner/PatientPage/PatientPage";
@@ -143,6 +147,30 @@ function App() {
             }
           />
           <Route
+            path="/dentist/patients/:patientId/treatment-history"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <PatientTreatmentHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dentist/schedule"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <DentistScheduleManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dentist/appointments"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <AppointmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/owner/services-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
@@ -163,6 +191,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <RoomsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/clinic-schedule"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <ScheduleApprovalPage />
               </ProtectedRoute>
             }
           />
@@ -203,6 +239,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/staff"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <OwnerStaffPage />
               </ProtectedRoute>
             }
           />

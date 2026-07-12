@@ -7,11 +7,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: min(100%, 75rem);
   margin-inline: auto;
   padding: var(--space-8) var(--space-4);
+}
+
+.site-footer__identity {
+  display: grid;
+  gap: var(--space-2);
 }
 
 .site-footer__brand {
@@ -24,6 +29,15 @@
 .site-footer p {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
+}
+
+.site-footer__contact {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 32rem;
+  list-style: none;
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-700);
 }
 
 @media (min-width: 1024px) {

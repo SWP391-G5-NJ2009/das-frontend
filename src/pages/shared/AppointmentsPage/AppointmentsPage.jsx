@@ -1,27 +1,28 @@
 import { useState, useCallback, useMemo } from "react";
-import { CalendarPlus } from "lucide-react";
+import { AlertTriangle, CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../../../context/AuthContext";
 import PatientPageShell from "../../patient/PatientPageShell";
 import ReceptionistPageShell from "../../receptionist/ReceptionistPageShell";
+import DentistPageShell from "../../dentist/DentistPageShell";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import AppointmentFilters from "../../../components/features/appointments/AppointmentFilters/AppointmentFilters";
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
+import LiftBanModal from "../../../components/features/appointments/LiftBanModal/LiftBanModal";
 import Toast from "../../../components/common/Toast/Toast";
 import Pagination from "../../../components/common/Pagination/Pagination";
 import {
   useMyAppointments,
   useAllAppointments,
 } from "../../../hooks/useAppointments";
+import { patientService } from "../../../services/patient.service";
 import "./AppointmentsPage.css";
 
 const PAGE_SIZE = 10;
 
-
-/* ── Role-specific config ── */
 const ROLE_CONFIG = {
   patient: {
     title: "My Appointments",
@@ -30,7 +31,8 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
-    statusOptions: null, // use AppointmentFilters default (all statuses)
+    showBookBtn: true,
+    statusOptions: null,
   },
   receptionist: {
     title: "Appointment List",
@@ -39,24 +41,33 @@ const ROLE_CONFIG = {
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
     showPatientInfo: true,
-    statusOptions: null, // use AppointmentFilters default (all statuses)
+    showBookBtn: true,
+    statusOptions: null,
+  },
+  dentist: {
+    title: "My Appointments",
+    subtitle: "View all appointments assigned to you.",
+    bookRoute: null,
+    bookBtnId: null,
+    headingId: "appts-page-title",
+    showPatientInfo: true,
+    showBookBtn: false,
+    statusOptions: null,
   },
 };
 
-/* ── Hook selector ── */
 function useAppointmentsByRole(role, filters) {
   const isPatient = role === "patient";
-  const isReceptionist = role === "receptionist";
+  const isStaff = role === "receptionist" || role === "dentist";
   const patient = useMyAppointments(isPatient ? filters : {}, {
     enabled: isPatient,
   });
-  const receptionist = useAllAppointments(isReceptionist ? filters : {}, {
-    enabled: isReceptionist,
+  const staff = useAllAppointments(isStaff ? filters : {}, {
+    enabled: isStaff,
   });
-  return role === "patient" ? patient : receptionist;
+  return role === "patient" ? patient : staff;
 }
 
-/* ── Shell selector ── */
 function PageShell({ role, children }) {
   if (role === "receptionist") {
     return (
@@ -68,6 +79,9 @@ function PageShell({ role, children }) {
       </ReceptionistPageShell>
     );
   }
+  if (role === "dentist") {
+    return <DentistPageShell>{children}</DentistPageShell>;
+  }
   return <PatientPageShell>{children}</PatientPageShell>;
 }
 
@@ -76,11 +90,11 @@ PageShell.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-/* ── Main component ── */
 function AppointmentsPage() {
   const { user } = useAuth();
   const role = user?.role ?? "patient";
   const config = ROLE_CONFIG[role] ?? ROLE_CONFIG.patient;
+  const isReceptionist = role === "receptionist";
   const navigate = useNavigate();
 
   const today = new Date();
@@ -88,32 +102,34 @@ function AppointmentsPage() {
   const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
   const todayDay = String(today.getDate()).padStart(2, "0");
 
-  // Display state for the three dropdowns
   const [dateParts, setDateParts] = useState({
     year: todayYear,
     month: todayMonth,
     day: todayDay,
   });
 
-  // Backend filter state derived from dateParts
   const [filters, setFilters] = useState({
     status: "all",
-    date: `${todayYear}-${todayMonth}-${todayDay}`, // exact day YYYY-MM-DD
-    month: "",        // YYYY-MM (set when day is empty)
-    year: "",         // YYYY   (set when month is empty too)
+    date: `${todayYear}-${todayMonth}-${todayDay}`,
+    month: "",
+    year: "",
     search: "",
   });
 
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
-  const [toast, setToast] = useState(null); // { type, message }
+  const [liftBanTarget, setLiftBanTarget] = useState(null);
+  const [isLiftingBan, setIsLiftingBan] = useState(false);
+  const [toast, setToast] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { appointments, isLoading, error, cancelAppointment } =
     useAppointmentsByRole(role, filters);
+  const conflictAlerts = useAllAppointments(
+    isReceptionist ? { status: "Conflict" } : {},
+    { enabled: isReceptionist },
+  );
 
-
-  /* ── Filter handlers ── */
   const handleStatusChange = useCallback(
     (status) => {
       setFilters((prev) => ({ ...prev, status }));
@@ -122,20 +138,13 @@ function AppointmentsPage() {
     [],
   );
 
-  /**
-   * Called by AppointmentFilters when any of year/month/day changes.
-   * Updates both the dropdown display state and the backend filter state.
-   */
   const handleDatePartsChange = useCallback(
     ({ year, month, day }) => {
       setDateParts({ year, month, day });
       setFilters((prev) => ({
         ...prev,
-        // Exact day match
         date: year && month && day ? `${year}-${month}-${day}` : "",
-        // Month match (YYYY-MM) — only when day is empty
         month: year && month && !day ? `${year}-${month}` : "",
-        // Year match — only when both month and day are empty
         year: year && !month ? year : "",
       }));
       setCurrentPage(1);
@@ -151,7 +160,18 @@ function AppointmentsPage() {
     [],
   );
 
-  /* ── Today shortcut ── */
+  const handleViewConflictAppointments = useCallback(() => {
+    setDateParts({ year: "", month: "", day: "" });
+    setFilters((prev) => ({
+      ...prev,
+      status: "Conflict",
+      date: "",
+      month: "",
+      year: "",
+    }));
+    setCurrentPage(1);
+  }, []);
+
   const handleTodayClick = useCallback(() => {
     setDateParts({ year: todayYear, month: todayMonth, day: todayDay });
     setFilters((prev) => ({
@@ -166,7 +186,6 @@ function AppointmentsPage() {
   const isTodayActive =
     filters.date === `${todayYear}-${todayMonth}-${todayDay}`;
 
-  /* ── Cancel handlers ── */
   const handleRequestCancel = useCallback((appointment) => {
     setAppointmentToCancel(appointment);
   }, []);
@@ -190,12 +209,10 @@ function AppointmentsPage() {
     [appointmentToCancel, cancelAppointment],
   );
 
-
   const handleCloseModal = useCallback(() => {
     if (!isCancelling) setAppointmentToCancel(null);
   }, [isCancelling]);
 
-  /* ── Within-24h toast ── */
   const handleWithin24hCancel = useCallback(() => {
     setToast({
       type: "warning",
@@ -206,14 +223,34 @@ function AppointmentsPage() {
 
   const handleDismissToast = useCallback(() => setToast(null), []);
 
-  /* ── Pagination ── */
+  const handleRequestLiftBan = useCallback((appt) => {
+    setLiftBanTarget(appt);
+  }, []);
+
+  const handleConfirmLiftBan = useCallback(async () => {
+    if (!liftBanTarget) return;
+    setIsLiftingBan(true);
+    try {
+      await patientService.liftBan(liftBanTarget.patientId);
+      setToast({ type: "success", message: "Update form status successfully." });
+      setLiftBanTarget(null);
+      window.location.reload();
+    } catch {
+      setToast({ type: "error", message: "Failed to lift booking ban. Please try again." });
+    } finally {
+      setIsLiftingBan(false);
+    }
+  }, [liftBanTarget]);
+
+  const handleCloseLiftBanModal = useCallback(() => {
+    if (!isLiftingBan) setLiftBanTarget(null);
+  }, [isLiftingBan]);
+
   const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
   const paginatedAppointments = useMemo(
     () => appointments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
     [appointments, currentPage],
   );
-
-
 
   return (
     <PageShell role={role}>
@@ -221,26 +258,47 @@ function AppointmentsPage() {
         className="appts-page__section"
         aria-labelledby={config.headingId}
       >
-        {/* Page header */}
         <div className="appts-page__header">
           <div className="appts-page__heading">
             <h1 id={config.headingId}>{config.title}</h1>
             <p>{config.subtitle}</p>
           </div>
 
-          <button
-            id={config.bookBtnId}
-            type="button"
-            className="appts-page__book-btn"
-            onClick={() => navigate(config.bookRoute)}
-            aria-label="Book new appointment"
-          >
-            <CalendarPlus size={18} aria-hidden="true" />
-            Book New Appointment
-          </button>
+          {config.showBookBtn && (
+            <button
+              id={config.bookBtnId}
+              type="button"
+              className="appts-page__book-btn"
+              onClick={() => navigate(config.bookRoute)}
+              aria-label="Book new appointment"
+            >
+              <CalendarPlus size={18} aria-hidden="true" />
+              Book New Appointment
+            </button>
+          )}
         </div>
 
-        {/* Filters */}
+        {isReceptionist && conflictAlerts.appointments.length > 0 && (
+          <div className="appts-page__urgent-alert" role="alert">
+            <AlertTriangle size={20} aria-hidden="true" />
+            <div className="appts-page__urgent-copy">
+              <strong>Urgent rescheduling task</strong>
+              <span>
+                {conflictAlerts.appointments.length} conflict appointment
+                {conflictAlerts.appointments.length === 1 ? "" : "s"} need
+                receptionist follow-up.
+              </span>
+            </div>
+            <button
+              className="appts-page__urgent-action"
+              type="button"
+              onClick={handleViewConflictAppointments}
+            >
+              View conflicts
+            </button>
+          </div>
+        )}
+
         <AppointmentFilters
           filters={{ ...filters, ...dateParts }}
           onStatusChange={handleStatusChange}
@@ -251,7 +309,6 @@ function AppointmentsPage() {
           statusOptions={config.statusOptions}
         />
 
-        {/* Content states */}
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
@@ -268,6 +325,7 @@ function AppointmentsPage() {
               appointments={paginatedAppointments}
               onCancel={handleRequestCancel}
               onWithin24hCancel={handleWithin24hCancel}
+              onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
               showPatientInfo={config.showPatientInfo}
               actorRole={role}
             />
@@ -285,7 +343,6 @@ function AppointmentsPage() {
         )}
       </section>
 
-      {/* Cancel Modal */}
       <CancelConfirmModal
         isOpen={!!appointmentToCancel}
         appointment={appointmentToCancel}
@@ -295,7 +352,14 @@ function AppointmentsPage() {
         isLoading={isCancelling}
       />
 
-      {/* Within-24h warning toast */}
+      <LiftBanModal
+        isOpen={!!liftBanTarget}
+        patient={liftBanTarget}
+        onConfirm={handleConfirmLiftBan}
+        onClose={handleCloseLiftBanModal}
+        isLoading={isLiftingBan}
+      />
+
       {toast && (
         <Toast
           type={toast.type}

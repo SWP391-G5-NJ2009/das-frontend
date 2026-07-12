@@ -109,17 +109,18 @@ export function usePublicServices() {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await dentalServiceService.getAll();
+      const data = await dentalServiceService.getPublic();
       const mapped = (data || [])
-        .filter((s) => s.status?.toLowerCase() === "active")
         .map((s) => ({
           id: String(s.service_id),
           name: s.service_name,
-          duration: s.slot_occupied * 30, // each slot = 30 min
-          price: s.unit_price,
+          duration: s.duration_minutes || (s.slot_occupied || 1) * 30,
+          price: s.price || s.unit_price,
           description: s.description || "",
-          category: s.service_categories?.category_name || "",
+          category:
+            s.category_name || s.service_categories?.category_name || "",
           slotOccupied: s.slot_occupied ?? 1,
+          process: s.process || "",
         }));
       setServices(mapped);
     } catch (err) {

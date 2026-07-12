@@ -1,53 +1,73 @@
-import { CalendarDays, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Mail,
+  MapPin,
+  Phone,
+  ShieldCheck,
+  Stethoscope,
+} from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import heroDentist from "../../../assets/images/hero-dentist.jpg";
+import Toast from "../../../components/common/Toast/Toast";
 import SiteFooter from "../../../components/layout/SiteFooter/SiteFooter";
 import SiteHeader from "../../../components/layout/SiteHeader/SiteHeader";
-import { useState, useEffect } from "react";
-import "./LandingPage.css";
+import { useClinicInfo } from "../../../hooks/useClinicInfo";
+import { usePublicServices } from "../../../hooks/useDentalServices";
 import { consultationService } from "../../../services/consultation.service";
-import { dentalServiceService } from "../../../services/dentalService.service";
-import Toast from "../../../components/common/Toast/Toast";
+import "./LandingPage.css";
+
+function formatPrice(value) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount <= 0) return "Contact for pricing";
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
+}
 
 function LandingPage() {
-
-  const [activeServices, setActiveServices] = useState([]);
-
-  useEffect(() => {
-    dentalServiceService.getAll()
-      .then((data) => {
-        const active = (data || []).filter(
-          (s) => s.status?.toLowerCase() === "active"
-        );
-        setActiveServices(active);
-      })
-      .catch(() => {
-        // Silently fail — landing page services section simply stays empty
-      });
-  }, []);
+  const {
+    clinicInfo,
+    error: clinicError,
+    isLoading: isClinicLoading,
+  } = useClinicInfo();
+  const {
+    error: servicesError,
+    isLoading: isServicesLoading,
+    services,
+  } = usePublicServices();
 
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
     email: "",
     description: "",
+    website: "",
   });
 
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(null);
 
+  const clinicName = clinicInfo?.clinic_name || "DentalCare";
+  const featuredServices = services.slice(0, 6);
+
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setIsSubmitting(true);
+
     try {
       await consultationService.create(form);
-      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setForm({ full_name: "", phone: "", email: "", description: "", website: "" });
       setSuccess("Consultation request sent successfully!");
     } catch (err) {
       setError(err.message);
@@ -58,7 +78,7 @@ function LandingPage() {
 
   return (
     <div className="landing-page">
-      <SiteHeader />
+      <SiteHeader brandName={clinicName} />
 
       <main>
         <section className="landing-hero" id="home">
@@ -69,47 +89,124 @@ function LandingPage() {
                 Trusted dental care
               </p>
               <h1 className="landing-hero__title">
-                Book your dental visit <span>easily</span> in just a few minutes
+                {clinicName} helps you care for your smile <span>with ease</span>
               </h1>
-              <p className="landing-hero__text">
-                DentalCare helps you book appointments with dentists,
-                track visits, and care for a healthy smile every day.
-              </p>
+              {isClinicLoading ? (
+                <p className="landing-hero__text">
+                  Loading clinic information...
+                </p>
+              ) : clinicError ? (
+                <p className="landing-message landing-message--error">
+                  We could not load clinic information right now. Please try
+                  again later.
+                </p>
+              ) : (
+                <p className="landing-hero__text">
+                  {clinicInfo?.introduction}
+                </p>
+              )}
               <div className="landing-hero__actions">
-                <Link className="landing-button landing-button--primary" to="/consultation">
+                <Link
+                  className="landing-button landing-button--primary"
+                  to="/consultation"
+                >
                   <CalendarDays size={16} aria-hidden="true" />
                   Book now
                 </Link>
-                <Link className="landing-button landing-button--secondary" to="/services">
-                  Learn more
+                <Link
+                  className="landing-button landing-button--secondary"
+                  to="/services"
+                >
+                  Explore services
                 </Link>
               </div>
             </div>
             <div className="landing-hero__media">
-              <img src={heroDentist} alt="Dentist at DentalCare clinic" />
+              <img src={heroDentist} alt={`${clinicName} clinic dentist`} />
             </div>
           </div>
         </section>
+
+        {clinicInfo && (
+          <section className="landing-info" aria-label="Clinic information">
+            <div className="landing-info__grid">
+              <article className="landing-info__item">
+                <Phone size={20} aria-hidden="true" />
+                <div>
+                  <h2>Hotline</h2>
+                  <p>{clinicInfo.hotline}</p>
+                </div>
+              </article>
+              <article className="landing-info__item">
+                <MapPin size={20} aria-hidden="true" />
+                <div>
+                  <h2>Address</h2>
+                  <p>{clinicInfo.address}</p>
+                </div>
+              </article>
+              <article className="landing-info__item">
+                <Clock size={20} aria-hidden="true" />
+                <div>
+                  <h2>Open hours</h2>
+                  <p>{clinicInfo.open_time}</p>
+                </div>
+              </article>
+              <article className="landing-info__item">
+                <Clock size={20} aria-hidden="true" />
+                <div>
+                  <h2>Close hours</h2>
+                  <p>{clinicInfo.close_time}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        )}
 
         <section className="landing-services" id="services">
           <div className="landing-services__header">
             <h2>Our services</h2>
             <p>
-              A broad range of dental services from experienced dentists and
-              modern equipment.
+              A broad range of active dental services from experienced dentists
+              and modern equipment.
             </p>
           </div>
-          <div className="landing-services__grid">
-            {activeServices.map((s) => (
-              <article className="service-card" key={s.service_id}>
-                <div className="service-card__icon">
-                  <ShieldCheck size={24} aria-hidden="true" />
-                </div>
-                <h3>{s.service_name}</h3>
-                <p>{s.description || ""}</p>
-              </article>
-            ))}
-          </div>
+
+          {isServicesLoading ? (
+            <p className="landing-message">Loading dental services...</p>
+          ) : servicesError ? (
+            <p className="landing-message landing-message--error">
+              We could not load dental services right now. Please try again
+              later.
+            </p>
+          ) : featuredServices.length === 0 ? (
+            <p className="landing-message">
+              No dental services are available at the moment.
+            </p>
+          ) : (
+            <div className="landing-services__grid">
+              {featuredServices.map((service) => (
+                <article className="service-card" key={service.id}>
+                  <div className="service-card__icon">
+                    <Stethoscope size={24} aria-hidden="true" />
+                  </div>
+                  <h3>{service.name}</h3>
+                  <p>
+                    {service.description || "Service details are being updated."}
+                  </p>
+                  <dl className="service-card__meta">
+                    <div>
+                      <dt>Time</dt>
+                      <dd>{service.duration} minutes</dd>
+                    </div>
+                    <div>
+                      <dt>Cost</dt>
+                      <dd>{formatPrice(service.price)}</dd>
+                    </div>
+                  </dl>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="landing-consultation" id="consultation">
@@ -117,40 +214,78 @@ function LandingPage() {
             <div className="landing-consultation__content">
               <h2>Request a consultation</h2>
               <p>
-                Leave your information and the DentalCare team will contact you for a free consultation
-                and help arrange a suitable appointment.
+                Leave your information and the {clinicName} team will contact
+                you for a consultation and help arrange a suitable appointment.
               </p>
-              <ul className="landing-contact">
-                <li>
-                  <Phone size={20} aria-hidden="true" />
-                  <span>1900 1234</span>
-                </li>
-                <li>
-                  <Mail size={20} aria-hidden="true" />
-                  <span>lienhe@dentalcare.vn</span>
-                </li>
-                <li>
-                  <MapPin size={20} aria-hidden="true" />
-                  <span>123 Nguyen Hue Street, District 1, Ho Chi Minh City</span>
-                </li>
-              </ul>
+              {clinicInfo && (
+                <ul className="landing-contact">
+                  <li>
+                    <Phone size={20} aria-hidden="true" />
+                    <span>{clinicInfo.hotline}</span>
+                  </li>
+                  {clinicInfo.email && (
+                    <li>
+                      <Mail size={20} aria-hidden="true" />
+                      <span>{clinicInfo.email}</span>
+                    </li>
+                  )}
+                  <li>
+                    <MapPin size={20} aria-hidden="true" />
+                    <span>{clinicInfo.address}</span>
+                  </li>
+                  <li>
+                    <Clock size={20} aria-hidden="true" />
+                    <span>{clinicInfo.operating_hours}</span>
+                  </li>
+                </ul>
+              )}
             </div>
 
             <form className="consultation-form" onSubmit={handleSubmit}>
-              {error && <p>{error}</p>}
+              {error && (
+                <p className="landing-message landing-message--error">
+                  {error}
+                </p>
+              )}
               <label className="consultation-form__field">
-                <input type="text" name="full_name" value={form.full_name} placeholder="Full name" onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="full_name"
+                  value={form.full_name}
+                  placeholder="Full name"
+                  onChange={handleChange}
+                  required
+                />
               </label>
               <label className="consultation-form__field">
-                <input type="tel" name="phone" value={form.phone} placeholder="Phone number" onChange={handleChange} required />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  placeholder="Phone number"
+                  onChange={handleChange}
+                  required
+                />
               </label>
               <label className="consultation-form__field">
-                <input type="email" name="email" value={form.email} placeholder="Email" onChange={handleChange} />
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  placeholder="Email"
+                  onChange={handleChange}
+                />
               </label>
               <label className="consultation-form__field">
-                <textarea name="description" value={form.description} placeholder="Consultation details" rows="5" onChange={handleChange} required />
+                <textarea
+                  name="description"
+                  value={form.description}
+                  placeholder="Consultation details"
+                  rows="5"
+                  onChange={handleChange}
+                  required
+                />
               </label>
-
               <input
                 name="website"
                 type="text"
@@ -161,17 +296,20 @@ function LandingPage() {
                 onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
               />
 
-              <button className="consultation-form__submit" type="submit" disabled={isSubmitting}>
-                Send consultation request
+              <button
+                className="consultation-form__submit"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Send consultation request"}
               </button>
               {success && <Toast type="success" message={success} />}
             </form>
-
           </div>
         </section>
       </main>
 
-      <SiteFooter />
+      <SiteFooter clinicInfo={clinicInfo} />
     </div>
   );
 }

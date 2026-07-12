@@ -9,4 +9,6 @@ export const patientService = {
   search: (q) => api.get(`/patients/search?q=${encodeURIComponent(q)}`),
   createPatientAccount: (payload) => api.post("/patients", payload),
   getMyTreatmentHistory: () => api.get("/patients/me/treatments"),
+  getTreatmentHistory: (patientId) => api.get(`/patients/${patientId}/treatments`),
+  liftBan: (patientId) => api.patch(`/patients/${patientId}/lift-ban`),
 };

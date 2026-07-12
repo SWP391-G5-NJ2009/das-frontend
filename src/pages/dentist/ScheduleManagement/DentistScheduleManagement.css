@@ -1,0 +1,639 @@
+.dentist-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.dentist-schedule__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.dentist-schedule__eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-primary-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+}
+
+.dentist-schedule__header h1 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-tight);
+}
+
+.dentist-schedule__subtitle {
+  max-width: 680px;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-base);
+}
+
+.dentist-schedule__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.dentist-schedule__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
+  padding: var(--space-3) var(--space-5);
+  border: thin solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.dentist-schedule__button--primary {
+  background-color: var(--color-primary-700);
+  color: var(--color-neutral-50);
+}
+
+.dentist-schedule__button--secondary {
+  background-color: var(--color-neutral-50);
+  border-color: var(--border-color);
+  color: var(--color-neutral-700);
+}
+
+.dentist-schedule__button--danger {
+  background-color: var(--color-error);
+  color: var(--color-neutral-50);
+}
+
+.dentist-schedule__button:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.dentist-schedule__button:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-neutral-200);
+  border-color: var(--color-neutral-200);
+  color: var(--color-neutral-500);
+  box-shadow: none;
+}
+
+.dentist-schedule__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.dentist-schedule__summary div {
+  padding: var(--space-5);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.dentist-schedule__summary span {
+  display: block;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.dentist-schedule__summary p {
+  margin: var(--space-1) 0 0;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}
+
+.dentist-schedule__notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: thin solid transparent;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.dentist-schedule__notice--success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.dentist-schedule__notice--error {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.dentist-schedule__notice--warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.dentist-schedule__workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.dentist-schedule__calendar,
+.dentist-schedule__details {
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.dentist-schedule__calendar {
+  position: relative;
+  min-width: 0;
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.dentist-schedule__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background-color: rgba(245, 247, 248, 0.7);
+}
+
+.dentist-schedule__calendar .fc {
+  color: var(--color-neutral-800);
+  font-family: var(--font-family-base);
+}
+
+.dentist-schedule__calendar .fc-toolbar-title {
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+}
+
+.dentist-schedule__calendar .fc-button {
+  background-color: var(--color-neutral-50);
+  border-color: var(--border-color);
+  color: var(--color-neutral-700);
+  box-shadow: none;
+  text-transform: capitalize;
+}
+
+.dentist-schedule__calendar .fc-button-primary:not(:disabled).fc-button-active,
+.dentist-schedule__calendar .fc-button-primary:not(:disabled):active {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: var(--color-neutral-50);
+}
+
+.dentist-schedule__calendar .fc-event {
+  border-width: 0 0 0 4px;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-schedule__details {
+  padding: var(--space-5);
+}
+
+.dentist-schedule__details h2 {
+  margin: 0 0 var(--space-4);
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-lg);
+}
+
+.dentist-schedule__details-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dentist-schedule__details dl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.dentist-schedule__details dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: thin solid var(--border-color);
+}
+
+.dentist-schedule__details dt {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-sm);
+}
+
+.dentist-schedule__details dd {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-semibold);
+  text-align: right;
+}
+
+.dentist-schedule__status {
+  display: inline-flex;
+  width: fit-content;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+}
+
+.dentist-schedule__status--pending {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.dentist-schedule__status--approved {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.dentist-schedule__status--denied {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.dentist-schedule__owner-note {
+  padding: var(--space-4);
+  background-color: var(--color-error-bg);
+  border: thin solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+}
+
+.dentist-schedule__owner-note strong,
+.dentist-schedule__owner-note p {
+  margin: 0;
+}
+
+.dentist-schedule__owner-note p {
+  margin-top: var(--space-2);
+  color: var(--color-neutral-800);
+}
+
+.dentist-schedule__empty-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+  color: var(--color-neutral-600);
+}
+
+.dentist-schedule__empty-details p {
+  margin: 0;
+  line-height: var(--line-height-base);
+}
+
+.dentist-schedule__modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background-color: rgba(38, 50, 56, 0.45);
+}
+
+.dentist-schedule__modal {
+  width: min(680px, 100%);
+  max-height: calc(100vh - var(--space-12));
+  overflow-y: auto;
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+}
+
+.dentist-schedule__modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-bottom: thin solid var(--border-color);
+}
+
+.dentist-schedule__modal-header h2 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+}
+
+.dentist-schedule__modal-header--warning {
+  background-color: var(--color-warning-bg);
+}
+
+.dentist-schedule__modal-header p {
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-600);
+}
+
+.dentist-schedule__icon-btn {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-700);
+}
+
+.dentist-schedule__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+
+.dentist-schedule__rule-note {
+  padding: var(--space-4);
+  background-color: var(--color-info-bg);
+  border: thin solid var(--color-primary-300);
+  border-radius: var(--radius-md);
+  color: var(--color-primary-800);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.dentist-schedule__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.dentist-schedule__checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-schedule__checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary-700);
+}
+
+.dentist-schedule__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-schedule__field input,
+.dentist-schedule__field select,
+.dentist-schedule__field textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: var(--space-3);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-900);
+  font: inherit;
+}
+
+.dentist-schedule__field textarea {
+  resize: vertical;
+  line-height: var(--line-height-base);
+}
+
+.dentist-schedule__weekday-group,
+.dentist-schedule__shift-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.dentist-schedule__weekday-group legend,
+.dentist-schedule__shift-group legend {
+  margin-bottom: var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-schedule__weekday-list,
+.dentist-schedule__shift-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.dentist-schedule__weekday,
+.dentist-schedule__shift {
+  min-height: 38px;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-700);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-schedule__weekday--active,
+.dentist-schedule__shift--active {
+  background-color: var(--color-primary-100);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-800);
+}
+
+.dentist-schedule__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.dentist-schedule__availability-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: thin solid var(--border-color);
+}
+
+.dentist-schedule__availability-form h3 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-md);
+}
+
+.dentist-schedule__slot-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: var(--space-1);
+}
+
+.dentist-schedule__slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 42px;
+  padding: var(--space-3);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-800);
+  text-align: left;
+}
+
+.dentist-schedule__slot strong {
+  flex: 0 0 auto;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+}
+
+.dentist-schedule__slot--available {
+  border-color: var(--color-success);
+}
+
+.dentist-schedule__slot--booked {
+  border-color: var(--color-warning);
+  background-color: var(--color-warning-bg);
+}
+
+.dentist-schedule__slot--unavailable {
+  color: var(--color-neutral-500);
+  background-color: var(--color-neutral-100);
+}
+
+.dentist-schedule__slot--selected {
+  background-color: var(--color-primary-100);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-900);
+}
+
+.dentist-schedule__slot:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dentist-schedule__conflict-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+
+.dentist-schedule__warning-box {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-warning-bg);
+  border: thin solid var(--color-warning);
+  border-radius: var(--radius-md);
+  color: var(--color-warning);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-schedule__warning-box svg {
+  flex: 0 0 auto;
+}
+
+.dentist-schedule__conflict-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.dentist-schedule__conflict-item {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 1.2fr 0.8fr;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.dentist-schedule__conflict-item strong {
+  color: var(--color-neutral-900);
+}
+
+.dentist-schedule__conflict-item span {
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+}
+
+.dentist-schedule__conflict-actions {
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+@media (max-width: 1080px) {
+  .dentist-schedule__workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .dentist-schedule__details {
+    order: -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .dentist-schedule__header {
+    flex-direction: column;
+  }
+
+  .dentist-schedule__header-actions,
+  .dentist-schedule__button {
+    width: 100%;
+  }
+
+  .dentist-schedule__summary,
+  .dentist-schedule__form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dentist-schedule__calendar {
+    padding: var(--space-2);
+  }
+
+  .dentist-schedule__calendar .fc-header-toolbar {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .dentist-schedule__modal-overlay {
+    padding: var(--space-3);
+  }
+
+  .dentist-schedule__modal-actions {
+    flex-direction: column;
+  }
+
+  .dentist-schedule__conflict-item {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,9 +1,15 @@
 import PropTypes from "prop-types";
-import { Ban, MessageSquare, Pencil } from "lucide-react";
+import {
+  Ban,
+  MessageSquare,
+  Pencil,
+  ShieldBan,
+  UnlockKeyhole,
+} from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
-const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in"];
+const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict"];
 
 /** BR-13: returns true if appointment starts within 24 hours from now */
 function isWithin24Hours(scheduledDate, scheduledTime) {
@@ -13,7 +19,15 @@ function isWithin24Hours(scheduledDate, scheduledTime) {
   return diffMs < 24 * 60 * 60 * 1000;
 }
 
-function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, showPatientInfo, actorRole }) {
+function AppointmentTable({
+  appointments,
+  onCancel,
+  onWithin24hCancel,
+  onEdit,
+  onLiftBan,
+  showPatientInfo,
+  actorRole,
+}) {
   if (appointments.length === 0) return null;
 
   return (
@@ -75,6 +89,15 @@ function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, s
                     <span className="appt-table__patient-phone">
                       {appt.patientPhone}
                     </span>
+                    {appt.patientAccountStatus === "Restricted" && (
+                      <span
+                        className="appt-table__booking-banned"
+                        title="This patient's account is restricted due to 3+ no-shows"
+                      >
+                        <ShieldBan size={10} aria-hidden="true" />
+                        Restricted Account
+                      </span>
+                    )}
                   </td>
                 )}
 
@@ -115,45 +138,68 @@ function AppointmentTable({ appointments, onCancel, onWithin24hCancel, onEdit, s
                 </td>
 
                 <td className="appt-table__td appt-table__td--actions">
-                  <div className="appt-table__action-group">
-                    <button
-                      id={`tbl-edit-${appt.id}`}
-                      type="button"
-                      className="appt-table__action-btn appt-table__action-btn--edit"
-                      aria-label={`Edit appointment for ${appt.patientName}`}
-                      title="Edit feature coming soon"
-                      disabled
-                      onClick={() => onEdit?.(appt)}
+                  {actorRole === "dentist" ? (
+                    <span
+                      className="appt-table__view-only"
+                      aria-label="View only"
                     >
-                      <Pencil size={15} aria-hidden="true" />
-                    </button>
-                    {canCancel && (
+                      —
+                    </span>
+                  ) : (
+                    <div className="appt-table__action-group">
                       <button
-                        id={`tbl-cancel-${appt.id}`}
+                        id={`tbl-edit-${appt.id}`}
                         type="button"
-                        className={
-                          within24h
-                            ? "appt-table__action-btn appt-table__action-btn--cancel appt-table__action-btn--restricted"
-                            : "appt-table__action-btn appt-table__action-btn--cancel"
-                        }
-                        aria-label={
-                          within24h
-                            ? "Cannot cancel — within 24 hours of appointment"
-                            : `Cancel appointment for ${appt.patientName}`
-                        }
-                        title={
-                          within24h
-                            ? "Within 24 hours — contact reception to cancel"
-                            : "Cancel appointment"
-                        }
-                        onClick={() =>
-                          within24h ? onWithin24hCancel?.() : onCancel?.(appt)
-                        }
+                        className="appt-table__action-btn appt-table__action-btn--edit"
+                        aria-label={`Edit appointment for ${appt.patientName}`}
+                        title="Edit feature coming soon"
+                        disabled
+                        onClick={() => onEdit?.(appt)}
                       >
-                        <Ban size={15} aria-hidden="true" />
+                        <Pencil size={15} aria-hidden="true" />
                       </button>
-                    )}
-                  </div>
+                      {/* Lift Ban button — only for restricted patients, only for receptionist */}
+                      {appt.patientAccountStatus === "Restricted" &&
+                        actorRole === "receptionist" && (
+                          <button
+                            id={`tbl-liftban-${appt.id}`}
+                            type="button"
+                            className="appt-table__action-btn appt-table__action-btn--lift-ban"
+                            aria-label={`Lift account restriction for ${appt.patientName}`}
+                            title="Lift Account Restriction"
+                            onClick={() => onLiftBan?.(appt)}
+                          >
+                            <UnlockKeyhole size={15} aria-hidden="true" />
+                          </button>
+                        )}
+                      {canCancel && (
+                        <button
+                          id={`tbl-cancel-${appt.id}`}
+                          type="button"
+                          className={
+                            within24h
+                              ? "appt-table__action-btn appt-table__action-btn--cancel appt-table__action-btn--restricted"
+                              : "appt-table__action-btn appt-table__action-btn--cancel"
+                          }
+                          aria-label={
+                            within24h
+                              ? "Cannot cancel — within 24 hours of appointment"
+                              : `Cancel appointment for ${appt.patientName}`
+                          }
+                          title={
+                            within24h
+                              ? "Within 24 hours — contact reception to cancel"
+                              : "Cancel appointment"
+                          }
+                          onClick={() =>
+                            within24h ? onWithin24hCancel?.() : onCancel?.(appt)
+                          }
+                        >
+                          <Ban size={15} aria-hidden="true" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </td>
               </tr>
             );
@@ -170,6 +216,8 @@ AppointmentTable.propTypes = {
       id: PropTypes.string.isRequired,
       patientName: PropTypes.string.isRequired,
       patientPhone: PropTypes.string,
+      patientNoShowCount: PropTypes.number,
+      patientAccountStatus: PropTypes.string,
       serviceName: PropTypes.string.isRequired,
       dentistName: PropTypes.string.isRequired,
       scheduledDate: PropTypes.string.isRequired,
@@ -183,6 +231,7 @@ AppointmentTable.propTypes = {
   onCancel: PropTypes.func,
   onWithin24hCancel: PropTypes.func,
   onEdit: PropTypes.func,
+  onLiftBan: PropTypes.func,
   showPatientInfo: PropTypes.bool,
   actorRole: PropTypes.string,
 };
@@ -191,6 +240,7 @@ AppointmentTable.defaultProps = {
   onCancel: null,
   onWithin24hCancel: null,
   onEdit: null,
+  onLiftBan: null,
   showPatientInfo: true,
   actorRole: "receptionist",
 };

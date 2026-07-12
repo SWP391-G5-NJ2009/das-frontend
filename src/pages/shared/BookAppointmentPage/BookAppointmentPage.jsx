@@ -28,14 +28,10 @@ import Spinner from "../../../components/common/Spinner/Spinner";
 
 import "./BookAppointmentPage.css";
 
-/* ─────────────────────────────────────────────
-   MAIN COMPONENT
-───────────────────────────────────────────── */
 function BookAppointmentPage({ isReceptionist, Shell }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  /* ── Services from API ── */
   const {
     services,
     isLoading: isServicesLoading,
@@ -86,6 +82,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     slots,
     isLoading: isSlotsLoading,
     error: slotsError,
+    refetch: refetchSlots,
   } = useAvailableSlots(selectedDentist?.id ?? null, selectedDate ?? null);
 
   const phoneNumber = selectedPatient?.phone || "";
@@ -123,30 +120,36 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     setSelectedSlot(null);
   }, []);
 
-  const handleSelectSlot = useCallback((slot) => {
-    // For multi-slot services, compute the end time of the LAST truly consecutive slot
-    const slotOccupied = selectedService?.slotOccupied ?? 1;
-    if (slotOccupied > 1) {
-      const startIdx = slots.findIndex((s) => s.id === slot.id);
-      let lastIdx = startIdx;
+  const handleSelectSlot = useCallback(
+    (slot) => {
+      // For multi-slot services, compute the end time of the LAST truly consecutive slot
+      const slotOccupied = selectedService?.slotOccupied ?? 1;
+      if (slotOccupied > 1) {
+        const startIdx = slots.findIndex((s) => s.id === slot.id);
+        let lastIdx = startIdx;
 
-      // Walk forward, only counting slots that are truly time-adjacent (no lunch break gaps)
-      for (let k = 1; k < slotOccupied; k++) {
-        const nextIdx = lastIdx + 1;
-        if (nextIdx >= slots.length) break; // no more slots
-        const prevTimeEnd = slots[lastIdx]?.timeEnd;
-        const nextTime = slots[nextIdx]?.time;
-        // Stop if there's a gap (e.g., lunch break) or time data is missing
-        if (!prevTimeEnd || !nextTime || prevTimeEnd !== nextTime) break;
-        lastIdx = nextIdx;
+        // Walk forward, only counting slots that are truly time-adjacent (no lunch break gaps)
+        for (let k = 1; k < slotOccupied; k++) {
+          const nextIdx = lastIdx + 1;
+          if (nextIdx >= slots.length) break; // no more slots
+          const prevTimeEnd = slots[lastIdx]?.timeEnd;
+          const nextTime = slots[nextIdx]?.time;
+          // Stop if there's a gap (e.g., lunch break) or time data is missing
+          if (!prevTimeEnd || !nextTime || prevTimeEnd !== nextTime) break;
+          lastIdx = nextIdx;
+        }
+
+        const lastSlot = slots[lastIdx];
+        setSelectedSlot({
+          ...slot,
+          timeEnd: lastSlot?.timeEnd || slot.timeEnd,
+        });
+      } else {
+        setSelectedSlot(slot);
       }
-
-      const lastSlot = slots[lastIdx];
-      setSelectedSlot({ ...slot, timeEnd: lastSlot?.timeEnd || slot.timeEnd });
-    } else {
-      setSelectedSlot(slot);
-    }
-  }, [selectedService, slots]);
+    },
+    [selectedService, slots],
+  );
 
   const handleCancel = useCallback(() => {
     if (isReceptionist) {
@@ -194,7 +197,18 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         navigate("/patient/appointments");
       }
     } catch (err) {
-      alert(err?.message || "Booking failed. Please try again!");
+      // BR-02: Slot was claimed by another user between selection and confirmation.
+      // Refetch slots so the taken slot turns dark/disabled, then show MSG02.
+      if (err?.code === "SLOT_TAKEN") {
+        setSelectedSlot(null);
+        refetchSlots();
+        alert(
+          "This time slot has just been booked by another user.\n" +
+            "The availability has been updated — please select a different time.",
+        );
+      } else {
+        alert(err?.message || "Booking failed. Please try again!");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -206,6 +220,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     selectedSlot,
     navigate,
     isReceptionist,
+    refetchSlots,
   ]);
 
   /* ── Render ── */

@@ -103,6 +103,22 @@
   margin-top: 2px;
 }
 
+/* Restricted Account badge — shown below patient name for no-show restricted patients */
+.appt-table__booking-banned {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  padding: 2px var(--space-2);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  cursor: default;
+}
+
 .appt-table__td--service {
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-900);
@@ -207,6 +223,25 @@
 .appt-table__action-btn--restricted:hover {
   background-color: var(--color-warning-bg);
   transform: scale(1.1);
+}
+
+/* Lift Ban — teal/secondary to signal a positive unlock action */
+.appt-table__action-btn--lift-ban {
+  color: var(--color-secondary-700);
+}
+
+.appt-table__action-btn--lift-ban:hover {
+  background-color: var(--color-secondary-100);
+  transform: scale(1.1);
+}
+
+/* Dentist read-only dash — replaces action buttons */
+.appt-table__view-only {
+  display: block;
+  text-align: center;
+  color: var(--color-neutral-300);
+  font-size: var(--font-size-base);
+  user-select: none;
 }
 
 
