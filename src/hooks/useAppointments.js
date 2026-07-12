@@ -95,6 +95,7 @@ export function useAllAppointments(filters = {}, options = {}) {
         const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
         return dateB.localeCompare(dateA);
       });
+
       setAppointments(sorted);
     } catch (err) {
       if (!isBackground) setError(err);
@@ -112,7 +113,14 @@ export function useAllAppointments(filters = {}, options = {}) {
       fetchAppointments(true);
     }, 30000);
 
-    return () => clearInterval(interval);
+    // Window focus refetch: refresh immediately when user switches back to this tab
+    const handleFocus = () => fetchAppointments(true);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, [fetchAppointments]);
 
   const cancelAppointment = useCallback(

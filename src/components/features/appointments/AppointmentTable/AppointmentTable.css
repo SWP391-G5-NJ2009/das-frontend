@@ -103,7 +103,7 @@
   margin-top: 2px;
 }
 
-/* Booking Banned badge — shown below patient name for no-show restricted patients */
+/* Restricted Account badge — shown below patient name for no-show restricted patients */
 .appt-table__booking-banned {
   display: inline-flex;
   align-items: center;
