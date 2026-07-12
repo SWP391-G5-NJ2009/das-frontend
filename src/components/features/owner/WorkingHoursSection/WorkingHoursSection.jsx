@@ -271,11 +271,12 @@ function WorkingHoursSection({
   activeHours,
   pendingHours,
   activeSetting,
+  focusVersionId,
   onShowCreateVersionModal,
   onRefetchAll,
+  onReactivateVersion,
 }) {
   const [appointmentDuration, setAppointmentDuration] = useState("30");
-  const [appointmentBuffer, setAppointmentBuffer] = useState("0");
   const [bookingLeadDays, setBookingLeadDays] = useState("30");
   const [maxBookingPerSlot, setMaxBookingPerSlot] = useState("1");
   const [saveState, setSaveState] = useState("idle");
@@ -295,7 +296,6 @@ function WorkingHoursSection({
   useEffect(() => {
     if (activeSetting) {
       if (activeSetting.slot_duration_minutes) setAppointmentDuration(String(activeSetting.slot_duration_minutes));
-      if (activeSetting.appointment_buffer_minutes) setAppointmentBuffer(String(activeSetting.appointment_buffer_minutes));
       if (activeSetting.booking_lead_days) setBookingLeadDays(String(activeSetting.booking_lead_days));
       if (activeSetting.max_booking_per_slot) setMaxBookingPerSlot(String(activeSetting.max_booking_per_slot));
     }
@@ -316,6 +316,20 @@ function WorkingHoursSection({
   }, [activeHours, pendingHours, hasPendingVersion, viewingVersion]);
 
   useEffect(() => {
+    if (activeVersion) {
+      setViewingVersion(activeVersion);
+    }
+  }, [activeVersion?.version_id]);
+
+  useEffect(() => {
+    if (!focusVersionId) return;
+    const target = versions?.find((v) => v.version_id === focusVersionId);
+    if (target) {
+      setViewingVersion(target);
+    }
+  }, [focusVersionId, versions]);
+
+  useEffect(() => {
     if (!viewingVersion) return;
     let cancelled = false;
     setViewingLoading(true);
@@ -331,7 +345,6 @@ function WorkingHoursSection({
         const setting = res.setting;
         if (setting) {
           if (setting.slot_duration_minutes) setAppointmentDuration(String(setting.slot_duration_minutes));
-          if (setting.appointment_buffer_minutes) setAppointmentBuffer(String(setting.appointment_buffer_minutes));
           if (setting.booking_lead_days) setBookingLeadDays(String(setting.booking_lead_days));
           if (setting.max_booking_per_slot) setMaxBookingPerSlot(String(setting.max_booking_per_slot));
         }
@@ -363,11 +376,18 @@ function WorkingHoursSection({
     }
   }, [viewingVersion, minEffectiveDate]);
 
-  const isViewingEditable = viewingVersion && viewingVersion.status === "Pending";
+  const viewingFullVersion = viewingVersion
+    ? versions?.find((v) => v.version_id === viewingVersion.version_id) ?? viewingVersion
+    : null;
+  const isViewingEditable = viewingFullVersion && (
+    viewingFullVersion.status === "Pending" ||
+    viewingFullVersion.status === "Expired" ||
+    (viewingFullVersion.status === "Active" && !viewingFullVersion.hasLinkedWorkSlots)
+  );
   const isEditingAllowed = !viewingVersion || isViewingEditable;
 
   function handleExitViewing() {
-    setViewingVersion(null);
+    setViewingVersion(activeVersion || null);
     onRefetchAll();
   }
 
@@ -631,7 +651,6 @@ function WorkingHoursSection({
     }));
     const settingFields = {
       slot_duration_minutes: Number(appointmentDuration),
-      appointment_buffer_minutes: Number(appointmentBuffer),
       booking_lead_days: Number(bookingLeadDays),
       max_booking_per_slot: Number(maxBookingPerSlot),
     };
@@ -738,15 +757,29 @@ function WorkingHoursSection({
           <span className="whs__viewing-banner-text">
             Viewing version &quot;{viewingVersion.name || "Unnamed"}&quot;
             {viewingVersion.effective_date && ` (effective ${viewingVersion.effective_date})`}
-            {!isViewingEditable && " — read only"}
+            {viewingFullVersion?.status === "Expired" && " — expired"}
+            {!isViewingEditable && viewingFullVersion?.hasLinkedWorkSlots
+              ? " — has existing appointments"
+              : (!isViewingEditable && " — read only")}
           </span>
-          <button
-            className="whs__viewing-banner-btn"
-            onClick={handleExitViewing}
-          >
-            <ArrowLeft size={14} />
-            Back to Current
-          </button>
+          <div className="whs__viewing-banner-actions">
+            {viewingVersion.status === "Expired" && onReactivateVersion && (
+              <button
+                className="whs__viewing-banner-btn whs__viewing-banner-btn--reactivate"
+                onClick={() => onReactivateVersion(viewingVersion.version_id)}
+              >
+                <RefreshCw size={14} />
+                Reactivate
+              </button>
+            )}
+            <button
+              className="whs__viewing-banner-btn"
+              onClick={handleExitViewing}
+            >
+              <ArrowLeft size={14} />
+              Back to Current
+            </button>
+          </div>
         </div>
       )}
 
@@ -773,6 +806,7 @@ function WorkingHoursSection({
             {versions.map((v) => {
               const isActive = v.status === "Active";
               const isPending = v.status === "Pending";
+              const canDelete = isPending || (v.status === "Expired" && !v.hasLinkedWorkSlots);
               const isViewing = viewingVersion?.version_id === v.version_id;
               return (
                 <div
@@ -800,11 +834,11 @@ function WorkingHoursSection({
                         <Eye size={14} />
                       </button>
                     )}
-                    {isPending && (
+                    {canDelete && (
                       <button
                         className="whs__version-delete"
                         onClick={() => {
-                          if (!window.confirm(`Delete pending version "${v.name || "Unnamed"}"?`)) return;
+                          if (!window.confirm(`Delete version "${v.name || "Unnamed"}"?`)) return;
                           handleDeleteVersion(v.version_id);
                         }}
                       >
@@ -904,21 +938,6 @@ function WorkingHoursSection({
                     <option value="60">60 Minutes</option>
                   </select>
                   <p className="whs__field-hint">The slot size for new bookings.</p>
-                </div>
-                <div className="whs__field">
-                  <label className="whs__field-label">Appointment Buffer</label>
-                  <select
-                    className="whs__select"
-                    value={appointmentBuffer}
-                    onChange={(e) => setAppointmentBuffer(e.target.value)}
-                    disabled={!isEditingAllowed}
-                  >
-                    <option value="0">0 Minutes</option>
-                    <option value="5">5 Minutes</option>
-                    <option value="10">10 Minutes</option>
-                    <option value="15">15 Minutes</option>
-                  </select>
-                  <p className="whs__field-hint">Minutes between appointments</p>
                 </div>
                 <div className="whs__field">
                   <label className="whs__field-label">Booking Lead Days</label>
@@ -1056,21 +1075,24 @@ WorkingHoursSection.propTypes = {
   pendingHours: PropTypes.array,
   activeSetting: PropTypes.shape({
     slot_duration_minutes: PropTypes.number,
-    appointment_buffer_minutes: PropTypes.number,
     booking_lead_days: PropTypes.number,
     max_booking_per_slot: PropTypes.number,
   }),
+  focusVersionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onShowCreateVersionModal: PropTypes.func.isRequired,
   onRefetchAll: PropTypes.func.isRequired,
+  onReactivateVersion: PropTypes.func,
 };
 
 WorkingHoursSection.defaultProps = {
   activeVersion: null,
   pendingVersion: null,
+  focusVersionId: null,
   versions: [],
   activeHours: [],
   pendingHours: [],
   activeSetting: null,
+  onReactivateVersion: null,
 };
 
 export default WorkingHoursSection;

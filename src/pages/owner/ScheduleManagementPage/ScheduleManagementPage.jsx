@@ -31,6 +31,7 @@ function ScheduleManagementPage() {
 
   const [activeTab, setActiveTab] = useState("hours");
   const [showCreateVersionModal, setShowCreateVersionModal] = useState(false);
+  const [focusVersionId, setFocusVersionId] = useState(null);
 
   const closedDays = (() => {
     const closed = new Set([1, 2, 3, 4, 5, 6, 7]);
@@ -41,7 +42,8 @@ function ScheduleManagementPage() {
 
   async function handleConfirmCreateVersion(name) {
     try {
-      await clinicScheduleManagementService.createVersion(name);
+      const result = await clinicScheduleManagementService.createVersion(name);
+      setFocusVersionId(result.version.version_id);
       setShowCreateVersionModal(false);
       refetchWorkingHour();
       refetchClinicSetting();
@@ -56,6 +58,17 @@ function ScheduleManagementPage() {
     refetchWorkingHour();
     refetchClinicSetting();
     refetchVersions();
+  }
+
+  async function handleReactivateVersion(versionId) {
+    try {
+      await clinicScheduleManagementService.activateVersion(versionId);
+      setFocusVersionId(versionId);
+      handleRefetchAll();
+    } catch (err) {
+      const detail = err?.code ? `[${err.code}] ` : "";
+      alert(`${detail}${err.message || "Failed to reactivate version. Please try again."}`);
+    }
   }
 
   return (
@@ -108,8 +121,10 @@ function ScheduleManagementPage() {
             activeHours={activeHours}
             pendingHours={pendingHours}
             activeSetting={activeSetting}
+            focusVersionId={focusVersionId}
             onShowCreateVersionModal={() => setShowCreateVersionModal(true)}
             onRefetchAll={handleRefetchAll}
+            onReactivateVersion={handleReactivateVersion}
           />
         )}
 
