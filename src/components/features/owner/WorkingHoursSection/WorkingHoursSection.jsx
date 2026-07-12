@@ -276,7 +276,6 @@ function WorkingHoursSection({
   onRefetchAll,
   onReactivateVersion,
 }) {
-  const [appointmentDuration, setAppointmentDuration] = useState("30");
   const [bookingLeadDays, setBookingLeadDays] = useState("30");
   const [maxBookingPerSlot, setMaxBookingPerSlot] = useState("1");
   const [saveState, setSaveState] = useState("idle");
@@ -295,7 +294,6 @@ function WorkingHoursSection({
 
   useEffect(() => {
     if (activeSetting) {
-      if (activeSetting.slot_duration_minutes) setAppointmentDuration(String(activeSetting.slot_duration_minutes));
       if (activeSetting.booking_lead_days) setBookingLeadDays(String(activeSetting.booking_lead_days));
       if (activeSetting.max_booking_per_slot) setMaxBookingPerSlot(String(activeSetting.max_booking_per_slot));
     }
@@ -344,7 +342,6 @@ function WorkingHoursSection({
         })));
         const setting = res.setting;
         if (setting) {
-          if (setting.slot_duration_minutes) setAppointmentDuration(String(setting.slot_duration_minutes));
           if (setting.booking_lead_days) setBookingLeadDays(String(setting.booking_lead_days));
           if (setting.max_booking_per_slot) setMaxBookingPerSlot(String(setting.max_booking_per_slot));
         }
@@ -617,7 +614,7 @@ function WorkingHoursSection({
 
   const timeSlots = useMemo(() => {
     if (!selectedShifts.length) return [];
-    const duration = Number(appointmentDuration);
+    const duration = 30;
     const slots = [];
 
     selectedShifts.forEach((shift, si) => {
@@ -641,7 +638,7 @@ function WorkingHoursSection({
     });
 
     return slots;
-  }, [selectedShifts, appointmentDuration]);
+  }, [selectedShifts]);
 
   const buildPayloads = () => {
     const hoursPayload = editableShifts.map((s) => ({
@@ -650,7 +647,6 @@ function WorkingHoursSection({
       end_time: s.shift_end,
     }));
     const settingFields = {
-      slot_duration_minutes: Number(appointmentDuration),
       booking_lead_days: Number(bookingLeadDays),
       max_booking_per_slot: Number(maxBookingPerSlot),
     };
@@ -923,23 +919,6 @@ function WorkingHoursSection({
               </div>
               <div className="whs__form-grid">
                 <div className="whs__field">
-                  <label className="whs__field-label">Slot Duration</label>
-                  <select
-                    className="whs__select"
-                    value={appointmentDuration}
-                    onChange={(e) => setAppointmentDuration(e.target.value)}
-                    disabled={!isEditingAllowed}
-                  >
-                    <option value="10">10 Minutes</option>
-                    <option value="15">15 Minutes</option>
-                    <option value="20">20 Minutes</option>
-                    <option value="30">30 Minutes</option>
-                    <option value="45">45 Minutes</option>
-                    <option value="60">60 Minutes</option>
-                  </select>
-                  <p className="whs__field-hint">The slot size for new bookings.</p>
-                </div>
-                <div className="whs__field">
                   <label className="whs__field-label">Booking Lead Days</label>
                   <input
                     className="whs__number-input"
@@ -999,7 +978,7 @@ function WorkingHoursSection({
                 )}
               </div>
               <p className="whs__preview-note">
-                * Preview based on {appointmentDuration}-minute duration and {sameHoursAllDays ? "all active days'" : `${selectedDay}'s`} operational hours.
+                * Preview based on 30-minute duration and {sameHoursAllDays ? "all active days'" : `${selectedDay}'s`} operational hours.
               </p>
 
               <div className="whs__effective-date">
@@ -1074,7 +1053,6 @@ WorkingHoursSection.propTypes = {
   activeHours: PropTypes.array,
   pendingHours: PropTypes.array,
   activeSetting: PropTypes.shape({
-    slot_duration_minutes: PropTypes.number,
     booking_lead_days: PropTypes.number,
     max_booking_per_slot: PropTypes.number,
   }),
