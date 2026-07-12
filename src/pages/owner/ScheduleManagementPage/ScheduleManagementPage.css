@@ -1,0 +1,109 @@
+.schedule-config-page {
+  min-height: 100vh;
+  background-color: var(--color-neutral-50);
+}
+
+.schedule-config {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-8);
+}
+
+.schedule-config__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-8);
+}
+
+.schedule-config__title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.schedule-config__subtitle {
+  color: var(--color-neutral-500);
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.schedule-config__header-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.schedule-config__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  border: none;
+  transition: opacity var(--transition-base);
+}
+
+.schedule-config__btn--primary {
+  background-color: var(--color-primary-700);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.schedule-config__btn--primary:hover {
+  opacity: 0.9;
+}
+
+.schedule-config__btn--primary:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.schedule-config__btn-icon {
+  font-size: 18px;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────── */
+
+.schedule-config__tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0;
+}
+
+.schedule-config__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  font-family: inherit;
+}
+
+.schedule-config__tab:hover {
+  color: var(--color-primary-700);
+}
+
+.schedule-config__tab--active {
+  color: var(--color-primary-700);
+  border-bottom-color: var(--color-primary-700);
+}
+
+.schedule-config__tab-icon {
+  font-size: 18px;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+}

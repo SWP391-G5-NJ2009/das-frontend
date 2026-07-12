@@ -4,6 +4,7 @@ import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
+import ScheduleManagementPage from "./pages/owner/ScheduleManagementPage/ScheduleManagementPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
@@ -23,6 +24,8 @@ import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import OwnerStaffPage from "./pages/owner/OwnerStaffPage/OwnerStaffPage";
 import ProtectedRoute from "./router/ProtectedRoute";
+import RevenuePage from "./pages/owner/RevenuePage/RevenuePage";
+import PatientPage from "./pages/owner/PatientPage/PatientPage";
 
 function App() {
   return (
@@ -176,15 +179,15 @@ function App() {
             }
           />
           <Route
-            path="/owner/rooms-management"
+            path="/owner/clinic-schedule"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
-                <RoomsPage />
+                <ScheduleManagementPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/rooms-mangagement"
+            path="/owner/rooms-management"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <RoomsPage />
@@ -204,6 +207,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ManageProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/revenue"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <RevenuePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/patient"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <PatientPage />
               </ProtectedRoute>
             }
           />

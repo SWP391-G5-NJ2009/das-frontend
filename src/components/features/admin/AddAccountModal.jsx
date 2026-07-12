@@ -5,9 +5,9 @@ import { accountService } from "../../../services/account.service";
 import "./AddAccountModal.css";
 
 const ROLES = [
-  { value: "Admin", label: "Quan tri vien" },
+  { value: "Admin", label: "Admin" },
   { value: "Dentist", label: "Dentist" },
-  { value: "Receptionist", label: "Le tan" },
+  { value: "Receptionist", label: "Receptionist" },
   { value: "Owner", label: "Clinic Owner" },
   { value: "Patient", label: "Patient" },
 ];

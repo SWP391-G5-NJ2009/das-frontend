@@ -45,6 +45,7 @@ function LandingPage() {
     phone: "",
     email: "",
     description: "",
+    website: "",
   });
 
   const [error, setError] = useState(null);
@@ -66,7 +67,7 @@ function LandingPage() {
 
     try {
       await consultationService.create(form);
-      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setForm({ full_name: "", phone: "", email: "", description: "", website: "" });
       setSuccess("Consultation request sent successfully!");
     } catch (err) {
       setError(err.message);
@@ -285,6 +286,16 @@ function LandingPage() {
                   required
                 />
               </label>
+              <input
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ position: "absolute", left: "-9999px" }}
+                value={form.website}
+                onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+              />
+
               <button
                 className="consultation-form__submit"
                 type="submit"

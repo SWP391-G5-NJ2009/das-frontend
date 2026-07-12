@@ -1,0 +1,89 @@
+.revenue-summary {
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.revenue-summary--error {
+  border-color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+.revenue-summary__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.revenue-summary__icon {
+  font-size: 1.75rem;
+  color: var(--color-primary-700);
+}
+
+.revenue-summary__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+  flex: 1;
+}
+
+.revenue-summary__period {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  font-weight: var(--font-weight-medium);
+}
+
+.revenue-summary__amount {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-700);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.revenue-summary__error-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin: 0;
+}
+
+.revenue-summary__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.revenue-summary__skeleton-line {
+  height: 1rem;
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-100) 25%,
+    var(--color-neutral-50) 50%,
+    var(--color-neutral-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+.revenue-summary__skeleton-line--short {
+  width: 40%;
+}
+
+.revenue-summary__skeleton-line--long {
+  width: 75%;
+  height: 2.25rem;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
