@@ -7,8 +7,8 @@ export const clinicScheduleManagementService = {
         api.post("/schedule/management/versions", { name, effectiveDate }),
     updateWorkingHours: (versionId, hours) =>
         api.put("/schedule/management/workingHour", { versionId, hours }),
-    saveAll: (versionId, hours, force = false) =>
-        api.put("/schedule/management/save-all", { versionId, hours, force }),
+    saveAll: (versionId, hours) =>
+        api.put("/schedule/management/save-all", { versionId, hours }),
     cancelPendingVersion: () => api.delete("/schedule/management/pending"),
     activateVersion: (id) => api.patch(`/schedule/management/versions/${id}/activate`),
     deleteVersion: (id) => api.delete(`/schedule/management/versions/${id}`),

@@ -278,7 +278,6 @@ function WorkingHoursSection({
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [editableShifts, setEditableShifts] = useState([]);
   const [saveState, setSaveState] = useState("idle");
-  const [conflictData, setConflictData] = useState(null);
 
   const [viewingVersion, setViewingVersion] = useState(null);
   const [viewingLoading, setViewingLoading] = useState(false);
@@ -658,15 +657,9 @@ function WorkingHoursSection({
       ]);
 
       setSaveState("saved");
-      setConflictData(null);
       setTimeout(() => setSaveState("idle"), 2000);
       onRefetchAll();
     } catch (err) {
-      if (err.code === "CONFLICT_DETECTED" && err.details?.affected) {
-        setConflictData(err.details.affected);
-        setSaveState("idle");
-        return;
-      }
       const detail = err?.code ? `[${err.code}] ` : "";
       alert(`${detail}${err.message || "Không thể lưu thay đổi. Vui lòng thử lại."}`);
       setSaveState("idle");
