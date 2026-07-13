@@ -106,7 +106,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
           <button
             type="button"
             className="cancel-modal__close"
-            aria-label="Close"
+            aria-label="Đóng"
             onClick={handleClose}
             disabled={isLoading}
           >
@@ -135,7 +135,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               />
               <SummaryRow
                 icon={Phone}
-                label="Phone"
+                label="Điện thoại"
                 value={appointment.patientPhone}
               />
               <SummaryRow
@@ -145,17 +145,17 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               />
               <SummaryRow
                 icon={Stethoscope}
-                label="Service"
+                label="Dịch vụ"
                 value={appointment.serviceName}
               />
               <SummaryRow
                 icon={Calendar}
-                label="Date"
+                label="Ngày khám"
                 value={formatDisplayDate(appointment.scheduledDate)}
               />
               <SummaryRow
                 icon={Clock}
-                label="Time"
+                label="Giờ khám"
                 value={timeDisplay}
               />
             </div>
@@ -178,8 +178,8 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             <p className="cancel-modal__warning-text">
               <strong>Lưu ý:</strong> Xác nhận hủy lịch sẽ{" "}
               <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại
-              it for public booking. A cancellation notification email will also be
-              sent to the patient automatically.
+              cho phép đặt lịch mới. Email thông báo hủy cũng sẽ được
+              tự động gửi đến bệnh nhân.
             </p>
           </div>
 
@@ -210,7 +210,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             disabled={isLoading}
             id="cancel-modal-back-btn"
           >
-            Back
+            Quay lại
           </button>
           <button
             type="button"
@@ -221,7 +221,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             title={
               within24h
                 ? "Không thể tự hủy trong vòng 24 giờ - hãy liên hệ lễ tân"
-                : "Confirm appointment cancellation"
+                : "Xác nhận hủy lịch hẹn"
             }
             id="cancel-modal-confirm-btn"
           >
