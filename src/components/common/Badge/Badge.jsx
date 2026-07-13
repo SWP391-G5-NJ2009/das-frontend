@@ -9,6 +9,7 @@ const STATUS_CLASS = {
   Conflict: "conflict",
   "In-Treatment": "in-treatment",
   Completed: "completed",
+  "Resolved No-Show": "resolved-no-show",
 };
 
 const STATUS_LABEL = {
@@ -19,6 +20,7 @@ const STATUS_LABEL = {
   Conflict: "Xung đột",
   "In-Treatment": "Đang điều trị",
   Completed: "Hoàn tất",
+  "Resolved No-Show": "Đã xử lý vắng mặt",
 };
 
 function Badge({ status }) {
