@@ -1,0 +1,466 @@
+/* ===== Page Layout ===== */
+.appt-dash {
+  padding: var(--space-6);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* ===== Header ===== */
+.appt-dash__header {
+  margin-bottom: var(--space-6);
+}
+
+.appt-dash__eyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.appt-dash__title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.appt-dash__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+/* ===== Notice ===== */
+.appt-dash__notice {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.appt-dash__notice--error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+/* ===== Card ===== */
+.appt-dash__card {
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.appt-dash__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.appt-dash__card-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.appt-dash__card-icon {
+  color: var(--color-primary-700);
+}
+
+.appt-dash__card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+/* ===== Summary Row ===== */
+.appt-dash__summary-row {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.appt-dash__summary-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+}
+
+.appt-dash__summary-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-700);
+}
+
+.appt-dash__summary-label {
+  color: var(--color-neutral-500);
+}
+
+/* ===== Month Navigation ===== */
+.appt-dash__month-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.appt-dash__nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.appt-dash__nav-btn:hover {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-700);
+}
+
+/* ===== Weekday Headers ===== */
+.appt-dash__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.appt-dash__weekday {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== Calendar Grid ===== */
+.appt-dash__calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: var(--space-2) var(--space-4) var(--space-4);
+  gap: var(--space-1);
+}
+
+.appt-dash__day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background-color: var(--color-neutral-50);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.appt-dash__day-cell:hover {
+  border-color: var(--color-primary-700);
+  box-shadow: var(--shadow-sm);
+}
+
+.appt-dash__day-cell--blank {
+  background-color: transparent;
+  cursor: default;
+}
+
+.appt-dash__day-cell--blank:hover {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.appt-dash__day-cell--empty {
+  background-color: var(--color-neutral-50);
+}
+
+.appt-dash__day-cell--low {
+  background-color: var(--color-primary-100);
+}
+
+.appt-dash__day-cell--medium {
+  background-color: var(--color-primary-200);
+}
+
+.appt-dash__day-cell--high {
+  background-color: var(--color-primary-300);
+}
+
+.appt-dash__day-cell--today {
+  border-color: var(--color-primary-700);
+  border-width: 2px;
+  font-weight: var(--font-weight-bold);
+}
+
+.appt-dash__day-number {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-800);
+}
+
+.appt-dash__day-count {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-700);
+  margin-top: var(--space-1);
+}
+
+/* ===== Loading ===== */
+.appt-dash__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+}
+
+/* ===== Day View ===== */
+.appt-dash__day-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.appt-dash__back-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.appt-dash__back-btn:hover {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-700);
+}
+
+.appt-dash__day-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.appt-dash__day-total {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-neutral-500);
+  margin-left: var(--space-2);
+}
+
+/* ===== Timeline ===== */
+.appt-dash__timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.appt-dash__time-row {
+  display: flex;
+  min-height: 56px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.appt-dash__time-row:last-child {
+  border-bottom: none;
+}
+
+.appt-dash__time-row--has-appts {
+  background-color: var(--color-primary-50);
+}
+
+.appt-dash__time-row--empty {
+  background-color: #ffffff;
+}
+
+.appt-dash__time-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 160px;
+  min-width: 160px;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-600);
+  border-right: 1px solid var(--border-color);
+  background-color: var(--color-neutral-50);
+}
+
+.appt-dash__time-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  flex: 1;
+}
+
+.appt-dash__no-appt {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-300);
+  font-style: italic;
+}
+
+/* ===== Appointment Card ===== */
+.appt-dash__appt-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  min-width: 280px;
+  flex: 1;
+}
+
+.appt-dash__appt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.appt-dash__appt-patient {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+}
+
+.appt-dash__appt-status {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  text-transform: capitalize;
+}
+
+.appt-dash__appt-status.appt-dash__status--confirmed {
+  background-color: var(--status-confirmed-bg);
+  color: var(--status-confirmed);
+}
+
+.appt-dash__appt-status.appt-dash__status--waiting {
+  background-color: var(--status-waiting-bg);
+  color: var(--status-waiting);
+}
+
+.appt-dash__appt-status.appt-dash__status--checked-in {
+  background-color: var(--status-checked-in-bg);
+  color: var(--status-checked-in);
+}
+
+.appt-dash__appt-status.appt-dash__status--cancelled {
+  background-color: var(--status-cancelled-bg);
+  color: var(--status-cancelled);
+}
+
+.appt-dash__appt-status.appt-dash__status--no-show {
+  background-color: var(--status-no-show-bg);
+  color: var(--status-no-show);
+}
+
+.appt-dash__appt-status.appt-dash__status--conflict {
+  background-color: var(--status-conflict-bg);
+  color: var(--status-conflict);
+}
+
+.appt-dash__appt-status.appt-dash__status--in-treatment {
+  background-color: var(--status-in-treatment-bg);
+  color: var(--status-in-treatment);
+}
+
+.appt-dash__appt-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-500);
+}
+
+.appt-dash__appt-service {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-secondary-700);
+}
+
+.appt-dash__appt-dentist {
+  color: var(--color-neutral-600);
+}
+
+.appt-dash__appt-room,
+.appt-dash__appt-phone {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .appt-dash {
+    padding: var(--space-4);
+  }
+
+  .appt-dash__calendar-grid {
+    padding: var(--space-2);
+  }
+
+  .appt-dash__day-cell {
+    min-height: 56px;
+  }
+
+  .appt-dash__time-row {
+    flex-direction: column;
+  }
+
+  .appt-dash__time-label {
+    width: 100%;
+    min-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .appt-dash__appt-card {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .appt-dash__day-cell {
+    min-height: 64px;
+  }
+
+  .appt-dash__card-header {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+}
