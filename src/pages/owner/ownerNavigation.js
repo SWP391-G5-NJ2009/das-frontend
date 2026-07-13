@@ -16,7 +16,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "analytics",
-    label: "Analytics",
+    label: "Thống kê",
     to: "/owner/analytics",
   },
   {
@@ -46,7 +46,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "groups",
-    label: "Staff",
+    label: "Nhân viên",
     to: "/owner/staff",
   },
 ];

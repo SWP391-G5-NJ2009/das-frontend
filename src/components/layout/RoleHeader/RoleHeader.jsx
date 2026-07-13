@@ -27,9 +27,9 @@ function getInitials(name) {
 }
 
 const ROLE_LABELS = {
-  admin: "Admin",
+  admin: "Quản trị viên",
   dentist: "Nha sĩ",
-  owner: "Clinic Owner",
+  owner: "Chủ phòng khám",
   patient: "Bệnh nhân",
   receptionist: "Lễ tân",
 };
@@ -54,7 +54,9 @@ function RoleHeader({ isFixed, mobileNavItems, roleLabel }) {
             type="button"
             aria-expanded={isMobileMenuOpen}
             aria-label={
-              isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
+              isMobileMenuOpen
+                ? "Close navigation menu"
+                : "Open navigation menu"
             }
             onClick={() => setIsMobileMenuOpen((current) => !current)}
           >
