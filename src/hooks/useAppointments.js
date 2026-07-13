@@ -25,7 +25,7 @@ export function useMyAppointments(filters = {}, options = {}) {
         const sorted = (data || []).slice().sort((a, b) => {
           const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
           const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
-          return dateB.localeCompare(dateA);
+          return dateA.localeCompare(dateB);
         });
         setAppointments(sorted);
       } catch (err) {
@@ -90,7 +90,7 @@ export function useAllAppointments(filters = {}, options = {}) {
         const sorted = (data || []).slice().sort((a, b) => {
           const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
           const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
-          return dateB.localeCompare(dateA);
+          return dateA.localeCompare(dateB);
         });
 
         setAppointments(sorted);
