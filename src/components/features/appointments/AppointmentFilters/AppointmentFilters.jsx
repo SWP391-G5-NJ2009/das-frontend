@@ -68,7 +68,11 @@ function AppointmentFilters({
     // Clamp day if needed when month/year combo has fewer days
     const newDays = newYear && month ? getDaysInMonth(newYear, month) : 31;
     const clampedDay = day && Number(day) > newDays ? "" : day;
-    onDatePartsChange({ year: newYear, month: newYear ? month : "", day: clampedDay });
+    onDatePartsChange({
+      year: newYear,
+      month: newYear ? month : "",
+      day: clampedDay,
+    });
   }
 
   function handleMonthChange(e) {
@@ -161,7 +165,7 @@ function AppointmentFilters({
             aria-pressed={isTodayActive}
           >
             <CalendarCheck size={14} aria-hidden="true" />
-            Today
+            Hôm nay
           </button>
 
           {/* Year */}
@@ -200,8 +204,8 @@ function AppointmentFilters({
                 !year
                   ? " appt-filters__select--disabled"
                   : month
-                  ? " appt-filters__select--active"
-                  : ""
+                    ? " appt-filters__select--active"
+                    : ""
               }`}
               value={month}
               onChange={handleMonthChange}
@@ -235,8 +239,8 @@ function AppointmentFilters({
                 !month
                   ? " appt-filters__select--disabled"
                   : day
-                  ? " appt-filters__select--active"
-                  : ""
+                    ? " appt-filters__select--active"
+                    : ""
               }`}
               value={day}
               onChange={handleDayChange}
@@ -246,7 +250,7 @@ function AppointmentFilters({
               <option value="">-- Ngày --</option>
               {dayOptions.map((d) => (
                 <option key={d} value={d}>
-                  Day {Number(d)}
+                  Ngày {Number(d)}
                 </option>
               ))}
             </select>

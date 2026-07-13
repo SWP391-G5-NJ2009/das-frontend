@@ -48,7 +48,7 @@ function AppointmentTable({
               </th>
             )}
             <th className="appt-table__th" scope="col">
-              Service
+              Dịch vụ
             </th>
             <th className="appt-table__th" scope="col">
               Nha sĩ
@@ -57,7 +57,7 @@ function AppointmentTable({
               <span>Ngày và giờ</span>
             </th>
             <th className="appt-table__th" scope="col">
-              Status
+              Trạng thái
             </th>
             <th className="appt-table__th appt-table__th--actions" scope="col">
               Thao tác
@@ -117,7 +117,7 @@ function AppointmentTable({
                   </span>
                   {appt.slotOccupied > 1 && (
                     <span className="appt-table__slot-count">
-                      {appt.slotOccupied} slots
+                      {appt.slotOccupied} ca
                     </span>
                   )}
                 </td>
@@ -151,7 +151,7 @@ function AppointmentTable({
                         id={`tbl-edit-${appt.id}`}
                         type="button"
                         className="appt-table__action-btn appt-table__action-btn--edit"
-                        aria-label={`Edit appointment for ${appt.patientName}`}
+                        aria-label={`Chỉnh sửa lịch hẹn của ${appt.patientName}`}
                         title="Tính năng chỉnh sửa sắp ra mắt"
                         disabled
                         onClick={() => onEdit?.(appt)}
@@ -165,7 +165,7 @@ function AppointmentTable({
                             id={`tbl-liftban-${appt.id}`}
                             type="button"
                             className="appt-table__action-btn appt-table__action-btn--lift-ban"
-                            aria-label={`Lift account restriction for ${appt.patientName}`}
+                            aria-label={`Gỡ hạn chế tài khoản của ${appt.patientName}`}
                             title="Gỡ hạn chế tài khoản"
                             onClick={() => onLiftBan?.(appt)}
                           >
@@ -188,7 +188,7 @@ function AppointmentTable({
                           }
                           title={
                             within24h
-                              ? "Within 24 hours — contact reception to cancel"
+                              ? "Dưới 24 giờ - liên hệ lễ tân để hủy"
                               : "Hủy lịch hẹn"
                           }
                           onClick={() =>

@@ -1,27 +1,27 @@
 export const RECEPTIONIST_NAV_ITEMS = [
   {
     icon: "assignment",
-    label: "Consultation Requests",
+    label: "Yêu cầu tư vấn",
     to: "/receptionist/consultation-request",
   },
   {
     icon: "calendar_today",
-    label: "Appointments",
+    label: "Đặt lịch",
     to: "/receptionist/appointments",
   },
   {
     icon: "payments",
-    label: "Payments",
+    label: "Thanh toán",
     to: "/receptionist/payments",
   },
   {
     icon: "person_add",
-    label: "Patient Registration",
+    label: "Đăng ký bệnh nhân",
     to: "/receptionist/patient-registration",
   },
   {
     icon: "meeting_room",
-    label: "Rooms Availability",
+    label: "Phòng trống",
     to: "/receptionist/rooms",
   },
   {

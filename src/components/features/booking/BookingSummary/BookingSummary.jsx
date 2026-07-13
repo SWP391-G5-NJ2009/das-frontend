@@ -21,7 +21,7 @@ function BookingSummary({
   const hasAll = patient && service && dentist && date && slot;
 
   const formattedDate = date
-    ? date.toLocaleDateString("en-US", {
+    ? date.toLocaleDateString("vi-VN", {
         weekday: "short",
         day: "2-digit",
         month: "2-digit",
@@ -30,7 +30,7 @@ function BookingSummary({
     : null;
 
   const formattedFee = service?.price
-    ? new Intl.NumberFormat("en-US", {
+    ? new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
       }).format(service.price)
@@ -52,7 +52,7 @@ function BookingSummary({
             <User size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">PATIENT</span>
+            <span className="booking-summary__row-label">BỆNH NHÂN</span>
             {patient ? (
               <>
                 <span className="booking-summary__row-value">
@@ -78,14 +78,14 @@ function BookingSummary({
             <Stethoscope size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">SERVICE</span>
+            <span className="booking-summary__row-label">DỊCH VỤ</span>
             {service ? (
               <>
                 <span className="booking-summary__row-value">
                   {service.name}
                 </span>
                 <span className="booking-summary__row-sub">
-                  {service.duration} minutes
+                  {service.duration} phút
                 </span>
               </>
             ) : (
@@ -104,7 +104,7 @@ function BookingSummary({
             <UserCheck size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">DENTIST</span>
+            <span className="booking-summary__row-label">NHA SĨ</span>
             {dentist ? (
               <span className="booking-summary__row-value">
                 {dentist.fullName}

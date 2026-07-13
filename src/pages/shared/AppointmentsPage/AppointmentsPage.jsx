@@ -25,8 +25,8 @@ const PAGE_SIZE = 10;
 
 const ROLE_CONFIG = {
   patient: {
-    title: "My Appointments",
-    subtitle: "View and manage your scheduled appointments.",
+    title: "Lịch hẹn của tôi",
+    subtitle: "Xem và quản lý các lịch hẹn đã đặt của bạn.",
     bookRoute: "/patient/booking",
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
@@ -35,8 +35,8 @@ const ROLE_CONFIG = {
     statusOptions: null,
   },
   receptionist: {
-    title: "Appointment List",
-    subtitle: "Manage and track all clinic appointments.",
+    title: "Danh sách lịch hẹn",
+    subtitle: "Quản lý và theo dõi tất cả lịch hẹn của phòng khám.",
     bookRoute: "/receptionist/book-appointment",
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
@@ -45,8 +45,8 @@ const ROLE_CONFIG = {
     statusOptions: null,
   },
   dentist: {
-    title: "My Appointments",
-    subtitle: "View all appointments assigned to you.",
+    title: "Lịch hẹn của tôi",
+    subtitle: "Xem tất cả lịch hẹn được phân công cho bạn.",
     bookRoute: null,
     bookBtnId: null,
     headingId: "appts-page-title",
@@ -199,7 +199,7 @@ function AppointmentsPage() {
         setToast({
           type: "success",
           message:
-            "The appointment has been cancelled successfully! A notification email has been sent to the patient.",
+            "Lịch hẹn đã được hủy thành công! Email thông báo đã được gửi đến bệnh nhân.",
         });
       } finally {
         setIsCancelling(false);
@@ -217,7 +217,7 @@ function AppointmentsPage() {
     setToast({
       type: "warning",
       message:
-        "Appointments can only be cancelled at least 24 hours in advance. Please contact the receptionist directly for assistance.",
+        "Chỉ có thể hủy lịch hẹn trước ít nhất 24 giờ. Vui lòng liên hệ trực tiếp với lễ tân để được hỗ trợ.",
     });
   }, []);
 
@@ -282,11 +282,9 @@ function AppointmentsPage() {
           <div className="appts-page__urgent-alert" role="alert">
             <AlertTriangle size={20} aria-hidden="true" />
             <div className="appts-page__urgent-copy">
-              <strong>Việc cần đổi lịch khẩn cấp</strong>
+              <strong>Lịch hẹn cần xử lý khẩn cấp</strong>
               <span>
-                {conflictAlerts.appointments.length} lịch hẹn xung đột
-                {conflictAlerts.appointments.length === 1 ? "" : "s"} need
-                receptionist follow-up.
+                Có {conflictAlerts.appointments.length} lịch hẹn xung đột cần lễ tân xử lý.
               </span>
             </div>
             <button
@@ -316,7 +314,7 @@ function AppointmentsPage() {
         )}
 
         {!isLoading && !error && appointments.length === 0 && (
-          <EmptyState message="No appointments found." />
+          <EmptyState message="Không tìm thấy lịch hẹn nào." />
         )}
 
         {!isLoading && !error && appointments.length > 0 && (
@@ -331,7 +329,7 @@ function AppointmentsPage() {
             />
             <div className="appts-page__pagination">
               <p className="appts-page__pagination-info">
-                Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} of {appointments.length} appointments
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} / {appointments.length} lịch hẹn
               </p>
               <Pagination
                 currentPage={currentPage}

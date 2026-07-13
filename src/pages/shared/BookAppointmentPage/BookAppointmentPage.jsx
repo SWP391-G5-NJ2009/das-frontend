@@ -191,8 +191,8 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         setSelectedSlot(null);
         refetchSlots();
         alert(
-          "This time slot has just been booked by another user.\n" +
-            "The availability has been updated — please select a different time.",
+          "Khung giờ này vừa được đặt bởi người dùng khác.\n" +
+            "Danh sách giờ trống đã được cập nhật — vui lòng chọn giờ khác.",
         );
       } else {
         alert(err?.message || "Đặt lịch thất bại. Vui lòng thử lại!");
