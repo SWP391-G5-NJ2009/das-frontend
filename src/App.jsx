@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
+import AppointmentDashboardPage from "./pages/admin/AppointmentDashboardPage/AppointmentDashboardPage";
+
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
@@ -223,6 +225,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <PatientPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/appointment-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <AppointmentDashboardPage />
               </ProtectedRoute>
             }
           />

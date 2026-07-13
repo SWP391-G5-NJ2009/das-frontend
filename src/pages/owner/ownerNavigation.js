@@ -35,6 +35,11 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/patient",
   },
   {
+    icon: "calendar_today",
+    label: "Appointment Dashboard",
+    to: "/owner/appointment-dashboard",
+  },
+  {
     icon: "person",
     label: "Manage Profile",
     to: "/owner/profile",

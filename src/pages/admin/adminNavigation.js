@@ -1,6 +1,5 @@
 export const ADMIN_NAV_ITEMS = [
   { icon: "person", label: "Account Management", to: "/admin/accounts" },
-  { icon: "calendar_today", label: "Appointments", to: "/admin/appointments" },
   { icon: "assessment", label: "Reports", to: "/admin/reports" },
 ];
 
