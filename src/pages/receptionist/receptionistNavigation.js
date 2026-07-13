@@ -6,7 +6,7 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "calendar_today",
-    label: "Đặt lịch",
+    label: "Lịch hẹn",
     to: "/receptionist/appointments",
   },
   {
