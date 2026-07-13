@@ -11,11 +11,16 @@ import { authService } from "../../../services/auth.service";
 import "./ManageProfilePage.css";
 
 const PROFILE_FIELDS = [
-  { name: "fullName", label: "Full name" },
-  { name: "birthDate", label: "Date of birth", type: "date" },
-  { name: "gender", label: "Gender", options: ["Male", "Female"] },
-  { name: "address", label: "Address", wide: true },
+  { name: "fullName", label: "Họ và tên" },
+  { name: "birthDate", label: "Ngày sinh", type: "date" },
+  { name: "gender", label: "Giới tính", options: ["Male", "Female"] },
+  { name: "address", label: "Địa chỉ", wide: true },
 ];
+
+const OPTION_LABELS = {
+  Male: "Nam",
+  Female: "Nữ",
+};
 
 const EMPTY_PASSWORD_FORM = {
   oldPassword: "",
@@ -24,7 +29,7 @@ const EMPTY_PASSWORD_FORM = {
 };
 
 function formatValue(value) {
-  return value || "Not updated";
+  return value || "Chưa cập nhật";
 }
 
 function normalizeGender(value) {
@@ -79,7 +84,7 @@ function ProfileField({ field, value, onChange }) {
                 type="radio"
                 value={option}
               />
-              <span>{option}</span>
+              <span>{OPTION_LABELS[option] || option}</span>
             </label>
           ))}
         </div>
@@ -163,12 +168,12 @@ function ManageProfilePage() {
       setStatus({
         isLoading: false,
         error: "",
-        success: "Profile updated successfully.",
+        success: "Cập nhật hồ sơ thành công.",
       });
     } catch (err) {
       setStatus({
         isLoading: false,
-        error: err.message || "Unable to update profile.",
+        error: err.message || "Không thể cập nhật hồ sơ.",
         success: "",
       });
     }
@@ -208,12 +213,12 @@ function ManageProfilePage() {
       setPasswordStatus({
         isLoading: false,
         error: "",
-        success: "Password changed successfully.",
+        success: "Đổi mật khẩu thành công.",
       });
     } catch (err) {
       setPasswordStatus({
         isLoading: false,
-        error: err.message || "Unable to change password.",
+        error: err.message || "Không thể đổi mật khẩu.",
         success: "",
       });
     }
@@ -225,8 +230,8 @@ function ManageProfilePage() {
         <article className="manage-profile__card">
           <div className="manage-profile__card-header">
             <div>
-              <h1 id="manage-profile-title">Personal Profile</h1>
-              <p>Manage your personal information</p>
+              <h1 id="manage-profile-title">Hồ sơ cá nhân</h1>
+              <p>Quản lý thông tin cá nhân</p>
             </div>
             {!isEditing && profile && (
               <button
@@ -239,10 +244,10 @@ function ManageProfilePage() {
             )}
           </div>
 
-          {isLoading && <p className="manage-profile__state">Loading profile...</p>}
+          {isLoading && <p className="manage-profile__state">Đang tải hồ sơ...</p>}
           {error && (
             <p className="manage-profile__message manage-profile__message--error">
-              {error.message || "Unable to load profile."}
+              {error.message || "Không thể tải hồ sơ."}
             </p>
           )}
 
@@ -271,14 +276,14 @@ function ManageProfilePage() {
                   ))}
                   <div className="manage-profile__actions">
                     <button disabled={status.isLoading} type="submit">
-                      {status.isLoading ? "Saving..." : "Save changes"}
+                      {status.isLoading ? "Đang lưu..." : "Lưu thay đổi"}
                     </button>
                     <button
                       disabled={status.isLoading}
                       onClick={cancelEdit}
                       type="button"
                     >
-                      Cancel
+                      Hủy
                     </button>
                   </div>
                 </form>
@@ -302,18 +307,18 @@ function ManageProfilePage() {
         <article className="manage-profile__card">
           <div className="manage-profile__card-header">
             <div>
-              <h2>Change password</h2>
-              <p>Update your password to protect your account</p>
+              <h2>Đổi mật khẩu</h2>
+              <p>Cập nhật mật khẩu để bảo vệ tài khoản của bạn</p>
             </div>
           </div>
 
           <form className="manage-profile__password-form" onSubmit={savePassword}>
             <label>
-              <span>Current password</span>
+              <span>Mật khẩu hiện tại</span>
               <input
                 name="oldPassword"
                 onChange={changePasswordForm}
-                placeholder="Enter current password"
+                placeholder="Nhập mật khẩu hiện tại"
                 required
                 type="password"
                 value={passwordForm.oldPassword}
@@ -321,13 +326,13 @@ function ManageProfilePage() {
             </label>
 
             <label>
-              <span>New password</span>
+              <span>Mật khẩu mới</span>
               <input
                 minLength={8}
                 name="newPassword"
                 onChange={changePasswordForm}
                 pattern="^(?=.*[A-Za-z])(?=.*\\d).+$"
-                placeholder="Enter new password"
+                placeholder="Nhập mật khẩu mới"
                 required
                 type="password"
                 value={passwordForm.newPassword}
@@ -335,11 +340,11 @@ function ManageProfilePage() {
             </label>
 
             <label>
-              <span>Confirm new password</span>
+              <span>Xác nhận mật khẩu mới</span>
               <input
                 name="confirmPassword"
                 onChange={changePasswordForm}
-                placeholder="Re-enter new password"
+                placeholder="Nhập lại mật khẩu mới"
                 required
                 type="password"
                 value={passwordForm.confirmPassword}
@@ -359,14 +364,14 @@ function ManageProfilePage() {
 
             <div className="manage-profile__actions manage-profile__actions--password">
               <button disabled={passwordStatus.isLoading} type="submit">
-                {passwordStatus.isLoading ? "Saving..." : "Save password"}
+                {passwordStatus.isLoading ? "Đang lưu..." : "Lưu mật khẩu"}
               </button>
               <button
                 disabled={passwordStatus.isLoading}
                 onClick={resetPasswordForm}
                 type="button"
               >
-                Cancel
+                Hủy
               </button>
             </div>
           </form>

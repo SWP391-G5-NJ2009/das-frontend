@@ -5,8 +5,8 @@ import "./StaffTable.css";
 function getRoleLabel(role) {
   const normalizedRole = role?.toLowerCase();
 
-  if (normalizedRole === "dentist") return "Dentist";
-  if (normalizedRole === "receptionist") return "Receptionist";
+  if (normalizedRole === "dentist") return "Nha sĩ";
+  if (normalizedRole === "receptionist") return "Lễ tân";
 
   return role || "Unknown";
 }
@@ -14,8 +14,8 @@ function getRoleLabel(role) {
 function getStatusLabel(status) {
   const normalizedStatus = status?.toLowerCase();
 
-  if (normalizedStatus === "active") return "Active";
-  if (normalizedStatus === "banned") return "Banned";
+  if (normalizedStatus === "active") return "Hoạt động";
+  if (normalizedStatus === "banned") return "Bị khóa";
 
   return "Unknown";
 }
@@ -40,10 +40,10 @@ function StaffTable({ staff, onViewDentist }) {
       <table className="staff-table__table">
         <thead>
           <tr>
-            <th scope="col">Name / Username</th>
+            <th scope="col">Tên / Tên đăng nhập</th>
             <th scope="col">Role</th>
             <th scope="col">Status</th>
-            <th scope="col">Action</th>
+            <th scope="col">Thao tác</th>
           </tr>
         </thead>
         <tbody>

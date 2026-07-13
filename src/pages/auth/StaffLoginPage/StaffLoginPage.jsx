@@ -20,7 +20,7 @@ function StaffLoginPage() {
 
   return (
     <AuthLoginLayout
-      title="Staff login"
+      title="Đăng nhập nhân viên"
       subtitle="Please log in with your internal account."
       credentialLabel="Username"
       credentialName="username"

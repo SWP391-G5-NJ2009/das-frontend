@@ -4,17 +4,17 @@ import "./SiteHeader.css";
 function SiteHeader({ brandName = "DentalCare" }) {
   return (
     <header className="site-header">
-      <nav className="site-header__inner" aria-label="Main navigation">
+      <nav className="site-header__inner" aria-label="Điều hướng chính">
         <Link className="site-header__brand" to="/">
           {brandName}
         </Link>
         <div className="site-header__links">
-          <Link to="/">Home</Link>
-          <Link to="/services">Services</Link>
-          <Link to="/consultation">Consultation</Link>
+          <Link to="/">Trang chủ</Link>
+          <Link to="/services">Dịch vụ</Link>
+          <Link to="/consultation">Tư vấn</Link>
         </div>
         <Link className="site-header__login" to="/login">
-          Log in
+          Đăng nhập
         </Link>
       </nav>
     </header>

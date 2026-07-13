@@ -156,11 +156,11 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
         <div className="clinic-holidays__header">
           <div className="clinic-holidays__header-left">
             <CalendarX size={24} className="clinic-holidays__icon" />
-            <h2 className="clinic-holidays__title">Clinic Holidays</h2>
+            <h2 className="clinic-holidays__title">Ngày nghỉ phòng khám</h2>
           </div>
           <button className="clinic-holidays__btn-add" onClick={() => setShowAddClosure(true)}>
             <Plus size={20} />
-            Add Day
+            Thêm ngày
           </button>
         </div>
 
@@ -206,7 +206,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
           </div>
 
           <div className="clinic-holidays__closure-column">
-            <h3 className="clinic-holidays__list-title">Closure Detail</h3>
+            <h3 className="clinic-holidays__list-title">Chi tiết ngày nghỉ</h3>
             {selectedClosure ? (
               <div className="clinic-holidays__item">
                 <div className="clinic-holidays__item-left">
@@ -220,7 +220,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                   </div>
                   <div>
                     <p className="clinic-holidays__name">{selectedClosure.label}</p>
-                    <p className="clinic-holidays__type">Closed all day</p>
+                    <p className="clinic-holidays__type">Nghỉ cả ngày</p>
                   </div>
                 </div>
                 <button
@@ -243,14 +243,14 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                 </p>
               );
             })() : (
-              <p className="clinic-holidays__empty-text">Click a day to view closure details.</p>
+              <p className="clinic-holidays__empty-text">Bấm vào một ngày để xem chi tiết ngày nghỉ.</p>
             )}
           </div>
 
           <div className="clinic-holidays__list">
-            <h3 className="clinic-holidays__list-title">Upcoming Closures</h3>
+            <h3 className="clinic-holidays__list-title">Ngày nghỉ sắp tới</h3>
             {monthHolidays.length === 0 ? (
-              <p className="clinic-holidays__empty-text">No closures this month.</p>
+              <p className="clinic-holidays__empty-text">Tháng này không có ngày nghỉ.</p>
             ) : monthHolidays.map((h, i) => (
               <div key={i} className="clinic-holidays__item">
                 <div className="clinic-holidays__item-left">
@@ -264,7 +264,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                   </div>
                   <div>
                     <p className="clinic-holidays__name">{h.label}</p>
-                    <p className="clinic-holidays__type">Closed all day</p>
+                    <p className="clinic-holidays__type">Nghỉ cả ngày</p>
                   </div>
                 </div>
                 <button
@@ -288,7 +288,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
         >
           <div className="clinic-holidays__modal">
             <div className="clinic-holidays__modal-header">
-              <h3 className="clinic-holidays__modal-title">Add Clinic Closure</h3>
+              <h3 className="clinic-holidays__modal-title">Thêm ngày nghỉ phòng khám</h3>
               <button
                 className="clinic-holidays__modal-close"
                 type="button"
@@ -304,7 +304,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
               )}
 
               <label className="clinic-holidays__modal-field">
-                <span className="clinic-holidays__modal-label">Date *</span>
+                <span className="clinic-holidays__modal-label">Ngày *</span>
                 <input
                   type="date"
                   value={addClosureDate}
@@ -317,7 +317,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                 <span className="clinic-holidays__modal-label">Reason</span>
                 <input
                   type="text"
-                  placeholder="e.g. Public Holiday"
+                  placeholder="VD: Ngày lễ"
                   value={addClosureReason}
                   onChange={(e) => setAddClosureReason(e.target.value)}
                   maxLength={255}
@@ -330,7 +330,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                   type="button"
                   onClick={() => setShowAddClosure(false)}
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   className="clinic-holidays__modal-btn clinic-holidays__modal-btn--submit"

@@ -37,10 +37,10 @@ function BookingSummary({
     : null;
 
   return (
-    <aside className="booking-summary" aria-label="Appointment Summary">
+    <aside className="booking-summary" aria-label="Tóm tắt lịch hẹn">
       <div className="booking-summary__header">
         <CalendarClock size={18} aria-hidden="true" />
-        <h3 className="booking-summary__title">Appointment Summary</h3>
+        <h3 className="booking-summary__title">Tóm tắt lịch hẹn</h3>
       </div>
 
       <div className="booking-summary__body">
@@ -64,7 +64,7 @@ function BookingSummary({
               </>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No patient selected
+                Chưa chọn bệnh nhân
               </span>
             )}
           </div>
@@ -90,7 +90,7 @@ function BookingSummary({
               </>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No service selected
+                Chưa chọn dịch vụ
               </span>
             )}
           </div>
@@ -111,7 +111,7 @@ function BookingSummary({
               </span>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No dentist selected
+                Chưa chọn nha sĩ
               </span>
             )}
           </div>
@@ -125,14 +125,14 @@ function BookingSummary({
             <CalendarClock size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">DATE & TIME</span>
+            <span className="booking-summary__row-label">NGÀY & GIỜ</span>
             {date && slot ? (
               <span className="booking-summary__row-value">
                 {slot.time}{slot.timeEnd ? ` – ${slot.timeEnd}` : ""}, {formattedDate}
               </span>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No date/time selected
+                Chưa chọn ngày/giờ
               </span>
             )}
           </div>
@@ -141,7 +141,7 @@ function BookingSummary({
         {/* Fee */}
         {formattedFee && (
           <div className="booking-summary__fee">
-            <span className="booking-summary__fee-label">Estimated fee:</span>
+            <span className="booking-summary__fee-label">Phí ước tính:</span>
             <span className="booking-summary__fee-value">{formattedFee}</span>
           </div>
         )}
@@ -157,7 +157,7 @@ function BookingSummary({
           disabled={!hasAll || isSubmitting}
           aria-disabled={!hasAll || isSubmitting}
         >
-          {isSubmitting ? "Processing..." : "Confirm Booking"}
+          {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
         </button>
         <button
           type="button"
@@ -166,7 +166,7 @@ function BookingSummary({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Cancel
+          Hủy
         </button>
       </div>
 
@@ -174,8 +174,8 @@ function BookingSummary({
       <div className="booking-summary__notice" role="note">
         <Info size={14} aria-hidden="true" />
         <p className="booking-summary__notice-text">
-          The system will automatically send a booking confirmation email to the
-          patient's email address after you click Confirm.
+          Hệ thống sẽ tự động gửi email xác nhận đặt lịch đến
+          địa chỉ email của bệnh nhân sau khi bạn bấm Xác nhận.
         </p>
       </div>
     </aside>

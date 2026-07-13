@@ -100,7 +100,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               <AlertTriangle size={20} />
             </span>
             <h2 id="cancel-modal-title" className="cancel-modal__title">
-              Cancel Appointment
+              Hủy lịch hẹn
             </h2>
           </div>
           <button
@@ -120,17 +120,17 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
           {/* Appointment Summary Card */}
           <section
             className="cancel-modal__summary-card"
-            aria-label="Appointment details"
+            aria-label="Chi tiết lịch hẹn"
           >
             <div className="cancel-modal__summary-header">
-              <span className="cancel-modal__summary-heading">Appointment Summary</span>
+              <span className="cancel-modal__summary-heading">Tóm tắt lịch hẹn</span>
               <Badge status={appointment.status || "Confirmed"} />
             </div>
 
             <div className="cancel-modal__summary-rows">
               <SummaryRow
                 icon={User}
-                label="Patient"
+                label="Bệnh nhân"
                 value={appointment.patientName}
               />
               <SummaryRow
@@ -140,7 +140,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               />
               <SummaryRow
                 icon={Stethoscope}
-                label="Dentist"
+                label="Nha sĩ"
                 value={appointment.dentistName}
               />
               <SummaryRow
@@ -166,8 +166,8 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             <div className="cancel-modal__br13-notice" role="alert">
               <TriangleAlert size={16} aria-hidden="true" />
               <p>
-                <strong>Self-service cancellation is unavailable</strong> within 24 hours
-                of your appointment. Please contact the receptionist directly for assistance.
+                <strong>Không thể tự hủy lịch</strong> trong vòng 24 giờ
+                trước lịch hẹn. Vui lòng liên hệ trực tiếp lễ tân để được hỗ trợ.
               </p>
             </div>
           )}
@@ -176,8 +176,8 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
           <div className="cancel-modal__warning-box" role="note">
             <AlertTriangle size={16} aria-hidden="true" className="cancel-modal__warning-icon" />
             <p className="cancel-modal__warning-text">
-              <strong>Heads up:</strong> Confirming this cancellation will{" "}
-              <strong>immediately release</strong> the associated time slot and reopen
+              <strong>Lưu ý:</strong> Xác nhận hủy lịch sẽ{" "}
+              <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại
               it for public booking. A cancellation notification email will also be
               sent to the patient automatically.
             </p>
@@ -186,14 +186,14 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
           {/* Additional Note */}
           <div className="cancel-modal__note-field">
             <label htmlFor="cancel-modal-note" className="cancel-modal__label">
-              Additional Note{" "}
-              <span className="cancel-modal__optional">(optional)</span>
+              Ghi chú bổ sung{" "}
+              <span className="cancel-modal__optional">(không bắt buộc)</span>
             </label>
             <textarea
               id="cancel-modal-note"
               className="cancel-modal__textarea"
               rows={3}
-              placeholder="Log any specific context or remarks from the client..."
+              placeholder="Ghi lại ngữ cảnh hoặc lưu ý cụ thể từ khách hàng..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
               disabled={isCancelDisabled}
@@ -220,12 +220,12 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             aria-busy={isLoading}
             title={
               within24h
-                ? "Cannot self-cancel within 24 hours — contact the receptionist"
+                ? "Không thể tự hủy trong vòng 24 giờ - hãy liên hệ lễ tân"
                 : "Confirm appointment cancellation"
             }
             id="cancel-modal-confirm-btn"
           >
-            {isLoading ? "Cancelling…" : "Cancel Appointment"}
+            {isLoading ? "Đang hủy..." : "Hủy lịch hẹn"}
           </button>
         </div>
       </dialog>

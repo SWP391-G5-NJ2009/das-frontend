@@ -27,10 +27,10 @@ function NoShowRate() {
         return (
             <section className="no-show-rate no-show-rate--error">
                 <div className="no-show-rate__header">
-                    <h2 className="no-show-rate__title">No-show Rate</h2>
+                    <h2 className="no-show-rate__title">Tỷ lệ vắng mặt</h2>
                 </div>
                 <p className="no-show-rate__error-text">
-                    Unable to load data.
+                    Không thể tải dữ liệu.
                 </p>
             </section>
         );
@@ -39,7 +39,7 @@ function NoShowRate() {
     return (
         <section className="no-show-rate">
             <div className="no-show-rate__header">
-                <h2 className="no-show-rate__title">No-show Rate</h2>
+                <h2 className="no-show-rate__title">Tỷ lệ vắng mặt</h2>
                 <span className="no-show-rate__period">{getCurrentMonthLabel()}</span>
             </div>
             <p className="no-show-rate__amount">{(data.toLocaleString('en-US', {

@@ -101,7 +101,7 @@ function RoomsPageContent({ canManage }) {
 
       closeModal();
     } catch (err) {
-      window.alert(err.message || "Unable to save room.");
+      window.alert(err.message || "Không thể lưu phòng.");
     }
   };
 
@@ -123,7 +123,7 @@ function RoomsPageContent({ canManage }) {
       await deleteRoom(roomPendingDelete.room_id);
       setRoomPendingDelete(null);
     } catch (err) {
-      window.alert(err.message || "Unable to delete room.");
+      window.alert(err.message || "Không thể xóa phòng.");
     } finally {
       setIsDeleting(false);
     }
@@ -133,16 +133,16 @@ function RoomsPageContent({ canManage }) {
     <div className="catalog-container">
       <div className="catalog-header">
         <div>
-          <h1 id="rooms-page-title">Rooms</h1>
+          <h1 id="rooms-page-title">Phòng</h1>
           <p className="subtitle">
             {canManage
-              ? "Manage treatment rooms and their availability."
-              : "View current treatment room availability."}
+              ? "Quản lý phòng điều trị và trạng thái khả dụng."
+              : "Xem trạng thái khả dụng hiện tại của phòng điều trị."}
           </p>
         </div>
         {canManage && (
           <button className="btn-add-service" type="button" onClick={openAddModal}>
-            Create new room
+            Tạo phòng mới
           </button>
         )}
       </div>
@@ -161,14 +161,14 @@ function RoomsPageContent({ canManage }) {
                 <th>Room</th>
                 <th>Specialization</th>
                 <th>Status</th>
-                {canManage && <th>Actions</th>}
+                {canManage && <th>Thao tác</th>}
               </tr>
             </thead>
             <tbody>
               {error && (
                 <tr>
                   <td className="empty-row" colSpan={canManage ? 4 : 3}>
-                    {error.message || "Unable to load rooms."}
+                    {error.message || "Không thể tải danh sách phòng."}
                   </td>
                 </tr>
               )}
@@ -189,7 +189,7 @@ function RoomsPageContent({ canManage }) {
                         <button
                           className="action-btn edit-btn"
                           type="button"
-                          title="Edit room"
+                          title="Sửa phòng"
                           aria-label={`Edit room ${room.room_name}`}
                           onClick={() => openEditModal(room)}
                         >
@@ -198,7 +198,7 @@ function RoomsPageContent({ canManage }) {
                         <button
                           className="action-btn delete-btn"
                           type="button"
-                          title="Delete room"
+                          title="Xóa phòng"
                           aria-label={`Delete room ${room.room_name}`}
                           onClick={() => openDeleteModal(room)}
                         >
@@ -211,7 +211,7 @@ function RoomsPageContent({ canManage }) {
               {!error && sortedRooms.length === 0 && (
                 <tr>
                   <td className="empty-row" colSpan={canManage ? 4 : 3}>
-                    No rooms found.
+                    Không tìm thấy phòng.
                   </td>
                 </tr>
               )}

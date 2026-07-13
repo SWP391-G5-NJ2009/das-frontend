@@ -172,7 +172,7 @@ function GlobalHoursEditor({ editableShifts, onShiftChange, onAddShift, onRemove
   return (
     <div className="whs__global-editor">
       <div className="whs__global-days">
-        <span className="whs__global-days-label">Active days</span>
+        <span className="whs__global-days-label">Ngày hoạt động</span>
         <div className="whs__global-days-row">
           {DAYS.map((day, i) => {
             const dayNum = String(i + 1);
@@ -197,9 +197,9 @@ function GlobalHoursEditor({ editableShifts, onShiftChange, onAddShift, onRemove
       </div>
 
       <div className="whs__global-shifts">
-        <span className="whs__global-shifts-label">Opening hours (applies to all active days)</span>
+        <span className="whs__global-shifts-label">Giờ mở cửa (áp dụng cho tất cả ngày hoạt động)</span>
         {templateShifts.length === 0 ? (
-          <p className="whs__global-empty">No active days selected. Toggle a day above to set hours.</p>
+          <p className="whs__global-empty">Chưa chọn ngày hoạt động. Bật một ngày ở trên để đặt giờ.</p>
         ) : (
           templateShifts.map((shift, i) => (
             <div key={i} className="whs__global-shift-row">
@@ -240,7 +240,7 @@ function GlobalHoursEditor({ editableShifts, onShiftChange, onAddShift, onRemove
             onClick={onAddShift}
           >
             <Plus size={14} />
-            <span>Add Shift</span>
+            <span>Thêm ca</span>
           </button>
         )}
       </div>
@@ -360,7 +360,7 @@ function WorkingHoursSection({
     ? versions?.find((v) => v.version_id === viewingVersion.version_id) ?? viewingVersion
     : null;
   const isViewingEditable = viewingFullVersion && (
-    viewingFullVersion.status === "Pending" ||
+    viewingFullVersion.status === "Đang chờ" ||
     viewingFullVersion.status === "Expired" ||
     (viewingFullVersion.status === "Active" && !viewingFullVersion.hasLinkedWorkSlots)
   );
@@ -668,7 +668,7 @@ function WorkingHoursSection({
         return;
       }
       const detail = err?.code ? `[${err.code}] ` : "";
-      alert(`${detail}${err.message || "Failed to save changes. Please try again."}`);
+      alert(`${detail}${err.message || "Không thể lưu thay đổi. Vui lòng thử lại."}`);
       setSaveState("idle");
     }
   };
@@ -693,7 +693,7 @@ function WorkingHoursSection({
       onRefetchAll();
     } catch (err) {
       const detail = err?.code ? `[${err.code}] ` : "";
-      alert(`${detail}${err.message || "Failed to save changes. Please try again."}`);
+      alert(`${detail}${err.message || "Không thể lưu thay đổi. Vui lòng thử lại."}`);
       setSaveState("idle");
     }
   };
@@ -712,17 +712,17 @@ function WorkingHoursSection({
       {noVersionExists && (
         <div className="whs__empty-state">
           <GitBranch size={48} className="whs__empty-state-icon" />
-          <h2 className="whs__empty-state-title">No Schedule Configured</h2>
+          <h2 className="whs__empty-state-title">Chưa cấu hình lịch</h2>
           <p className="whs__empty-state-text">
-            Create your first schedule version to configure operational hours and
-            time management settings for the clinic.
+            Tạo phiên bản lịch đầu tiên để cấu hình giờ hoạt động và
+            thiết lập quản lý thời gian cho phòng khám.
           </p>
           <button
             className="whs__btn whs__btn--primary"
             onClick={onShowCreateVersionModal}
           >
             <GitBranch size={18} className="whs__btn-icon" />
-            Create First Version
+            Tạo phiên bản đầu tiên
           </button>
         </div>
       )}
@@ -730,7 +730,7 @@ function WorkingHoursSection({
       {viewingVersion && (
         <div className="whs__viewing-banner">
           <span className="whs__viewing-banner-text">
-            Viewing version &quot;{viewingVersion.name || "Unnamed"}&quot;
+            Đang xem phiên bản "{viewingVersion.name || "Unnamed"}&quot;
             {viewingVersion.effective_date && ` (effective ${viewingVersion.effective_date})`}
             {viewingFullVersion?.status === "Expired" && " — expired"}
             {!isViewingEditable && viewingFullVersion?.hasLinkedWorkSlots
@@ -752,7 +752,7 @@ function WorkingHoursSection({
               onClick={handleExitViewing}
             >
               <ArrowLeft size={14} />
-              Back to Current
+              Về bản hiện tại
             </button>
           </div>
         </div>
@@ -764,23 +764,23 @@ function WorkingHoursSection({
             <div className="whs__card-header-row">
               <div className="whs__card-header-left">
                 <GitBranch size={24} className="whs__card-icon" />
-                <h2 className="whs__card-title">Version History</h2>
+                <h2 className="whs__card-title">Lịch sử phiên bản</h2>
               </div>
               <button
                 className={`whs__btn whs__btn--primary${hasPendingVersion ? " whs__btn--disabled" : ""}`}
                 disabled={hasPendingVersion}
-                title={hasPendingVersion ? "Cancel or activate the pending version first" : "Create a new version"}
+                title={hasPendingVersion ? "Hủy hoặc kích hoạt phiên bản đang chờ trước" : "Tạo phiên bản mới"}
                 onClick={onShowCreateVersionModal}
               >
                 <Plus size={16} className="whs__btn-icon" />
-                Create Version
+                Tạo phiên bản
               </button>
             </div>
           </div>
           <div className="whs__versions-list">
             {versions.map((v) => {
               const isActive = v.status === "Active";
-              const isPending = v.status === "Pending";
+              const isPending = v.status === "Đang chờ";
               const canDelete = isPending || (v.status === "Expired" && !v.hasLinkedWorkSlots);
               const isViewing = viewingVersion?.version_id === v.version_id;
               return (
@@ -804,7 +804,7 @@ function WorkingHoursSection({
                       <button
                         className="whs__version-view"
                         onClick={() => setViewingVersion(v)}
-                        title="View this version"
+                        title="Xem phiên bản này"
                       >
                         <Eye size={14} />
                       </button>
@@ -833,7 +833,7 @@ function WorkingHoursSection({
           {viewingLoading && (
             <div className="whs__viewing-loading">
               <RefreshCw size={18} className="whs__btn-icon--spin" />
-              Loading version data...
+              Đang tải dữ liệu phiên bản...
             </div>
           )}
           <div className="whs__left">
@@ -842,7 +842,7 @@ function WorkingHoursSection({
                 <div className="whs__card-header-row">
                   <div className="whs__card-header-left">
                     <Clock size={24} className="whs__card-icon" />
-                    <h2 className="whs__card-title">Operational Hours</h2>
+                    <h2 className="whs__card-title">Giờ hoạt động</h2>
                     <label className="whs__same-hours-toggle">
                       <input
                         type="checkbox"
@@ -853,7 +853,7 @@ function WorkingHoursSection({
                       />
                       <span className="whs__same-hours-slider" />
                       <span className="whs__same-hours-label">
-                        Same hours for all active days
+                        Cùng giờ cho tất cả ngày hoạt động
                       </span>
                     </label>
                   </div>
@@ -898,7 +898,7 @@ function WorkingHoursSection({
                 <div className="whs__card-header-row">
                   <div className="whs__card-header-left">
                     <CalendarDays size={24} className="whs__card-icon" />
-                    <h2 className="whs__card-title">Schedule Preview</h2>
+                    <h2 className="whs__card-title">Xem trước lịch</h2>
                   </div>
                   <span className="whs__preview-label">
                     {sameHoursAllDays ? "All Active Days" : selectedDay}
@@ -907,7 +907,7 @@ function WorkingHoursSection({
               </div>
               <div className="whs__preview-grid">
                 {timeSlots.length === 0 ? (
-                  <p className="whs__empty-text">No schedule data for {selectedDay}.</p>
+                  <p className="whs__empty-text">Không có dữ liệu lịch cho {selectedDay}.</p>
                 ) : timeSlots.map((slot, i) =>
                   slot.type === "break" ? (
                     <div key={i} className="whs__preview-break">
@@ -922,11 +922,11 @@ function WorkingHoursSection({
                 )}
               </div>
               <p className="whs__preview-note">
-                * Preview based on 30-minute duration and {sameHoursAllDays ? "all active days'" : `${selectedDay}'s`} operational hours.
+                * Xem trước dựa trên thời lượng 30 phút và {sameHoursAllDays ? "tất cả ngày hoạt động" : `ngày ${selectedDay}`} giờ hoạt động.
               </p>
 
               <div className="whs__effective-date">
-                <label className="whs__effective-date-label">Effective Date</label>
+                <label className="whs__effective-date-label">Ngày hiệu lực</label>
                 <div className="whs__effective-date-row">
                   <input
                     type="date"
@@ -943,7 +943,7 @@ function WorkingHoursSection({
                   )}
                 </div>
                 <p className="whs__field-hint">
-                  This version will take effect on the selected date. The minimum date is set after all currently booked appointments.
+                  Phiên bản này sẽ có hiệu lực vào ngày đã chọn. Ngày tối thiểu được đặt sau tất cả lịch hẹn đã đặt hiện tại.
                 </p>
               </div>
 
@@ -962,8 +962,8 @@ function WorkingHoursSection({
                 {saveState === "saving"
                   ? "Updating..."
                   : saveState === "saved"
-                    ? "Saved Successfully"
-                    : "Save Changes"}
+                    ? "Đã lưu thành công"
+                    : "Lưu thay đổi"}
               </button>
             </section>
           </div>

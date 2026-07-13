@@ -5,10 +5,10 @@ export const PATIENT_NAV_ITEMS = [
     label: "Appointments",
     to: "/patient/appointments",
   },
-  { icon: "history", label: "Treatment History", to: "/patient/history" },
-  { icon: "person", label: "Manage Profile", to: "/patient/profile" },
+  { icon: "history", label: "Lịch sử điều trị", to: "/patient/history" },
+  { icon: "person", label: "Quản lý hồ sơ", to: "/patient/profile" },
 ];
 
 export const PATIENT_FOOTER_ITEMS = [
-  { icon: "logout", label: "Log out", to: "/login" },
+  { icon: "logout", label: "Đăng xuất", to: "/login" },
 ];

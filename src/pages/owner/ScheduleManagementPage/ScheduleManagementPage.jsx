@@ -46,7 +46,7 @@ function ScheduleManagementPage() {
       refetchVersions();
     } catch (err) {
       const detail = err?.code ? `[${err.code}] ` : "";
-      alert(`${detail}${err.message || "Failed to create version. Please try again."}`);
+      alert(`${detail}${err.message || "Không thể tạo phiên bản. Vui lòng thử lại."}`);
     }
   }
 
@@ -62,7 +62,7 @@ function ScheduleManagementPage() {
       handleRefetchAll();
     } catch (err) {
       const detail = err?.code ? `[${err.code}] ` : "";
-      alert(`${detail}${err.message || "Failed to reactivate version. Please try again."}`);
+      alert(`${detail}${err.message || "Không thể kích hoạt lại phiên bản. Vui lòng thử lại."}`);
     }
   }
 
@@ -71,9 +71,9 @@ function ScheduleManagementPage() {
       <div className="schedule-config">
         <header className="schedule-config__header">
           <div>
-            <h1 className="schedule-config__title">Configuration Dashboard</h1>
+            <h1 className="schedule-config__title">Bảng cấu hình</h1>
             <p className="schedule-config__subtitle">
-              Update clinical hours, appointment logic, and holiday calendars.
+              Cập nhật giờ khám, logic đặt lịch và lịch nghỉ.
             </p>
           </div>
           {noVersionExists && (
@@ -83,7 +83,7 @@ function ScheduleManagementPage() {
                 onClick={() => setShowCreateVersionModal(true)}
               >
                 <GitBranch size={18} className="schedule-config__btn-icon" />
-                Create Version
+                Tạo phiên bản
               </button>
             </div>
           )}
@@ -95,7 +95,7 @@ function ScheduleManagementPage() {
             onClick={() => setActiveTab("hours")}
           >
             <Clock size={18} className="schedule-config__tab-icon" />
-            Working Hours
+            Giờ làm việc
           </button>
           <button
             className={`schedule-config__tab${activeTab === "holidays" ? " schedule-config__tab--active" : ""}`}

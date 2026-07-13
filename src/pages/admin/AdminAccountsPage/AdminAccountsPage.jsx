@@ -57,9 +57,9 @@ function AdminAccountsPage() {
     <AdminPageShell>
       <div className="admin-accounts__page-header">
         <div>
-          <h2 className="admin-accounts__page-title">Account Management</h2>
+          <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
           <p className="admin-accounts__page-desc">
-            Add, update, or remove user access in the system.
+            Thêm, cập nhật hoặc xóa quyền truy cập người dùng trong hệ thống.
           </p>
         </div>
         <button
@@ -68,7 +68,7 @@ function AdminAccountsPage() {
           onClick={() => setShowModal(true)}
         >
           <UserPlus size={20} aria-hidden="true" />
-          Add new account
+          Thêm tài khoản mới
         </button>
       </div>
 
@@ -77,7 +77,7 @@ function AdminAccountsPage() {
       <div className="admin-accounts__card">
         <div className="admin-accounts__card-header">
           <div className="admin-accounts__card-title-group">
-            <h4 className="admin-accounts__card-title">Account list</h4>
+            <h4 className="admin-accounts__card-title">Danh sách tài khoản</h4>
           </div>
         </div>
 
@@ -93,19 +93,19 @@ function AdminAccountsPage() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Username</th>
+                <th>Tên đăng nhập</th>
                 <th>Email</th>
-                <th>Phone number</th>
+                <th>Số điện thoại</th>
                 <th>Status</th>
-                <th>Account type</th>
-                <th>Actions</th>
+                <th>Loại tài khoản</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {isLoading && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
-                    Loading accounts...
+                    Đang tải tài khoản...
                   </td>
                 </tr>
               )}
@@ -121,7 +121,7 @@ function AdminAccountsPage() {
               {!isLoading && !error && accounts.length === 0 && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
-                    No accounts found
+                    Không tìm thấy tài khoản
                   </td>
                 </tr>
               )}
@@ -192,7 +192,7 @@ function AdminAccountsPage() {
           size={20}
           aria-hidden="true"
         />
-        <span>Action completed successfully</span>
+        <span>Thao tác đã hoàn tất thành công</span>
       </div>
       {showModal && (
         <AddAccountModal

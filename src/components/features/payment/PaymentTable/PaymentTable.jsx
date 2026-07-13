@@ -51,7 +51,7 @@ function PaymentTable({ payments }) {
             <th scope="col">Amount</th>
             <th scope="col">Method</th>
             <th scope="col">Time</th>
-            <th scope="col">Transaction ID</th>
+            <th scope="col">Mã giao dịch</th>
             <th scope="col">Status</th>
           </tr>
         </thead>
@@ -65,7 +65,7 @@ function PaymentTable({ payments }) {
               <td>{formatPaymentDate(payment.payment_date)}</td>
               <td>{payment.transaction_code ?? EMPTY_VALUE}</td>
               <td>
-                <Badge status={payment.status || "Pending"} />
+                <Badge status={payment.status || "Đang chờ"} />
               </td>
             </tr>
           ))}

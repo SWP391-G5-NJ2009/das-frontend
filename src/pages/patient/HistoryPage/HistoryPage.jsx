@@ -31,21 +31,21 @@ function HistoryPage() {
       >
         <article className="patient-history-card">
           <div className="patient-history-card__header">
-            <h1 id="patient-history-title">Treatment History</h1>
-            <p>Records of completed visits and treatments</p>
+            <h1 id="patient-history-title">Lịch sử điều trị</h1>
+            <p>Hồ sơ các lần khám và điều trị đã hoàn tất</p>
           </div>
 
           {isLoading && (
-            <p className="patient-profile-card__state">Loading treatment history...</p>
+            <p className="patient-profile-card__state">Đang tải lịch sử điều trị...</p>
           )}
           {error && (
             <p className="patient-profile-card__state patient-profile-card__state--error">
-              {error.message || "Unable to load treatment history."}
+              {error.message || "Không thể tải lịch sử điều trị."}
             </p>
           )}
           {!isLoading && !error && !treatments.length && (
             <p className="patient-profile-card__state">
-              No treatment history yet.
+              Chưa có lịch sử điều trị.
             </p>
           )}
 
@@ -54,7 +54,7 @@ function HistoryPage() {
               <div
                 className="patient-history-table__wrap"
                 role="region"
-                aria-label="Treatment history list"
+                aria-label="Danh sách lịch sử điều trị"
               >
                 <table className="patient-history-table">
                   <thead className="patient-history-table__head">
@@ -69,7 +69,7 @@ function HistoryPage() {
                         Diagnosis
                       </th>
                       <th className="patient-history-table__th" scope="col">
-                        Dentist
+                        Nha sĩ
                       </th>
                       <th className="patient-history-table__th" scope="col">
                         Cost

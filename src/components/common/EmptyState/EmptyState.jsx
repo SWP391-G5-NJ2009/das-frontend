@@ -4,7 +4,7 @@ import "./EmptyState.css";
 function EmptyState({ message }) {
   return (
     <section className="empty-state" aria-live="polite">
-      <h3 className="empty-state__title">Nothing to show</h3>
+      <h3 className="empty-state__title">Không có dữ liệu để hiển thị</h3>
       <p className="empty-state__message">{message}</p>
     </section>
   );

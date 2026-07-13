@@ -109,10 +109,10 @@ function RoleSidebar({ ariaLabel, brand, footerItems, navItems }) {
             <LogOut size={24} />
           </div>
           <h2 className="role-sidebar__logout-title" id="logout-confirm-title">
-            Log out?
+            Đăng xuất?
           </h2>
           <p className="role-sidebar__logout-message">
-            Are you sure you want to log out of your account?
+            Bạn có chắc muốn đăng xuất khỏi tài khoản?
           </p>
           <div className="role-sidebar__logout-actions">
             <button
@@ -120,14 +120,14 @@ function RoleSidebar({ ariaLabel, brand, footerItems, navItems }) {
               type="button"
               onClick={closeLogoutModal}
             >
-              Cancel
+              Hủy
             </button>
             <button
               className="role-sidebar__logout-btn role-sidebar__logout-btn--confirm"
               type="button"
               onClick={confirmLogout}
             >
-              Log out
+              Đăng xuất
             </button>
           </div>
         </div>

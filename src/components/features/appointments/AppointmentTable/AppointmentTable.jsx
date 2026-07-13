@@ -34,7 +34,7 @@ function AppointmentTable({
     <div
       className="appt-table__wrap"
       role="region"
-      aria-label="Appointment list"
+      aria-label="Danh sách lịch hẹn"
     >
       <table className="appt-table">
         <thead className="appt-table__head">
@@ -44,23 +44,23 @@ function AppointmentTable({
             </th>
             {showPatientInfo && (
               <th className="appt-table__th" scope="col">
-                Patient
+                Bệnh nhân
               </th>
             )}
             <th className="appt-table__th" scope="col">
               Service
             </th>
             <th className="appt-table__th" scope="col">
-              Dentist
+              Nha sĩ
             </th>
             <th className="appt-table__th appt-table__th--sortable" scope="col">
-              <span>Date &amp; Time</span>
+              <span>Ngày và giờ</span>
             </th>
             <th className="appt-table__th" scope="col">
               Status
             </th>
             <th className="appt-table__th appt-table__th--actions" scope="col">
-              Actions
+              Thao tác
             </th>
           </tr>
         </thead>
@@ -92,10 +92,10 @@ function AppointmentTable({
                     {appt.patientAccountStatus === "Restricted" && (
                       <span
                         className="appt-table__booking-banned"
-                        title="This patient's account is restricted due to 3+ no-shows"
+                        title="Tài khoản bệnh nhân bị hạn chế do vắng mặt từ 3 lần trở lên"
                       >
                         <ShieldBan size={10} aria-hidden="true" />
-                        Restricted Account
+                        Tài khoản bị hạn chế
                       </span>
                     )}
                   </td>
@@ -141,7 +141,7 @@ function AppointmentTable({
                   {actorRole === "dentist" ? (
                     <span
                       className="appt-table__view-only"
-                      aria-label="View only"
+                      aria-label="Chỉ xem"
                     >
                       —
                     </span>
@@ -152,7 +152,7 @@ function AppointmentTable({
                         type="button"
                         className="appt-table__action-btn appt-table__action-btn--edit"
                         aria-label={`Edit appointment for ${appt.patientName}`}
-                        title="Edit feature coming soon"
+                        title="Tính năng chỉnh sửa sắp ra mắt"
                         disabled
                         onClick={() => onEdit?.(appt)}
                       >
@@ -166,7 +166,7 @@ function AppointmentTable({
                             type="button"
                             className="appt-table__action-btn appt-table__action-btn--lift-ban"
                             aria-label={`Lift account restriction for ${appt.patientName}`}
-                            title="Lift Account Restriction"
+                            title="Gỡ hạn chế tài khoản"
                             onClick={() => onLiftBan?.(appt)}
                           >
                             <UnlockKeyhole size={15} aria-hidden="true" />
@@ -183,13 +183,13 @@ function AppointmentTable({
                           }
                           aria-label={
                             within24h
-                              ? "Cannot cancel — within 24 hours of appointment"
-                              : `Cancel appointment for ${appt.patientName}`
+                              ? "Không thể hủy - lịch hẹn còn dưới 24 giờ"
+                              : `Hủy lịch hẹn của ${appt.patientName}`
                           }
                           title={
                             within24h
                               ? "Within 24 hours — contact reception to cancel"
-                              : "Cancel appointment"
+                              : "Hủy lịch hẹn"
                           }
                           onClick={() =>
                             within24h ? onWithin24hCancel?.() : onCancel?.(appt)

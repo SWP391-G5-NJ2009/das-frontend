@@ -1,17 +1,17 @@
 export const OWNER_NAV_ITEMS = [
   {
     icon: "medical_services",
-    label: "Dental Services",
+    label: "Dịch vụ nha khoa",
     to: "/owner/services-management",
   },
   {
     icon: "business",
-    label: "Clinic Information",
+    label: "Thông tin phòng khám",
     to: "/owner/clinic-info",
   },
   {
     icon: "calendar_month",
-    label: "Clinic Schedule",
+    label: "Lịch phòng khám",
     to: "/owner/clinic-schedule",
   },
   {
@@ -21,7 +21,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "meeting_room",
-    label: "Rooms Management",
+    label: "Quản lý phòng",
     to: "/owner/rooms-management",
   },
   {
@@ -31,17 +31,17 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "group",
-    label: "Patient",
+    label: "Bệnh nhân",
     to: "/owner/patient",
   },
   {
     icon: "calendar_today",
-    label: "Appointment Dashboard",
+    label: "Bảng điều khiển lịch hẹn",
     to: "/owner/appointment-dashboard",
   },
   {
     icon: "person",
-    label: "Manage Profile",
+    label: "Quản lý hồ sơ",
     to: "/owner/profile",
   },
   {
@@ -52,5 +52,5 @@ export const OWNER_NAV_ITEMS = [
 ];
 
 export const OWNER_FOOTER_ITEMS = [
-  { icon: "logout", label: "Log out", to: "/staff/login" },
+  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
 ];

@@ -21,7 +21,7 @@ function PatientSearchSection({
         {/* Search Field */}
         <div className="patient-search__field">
           <label htmlFor="patient-search-input" className="patient-search__label">
-            {isReceptionist ? "Find patient" : "Patient information"}
+            {isReceptionist ? "Tìm bệnh nhân" : "Thông tin bệnh nhân"}
           </label>
           <div className="patient-search__input-wrapper">
             <Search size={16} className="patient-search__input-icon" aria-hidden="true" />
@@ -34,7 +34,7 @@ function PatientSearchSection({
                     type="button"
                     className="patient-search__clear-btn"
                     onClick={onClearPatient}
-                    aria-label="Clear selected patient"
+                    aria-label="Xóa bệnh nhân đã chọn"
                   >
                     <X size={14} />
                   </button>
@@ -45,18 +45,18 @@ function PatientSearchSection({
                 id="patient-search-input"
                 type="text"
                 className="patient-search__input"
-                placeholder={isReceptionist ? "Search by name or phone..." : "Patient full name"}
+                placeholder={isReceptionist ? "Tìm theo tên hoặc số điện thoại..." : "Họ tên bệnh nhân"}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 autoComplete="off"
                 readOnly={!isReceptionist}
-                aria-label="Search patients"
+                aria-label="Tìm bệnh nhân"
               />
             )}
 
             {/* Dropdown results */}
             {isReceptionist && !selectedPatient && searchResults.length > 0 && (
-              <ul className="patient-search__dropdown" role="listbox" aria-label="Search results">
+              <ul className="patient-search__dropdown" role="listbox" aria-label="Kết quả tìm kiếm">
                 {searchResults.map((p) => (
                   <li
                     key={p.id}
@@ -80,10 +80,10 @@ function PatientSearchSection({
               type="button"
               className="patient-search__add-btn"
               onClick={onAddNewPatient}
-              aria-label="Add new patient"
+              aria-label="Thêm bệnh nhân mới"
             >
               <UserPlus size={14} aria-hidden="true" />
-              Add new patient
+              Thêm bệnh nhân mới
             </button>
           )}
         </div>
@@ -91,17 +91,17 @@ function PatientSearchSection({
         {/* Phone Field */}
         <div className="patient-search__field">
           <label htmlFor="patient-phone-input" className="patient-search__label">
-            Phone number
+            Số điện thoại
           </label>
           <div className="patient-search__input-wrapper">
             <input
               id="patient-phone-input"
               type="tel"
               className="patient-search__input patient-search__input--phone"
-              placeholder={isReceptionist ? "Auto-filled when patient is selected" : "Auto-filled from your profile"}
+              placeholder={isReceptionist ? "Tự điền khi chọn bệnh nhân" : "Tự điền từ hồ sơ của bạn"}
               value={phoneNumber}
               readOnly
-              aria-label="Patient phone number"
+              aria-label="Số điện thoại bệnh nhân"
             />
           </div>
         </div>

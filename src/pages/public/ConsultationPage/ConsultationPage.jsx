@@ -49,60 +49,60 @@ function ConsultationPage() {
           <img
             className="consultation-hero__image"
             src={heroConsultation}
-            alt="DentalCare dentist consultation"
+            alt="Tư vấn nha khoa DentalCare"
           />
           <div className="consultation-hero__overlay">
             <form className="consultation-panel" onSubmit={handleSubmit}>
               {error && <p>{error}</p>}
               <div className="consultation-panel__header">
-                <h1 id="consultation-title">Request a consultation</h1>
+                <h1 id="consultation-title">Yêu cầu tư vấn</h1>
                 <p>
-                  Please leave your information and we will contact you
-                  as soon as possible.
+                  Vui lòng để lại thông tin, chúng tôi sẽ liên hệ với bạn
+                  sớm nhất có thể.
                 </p>
               </div>
 
               <label className="consultation-panel__field">
-                <span>Full name *</span>
+                <span>Họ và tên *</span>
                 <input
                   type="text"
                   name="full_name"
                   value={form.full_name}
-                  placeholder="Enter your full name"
+                  placeholder="Nhập họ và tên"
                   onChange={handleChange}
                   required
                 />
               </label>
 
               <label className="consultation-panel__field">
-                <span>Phone number *</span>
+                <span>Số điện thoại *</span>
                 <input
                   type="tel"
                   name="phone"
                   value={form.phone}
-                  placeholder="Enter your contact phone number"
+                  placeholder="Nhập số điện thoại liên hệ"
                   onChange={handleChange}
                   required
                 />
               </label>
 
               <label className="consultation-panel__field">
-                <span>Email (optional)</span>
+                <span>Email (không bắt buộc)</span>
                 <input
                   type="email"
                   name="email"
                   value={form.email}
-                  placeholder="Enter your email address"
+                  placeholder="Nhập địa chỉ email"
                   onChange={handleChange}
                 />
               </label>
 
               <label className="consultation-panel__field">
-                <span>Consultation details *</span>
+                <span>Nội dung tư vấn *</span>
                 <textarea
                   name="description"
                   value={form.description}
-                  placeholder="Briefly describe your concern or the service you are interested in..."
+                  placeholder="Mô tả ngắn gọn vấn đề hoặc dịch vụ bạn quan tâm..."
                   rows="5"
                   onChange={handleChange}
                   required
@@ -121,12 +121,12 @@ function ConsultationPage() {
 
               <button className="consultation-panel__submit" type="submit" disabled={isSubmitting}>
                 <Send size={18} aria-hidden="true" />
-                Submit request
+                Gửi yêu cầu
               </button>
 
               <p className="consultation-panel__privacy">
                 <LockKeyhole size={16} aria-hidden="true" />
-                Your information is kept strictly confidential.
+                Thông tin của bạn được bảo mật tuyệt đối.
               </p>
               {success && <Toast type="success" message={success} />}
             </form>

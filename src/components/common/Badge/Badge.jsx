@@ -16,17 +16,17 @@ const STATUS_CLASS = {
 };
 
 const STATUS_LABEL = {
-  Confirmed: "Confirmed",
-  Waiting: "Waiting",
-  "Checked-in": "Checked-in",
-  Cancelled: "Cancelled",
-  "No-Show": "No-Show",
-  Conflict: "Conflict",
-  "In-Treatment": "In Treatment",
-  Completed: "Completed",
-  Pending: "Pending",
-  Failed: "Failed",
-  Refunded: "Refunded",
+  Confirmed: "Đã xác nhận",
+  Waiting: "Đang chờ",
+  "Checked-in": "Đã check-in",
+  Cancelled: "Đã hủy",
+  "No-Show": "Vắng mặt",
+  Conflict: "Xung đột",
+  "In-Treatment": "Đang điều trị",
+  Completed: "Hoàn tất",
+  Pending: "Đang chờ",
+  Failed: "Thất bại",
+  Refunded: "Đã hoàn tiền",
 };
 
 function Badge({ status }) {

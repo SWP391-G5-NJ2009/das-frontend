@@ -9,15 +9,15 @@ import OwnerPageShell from "../OwnerPageShell";
 import "./OwnerStaffPage.css";
 
 const ROLE_OPTIONS = [
-  { value: "all", label: "All roles" },
-  { value: "dentist", label: "Dentist" },
-  { value: "receptionist", label: "Receptionist" },
+  { value: "all", label: "Tất cả vai trò" },
+  { value: "dentist", label: "Nha sĩ" },
+  { value: "receptionist", label: "Lễ tân" },
 ];
 
 const STATUS_OPTIONS = [
-  { value: "all", label: "All statuses" },
-  { value: "Active", label: "Active" },
-  { value: "Banned", label: "Banned" },
+  { value: "all", label: "Tất cả trạng thái" },
+  { value: "Active", label: "Hoạt động" },
+  { value: "Banned", label: "Bị khóa" },
 ];
 
 function OwnerStaffPage() {
@@ -66,7 +66,7 @@ function OwnerStaffPage() {
 
   const handleProfileCreated = async () => {
     setIsCreateModalOpen(false);
-    setSuccessMessage("Dentist profile created successfully.");
+    setSuccessMessage("Tạo hồ sơ nha sĩ thành công.");
     await refetch();
   };
 
@@ -74,7 +74,7 @@ function OwnerStaffPage() {
     <OwnerPageShell>
       <div className="owner-staff">
         <header className="owner-staff__header">
-          <h1>Staff Management</h1>
+          <h1>Quản lý nhân sự</h1>
 
           <div className="owner-staff__header-actions">
             <button
@@ -95,34 +95,34 @@ function OwnerStaffPage() {
               }}
             >
               <Plus size={16} aria-hidden="true" />
-              Add New Dentist
+              Thêm nha sĩ mới
             </button>
           </div>
         </header>
 
         <section
           className="owner-staff__summary"
-          aria-label="Staff overview"
+          aria-label="Tổng quan nhân sự"
         >
           <article className="owner-staff__summary-card">
-            <span>Total staff</span>
+            <span>Tổng nhân sự</span>
             <strong>{stats.total}</strong>
           </article>
 
           <article className="owner-staff__summary-card">
-            <span>Dentists</span>
+            <span>Nha sĩ</span>
             <strong>{stats.dentists}</strong>
           </article>
 
           <article className="owner-staff__summary-card">
-            <span>Receptionists</span>
+            <span>Lễ tân</span>
             <strong>{stats.receptionists}</strong>
           </article>
         </section>
 
         <section
           className="owner-staff__toolbar"
-          aria-label="Staff filters"
+          aria-label="Bộ lọc nhân sự"
         >
           <form
             className="owner-staff__search-form"
@@ -133,8 +133,8 @@ function OwnerStaffPage() {
 
               <input
                 type="search"
-                aria-label="Search staff"
-                placeholder="Search by name or username..."
+                aria-label="Tìm nhân sự"
+                placeholder="Tìm theo tên hoặc tên đăng nhập..."
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
               />
@@ -186,15 +186,15 @@ function OwnerStaffPage() {
 
         {!isLoading && error && (
           <StaffState
-            title="Unable to load staff"
-            message={error.message || "Please try again later."}
+            title="Không thể tải nhân sự"
+            message={error.message || "Vui lòng thử lại sau."}
             variant="error"
           />
         )}
 
         {!isLoading && !error && staff.length === 0 && (
           <StaffState
-            title="No staff found"
+            title="Không tìm thấy nhân sự"
             message="No matching staff members were found."
           />
         )}

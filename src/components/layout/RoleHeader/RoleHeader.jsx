@@ -28,10 +28,10 @@ function getInitials(name) {
 
 const ROLE_LABELS = {
   admin: "Admin",
-  dentist: "Dentist",
+  dentist: "Nha sĩ",
   owner: "Clinic Owner",
-  patient: "Patient",
-  receptionist: "Receptionist",
+  patient: "Bệnh nhân",
+  receptionist: "Lễ tân",
 };
 
 function getRoleLabel(roleLabel) {
@@ -68,7 +68,7 @@ function RoleHeader({ isFixed, mobileNavItems, roleLabel }) {
           {isMobileMenuOpen && (
             <nav
               className="role-header__mobile-menu"
-              aria-label="Quick navigation"
+              aria-label="Điều hướng nhanh"
             >
               {mobileNavItems.map((item) => (
                 <NavLink

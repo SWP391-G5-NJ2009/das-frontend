@@ -46,7 +46,7 @@ function PatientRegistrationPage() {
 
     try {
       const patient = await patientService.createPatientAccount(form);
-      setSuccess(`Registered patient successfully.`);
+      setSuccess(`Đăng ký bệnh nhân thành công.`);
       setForm(getInitialForm());
     } catch (err) {
       setError(err.message);
@@ -61,10 +61,10 @@ function PatientRegistrationPage() {
       contentLabelledBy="patient-registration-title"
     >
       <header className="patient-registration__header">
-        <h1 id="patient-registration-title">Create New Patient Account</h1>
+        <h1 id="patient-registration-title">Tạo tài khoản bệnh nhân mới</h1>
         <p>
-          Enter the required details to create a patient account and electronic
-          profile.
+          Nhập các thông tin cần thiết để tạo tài khoản bệnh nhân và hồ sơ
+          điện tử.
         </p>
       </header>
 
@@ -72,20 +72,20 @@ function PatientRegistrationPage() {
         <div className="patient-registration__grid">
           <label className="patient-registration__field">
             <span>
-              Full name <strong>*</strong>
+              Họ và tên <strong>*</strong>
             </span>
             <input
               required
               type="text"
               value={form.fullName}
-              placeholder="Enter patient full name"
+              placeholder="Nhập họ tên bệnh nhân"
               onChange={(event) => setField("fullName", event.target.value)}
             />
           </label>
 
           <label className="patient-registration__field">
             <span>
-              Phone number <strong>*</strong>
+              Số điện thoại <strong>*</strong>
             </span>
             <input
               required
@@ -97,7 +97,7 @@ function PatientRegistrationPage() {
           </label>
 
           <label className="patient-registration__field">
-            <span>Date of birth</span>
+            <span>Ngày sinh</span>
             <input
               type="date"
               value={form.birthDate}
@@ -106,7 +106,7 @@ function PatientRegistrationPage() {
           </label>
 
           <fieldset className="patient-registration__field patient-registration__field--radio">
-            <legend>Gender</legend>
+            <legend>Giới tính</legend>
             <label>
               <input
                 type="radio"
@@ -115,7 +115,7 @@ function PatientRegistrationPage() {
                 checked={form.gender === "Male"}
                 onChange={(event) => setField("gender", event.target.value)}
               />
-              <span>Male</span>
+              <span>Nam</span>
             </label>
             <label>
               <input
@@ -125,23 +125,23 @@ function PatientRegistrationPage() {
                 checked={form.gender === "Female"}
                 onChange={(event) => setField("gender", event.target.value)}
               />
-              <span>Female</span>
+              <span>Nữ</span>
             </label>
           </fieldset>
 
           <label className="patient-registration__field patient-registration__field--wide">
-            <span>Contact address</span>
+            <span>Địa chỉ liên hệ</span>
             <input
               type="text"
               value={form.address}
-              placeholder="House number, street, ward, district, province/city"
+              placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"
               onChange={(event) => setField("address", event.target.value)}
             />
           </label>
 
           <div className="patient-registration__field patient-registration__field--password">
             <label htmlFor="patient-registration-password">
-              Default password
+              Mật khẩu mặc định
             </label>
             <div className="patient-registration__password-row">
               <input
@@ -157,7 +157,7 @@ function PatientRegistrationPage() {
                 onClick={() => setField("password", generatePassword())}
               >
                 <RefreshCw size={16} aria-hidden="true" />
-                Generate
+                Tạo mới
               </button>
             </div>
           </div>
@@ -176,10 +176,10 @@ function PatientRegistrationPage() {
 
         <div className="patient-registration__actions">
           <button type="button" onClick={resetForm}>
-            Cancel
+            Hủy
           </button>
           <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Creating..." : "Create Account"}
+            {isSubmitting ? "Đang tạo..." : "Tạo tài khoản"}
           </button>
         </div>
       </form>

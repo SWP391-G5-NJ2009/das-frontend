@@ -13,13 +13,13 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
       >
         <div className="room-form-modal__header">
           <h2 className="room-form-modal__title" id="room-form-title">
-            {isEditMode ? "Update Room" : "Create New Room"}
+            {isEditMode ? "Cập nhật phòng" : "Tạo phòng mới"}
           </h2>
           <button
             className="room-form-modal__close-btn"
             type="button"
             onClick={onClose}
-            aria-label="Close room form"
+            aria-label="Đóng biểu mẫu phòng"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -28,7 +28,7 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
         <form onSubmit={onSubmit}>
           <div className="room-form-modal__field">
             <label className="room-form-modal__label" htmlFor="room-name">
-              Room Name
+              Tên phòng
             </label>
             <input
               className="room-form-modal__input"
@@ -56,7 +56,7 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
               type="text"
               value={formData.specialization}
               onChange={onChange}
-              placeholder="General examination"
+              placeholder="Khám tổng quát"
             />
           </div>
 
@@ -71,9 +71,9 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
               value={formData.status}
               onChange={onChange}
             >
-              <option value="Available">Available</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Unavailable">Unavailable</option>
+              <option value="Available">Có thể sử dụng</option>
+              <option value="Maintenance">Bảo trì</option>
+              <option value="Unavailable">Không khả dụng</option>
             </select>
           </div>
 
@@ -83,10 +83,10 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
               type="button"
               onClick={onClose}
             >
-              Cancel
+              Hủy
             </button>
             <button className="room-form-modal__save-btn" type="submit">
-              {isEditMode ? "Save Changes" : "Save Room"}
+              {isEditMode ? "Lưu thay đổi" : "Lưu phòng"}
             </button>
           </div>
         </form>

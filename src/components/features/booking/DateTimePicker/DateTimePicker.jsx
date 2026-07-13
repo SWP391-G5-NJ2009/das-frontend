@@ -156,7 +156,7 @@ function DateTimePicker({
             className="date-time-picker__nav-btn"
             onClick={handlePrevMonth}
             disabled={!canGoPrev}
-            aria-label="Previous month"
+            aria-label="Tháng trước"
           >
             <ChevronLeft size={16} />
           </button>
@@ -168,7 +168,7 @@ function DateTimePicker({
             type="button"
             className="date-time-picker__nav-btn"
             onClick={handleNextMonth}
-            aria-label="Next month"
+            aria-label="Tháng sau"
           >
             <ChevronRight size={16} />
           </button>
@@ -189,7 +189,7 @@ function DateTimePicker({
         <div
           className="date-time-picker__days"
           role="grid"
-          aria-label="Date selection grid"
+          aria-label="Lưới chọn ngày"
         >
           {/* Empty cells for first day offset */}
           {Array.from({ length: firstDay }).map((_, i) => (
@@ -234,7 +234,7 @@ function DateTimePicker({
       {/* Time Slots */}
       <div className="date-time-picker__slots">
         <p className="date-time-picker__slots-label">
-          Available Time Slots
+          Khung giờ còn trống
           {selectedDate && (
             <span className="date-time-picker__slots-date">
               {" "}
@@ -248,21 +248,21 @@ function DateTimePicker({
           <div className="date-time-picker__slot-info" role="note">
             <Clock size={13} aria-hidden="true" />
             <span>
-              This service requires{" "}
-              <strong>{normalizedSlotCount} consecutive slots</strong> (
-              {normalizedSlotCount * 30} min). Selecting a start time will
-              automatically reserve all {normalizedSlotCount} slots.
+              Dịch vụ này cần{" "}
+              <strong>{normalizedSlotCount} khung giờ liên tiếp</strong> (
+              {normalizedSlotCount * 30} phút). Khi chọn giờ bắt đầu, hệ thống sẽ
+              tự động giữ tất cả {normalizedSlotCount} slots.
             </span>
           </div>
         )}
 
         {!selectedDate ? (
           <p className="date-time-picker__slots-empty">
-            Please select a date to view available time slots.
+            Vui lòng chọn ngày để xem khung giờ còn trống.
           </p>
         ) : slots.length === 0 ? (
           <p className="date-time-picker__slots-empty">
-            No available time slots for this date.
+            Không có khung giờ trống cho ngày này.
           </p>
         ) : (
           <div className="date-time-picker__slots-grid">

@@ -18,7 +18,7 @@ import Pagination from "../../../components/common/Pagination/Pagination";
 function ReceptionistRequestsPage() {
 
   const [filters, setFilters] = useState({
-    status: "Pending",
+    status: "Đang chờ",
     date: "",
     search: "",
     pagination: 1,
@@ -54,10 +54,10 @@ function ReceptionistRequestsPage() {
               className="receptionist-requests__page-title"
               id="receptionist-requests-title"
             >
-              Manage consultation requests
+              Quản lý yêu cầu tư vấn
             </h1>
             <p className="receptionist-requests__page-desc">
-              View and update consultation requests.
+              Xem và cập nhật yêu cầu tư vấn.
             </p>
           </div>
         </div>
@@ -66,7 +66,7 @@ function ReceptionistRequestsPage() {
           <div className="receptionist-requests__card-header">
             <div className="receptionist-requests__card-title-group">
               <h2 className="receptionist-requests__card-title">
-                Consultation request list
+                Danh sách yêu cầu tư vấn
               </h2>
             </div>
 
@@ -84,21 +84,21 @@ function ReceptionistRequestsPage() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Full name</th>
-                  <th>Phone number</th>
+                  <th>Họ và tên</th>
+                  <th>Số điện thoại</th>
                   <th>Email</th>
                   <th>Description</th>
-                  <th>Created date</th>
+                  <th>Ngày tạo</th>
                   <th>Status</th>
                   <th>Handler</th>
-                  <th>Actions</th>
+                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Loading requests...
+                      Đang tải yêu cầu...
                     </td>
                   </tr>
                 )}
@@ -114,7 +114,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && !error && requests.length === 0 && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      No requests found
+                      Không tìm thấy yêu cầu
                     </td>
                   </tr>
                 )}

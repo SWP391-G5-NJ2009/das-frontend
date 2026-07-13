@@ -25,14 +25,14 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
               <ShieldBan size={18} />
             </div>
             <h2 id="lift-ban-modal-title" className="lift-ban-modal__title">
-              Lift Booking Ban
+              Gỡ chặn đặt lịch
             </h2>
           </div>
           <button
             id="lift-ban-modal-close"
             type="button"
             className="lift-ban-modal__close-btn"
-            aria-label="Close modal"
+            aria-label="Đóng hộp thoại"
             onClick={onClose}
             disabled={isLoading}
           >
@@ -43,25 +43,25 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
         {/* Body */}
         <div className="lift-ban-modal__body">
           <div className="lift-ban-modal__patient-section">
-            <span className="lift-ban-modal__patient-label">PATIENT INFORMATION</span>
+            <span className="lift-ban-modal__patient-label">THÔNG TIN BỆNH NHÂN</span>
             <div className="lift-ban-modal__patient-info">
               <span className="lift-ban-modal__patient-name">{patient.patientName}</span>
             </div>
           </div>
 
           <div className="lift-ban-modal__reason-box">
-            <strong>Reason for Ban:</strong> Automatic ban triggered by 3 No-Shows.
-            The patient&apos;s account has been set to <strong>Restricted</strong>,
+            <strong>Lý do bị chặn:</strong> Tự động chặn do 3 lần vắng mặt.
+            Tài khoản bệnh nhân đã được đặt thành <strong>Restricted</strong>,
             preventing login and online booking.
           </div>
 
           <div className="lift-ban-modal__info-callout">
             <Info size={15} className="lift-ban-modal__info-icon" aria-hidden="true" />
             <p className="lift-ban-modal__info-text">
-              By lifting this ban, the existing No-Show records will be marked
-              as <strong>&quot;Resolved No-Show&quot;</strong> and the patient&apos;s
-              account status will be restored to <strong>Active</strong>, allowing
-              them to log in and book appointments again.
+              Khi gỡ chặn, các bản ghi vắng mặt hiện có sẽ được đánh dấu
+              as <strong>"Đã xử lý vắng mặt"</strong> and the patient's
+              trạng thái tài khoản sẽ được khôi phục thành <strong>Active</strong>, cho phép
+              bệnh nhân đăng nhập và đặt lịch trở lại.
             </p>
           </div>
         </div>
@@ -75,7 +75,7 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
             onClick={onClose}
             disabled={isLoading}
           >
-            Cancel
+            Hủy
           </button>
           <button
             id="lift-ban-modal-confirm"
@@ -84,7 +84,7 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
             onClick={onConfirm}
             disabled={isLoading}
           >
-            {isLoading ? "Processing..." : "Lift Ban & Resolve"}
+            {isLoading ? "Đang xử lý..." : "Lift Ban & Resolve"}
           </button>
         </div>
       </div>

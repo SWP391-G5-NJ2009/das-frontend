@@ -3,12 +3,12 @@ import { Search, X } from "lucide-react";
 import "./AccountFilters.css";
 
 const STATUS_TABS = [
-  { value: "All", label: "All" },
+  { value: "All", label: "Tất cả" },
   { value: "Admin", label: "Admin" },
-  { value: "Owner", label: "Owner" },
-  { value: "Receptionist", label: "Receptionist" },
-  { value: "Dentist", label: "Dentist" },
-  { value: "Patient", label: "Patient" },
+  { value: "Owner", label: "Chủ phòng khám" },
+  { value: "Lễ tân", label: "Lễ tân" },
+  { value: "Nha sĩ", label: "Nha sĩ" },
+  { value: "Bệnh nhân", label: "Bệnh nhân" },
 ];
 
 function AccountFilters({
@@ -25,7 +25,7 @@ function AccountFilters({
     <div
       className="appt-filters__tabs"
       role="tablist"
-      aria-label="Filter by status"
+      aria-label="Lọc theo trạng thái"
     >
       {tabs.map((tab) => (
         <button
@@ -55,16 +55,16 @@ function AccountFilters({
           id="appt-filter-search"
           type="text"
           className="appt-filters__search"
-          placeholder="Search by patient, service, dentist..."
+          placeholder="Tìm theo bệnh nhân, dịch vụ, nha sĩ..."
           value={filters.search}
           onChange={(e) => onSearchChange(e.target.value)}
-          aria-label="Search appointments"
+          aria-label="Tìm lịch hẹn"
         />
         {filters.search && (
           <button
             type="button"
             className="appt-filters__search-clear"
-            aria-label="Clear search"
+            aria-label="Xóa tìm kiếm"
             onClick={() => onSearchChange("")}
           >
             <X size={14} aria-hidden="true" />
@@ -79,13 +79,13 @@ function AccountFilters({
           className="appt-filters__date"
           value={filters.date}
           onChange={(e) => onDateChange(e.target.value)}
-          aria-label="Filter by date"
+          aria-label="Lọc theo ngày"
         />
         {filters.date && (
           <button
             type="button"
             className="appt-filters__date-clear"
-            aria-label="Clear date filter"
+            aria-label="Xóa bộ lọc ngày"
             onClick={() => onDateChange("")}
           >
             <X size={14} aria-hidden="true" />

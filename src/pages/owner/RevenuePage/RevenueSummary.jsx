@@ -34,10 +34,10 @@ function RevenueSummary() {
     return (
       <section className="revenue-summary revenue-summary--error">
         <div className="revenue-summary__header">
-          <h2 className="revenue-summary__title">Current Month Revenue</h2>
+          <h2 className="revenue-summary__title">Doanh thu tháng hiện tại</h2>
         </div>
         <p className="revenue-summary__error-text">
-          Unable to load revenue data.
+          Không thể tải dữ liệu doanh thu.
         </p>
       </section>
     );
@@ -46,7 +46,7 @@ function RevenueSummary() {
   return (
     <section className="revenue-summary">
       <div className="revenue-summary__header">
-        <h2 className="revenue-summary__title">Current Month Revenue</h2>
+        <h2 className="revenue-summary__title">Doanh thu tháng hiện tại</h2>
         <span className="revenue-summary__period">{getCurrentMonthLabel()}</span>
       </div>
       <p className="revenue-summary__amount">{formatVND(data ?? 0)}</p>

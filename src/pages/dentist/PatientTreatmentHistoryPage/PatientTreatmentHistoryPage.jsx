@@ -81,15 +81,15 @@ function TreatmentRecordRow({ record }) {
         <div className="patient-treatment-history__record-details">
           <dl className="patient-treatment-history__field-list">
             <FieldRow label="Diagnosis" value={record.diagnosis} />
-            <FieldRow label="Treatment note" value={record.treatmentNote} />
-            <FieldRow label="Appointment note" value={record.appointmentNote} />
+            <FieldRow label="Ghi chú điều trị" value={record.treatmentNote} />
+            <FieldRow label="Ghi chú lịch hẹn" value={record.appointmentNote} />
             <FieldRow label="Appointment" value={record.appointmentId} />
           </dl>
           {!hasValue(record.diagnosis) &&
             !hasValue(record.treatmentNote) &&
             !hasValue(record.appointmentNote) && (
               <p className="patient-treatment-history__record-empty">
-                No clinical notes recorded.
+                Chưa có ghi chú lâm sàng.
               </p>
             )}
         </div>
@@ -148,13 +148,13 @@ function PatientTreatmentHistoryPage() {
           type="button"
         >
           <ArrowLeft aria-hidden="true" size={16} />
-          <span>Back to patients</span>
+          <span>Quay lại danh sách bệnh nhân</span>
         </button>
 
         <header className="patient-treatment-history__header">
           <div>
             <p className="patient-treatment-history__eyebrow">
-              Treatment history
+              Lịch sử điều trị
             </p>
             <h1
               className="patient-treatment-history__title"
@@ -173,7 +173,7 @@ function PatientTreatmentHistoryPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message="Unable to load treatment history. Please try again." />
+          <EmptyState message="Không thể tải lịch sử điều trị. Vui lòng thử lại." />
         )}
 
         {!isLoading && !error && treatments.length === 0 && (

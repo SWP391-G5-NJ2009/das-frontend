@@ -77,10 +77,10 @@ function MonthlyReturningPatientCount() {
         return (
             <section className="monthly-returning-patient monthly-returning-patient--error">
                 <div className="monthly-returning-patient__header">
-                    <h2 className="monthly-returning-patient__title">Last 12 Months&apos; Returning Patient</h2>
+                    <h2 className="monthly-returning-patient__title">Bệnh nhân quay lại trong 12 tháng gần nhất</h2>
                 </div>
                 <p className="monthly-returning-patient__error-text">
-                    Unable to load data.
+                    Không thể tải dữ liệu.
                 </p>
             </section>
         );
@@ -90,9 +90,9 @@ function MonthlyReturningPatientCount() {
         return (
             <section className="monthly-returning-patient">
                 <div className="monthly-returning-patient__header">
-                    <h2 className="monthly-returning-patient__title">Last 12 Months&apos; Returning Patient</h2>
+                    <h2 className="monthly-returning-patient__title">Bệnh nhân quay lại trong 12 tháng gần nhất</h2>
                 </div>
-                <p className="monthly-returning-patient__empty-text">No data available.</p>
+                <p className="monthly-returning-patient__empty-text">Không có dữ liệu.</p>
             </section>
         );
     }
@@ -108,7 +108,7 @@ function MonthlyReturningPatientCount() {
     return (
         <section className="monthly-returning-patient">
             <div className="monthly-returning-patient__header">
-                <h2 className="monthly-returning-patient__title">Last 12 Months&apos; Returning Patient</h2>
+                <h2 className="monthly-returning-patient__title">Bệnh nhân quay lại trong 12 tháng gần nhất</h2>
             </div>
             <div className="monthly-returning-patient__chart-container">
                 <ResponsiveContainer width="100%" height="100%">

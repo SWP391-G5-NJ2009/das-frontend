@@ -179,7 +179,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           : {}),
       });
       alert(
-        "Appointment booked successfully! A confirmation email has been sent to your inbox.",
+        "Đặt lịch hẹn thành công! Email xác nhận đã được gửi đến hộp thư của bạn.",
       );
       if (isReceptionist) {
         navigate("/receptionist/appointments");
@@ -195,7 +195,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             "The availability has been updated — please select a different time.",
         );
       } else {
-        alert(err?.message || "Booking failed. Please try again!");
+        alert(err?.message || "Đặt lịch thất bại. Vui lòng thử lại!");
       }
     } finally {
       setIsSubmitting(false);
@@ -223,7 +223,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           id="book-appointment-title"
           className="book-appointment__page-title"
         >
-          Book new appointment
+          Đặt lịch hẹn mới
         </h1>
       </div>
 
@@ -235,7 +235,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           >
             <BookingStepHeader
               step={1}
-              title="Patient information"
+              title="Thông tin bệnh nhân"
               icon={User}
             />
             <PatientSearchSection
@@ -261,13 +261,13 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           >
             <BookingStepHeader
               step={2}
-              title="Select service"
+              title="Chọn dịch vụ"
               icon={Stethoscope}
             />
             {isServicesLoading && <Spinner />}
             {servicesError && (
               <p className="book-appointment__locked-msg">
-                The list of services could not be loaded. Please try again.
+                Không thể tải danh sách dịch vụ. Vui lòng thử lại.
               </p>
             )}
             {!isServicesLoading && !servicesError && (
@@ -285,13 +285,13 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           >
             <BookingStepHeader
               step={3}
-              title="Select dentist"
+              title="Chọn nha sĩ"
               icon={UserCheck}
             />
             {isDentistsLoading && <Spinner />}
             {dentistsError && (
               <p className="book-appointment__locked-msg">
-                Could not load dentists for this service. Please try again.
+                Không thể tải nha sĩ cho dịch vụ này. Vui lòng thử lại.
               </p>
             )}
             {!isDentistsLoading && !dentistsError && (
@@ -309,19 +309,19 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           >
             <BookingStepHeader
               step={4}
-              title="Select date and time"
+              title="Chọn ngày và giờ"
               icon={CalendarClock}
             />
             {!selectedDentist ? (
               <p className="book-appointment__locked-msg">
-                Please select a dentist first to view available slots.
+                Vui lòng chọn nha sĩ trước để xem khung giờ trống.
               </p>
             ) : (
               <>
                 {isSlotsLoading && <Spinner />}
                 {slotsError && (
                   <p className="book-appointment__locked-msg">
-                    Could not load available slots. Please try again.
+                    Không thể tải khung giờ trống. Vui lòng thử lại.
                   </p>
                 )}
                 {!isSlotsLoading && !slotsError && (

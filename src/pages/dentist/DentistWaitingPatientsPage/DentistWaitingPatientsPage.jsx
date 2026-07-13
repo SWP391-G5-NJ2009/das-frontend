@@ -168,7 +168,7 @@ function DentistWaitingPatientsPage() {
             <input
               id="dentist-patient-search"
               onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search name, phone, status..."
+              placeholder="Tìm theo tên, số điện thoại, trạng thái..."
               type="search"
               value={searchTerm}
             />
@@ -179,14 +179,14 @@ function DentistWaitingPatientsPage() {
             type="button"
           >
             <ListFilter aria-hidden="true" size={16} />
-            <span>Filter</span>
+            <span>Lọc</span>
           </button>
         </div>
 
         <div className="dentist-waiting-patients__tabs">
             <div
               className="dentist-waiting-patients__filter-group"
-              aria-label="Filter patient queue"
+              aria-label="Lọc hàng đợi bệnh nhân"
               role="group"
             >
               {Object.entries(FILTERS).map(([key, filter]) => (
@@ -209,7 +209,7 @@ function DentistWaitingPatientsPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message="Unable to load waiting patients. Please try again." />
+          <EmptyState message="Không thể tải danh sách bệnh nhân đang chờ. Vui lòng thử lại." />
         )}
 
         {!isLoading && !error && visiblePatients.length === 0 && (
@@ -225,12 +225,12 @@ function DentistWaitingPatientsPage() {
             <table className="dentist-waiting-patients__table">
               <thead className="dentist-waiting-patients__table-head">
                 <tr>
-                  <th scope="col">Patient Name</th>
+                  <th scope="col">Tên bệnh nhân</th>
                   <th scope="col">Phone</th>
                   <th scope="col">Service</th>
-                  <th scope="col">Latest Visit</th>
+                  <th scope="col">Lần khám gần nhất</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Actions</th>
+                  <th scope="col">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -275,7 +275,7 @@ function DentistWaitingPatientsPage() {
                               { state: { patient: patient.queueAppointment } },
                             )
                           }
-                          title="View treatment history"
+                          title="Xem lịch sử điều trị"
                           type="button"
                         >
                           <History aria-hidden="true" size={15} />
@@ -283,7 +283,7 @@ function DentistWaitingPatientsPage() {
                         <button
                           className="dentist-waiting-patients__icon-action"
                           disabled
-                          title="Open treatment record"
+                          title="Mở hồ sơ điều trị"
                           type="button"
                         >
                           <ClipboardPlus aria-hidden="true" size={15} />

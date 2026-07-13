@@ -165,17 +165,17 @@ function AppointmentDashboardPage() {
       <div className="appt-dash">
         <header className="appt-dash__header">
           <div>
-            <p className="appt-dash__eyebrow">Owner Dashboard</p>
-            <h1 className="appt-dash__title">Appointment Dashboard</h1>
+            <p className="appt-dash__eyebrow">Bảng điều khiển chủ phòng khám</p>
+            <h1 className="appt-dash__title">Bảng điều khiển lịch hẹn</h1>
             <p className="appt-dash__subtitle">
-              View appointment volume and schedule details at a glance.
+              Xem nhanh số lượng lịch hẹn và chi tiết lịch làm việc.
             </p>
           </div>
         </header>
 
         {error && (
           <div className="appt-dash__notice appt-dash__notice--error">
-            <span>{error.message || "Failed to load data."}</span>
+            <span>{error.message || "Không thể tải dữ liệu."}</span>
           </div>
         )}
 
@@ -194,7 +194,7 @@ function AppointmentDashboardPage() {
                     className="appt-dash__nav-btn"
                     type="button"
                     onClick={() => navigateMonth(-1)}
-                    aria-label="Previous month"
+                    aria-label="Tháng trước"
                   >
                     <ChevronLeft size={18} />
                   </button>
@@ -212,7 +212,7 @@ function AppointmentDashboardPage() {
                     className="appt-dash__nav-btn"
                     type="button"
                     onClick={() => navigateMonth(1)}
-                    aria-label="Next month"
+                    aria-label="Tháng sau"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -226,7 +226,7 @@ function AppointmentDashboardPage() {
                     {totalMonthAppointments}
                   </span>
                   <span className="appt-dash__summary-label">
-                    Total Appointments
+                    Tổng số lịch hẹn
                   </span>
                 </div>
               </div>
@@ -279,7 +279,7 @@ function AppointmentDashboardPage() {
                 onClick={handleBackToMonth}
               >
                 <ArrowLeft size={16} />
-                Back to Calendar
+                Quay lại lịch
               </button>
               <h2 className="appt-dash__day-title">
                 <CalendarDays size={20} />
@@ -315,7 +315,7 @@ function AppointmentDashboardPage() {
                       </div>
                       <div className="appt-dash__time-content">
                         {slot.appointments.length === 0 ? (
-                          <span className="appt-dash__no-appt">No appointments</span>
+                          <span className="appt-dash__no-appt">Không có lịch hẹn</span>
                         ) : (
                           slot.appointments.map((appt) => (
                             <div

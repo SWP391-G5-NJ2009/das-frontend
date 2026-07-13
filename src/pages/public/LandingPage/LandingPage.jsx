@@ -67,7 +67,13 @@ function LandingPage() {
 
     try {
       await consultationService.create(form);
-      setForm({ full_name: "", phone: "", email: "", description: "", website: "" });
+      setForm({
+        full_name: "",
+        phone: "",
+        email: "",
+        description: "",
+        website: "",
+      });
       setSuccess("Consultation request sent successfully!");
     } catch (err) {
       setError(err.message);
@@ -86,23 +92,23 @@ function LandingPage() {
             <div className="landing-hero__content">
               <p className="landing-hero__eyebrow">
                 <ShieldCheck size={16} aria-hidden="true" />
-                Trusted dental care
+                Chăm sóc nha khoa đáng tin cậy
               </p>
               <h1 className="landing-hero__title">
-                {clinicName} helps you care for your smile <span>with ease</span>
+                {clinicName} giúp bạn chăm sóc nụ cười <span>thật dễ dàng</span>
               </h1>
               {isClinicLoading ? (
                 <p className="landing-hero__text">
-                  Loading clinic information...
+                  Đang tải thông tin phòng khám...
                 </p>
               ) : clinicError ? (
                 <p className="landing-message landing-message--error">
-                  We could not load clinic information right now. Please try
-                  again later.
+                  Hiện không thể tải thông tin phòng khám. Vui lòng thử lại sau.
                 </p>
               ) : (
                 <p className="landing-hero__text">
-                  {clinicInfo?.introduction}
+                  Dịch vụ chăm sóc nha khoa chuyên nghiệp với đội ngũ nha sĩ
+                  giàu kinh nghiệm và trang thiết bị hiện đại.
                 </p>
               )}
               <div className="landing-hero__actions">
@@ -111,13 +117,13 @@ function LandingPage() {
                   to="/consultation"
                 >
                   <CalendarDays size={16} aria-hidden="true" />
-                  Book now
+                  Đặt lịch ngay
                 </Link>
                 <Link
                   className="landing-button landing-button--secondary"
                   to="/services"
                 >
-                  Explore services
+                  Khám phá dịch vụ
                 </Link>
               </div>
             </div>
@@ -128,7 +134,7 @@ function LandingPage() {
         </section>
 
         {clinicInfo && (
-          <section className="landing-info" aria-label="Clinic information">
+          <section className="landing-info" aria-label="Thông tin phòng khám">
             <div className="landing-info__grid">
               <article className="landing-info__item">
                 <Phone size={20} aria-hidden="true" />
@@ -140,21 +146,21 @@ function LandingPage() {
               <article className="landing-info__item">
                 <MapPin size={20} aria-hidden="true" />
                 <div>
-                  <h2>Address</h2>
+                  <h2>Địa chỉ</h2>
                   <p>{clinicInfo.address}</p>
                 </div>
               </article>
               <article className="landing-info__item">
                 <Clock size={20} aria-hidden="true" />
                 <div>
-                  <h2>Open hours</h2>
+                  <h2>Giờ mở cửa</h2>
                   <p>{clinicInfo.open_time}</p>
                 </div>
               </article>
               <article className="landing-info__item">
                 <Clock size={20} aria-hidden="true" />
                 <div>
-                  <h2>Close hours</h2>
+                  <h2>Giờ đóng cửa</h2>
                   <p>{clinicInfo.close_time}</p>
                 </div>
               </article>
@@ -164,23 +170,22 @@ function LandingPage() {
 
         <section className="landing-services" id="services">
           <div className="landing-services__header">
-            <h2>Our services</h2>
+            <h2>Dịch vụ của chúng tôi</h2>
             <p>
-              A broad range of active dental services from experienced dentists
-              and modern equipment.
+              Nhiều dịch vụ nha khoa đang hoạt động với đội ngũ nha sĩ giàu kinh
+              nghiệm và thiết bị hiện đại.
             </p>
           </div>
 
           {isServicesLoading ? (
-            <p className="landing-message">Loading dental services...</p>
+            <p className="landing-message">Đang tải dịch vụ nha khoa...</p>
           ) : servicesError ? (
             <p className="landing-message landing-message--error">
-              We could not load dental services right now. Please try again
-              later.
+              Hiện không thể tải dịch vụ nha khoa. Vui lòng thử lại later.
             </p>
           ) : featuredServices.length === 0 ? (
             <p className="landing-message">
-              No dental services are available at the moment.
+              Hiện chưa có dịch vụ nha khoa nào.
             </p>
           ) : (
             <div className="landing-services__grid">
@@ -191,15 +196,16 @@ function LandingPage() {
                   </div>
                   <h3>{service.name}</h3>
                   <p>
-                    {service.description || "Service details are being updated."}
+                    {service.description ||
+                      "Service details are being updated."}
                   </p>
                   <dl className="service-card__meta">
                     <div>
-                      <dt>Time</dt>
-                      <dd>{service.duration} minutes</dd>
+                      <dt>Thời gian</dt>
+                      <dd>{service.duration} phút</dd>
                     </div>
                     <div>
-                      <dt>Cost</dt>
+                      <dt>Chi phí</dt>
                       <dd>{formatPrice(service.price)}</dd>
                     </div>
                   </dl>
@@ -212,10 +218,10 @@ function LandingPage() {
         <section className="landing-consultation" id="consultation">
           <div className="landing-consultation__inner">
             <div className="landing-consultation__content">
-              <h2>Request a consultation</h2>
+              <h2>Yêu cầu tư vấn</h2>
               <p>
-                Leave your information and the {clinicName} team will contact
-                you for a consultation and help arrange a suitable appointment.
+                Để lại thông tin, đội ngũ {clinicName} sẽ liên hệ you để tư vấn
+                và hỗ trợ sắp xếp lịch hẹn phù hợp.
               </p>
               {clinicInfo && (
                 <ul className="landing-contact">
@@ -252,7 +258,7 @@ function LandingPage() {
                   type="text"
                   name="full_name"
                   value={form.full_name}
-                  placeholder="Full name"
+                  placeholder="Họ và tên"
                   onChange={handleChange}
                   required
                 />
@@ -262,7 +268,7 @@ function LandingPage() {
                   type="tel"
                   name="phone"
                   value={form.phone}
-                  placeholder="Phone number"
+                  placeholder="Số điện thoại"
                   onChange={handleChange}
                   required
                 />
@@ -280,7 +286,7 @@ function LandingPage() {
                 <textarea
                   name="description"
                   value={form.description}
-                  placeholder="Consultation details"
+                  placeholder="Nội dung tư vấn"
                   rows="5"
                   onChange={handleChange}
                   required
@@ -293,7 +299,9 @@ function LandingPage() {
                 autoComplete="off"
                 style={{ position: "absolute", left: "-9999px" }}
                 value={form.website}
-                onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, website: e.target.value }))
+                }
               />
 
               <button
@@ -301,7 +309,7 @@ function LandingPage() {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Sending..." : "Send consultation request"}
+                {isSubmitting ? "Đang gửi..." : "Gửi yêu cầu tư vấn"}
               </button>
               {success && <Toast type="success" message={success} />}
             </form>

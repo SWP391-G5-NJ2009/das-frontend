@@ -73,10 +73,10 @@ function MonthlyNoShowRate() {
         return (
             <section className="monthly-no-show-rate monthly-no-show-rate--error">
                 <div className="monthly-no-show-rate__header">
-                    <h2 className="monthly-no-show-rate__title">Last 12 Months&apos; No-Show Rate</h2>
+                    <h2 className="monthly-no-show-rate__title">Tỷ lệ vắng mặt trong 12 tháng gần nhất</h2>
                 </div>
                 <p className="monthly-no-show-rate__error-text">
-                    Unable to load data.
+                    Không thể tải dữ liệu.
                 </p>
             </section>
         );
@@ -86,9 +86,9 @@ function MonthlyNoShowRate() {
         return (
             <section className="monthly-no-show-rate">
                 <div className="monthly-no-show-rate__header">
-                    <h2 className="monthly-no-show-rate__title">Last 12 Months&apos; No-Show Rate</h2>
+                    <h2 className="monthly-no-show-rate__title">Tỷ lệ vắng mặt trong 12 tháng gần nhất</h2>
                 </div>
-                <p className="monthly-no-show-rate__empty-text">No data available.</p>
+                <p className="monthly-no-show-rate__empty-text">Không có dữ liệu.</p>
             </section>
         );
     }
@@ -104,7 +104,7 @@ function MonthlyNoShowRate() {
     return (
         <section className="monthly-no-show-rate">
             <div className="monthly-no-show-rate__header">
-                <h2 className="monthly-no-show-rate__title">Last 12 Months&apos; No-Show Rate</h2>
+                <h2 className="monthly-no-show-rate__title">Tỷ lệ vắng mặt trong 12 tháng gần nhất</h2>
             </div>
             <div className="monthly-no-show-rate__chart-container">
                 <ResponsiveContainer width="100%" height="100%">

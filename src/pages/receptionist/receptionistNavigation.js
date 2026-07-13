@@ -26,11 +26,11 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "person",
-    label: "Manage Profile",
+    label: "Quản lý hồ sơ",
     to: "/receptionist/profile",
   },
 ];
 
 export const RECEPTIONIST_FOOTER_ITEMS = [
-  { icon: "logout", label: "Log out", to: "/staff/login" },
+  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
 ];

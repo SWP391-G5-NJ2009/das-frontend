@@ -22,11 +22,11 @@ function getStatus(status) {
   const normalizedStatus = status?.toLowerCase();
 
   if (normalizedStatus === "active") {
-    return { label: "Active", modifier: "active" };
+    return { label: "Hoạt động", modifier: "active" };
   }
 
   if (normalizedStatus === "banned") {
-    return { label: "Banned", modifier: "banned" };
+    return { label: "Bị khóa", modifier: "banned" };
   }
 
   return { label: "Unknown", modifier: "inactive" };
@@ -75,7 +75,7 @@ function DentistProfileModal({ dentist, onClose }) {
         <header className="dentist-profile-modal__header">
           <div className="dentist-profile-modal__title">
             <UserRound size={20} aria-hidden="true" />
-            <h2 id="dentist-profile-title">Dentist Profile</h2>
+            <h2 id="dentist-profile-title">Hồ sơ nha sĩ</h2>
           </div>
           <button
             className="dentist-profile-modal__close"
@@ -102,12 +102,12 @@ function DentistProfileModal({ dentist, onClose }) {
           <section className="dentist-profile-modal__panel">
             <h3>
               <FileText size={20} aria-hidden="true" />
-              Personal Information
+              Thông tin cá nhân
             </h3>
             <div className="dentist-profile-modal__grid">
-              <ProfileField label="Full name" value={dentist.fullName} />
+              <ProfileField label="Họ và tên" value={dentist.fullName} />
               <ProfileField label="Position" value="Specialist Dentist" />
-              <ProfileField label="Phone number" value={dentist.phone} />
+              <ProfileField label="Số điện thoại" value={dentist.phone} />
               <ProfileField label="Email" value={dentist.email} />
               <ProfileField
                 label="Birthdate"

@@ -232,11 +232,11 @@ function AppointmentsPage() {
     setIsLiftingBan(true);
     try {
       await patientService.liftBan(liftBanTarget.patientId);
-      setToast({ type: "success", message: "Update form status successfully." });
+      setToast({ type: "success", message: "Cập nhật trạng thái biểu mẫu thành công." });
       setLiftBanTarget(null);
       window.location.reload();
     } catch {
-      setToast({ type: "error", message: "Failed to lift booking ban. Please try again." });
+      setToast({ type: "error", message: "Gỡ chặn đặt lịch thất bại. Vui lòng thử lại." });
     } finally {
       setIsLiftingBan(false);
     }
@@ -270,10 +270,10 @@ function AppointmentsPage() {
               type="button"
               className="appts-page__book-btn"
               onClick={() => navigate(config.bookRoute)}
-              aria-label="Book new appointment"
+              aria-label="Đặt lịch hẹn mới"
             >
               <CalendarPlus size={18} aria-hidden="true" />
-              Book New Appointment
+              Đặt lịch hẹn mới
             </button>
           )}
         </div>
@@ -282,9 +282,9 @@ function AppointmentsPage() {
           <div className="appts-page__urgent-alert" role="alert">
             <AlertTriangle size={20} aria-hidden="true" />
             <div className="appts-page__urgent-copy">
-              <strong>Urgent rescheduling task</strong>
+              <strong>Việc cần đổi lịch khẩn cấp</strong>
               <span>
-                {conflictAlerts.appointments.length} conflict appointment
+                {conflictAlerts.appointments.length} lịch hẹn xung đột
                 {conflictAlerts.appointments.length === 1 ? "" : "s"} need
                 receptionist follow-up.
               </span>
@@ -294,7 +294,7 @@ function AppointmentsPage() {
               type="button"
               onClick={handleViewConflictAppointments}
             >
-              View conflicts
+              Xem xung đột
             </button>
           </div>
         )}
@@ -312,7 +312,7 @@ function AppointmentsPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message="Unable to load appointments. Please try again." />
+          <EmptyState message="Không thể tải lịch hẹn. Vui lòng thử lại." />
         )}
 
         {!isLoading && !error && appointments.length === 0 && (

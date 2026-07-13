@@ -19,23 +19,23 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
       >
         <div className="delete-room-modal__header">
           <h2 className="delete-room-modal__title" id="delete-room-title">
-            Delete room
+            Xóa phòng
           </h2>
           <p className="delete-room-modal__subtitle">
-            This action can not be undo.
+            Hành động này không thể hoàn tác.
           </p>
         </div>
 
         <div className="delete-room-modal__body">
           <section
             className="delete-room-modal__details"
-            aria-label="Room details"
+            aria-label="Chi tiết phòng"
           >
-            <h3 className="delete-room-modal__details-title">Room details:</h3>
+            <h3 className="delete-room-modal__details-title">Chi tiết phòng:</h3>
             <div className="delete-room-modal__detail-grid">
               <div className="delete-room-modal__detail-item">
                 <span className="delete-room-modal__detail-label">
-                  Room name
+                  Tên phòng
                 </span>
                 <strong className="delete-room-modal__room-name">
                   {room.room_name}
@@ -62,7 +62,7 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
           <div className="delete-room-modal__warning" role="alert">
             <AlertCircle size={20} aria-hidden="true" />
             <span>
-              Warning: You have to move all the appointments of this room first
+              Cảnh báo: Bạn cần chuyển toàn bộ lịch hẹn của phòng này trước
             </span>
           </div>
         </div>
@@ -74,7 +74,7 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
             onClick={onClose}
             disabled={isDeleting}
           >
-            Cancel
+            Hủy
           </button>
           <button
             className="delete-room-modal__delete-btn"
@@ -83,7 +83,7 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
             disabled={isDeleting}
           >
             <Trash2 size={16} aria-hidden="true" />
-            {isDeleting ? "Deleting" : "Delete"}
+            {isDeleting ? "Đang xóa" : "Xóa"}
           </button>
         </div>
       </div>

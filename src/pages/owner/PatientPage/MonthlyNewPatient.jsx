@@ -77,10 +77,10 @@ function MonthlyNewPatientCount() {
         return (
             <section className="monthly-new-patient monthly-new-patient--error">
                 <div className="monthly-new-patient__header">
-                    <h2 className="monthly-new-patient__title">Last 12 Months&apos; New Patient</h2>
+                    <h2 className="monthly-new-patient__title">Bệnh nhân mới trong 12 tháng gần nhất</h2>
                 </div>
                 <p className="monthly-new-patient__error-text">
-                    Unable to load data.
+                    Không thể tải dữ liệu.
                 </p>
             </section>
         );
@@ -90,9 +90,9 @@ function MonthlyNewPatientCount() {
         return (
             <section className="monthly-new-patient">
                 <div className="monthly-new-patient__header">
-                    <h2 className="monthly-new-patient__title">Last 12 Months&apos; New Patient</h2>
+                    <h2 className="monthly-new-patient__title">Bệnh nhân mới trong 12 tháng gần nhất</h2>
                 </div>
-                <p className="monthly-new-patient__empty-text">No data available.</p>
+                <p className="monthly-new-patient__empty-text">Không có dữ liệu.</p>
             </section>
         );
     }
@@ -108,7 +108,7 @@ function MonthlyNewPatientCount() {
     return (
         <section className="monthly-new-patient">
             <div className="monthly-new-patient__header">
-                <h2 className="monthly-new-patient__title">Last 12 Months&apos; New Patient</h2>
+                <h2 className="monthly-new-patient__title">Bệnh nhân mới trong 12 tháng gần nhất</h2>
             </div>
             <div className="monthly-new-patient__chart-container">
                 <ResponsiveContainer width="100%" height="100%">

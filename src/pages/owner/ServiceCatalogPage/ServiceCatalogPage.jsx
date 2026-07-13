@@ -99,10 +99,10 @@ function OwnerServiceCatalog() {
 
     try {
       await deleteService(serviceId);
-      alert("Service deleted successfully.");
+      alert("Xóa dịch vụ thành công.");
     } catch (err) {
       console.error("Error occurred while deleting service:", err);
-      alert(err.message || "Unable to delete the service.");
+      alert(err.message || "Không thể xóa dịch vụ.");
     }
   };
 
@@ -154,13 +154,13 @@ function OwnerServiceCatalog() {
           <div className="catalog-container">
             <div className="catalog-header">
               <div>
-                <h1>Service Catalog</h1>
+                <h1>Danh mục dịch vụ</h1>
                 <p className="subtitle">
-                  Manage and update dental service information
+                  Quản lý và cập nhật thông tin dịch vụ nha khoa
                 </p>
               </div>
               <button className="btn-add-service" onClick={openAddModal}>
-                <span className="plus-icon">+</span> Add New Service
+                <span className="plus-icon">+</span> Thêm dịch vụ mới
               </button>
             </div>
 
@@ -174,7 +174,7 @@ function OwnerServiceCatalog() {
               >
                 <input
                   type="text"
-                  placeholder="Search by service name or description..."
+                  placeholder="Tìm theo tên hoặc mô tả dịch vụ..."
                   value={searchTerm}
                   onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                   className="search-service-input"
@@ -210,7 +210,7 @@ function OwnerServiceCatalog() {
 
             <div className="filter-tabs">
               <label className="filter-label" htmlFor="category-filter">
-                Filter by category:
+                Lọc theo danh mục:
               </label>
               <select
                 id="category-filter"
@@ -234,7 +234,7 @@ function OwnerServiceCatalog() {
               >
                 <Spinner />
                 <p style={{ marginTop: "10px", color: "#666" }}>
-                  Loading service data...
+                  Đang tải dữ liệu dịch vụ...
                 </p>
               </div>
             ) : error ? (
@@ -243,16 +243,16 @@ function OwnerServiceCatalog() {
                 style={{ color: "red", textAlign: "center", padding: "20px" }}
               >
                 {error.message ||
-                  "Unable to load the service list from the system."}
+                  "Không thể tải danh sách dịch vụ từ hệ thống."}
               </div>
             ) : (
               <div className="table-responsive">
                 <table className="catalog-table">
                   <thead>
                     <tr>
-                      <th>SERVICE NAME</th>
+                      <th>TÊN DỊCH VỤ</th>
                       <th>CATEGORY</th>
-                      <th>ESTIMATED PRICE (VND)</th>
+                      <th>GIÁ ƯỚC TÍNH (VND)</th>
                       <th>SLOTS</th>
                       <th>STATUS</th>
                       <th style={{ textAlign: "center" }}>ACTIONS</th>
@@ -290,8 +290,8 @@ function OwnerServiceCatalog() {
                             className={`status-badge ${String(service.status || "Active").toLowerCase()}`}
                           >
                             {(service.status || "Active") === "Inactive"
-                              ? "Inactive"
-                              : "Active"}
+                              ? "Ngừng hoạt động"
+                              : "Hoạt động"}
                           </span>
                         </td>
                         <td className="actions-cell">
@@ -304,7 +304,7 @@ function OwnerServiceCatalog() {
                           </button>
                           <button
                             className="action-btn delete-btn"
-                            title="Delete"
+                            title="Xóa"
                             onClick={() =>
                               handleDeleteService(
                                 service.service_id,
@@ -324,7 +324,7 @@ function OwnerServiceCatalog() {
                           className="empty-row"
                           style={{ textAlign: "center", padding: "20px" }}
                         >
-                          No services found.
+                          Không tìm thấy dịch vụ.
                         </td>
                       </tr>
                     )}
@@ -352,7 +352,7 @@ function OwnerServiceCatalog() {
             <div className="modal-header">
               <h2>
                 {isEditMode
-                  ? "Update Dental Service"
+                  ? "Cập nhật dịch vụ nha khoa"
                   : "Create New Dental Service"}
               </h2>
               <button className="close-modal-btn" onClick={closeModal}>
@@ -362,7 +362,7 @@ function OwnerServiceCatalog() {
             <form onSubmit={handleFormSubmit}>
               <div className="form-group">
                 <label>
-                  Service Name <span style={{ color: "red" }}>*</span>
+                  Tên dịch vụ <span style={{ color: "red" }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -370,7 +370,7 @@ function OwnerServiceCatalog() {
                   value={formData.service_name}
                   onChange={handleInputChange}
                   required
-                  placeholder="e.g. Cosmetic Tooth Filling"
+                  placeholder="VD: Trám răng thẩm mỹ"
                 />
               </div>
 
@@ -400,8 +400,8 @@ function OwnerServiceCatalog() {
                       value={formData.status}
                       onChange={handleInputChange}
                     >
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
+                      <option value="Active">Hoạt động</option>
+                      <option value="Inactive">Ngừng hoạt động</option>
                     </select>
                   </div>
                 )}
@@ -410,7 +410,7 @@ function OwnerServiceCatalog() {
               <div className="form-row">
                 <div className="form-group">
                   <label>
-                    Estimated Price (VND){" "}
+                    Giá ước tính (VND){" "}
                     <span style={{ color: "red" }}>*</span>
                   </label>
                   <input
@@ -425,7 +425,7 @@ function OwnerServiceCatalog() {
                 </div>
 
                 <div className="form-group">
-                  <label>Slots Required</label>
+                  <label>Số khung giờ cần</label>
                   <input
                     type="number"
                     name="slot_occupied"
@@ -438,13 +438,13 @@ function OwnerServiceCatalog() {
               </div>
 
               <div className="form-group">
-                <label>Service Description</label>
+                <label>Mô tả dịch vụ</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows="3"
-                  placeholder="Brief description of the treatment process..."
+                  placeholder="Mô tả ngắn gọn quy trình điều trị..."
                 />
               </div>
 
@@ -454,10 +454,10 @@ function OwnerServiceCatalog() {
                   className="btn-secondary"
                   onClick={closeModal}
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button type="submit" className="btn-primary">
-                  {isEditMode ? "Save Changes" : "Save Service"}
+                  {isEditMode ? "Lưu thay đổi" : "Lưu dịch vụ"}
                 </button>
               </div>
             </form>

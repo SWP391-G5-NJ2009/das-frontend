@@ -23,7 +23,7 @@ function Toast({ type, message, onClose, duration }) {
           type="button"
           className="toast__close"
           onClick={onClose}
-          aria-label="Dismiss notification"
+          aria-label="Đóng thông báo"
         >
           <X size={14} aria-hidden="true" />
         </button>

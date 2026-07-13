@@ -19,7 +19,7 @@ function validateForm(form, selectedAccount) {
   const errors = {};
 
   if (!form.accountId) errors.accountId = "Please select a Dentist account.";
-  if (!form.fullName.trim()) errors.fullName = "Full name is required.";
+  if (!form.fullName.trim()) errors.fullName = "Vui lòng nhập họ và tên.";
   if (!selectedAccount?.email) {
     errors.email = "The selected account has no email address.";
   }
@@ -97,8 +97,8 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
           <div className="dentist-profile-create__title">
             <FilePlus2 size={20} aria-hidden="true" />
             <div>
-              <h2 id="create-dentist-profile-title">Create Dentist Profile</h2>
-              <p>Link an available Dentist account to a new profile.</p>
+              <h2 id="create-dentist-profile-title">Tạo hồ sơ nha sĩ</h2>
+              <p>Liên kết tài khoản nha sĩ khả dụng với hồ sơ mới.</p>
             </div>
           </div>
           <button
@@ -117,8 +117,8 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
           </div>
         ) : availableAccounts.length === 0 ? (
           <div className="dentist-profile-create__empty">
-            <h3>No available Dentist account</h3>
-            <p>Please contact the System Administrator.</p>
+            <h3>Không có tài khoản nha sĩ khả dụng</h3>
+            <p>Vui lòng liên hệ quản trị viên hệ thống.</p>
           </div>
         ) : (
           <form
@@ -142,7 +142,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                 onChange={handleChange}
                 aria-invalid={Boolean(fieldErrors.accountId)}
               >
-                <option value="">Select an available Dentist account</option>
+                <option value="">Chọn tài khoản nha sĩ khả dụng</option>
                 {availableAccounts.map((account) => (
                   <option key={account.accountId} value={account.accountId}>
                     {account.username}
@@ -154,14 +154,14 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
 
             {selectedAccount && (
               <fieldset className="dentist-profile-create__account">
-                <legend>Selected Account Information</legend>
+                <legend>Thông tin tài khoản đã chọn</legend>
                 <dl>
                   <div>
-                    <dt>Account ID</dt>
+                    <dt>Mã tài khoản</dt>
                     <dd>{selectedAccount.accountId}</dd>
                   </div>
                   <div>
-                    <dt>Username</dt>
+                    <dt>Tên đăng nhập</dt>
                     <dd>{selectedAccount.username}</dd>
                   </div>
                   <div>
@@ -169,12 +169,12 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                     <dd>{selectedAccount.email || "Not updated"}</dd>
                   </div>
                   <div>
-                    <dt>Phone Number</dt>
+                    <dt>Số điện thoại</dt>
                     <dd>{selectedAccount.phone || "Not updated"}</dd>
                   </div>
                   <div>
                     <dt>Role</dt>
-                    <dd>Dentist</dd>
+                    <dd>Nha sĩ</dd>
                   </div>
                   <div>
                     <dt>Status</dt>
@@ -189,7 +189,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
             <div className="dentist-profile-create__grid">
               <label className="dentist-profile-create__field">
                 <span>
-                  Full name <strong>*</strong>
+                  Họ và tên <strong>*</strong>
                 </span>
                 <input
                   name="fullName"
@@ -222,9 +222,9 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                   onChange={handleChange}
                   aria-invalid={Boolean(fieldErrors.gender)}
                 >
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
+                  <option value="">Chọn giới tính</option>
+                  <option value="Male">Nam</option>
+                  <option value="Female">Nữ</option>
                 </select>
                 {fieldErrors.gender && <small>{fieldErrors.gender}</small>}
               </label>
@@ -246,7 +246,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                 </span>
                 <input
                   name="experience"
-                  placeholder="e.g. 5 years"
+                  placeholder="VD: 5 năm"
                   value={form.experience}
                   onChange={handleChange}
                   aria-invalid={Boolean(fieldErrors.experience)}
@@ -275,14 +275,14 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                 onClick={onClose}
                 disabled={isCreating}
               >
-                Cancel
+                Hủy
               </button>
               <button
                 className="dentist-profile-create__submit"
                 type="submit"
                 disabled={isCreating}
               >
-                {isCreating ? "Creating..." : "Create Profile"}
+                {isCreating ? "Đang tạo..." : "Tạo hồ sơ"}
               </button>
             </footer>
           </form>

@@ -30,35 +30,35 @@ function ServicesPage() {
       <main className="services-page__main">
         <section className="services-catalog" aria-labelledby="services-title">
           <div className="services-catalog__header">
-            <p className="services-catalog__eyebrow">{clinicName}</p>
-            <h1 id="services-title">Dental Services</h1>
+            <h1 id="services-title">Dịch vụ nha khoa</h1>
             <p>
-              Comprehensive oral health care with an expert team and modern
-              equipment.
+              Dịch vụ chăm sóc nha khoa chuyên nghiệp với đội ngũ nha sĩ giàu
+              kinh nghiệm và trang thiết bị hiện đại.
             </p>
             <div className="services-catalog__actions">
               <Link to="/" className="services-catalog__link">
-                Back to home
+                Về trang chủ
               </Link>
               <Link
                 to="/consultation"
                 className="services-catalog__link services-catalog__link--primary"
               >
-                Request consultation
+                Yêu cầu tư vấn
               </Link>
             </div>
           </div>
 
           {isLoading ? (
-            <p className="services-catalog__state">Loading dental services...</p>
+            <p className="services-catalog__state">
+              Đang tải dịch vụ nha khoa...
+            </p>
           ) : error ? (
             <p className="services-catalog__state services-catalog__state--error">
-              We could not load dental services right now. Please try again
-              later.
+              Hiện không thể tải dịch vụ nha khoa. Vui lòng thử lại later.
             </p>
           ) : services.length === 0 ? (
             <p className="services-catalog__state">
-              No dental services are available at the moment.
+              Hiện chưa có dịch vụ nha khoa nào.
             </p>
           ) : (
             <div className="services-catalog__grid">
@@ -90,14 +90,14 @@ function ServicesPage() {
                     <div className="services-card__meta-row">
                       <dt>
                         <DurationIcon size={15} aria-hidden="true" />
-                        Time
+                        Thời gian
                       </dt>
-                      <dd>{service.duration} minutes</dd>
+                      <dd>{service.duration} phút</dd>
                     </div>
                     <div className="services-card__meta-row">
                       <dt>
                         <PriceIcon size={15} aria-hidden="true" />
-                        Cost
+                        Chi phí
                       </dt>
                       <dd>{formatPrice(service.price)}</dd>
                     </div>
