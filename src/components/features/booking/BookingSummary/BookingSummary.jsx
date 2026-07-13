@@ -5,6 +5,7 @@ import {
   UserCheck,
   CalendarClock,
   Info,
+  Tag,
 } from "lucide-react";
 import "./BookingSummary.css";
 
@@ -141,8 +142,20 @@ function BookingSummary({
         {/* Fee */}
         {formattedFee && (
           <div className="booking-summary__fee">
-            <span className="booking-summary__fee-label">Phí ước tính:</span>
-            <span className="booking-summary__fee-value">{formattedFee}</span>
+            <div className="booking-summary__fee-header">
+              <Tag size={14} aria-hidden="true" className="booking-summary__fee-icon" />
+              <span className="booking-summary__fee-label">GIÁ DỊCH VỤ</span>
+            </div>
+            <div className="booking-summary__fee-body">
+              <span className="booking-summary__fee-service-name">
+                {service.name}
+              </span>
+              <span className="booking-summary__fee-value">{formattedFee}</span>
+            </div>
+            <p className="booking-summary__fee-note">
+              * Giá trên là mức tham khảo cho dịch vụ. Chi phí thực tế có thể
+              thay đổi tùy theo tình trạng răng miệng của bệnh nhân.
+            </p>
           </div>
         )}
       </div>
