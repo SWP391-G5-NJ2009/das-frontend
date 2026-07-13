@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { appointmentService } from "../services/appointment.service";
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Patient hook — own appointments (calls GET /api/appointments/my)
-───────────────────────────────────────────────────────────────────────────── */
 export function useMyAppointments(filters = {}, options = {}) {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -12,31 +9,34 @@ export function useMyAppointments(filters = {}, options = {}) {
 
   const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
-  const fetchAppointments = useCallback(async (isBackground = false) => {
-    if (!isEnabled) {
-      setAppointments([]);
-      if (!isBackground) setIsLoading(false);
-      setError(null);
-      return;
-    }
+  const fetchAppointments = useCallback(
+    async (isBackground = false) => {
+      if (!isEnabled) {
+        setAppointments([]);
+        if (!isBackground) setIsLoading(false);
+        setError(null);
+        return;
+      }
 
-    if (!isBackground) setIsLoading(true);
-    setError(null);
-    try {
-      const data = await appointmentService.getMyAppointments(filters);
-      const sorted = (data || []).slice().sort((a, b) => {
-        const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
-        const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
-        return dateB.localeCompare(dateA);
-      });
-      setAppointments(sorted);
-    } catch (err) {
-      if (!isBackground) setError(err);
-    } finally {
-      if (!isBackground) setIsLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEnabled, serializedFilters]);
+      if (!isBackground) setIsLoading(true);
+      setError(null);
+      try {
+        const data = await appointmentService.getMyAppointments(filters);
+        const sorted = (data || []).slice().sort((a, b) => {
+          const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
+          const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
+          return dateB.localeCompare(dateA);
+        });
+        setAppointments(sorted);
+      } catch (err) {
+        if (!isBackground) setError(err);
+      } finally {
+        if (!isBackground) setIsLoading(false);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [isEnabled, serializedFilters],
+  );
 
   useEffect(() => {
     fetchAppointments();
@@ -66,10 +66,6 @@ export function useMyAppointments(filters = {}, options = {}) {
   };
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Receptionist / Admin / Owner hook — all clinic appointments
-   (calls GET /api/appointments)
-───────────────────────────────────────────────────────────────────────────── */
 export function useAllAppointments(filters = {}, options = {}) {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,32 +74,35 @@ export function useAllAppointments(filters = {}, options = {}) {
 
   const serializedFilters = useMemo(() => JSON.stringify(filters), [filters]);
 
-  const fetchAppointments = useCallback(async (isBackground = false) => {
-    if (!isEnabled) {
-      setAppointments([]);
-      if (!isBackground) setIsLoading(false);
+  const fetchAppointments = useCallback(
+    async (isBackground = false) => {
+      if (!isEnabled) {
+        setAppointments([]);
+        if (!isBackground) setIsLoading(false);
+        setError(null);
+        return;
+      }
+
+      if (!isBackground) setIsLoading(true);
       setError(null);
-      return;
-    }
+      try {
+        const data = await appointmentService.getAll(filters);
+        const sorted = (data || []).slice().sort((a, b) => {
+          const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
+          const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
+          return dateB.localeCompare(dateA);
+        });
 
-    if (!isBackground) setIsLoading(true);
-    setError(null);
-    try {
-      const data = await appointmentService.getAll(filters);
-      const sorted = (data || []).slice().sort((a, b) => {
-        const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
-        const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
-        return dateB.localeCompare(dateA);
-      });
-
-      setAppointments(sorted);
-    } catch (err) {
-      if (!isBackground) setError(err);
-    } finally {
-      if (!isBackground) setIsLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEnabled, serializedFilters]);
+        setAppointments(sorted);
+      } catch (err) {
+        if (!isBackground) setError(err);
+      } finally {
+        if (!isBackground) setIsLoading(false);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [isEnabled, serializedFilters],
+  );
 
   useEffect(() => {
     fetchAppointments();

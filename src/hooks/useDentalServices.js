@@ -66,15 +66,12 @@ export function useOwnerDentalServices(filters = {}) {
     [fetchServices],
   );
 
-  const deleteService = useCallback(
-    async (serviceId) => {
-      await dentalServiceService.delete(serviceId);
-      setServices((prevServices) =>
-        prevServices.filter((service) => service.service_id !== serviceId),
-      );
-    },
-    [],
-  );
+  const deleteService = useCallback(async (serviceId) => {
+    await dentalServiceService.delete(serviceId);
+    setServices((prevServices) =>
+      prevServices.filter((service) => service.service_id !== serviceId),
+    );
+  }, []);
 
   useEffect(() => {
     fetchCatalogData();
@@ -95,7 +92,7 @@ export function useOwnerDentalServices(filters = {}) {
 
 /**
  * Lightweight hook for the booking page.
- * Fetches all active dental services and maps DB fields → UI shape.
+ * Fetches all active dental services and maps DB fields to UI shape.
  *
  * Returned service shape:
  *   { id, name, duration, price, description, category }
@@ -110,18 +107,16 @@ export function usePublicServices() {
     setError(null);
     try {
       const data = await dentalServiceService.getPublic();
-      const mapped = (data || [])
-        .map((s) => ({
-          id: String(s.service_id),
-          name: s.service_name,
-          duration: s.duration_minutes || (s.slot_occupied || 1) * 30,
-          price: s.price || s.unit_price,
-          description: s.description || "",
-          category:
-            s.category_name || s.service_categories?.category_name || "",
-          slotOccupied: s.slot_occupied ?? 1,
-          process: s.process || "",
-        }));
+      const mapped = (data || []).map((s) => ({
+        id: String(s.service_id),
+        name: s.service_name,
+        duration: s.duration_minutes || (s.slot_occupied || 1) * 30,
+        price: s.price || s.unit_price,
+        description: s.description || "",
+        category: s.category_name || s.service_categories?.category_name || "",
+        slotOccupied: s.slot_occupied ?? 1,
+        process: s.process || "",
+      }));
       setServices(mapped);
     } catch (err) {
       setError(err);
