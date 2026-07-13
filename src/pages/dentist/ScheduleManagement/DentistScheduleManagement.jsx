@@ -17,21 +17,23 @@ import { scheduleService } from "../../../services/schedule.service";
 import DentistPageShell from "../DentistPageShell";
 import "./DentistScheduleManagement.css";
 
-const WEEKDAYS = [
+const WEEKDAY_LABELS = {
+  1: "Mon",
+  2: "Tue",
+  3: "Wed",
+  4: "Thu",
+  5: "Fri",
+  6: "Sat",
+  0: "Sun",
+};
+
+const FALLBACK_WEEKDAYS = [
   { value: 1, label: "Mon" },
   { value: 2, label: "Tue" },
   { value: 3, label: "Wed" },
   { value: 4, label: "Thu" },
   { value: 5, label: "Fri" },
   { value: 6, label: "Sat" },
-  { value: 0, label: "Sun" },
-];
-
-const SHIFT_PRESETS = [
-  { id: "morning", label: "Morning", startTime: "08:00", endTime: "12:00" },
-  { id: "afternoon", label: "Afternoon", startTime: "13:00", endTime: "17:00" },
-  { id: "full", label: "Full day", startTime: "08:00", endTime: "17:00" },
-  { id: "custom", label: "Custom", startTime: "08:00", endTime: "12:00" },
 ];
 
 const STATUS_COPY = {
@@ -95,6 +97,123 @@ function toFullCalendarTime(value, fallback) {
   return `${normalized}:00`;
 }
 
+function dbDayToCalendarDay(day) {
+  return Number(day) === 7 ? 0 : Number(day);
+}
+
+function sortCalendarWeekdays(days) {
+  return [...days].sort((first, second) => {
+    const firstOrder = first === 0 ? 7 : first;
+    const secondOrder = second === 0 ? 7 : second;
+    return firstOrder - secondOrder;
+  });
+}
+
+function getWeekdayOptions(meta) {
+  if (Array.isArray(meta?.workingDays) && meta.workingDays.length === 0) {
+    return [];
+  }
+
+  const workingDays = (meta?.workingDays || [])
+    .map(dbDayToCalendarDay)
+    .filter((day) => day >= 0 && day <= 6);
+
+  const options = workingDays.length
+    ? workingDays.map((day) => ({
+        value: day,
+        label: WEEKDAY_LABELS[day],
+      }))
+    : FALLBACK_WEEKDAYS;
+
+  return options.sort((first, second) => {
+    const firstOrder = first.value === 0 ? 7 : first.value;
+    const secondOrder = second.value === 0 ? 7 : second.value;
+    return firstOrder - secondOrder;
+  });
+}
+
+function getShiftOptions(meta) {
+  if (Array.isArray(meta?.workingHours) && meta.workingHours.length === 0) {
+    return [];
+  }
+
+  const ranges = [];
+  const seenRanges = new Set();
+
+  (meta?.workingHours || []).forEach((hour) => {
+    const startTime = hour.startTime;
+    const endTime = hour.endTime;
+    if (!startTime || !endTime) return;
+
+    const id = `${startTime}-${endTime}`;
+    if (seenRanges.has(id)) return;
+
+    seenRanges.add(id);
+    ranges.push({
+      id,
+      label: `${startTime} - ${endTime}`,
+      startTime,
+      endTime,
+    });
+  });
+
+  ranges.sort((first, second) => first.startTime.localeCompare(second.startTime));
+
+  const options = [...ranges];
+  if (ranges.length > 1) {
+    options.unshift({
+      id: "configured-day",
+      label: "Configured day",
+      startTime: ranges[0].startTime,
+      endTime: ranges[ranges.length - 1].endTime,
+    });
+  }
+
+  const fallbackStart = options[0]?.startTime || meta?.clinic?.openTime || "08:00";
+  const fallbackEnd = options[0]?.endTime || meta?.clinic?.closeTime || "12:00";
+
+  return [
+    ...options,
+    {
+      id: "custom",
+      label: "Custom",
+      startTime: fallbackStart,
+      endTime: fallbackEnd,
+    },
+  ];
+}
+
+function normalizeFormForMeta(form, meta) {
+  const scheduleWindow = meta?.scheduleWindow || getNextMonthBounds();
+  const weekdayOptions = getWeekdayOptions(meta);
+  const allowedWeekdays = weekdayOptions.map((day) => day.value);
+  const selectedWeekdays = form.weekdays.filter((day) =>
+    allowedWeekdays.includes(day),
+  );
+  const shiftOptions = getShiftOptions(meta);
+  const selectedShift = shiftOptions.find(
+    (option) => option.id === form.shiftPreset,
+  );
+  const fallbackShift = selectedShift || shiftOptions[0];
+
+  return {
+    ...form,
+    roomId: form.roomId || String(meta?.rooms?.[0]?.room_id || ""),
+    weekdays: selectedWeekdays.length
+      ? selectedWeekdays
+      : allowedWeekdays.slice(0, Math.min(2, allowedWeekdays.length)),
+    shiftPreset: fallbackShift?.id || "custom",
+    startTime: selectedShift ? form.startTime : fallbackShift?.startTime || form.startTime,
+    endTime: selectedShift ? form.endTime : fallbackShift?.endTime || form.endTime,
+    ...(form.applyForMonth
+      ? {
+          startDate: scheduleWindow.targetMonthStart,
+          endDate: scheduleWindow.targetMonthEnd,
+        }
+      : {}),
+  };
+}
+
 function getDefaultForm() {
   const nextMonth = getNextMonthBounds();
 
@@ -102,9 +221,9 @@ function getDefaultForm() {
     applyForMonth: true,
     startDate: nextMonth.targetMonthStart,
     endDate: nextMonth.targetMonthEnd,
-    weekdays: [1, 3],
+    weekdays: [],
     roomId: "",
-    shiftPreset: "morning",
+    shiftPreset: "",
     startTime: "08:00",
     endTime: "12:00",
   };
@@ -156,7 +275,14 @@ function ScheduleEditor({
   const rooms = meta?.rooms || [];
   const clinic = meta?.clinic || { openTime: "08:00", closeTime: "20:00" };
   const scheduleWindow = meta?.scheduleWindow || getNextMonthBounds();
-  const canSubmit = scheduleWindow.isOpen !== false;
+  const weekdayOptions = getWeekdayOptions(meta);
+  const shiftOptions = getShiftOptions(meta);
+  const hasScheduleSetup =
+    rooms.length > 0 && weekdayOptions.length > 0 && shiftOptions.length > 0;
+  const canSubmit =
+    scheduleWindow.isOpen !== false &&
+    hasScheduleSetup &&
+    form.weekdays.length > 0;
 
   return (
     <div className="dentist-schedule__modal-overlay" role="presentation">
@@ -185,14 +311,21 @@ function ScheduleEditor({
 
         <form className="dentist-schedule__form" onSubmit={onSubmit}>
           <div className="dentist-schedule__rule-note">
-            Clinic hours: {clinic.openTime} - {clinic.closeTime}. Target month:{" "}
-            {scheduleWindow.targetMonthStart} to {scheduleWindow.targetMonthEnd}.
+            Configured hours: {clinic.openTime} - {clinic.closeTime}. Target
+            month: {scheduleWindow.targetMonthStart} to{" "}
+            {scheduleWindow.targetMonthEnd}.
           </div>
 
           {!canSubmit && (
             <div className="dentist-schedule__notice dentist-schedule__notice--error">
               Schedule editing is closed. Dentists can edit next month's
               schedule only from day 1 to day 15.
+            </div>
+          )}
+
+          {!hasScheduleSetup && (
+            <div className="dentist-schedule__notice dentist-schedule__notice--error">
+              Clinic working days, slots, or treatment rooms are not configured.
             </div>
           )}
 
@@ -238,7 +371,7 @@ function ScheduleEditor({
           <fieldset className="dentist-schedule__weekday-group">
             <legend>Working days</legend>
             <div className="dentist-schedule__weekday-list">
-              {WEEKDAYS.map((day) => (
+              {weekdayOptions.map((day) => (
                 <button
                   key={day.value}
                   className={`dentist-schedule__weekday${
@@ -276,7 +409,7 @@ function ScheduleEditor({
           <fieldset className="dentist-schedule__shift-group">
             <legend>Working hours</legend>
             <div className="dentist-schedule__shift-list">
-              {SHIFT_PRESETS.map((preset) => (
+              {shiftOptions.map((preset) => (
                 <button
                   key={preset.id}
                   className={`dentist-schedule__shift${
@@ -314,7 +447,6 @@ function ScheduleEditor({
                 value={form.startTime}
                 min={clinic.openTime}
                 max={clinic.closeTime}
-                step="1800"
                 onChange={onChange}
                 required
               />
@@ -327,7 +459,6 @@ function ScheduleEditor({
                 value={form.endTime}
                 min={clinic.openTime}
                 max={clinic.closeTime}
-                step="1800"
                 onChange={onChange}
                 required
               />
@@ -459,6 +590,8 @@ function DentistScheduleManagement() {
   const [meta, setMeta] = useState({
     rooms: [],
     timeSlots: [],
+    workingDays: [],
+    workingHours: [],
     clinic: { openTime: "08:00", closeTime: "20:00" },
     scheduleWindow: getNextMonthBounds(),
   });
@@ -484,17 +617,12 @@ function DentistScheduleManagement() {
           clinic: nextMeta.clinic || prevMeta.clinic,
           scheduleWindow: nextMeta.scheduleWindow || prevMeta.scheduleWindow,
         }));
-        setSchedules(scheduleData || []);
-        setForm((prevForm) => ({
-          ...prevForm,
-          roomId: prevForm.roomId || String(nextMeta.rooms?.[0]?.room_id || ""),
-          ...(prevForm.applyForMonth && nextMeta.scheduleWindow
-            ? {
-                startDate: nextMeta.scheduleWindow.targetMonthStart,
-                endDate: nextMeta.scheduleWindow.targetMonthEnd,
-              }
-            : {}),
-        }));
+        setSchedules(
+          (scheduleData || []).filter(
+            (schedule) => Number(schedule.slotCount) > 0,
+          ),
+        );
+        setForm((prevForm) => normalizeFormForMeta(prevForm, nextMeta));
       } catch (err) {
         setError(err);
       } finally {
@@ -556,16 +684,7 @@ function DentistScheduleManagement() {
       return;
     }
 
-    setForm((prevForm) => ({
-      ...prevForm,
-      roomId: prevForm.roomId || String(meta.rooms?.[0]?.room_id || ""),
-      ...(prevForm.applyForMonth
-        ? {
-            startDate: scheduleWindow.targetMonthStart,
-            endDate: scheduleWindow.targetMonthEnd,
-          }
-        : {}),
-    }));
+    setForm((prevForm) => normalizeFormForMeta(prevForm, meta));
     setIsEditorOpen(true);
     setSelectedSchedule(null);
     setSelectedSlotIds([]);
@@ -580,13 +699,20 @@ function DentistScheduleManagement() {
       ? addDays(new Date(selectionInfo.end), -1)
       : new Date(selectionInfo.end.getTime() - 1);
     const selectedEndTime = new Date(selectionInfo.end);
+    const selectedWeekday = selectedStart.getDay();
+    const availableWeekdays = getWeekdayOptions(meta).map((day) => day.value);
+
+    if (!availableWeekdays.includes(selectedWeekday)) {
+      setError(new Error("Selected day is not configured as a clinic working day."));
+      return;
+    }
 
     setForm((prevForm) => ({
       ...prevForm,
       applyForMonth: false,
       startDate: toIsoDate(selectedStart),
       endDate: toIsoDate(selectedEnd),
-      weekdays: [selectedStart.getDay()],
+      weekdays: [selectedWeekday],
       roomId: prevForm.roomId || String(meta.rooms?.[0]?.room_id || ""),
       ...(!selectionInfo.allDay
         ? {
@@ -660,7 +786,7 @@ function DentistScheduleManagement() {
     setForm((prevForm) => {
       const nextWeekdays = prevForm.weekdays.includes(day)
         ? prevForm.weekdays.filter((item) => item !== day)
-        : [...prevForm.weekdays, day].sort((first, second) => first - second);
+        : sortCalendarWeekdays([...prevForm.weekdays, day]);
 
       return { ...prevForm, weekdays: nextWeekdays };
     });
