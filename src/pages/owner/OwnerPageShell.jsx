@@ -22,7 +22,7 @@ function OwnerPageShell({ children, contentClassName }) {
       className={`owner-page${contentClassName ? ` ${contentClassName}` : ""}`}
     >
       <RoleSidebar
-        ariaLabel="Clinic owner navigation"
+        ariaLabel="Thanh điều hướng"
         navItems={OWNER_NAV_ITEMS}
         footerItems={[footerItems]}
       />

@@ -103,24 +103,64 @@
 /* Fee */
 .booking-summary__fee {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   background-color: var(--color-primary-50);
+  border: 1px solid var(--color-primary-200);
   border-radius: var(--radius-md);
   margin-top: var(--space-2);
 }
 
+.booking-summary__fee-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.booking-summary__fee-icon {
+  color: var(--color-primary-600);
+  flex-shrink: 0;
+}
+
 .booking-summary__fee-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-700);
+  letter-spacing: 0.05em;
+}
+
+.booking-summary__fee-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.booking-summary__fee-service-name {
   font-size: var(--font-size-sm);
-  color: var(--color-neutral-600);
   font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-700);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .booking-summary__fee-value {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-bold);
   color: var(--color-primary-700);
+  flex-shrink: 0;
+}
+
+.booking-summary__fee-note {
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-400);
+  font-style: italic;
+  line-height: var(--line-height-relaxed);
+  margin: 0;
 }
 
 /* Actions */

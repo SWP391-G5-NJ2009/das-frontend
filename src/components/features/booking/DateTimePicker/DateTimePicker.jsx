@@ -3,20 +3,20 @@ import PropTypes from "prop-types";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import "./DateTimePicker.css";
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Tháng 1",
+  "Tháng 2",
+  "Tháng 3",
+  "Tháng 4",
+  "Tháng 5",
+  "Tháng 6",
+  "Tháng 7",
+  "Tháng 8",
+  "Tháng 9",
+  "Tháng 10",
+  "Tháng 11",
+  "Tháng 12",
 ];
 
 function getDaysInMonth(year, month) {
@@ -220,7 +220,7 @@ function DateTimePicker({
                   .join(" ")}
                 onClick={() => !past && onSelectDate(date)}
                 disabled={past}
-                aria-label={`${day} ${MONTHS[viewMonth]} ${viewYear}${isToday ? ", today" : ""}${past ? ", past" : ""}`}
+                aria-label={`${day} ${MONTHS[viewMonth]} ${viewYear}${isToday ? ", hôm nay" : ""}${past ? ", đã qua" : ""}`}
                 aria-pressed={isSelected}
                 role="gridcell"
               >
@@ -251,7 +251,7 @@ function DateTimePicker({
               Dịch vụ này cần{" "}
               <strong>{normalizedSlotCount} khung giờ liên tiếp</strong> (
               {normalizedSlotCount * 30} phút). Khi chọn giờ bắt đầu, hệ thống sẽ
-              tự động giữ tất cả {normalizedSlotCount} slots.
+              tự động giữ tất cả {normalizedSlotCount} khung giờ.
             </span>
           </div>
         )}
@@ -300,20 +300,20 @@ function DateTimePicker({
 
               const buildTitle = () => {
                 if (isClickableFollowOn)
-                  return `Click to start from ${slot.time} instead`;
+                  return `Nhấp để bắt đầu từ ${slot.time}`;
                 if (isRangeFollowOn)
-                  return `${slot.time} – automatically included in booking`;
+                  return `${slot.time} – được tự động bao gồm trong lịch hẹn`;
                 if (isInsufficientStart)
-                  return `${slot.time} – available, but not enough consecutive slots after this time for the full service`;
+                  return `${slot.time} – có trống, nhưng không đủ khung giờ liên tiếp sau để hoàn thành dịch vụ`;
                 if (isMultiSlot && canStart)
-                  return `Select start time ${slot.time} (reserves ${normalizedSlotCount} consecutive slots)`;
+                  return `Chọn giờ bắt đầu ${slot.time} (giữ ${normalizedSlotCount} khung giờ liên tiếp)`;
                 if (!isMultiSlot && individuallyAvailable)
-                  return `Select time ${slot.time}`;
-                if (past) return `${slot.time} - unavailable (time has passed)`;
+                  return `Chọn giờ ${slot.time}`;
+                if (past) return `${slot.time} - không khả dụng (giờ đã qua)`;
                 if (tooSoon)
-                  return `${slot.time} - unavailable (less than 30 minutes away)`;
-                if (slot.status === "Booked") return `${slot.time} - booked`;
-                return `${slot.time} - unavailable`;
+                  return `${slot.time} - không khả dụng (còn dưới 30 phút)`;
+                if (slot.status === "Booked") return `${slot.time} - đã được đặt`;
+                return `${slot.time} - không khả dụng`;
               };
 
               return (

@@ -5,6 +5,7 @@ import {
   UserCheck,
   CalendarClock,
   Info,
+  Tag,
 } from "lucide-react";
 import "./BookingSummary.css";
 
@@ -21,7 +22,7 @@ function BookingSummary({
   const hasAll = patient && service && dentist && date && slot;
 
   const formattedDate = date
-    ? date.toLocaleDateString("en-US", {
+    ? date.toLocaleDateString("vi-VN", {
         weekday: "short",
         day: "2-digit",
         month: "2-digit",
@@ -30,7 +31,7 @@ function BookingSummary({
     : null;
 
   const formattedFee = service?.price
-    ? new Intl.NumberFormat("en-US", {
+    ? new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
       }).format(service.price)
@@ -52,7 +53,7 @@ function BookingSummary({
             <User size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">PATIENT</span>
+            <span className="booking-summary__row-label">BỆNH NHÂN</span>
             {patient ? (
               <>
                 <span className="booking-summary__row-value">
@@ -78,14 +79,14 @@ function BookingSummary({
             <Stethoscope size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">SERVICE</span>
+            <span className="booking-summary__row-label">DỊCH VỤ</span>
             {service ? (
               <>
                 <span className="booking-summary__row-value">
                   {service.name}
                 </span>
                 <span className="booking-summary__row-sub">
-                  {service.duration} minutes
+                  {service.duration} phút
                 </span>
               </>
             ) : (
@@ -104,7 +105,7 @@ function BookingSummary({
             <UserCheck size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">DENTIST</span>
+            <span className="booking-summary__row-label">NHA SĨ</span>
             {dentist ? (
               <span className="booking-summary__row-value">
                 {dentist.fullName}
@@ -141,8 +142,20 @@ function BookingSummary({
         {/* Fee */}
         {formattedFee && (
           <div className="booking-summary__fee">
-            <span className="booking-summary__fee-label">Phí ước tính:</span>
-            <span className="booking-summary__fee-value">{formattedFee}</span>
+            <div className="booking-summary__fee-header">
+              <Tag size={14} aria-hidden="true" className="booking-summary__fee-icon" />
+              <span className="booking-summary__fee-label">GIÁ DỊCH VỤ</span>
+            </div>
+            <div className="booking-summary__fee-body">
+              <span className="booking-summary__fee-service-name">
+                {service.name}
+              </span>
+              <span className="booking-summary__fee-value">{formattedFee}</span>
+            </div>
+            <p className="booking-summary__fee-note">
+              * Giá trên là mức tham khảo cho dịch vụ. Chi phí thực tế có thể
+              thay đổi tùy theo tình trạng răng miệng của bệnh nhân.
+            </p>
           </div>
         )}
       </div>
