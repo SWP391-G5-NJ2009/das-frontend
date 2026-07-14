@@ -22,10 +22,32 @@ export function useMyAppointments(filters = {}, options = {}) {
       setError(null);
       try {
         const data = await appointmentService.getMyAppointments(filters);
+        const _now = new Date();
+        const today = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, "0")}-${String(_now.getDate()).padStart(2, "0")}`;
         const sorted = (data || []).slice().sort((a, b) => {
-          const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
-          const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
-          return dateA.localeCompare(dateB);
+          const dateA = a.scheduledDate ?? null;
+          const dateB = b.scheduledDate ?? null;
+          const timeA = a.scheduledTime ?? "99:99";
+          const timeB = b.scheduledTime ?? "99:99";
+          const aIsFuture = dateA !== null && dateA >= today;
+          const bIsFuture = dateB !== null && dateB >= today;
+          const aIsNull = dateA === null;
+          const bIsNull = dateB === null;
+          // null ⇒ cuối cùng
+          if (aIsNull && !bIsNull) return 1;
+          if (!aIsNull && bIsNull) return -1;
+          // tương lai trước quá khứ
+          if (aIsFuture && !bIsFuture) return -1;
+          if (!aIsFuture && bIsFuture) return 1;
+          if (aIsFuture) {
+            // cả 2 tương lai: ASC ngày, ASC giờ
+            const dc = dateA.localeCompare(dateB);
+            return dc !== 0 ? dc : timeA.localeCompare(timeB);
+          } else {
+            // cả 2 quá khứ: DESC ngày (gần nhất trước), ASC giờ
+            const dc = dateB.localeCompare(dateA);
+            return dc !== 0 ? dc : timeA.localeCompare(timeB);
+          }
         });
         setAppointments(sorted);
       } catch (err) {
@@ -87,10 +109,32 @@ export function useAllAppointments(filters = {}, options = {}) {
       setError(null);
       try {
         const data = await appointmentService.getAll(filters);
+        const _now = new Date();
+        const today = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, "0")}-${String(_now.getDate()).padStart(2, "0")}`;
         const sorted = (data || []).slice().sort((a, b) => {
-          const dateA = `${a.scheduledDate ?? ""} ${a.scheduledTime ?? ""}`;
-          const dateB = `${b.scheduledDate ?? ""} ${b.scheduledTime ?? ""}`;
-          return dateA.localeCompare(dateB);
+          const dateA = a.scheduledDate ?? null;
+          const dateB = b.scheduledDate ?? null;
+          const timeA = a.scheduledTime ?? "99:99";
+          const timeB = b.scheduledTime ?? "99:99";
+          const aIsFuture = dateA !== null && dateA >= today;
+          const bIsFuture = dateB !== null && dateB >= today;
+          const aIsNull = dateA === null;
+          const bIsNull = dateB === null;
+          // null ⇒ cuối cùng
+          if (aIsNull && !bIsNull) return 1;
+          if (!aIsNull && bIsNull) return -1;
+          // tương lai trước quá khứ
+          if (aIsFuture && !bIsFuture) return -1;
+          if (!aIsFuture && bIsFuture) return 1;
+          if (aIsFuture) {
+            // cả 2 tương lai: ASC ngày, ASC giờ
+            const dc = dateA.localeCompare(dateB);
+            return dc !== 0 ? dc : timeA.localeCompare(timeB);
+          } else {
+            // cả 2 quá khứ: DESC ngày (gần nhất trước), ASC giờ
+            const dc = dateB.localeCompare(dateA);
+            return dc !== 0 ? dc : timeA.localeCompare(timeB);
+          }
         });
 
         setAppointments(sorted);

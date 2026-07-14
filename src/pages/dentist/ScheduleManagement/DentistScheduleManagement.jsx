@@ -198,7 +198,6 @@ function normalizeFormForMeta(form, meta) {
 
   return {
     ...form,
-    roomId: form.roomId || String(meta?.rooms?.[0]?.room_id || ""),
     weekdays: selectedWeekdays.length
       ? selectedWeekdays
       : allowedWeekdays.slice(0, Math.min(2, allowedWeekdays.length)),
@@ -222,7 +221,6 @@ function getDefaultForm() {
     startDate: nextMonth.targetMonthStart,
     endDate: nextMonth.targetMonthEnd,
     weekdays: [],
-    roomId: "",
     shiftPreset: "",
     startTime: "08:00",
     endTime: "12:00",
@@ -389,22 +387,6 @@ function ScheduleEditor({
             </div>
           </fieldset>
 
-          <label className="dentist-schedule__field">
-            <span>Phòng điều trị</span>
-            <select
-              name="roomId"
-              value={form.roomId}
-              onChange={onChange}
-              required
-            >
-              <option value="">Chọn phòng</option>
-              {rooms.map((room) => (
-                <option key={room.room_id} value={room.room_id}>
-                  Room {room.room_name} - {room.specialization || "General"}
-                </option>
-              ))}
-            </select>
-          </label>
 
           <fieldset className="dentist-schedule__shift-group">
             <legend>Giờ làm việc</legend>
@@ -713,7 +695,6 @@ function DentistScheduleManagement() {
       startDate: toIsoDate(selectedStart),
       endDate: toIsoDate(selectedEnd),
       weekdays: [selectedWeekday],
-      roomId: prevForm.roomId || String(meta.rooms?.[0]?.room_id || ""),
       ...(!selectionInfo.allDay
         ? {
             startTime: toTimeValue(selectedStart),
@@ -803,7 +784,6 @@ function DentistScheduleManagement() {
         startDate: form.startDate,
         endDate: form.endDate,
         weekdays: form.weekdays,
-        roomId: Number(form.roomId),
         startTime: form.startTime,
         endTime: form.endTime,
         reason: "Dentist updated monthly work schedule.",
@@ -1013,10 +993,6 @@ function DentistScheduleManagement() {
                   <div>
                     <dt>Time</dt>
                     <dd>{formatScheduleTime(selectedSchedule)}</dd>
-                  </div>
-                  <div>
-                    <dt>Room</dt>
-                    <dd>{selectedSchedule.roomName}</dd>
                   </div>
                   <div>
                     <dt>Slots</dt>
