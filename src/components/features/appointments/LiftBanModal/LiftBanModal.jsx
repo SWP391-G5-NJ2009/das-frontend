@@ -27,14 +27,14 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
               <ShieldBan size={18} />
             </div>
             <h2 id="lift-ban-modal-title" className="lift-ban-modal__title">
-              Gỡ bỏ hạn chế đặt lịch
+              Gỡ chặn hạn chế
             </h2>
           </div>
           <button
             id="lift-ban-modal-close"
             type="button"
             className="lift-ban-modal__close-btn"
-            aria-label="Đóng cửa sổ"
+            aria-label="Đóng hộp thoại"
             onClick={onClose}
             disabled={isLoading}
           >
@@ -45,7 +45,9 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
         {/* Body */}
         <div className="lift-ban-modal__body">
           <div className="lift-ban-modal__patient-section">
-            <span className="lift-ban-modal__patient-label">THÔNG TIN BỆNH NHÂN</span>
+            <span className="lift-ban-modal__patient-label">
+              THÔNG TIN BỆNH NHÂN
+            </span>
             <div className="lift-ban-modal__patient-info">
               <span className="lift-ban-modal__patient-name">
                 {patient.patientName}
@@ -54,9 +56,9 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
           </div>
 
           <div className="lift-ban-modal__reason-box">
-            <strong>Lý do hạn chế:</strong> Tự động hạn chế do 3 lần không đến khám.
-            Tài khoản bệnh nhân đã được chuyển sang trạng thái <strong>Bị hạn chế</strong>,
-            ngăn chặn đăng nhập và đặt lịch trực tuyến.
+            <strong>Lý do bị chặn:</strong> Tự động chặn do 3 lần vắng mặt. Tài
+            khoản bệnh nhân đã được đặt thành <strong>Hạn chế</strong>, không
+            thể đăng nhập và đặt lịch trực tuyến.
           </div>
 
           <div className="lift-ban-modal__info-callout">
@@ -66,10 +68,10 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
               aria-hidden="true"
             />
             <p className="lift-ban-modal__info-text">
-              Khi gỡ bỏ hạn chế này, các bản ghi không đến khám hiện tại sẽ được đánh dấu
-              là <strong>&quot;Đã xử lý không đến&quot;</strong> và trạng thái tài khoản
-              của bệnh nhân sẽ được khôi phục về <strong>Hoạt động</strong>, cho phép
-              họ đăng nhập và đặt lịch hẹn trở lại.
+              Khi gỡ chặn, các bản ghi vắng mặt hiện có sẽ được đánh dấu là{" "}
+              <strong>"Đã xử lý vắng mặt"</strong> và trạng thái tài khoản bệnh
+              nhân sẽ được khôi phục thành <strong>Hoạt động</strong>, cho phép
+              bệnh nhân đăng nhập và đặt lịch trở lại.
             </p>
           </div>
         </div>
@@ -92,7 +94,7 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
             onClick={onConfirm}
             disabled={isLoading}
           >
-            {isLoading ? "Đang xử lý…" : "Gỡ bỏ hạn chế & Xử lý"}
+            {isLoading ? "Đang xử lý..." : "Gỡ chặn & Xử lý"}
           </button>
         </div>
       </div>
