@@ -1,6 +1,7 @@
 import { Plus, RefreshCw, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import DentistProfileCreateModal from "../../../components/features/staff/DentistProfileCreateModal/DentistProfileCreateModal";
+import DentistProfileEditModal from "../../../components/features/staff/DentistProfileEditModal/DentistProfileEditModal";
 import DentistProfileModal from "../../../components/features/staff/DentistProfileModal/DentistProfileModal";
 import StaffState from "../../../components/features/staff/StaffState/StaffState";
 import StaffTable from "../../../components/features/staff/StaffTable/StaffTable";
@@ -9,20 +10,21 @@ import OwnerPageShell from "../OwnerPageShell";
 import "./OwnerStaffPage.css";
 
 const ROLE_OPTIONS = [
-  { value: "all", label: "Tất cả vai trò" },
+  { value: "all", label: "Tất cả" },
   { value: "dentist", label: "Nha sĩ" },
   { value: "receptionist", label: "Lễ tân" },
 ];
 
 const STATUS_OPTIONS = [
-  { value: "all", label: "Tất cả trạng thái" },
+  { value: "all", label: "Tất cả" },
   { value: "Active", label: "Hoạt động" },
   { value: "Banned", label: "Bị khóa" },
 ];
 
 function OwnerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
-  const [selectedDentist, setSelectedDentist] = useState(null);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [editingDentist, setEditingDentist] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [filters, setFilters] = useState({
@@ -66,15 +68,24 @@ function OwnerStaffPage() {
 
   const handleProfileCreated = async () => {
     setIsCreateModalOpen(false);
-    setSuccessMessage("Tạo hồ sơ nha sĩ thành công.");
+    setSuccessMessage("Tạo hồ sơ nhân viên thành công.");
+    await refetch();
+  };
+
+  const handleProfileUpdated = async () => {
+    setEditingDentist(null);
+    setSuccessMessage("Cập nhật hồ sơ nha sĩ thành công.");
     await refetch();
   };
 
   return (
-    <OwnerPageShell>
+    <OwnerPageShell contentClassName="owner-staff-page">
       <div className="owner-staff">
         <header className="owner-staff__header">
-          <h1>Quản lý nhân sự</h1>
+          <div className="owner-staff__heading">
+            <h1>Quản lý nhân sự</h1>
+            <p>Quản lý hồ sơ nha sĩ, lễ tân và trạng thái tài khoản.</p>
+          </div>
 
           <div className="owner-staff__header-actions">
             <button
@@ -95,7 +106,7 @@ function OwnerStaffPage() {
               }}
             >
               <Plus size={16} aria-hidden="true" />
-              Thêm nha sĩ mới
+              Thêm nhân viên mới
             </button>
           </div>
         </header>
@@ -140,11 +151,11 @@ function OwnerStaffPage() {
               />
             </div>
 
-            <button type="submit">Search</button>
+            <button type="submit">Tìm kiếm</button>
           </form>
 
           <label className="owner-staff__filter">
-            <span>Role</span>
+            <span>Vai trò</span>
 
             <select
               name="role"
@@ -160,7 +171,7 @@ function OwnerStaffPage() {
           </label>
 
           <label className="owner-staff__filter">
-            <span>Status</span>
+            <span>Trạng thái</span>
 
             <select
               name="status"
@@ -200,13 +211,25 @@ function OwnerStaffPage() {
         )}
 
         {!isLoading && !error && staff.length > 0 && (
-          <StaffTable staff={staff} onViewDentist={setSelectedDentist} />
+          <StaffTable
+            staff={staff}
+            onEditStaff={setEditingDentist}
+            onViewStaff={setSelectedStaff}
+          />
         )}
 
-        {selectedDentist && (
+        {selectedStaff && (
           <DentistProfileModal
-            dentist={selectedDentist}
-            onClose={() => setSelectedDentist(null)}
+            dentist={selectedStaff}
+            onClose={() => setSelectedStaff(null)}
+          />
+        )}
+
+        {editingDentist && (
+          <DentistProfileEditModal
+            dentist={editingDentist}
+            onClose={() => setEditingDentist(null)}
+            onUpdated={handleProfileUpdated}
           />
         )}
 

@@ -1,0 +1,63 @@
+.dentist-profile-edit__overlay {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-neutral-900) 60%, transparent);
+}
+
+.dentist-profile-edit {
+  width: min(100%, 800px);
+  max-height: calc(100vh - var(--space-8));
+  overflow-y: auto;
+  background: var(--color-neutral-50);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.dentist-profile-edit__header,
+.dentist-profile-edit__header div,
+.dentist-profile-edit__footer {
+  display: flex;
+  align-items: center;
+}
+
+.dentist-profile-edit__header {
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dentist-profile-edit__header div { gap: var(--space-3); }
+.dentist-profile-edit__header h2 { margin: 0; font-size: var(--font-size-lg); }
+.dentist-profile-edit__header button { padding: var(--space-2); background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; }
+.dentist-profile-edit__form { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-6); }
+.dentist-profile-edit__section { margin: 0; padding: var(--space-4); border: 1px solid var(--border-color); border-radius: var(--radius-md); }
+.dentist-profile-edit__section legend { padding: 0 var(--space-2); color: var(--color-neutral-900); font-weight: var(--font-weight-semibold); }
+.dentist-profile-edit__grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+.dentist-profile-edit__grid label { display: flex; flex-direction: column; gap: var(--space-2); color: var(--color-neutral-700); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
+.dentist-profile-edit__grid input,
+.dentist-profile-edit__grid select,
+.dentist-profile-edit__grid textarea { width: 100%; padding: var(--space-3); background: var(--color-neutral-50); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--color-neutral-900); font: inherit; }
+.dentist-profile-edit__grid input:disabled { background: var(--color-neutral-100); color: var(--color-neutral-600); cursor: not-allowed; }
+.dentist-profile-edit__services { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+.dentist-profile-edit__services label { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); background: var(--color-primary-50); border: 1px solid var(--color-primary-200); border-radius: var(--radius-md); cursor: pointer; }
+.dentist-profile-edit__services input { accent-color: var(--color-primary-700); }
+.dentist-profile-edit__alert { margin: 0; padding: var(--space-3); background: var(--color-error-bg); border-radius: var(--radius-md); color: var(--color-error); }
+.dentist-profile-edit__footer { justify-content: flex-end; gap: var(--space-3); }
+.dentist-profile-edit__footer button { padding: var(--space-3) var(--space-5); background: var(--color-neutral-50); border: 1px solid var(--border-color); border-radius: var(--radius-md); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
+.dentist-profile-edit__footer button:last-child { background: var(--color-primary-700); border-color: var(--color-primary-700); color: var(--color-neutral-50); }
+.dentist-profile-edit button:focus-visible,
+.dentist-profile-edit input:focus-visible,
+.dentist-profile-edit select:focus-visible,
+.dentist-profile-edit textarea:focus-visible { outline: 2px solid var(--color-primary-700); outline-offset: 2px; }
+.dentist-profile-edit button:disabled { opacity: 0.7; cursor: not-allowed; }
+
+@media (min-width: 768px) {
+  .dentist-profile-edit__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dentist-profile-edit__wide { grid-column: 1 / -1; }
+  .dentist-profile-edit__services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

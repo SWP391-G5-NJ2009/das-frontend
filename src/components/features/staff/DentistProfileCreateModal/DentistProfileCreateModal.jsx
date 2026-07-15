@@ -6,6 +6,7 @@ import { useCreateDentistProfile } from "../../../../hooks/useCreateDentistProfi
 import "./DentistProfileCreateModal.css";
 
 const EMPTY_FORM = {
+  role: "dentist",
   accountId: "",
   fullName: "",
   birthDate: "",
@@ -18,7 +19,7 @@ const EMPTY_FORM = {
 function validateForm(form, selectedAccount) {
   const errors = {};
 
-  if (!form.accountId) errors.accountId = "Please select a Dentist account.";
+  if (!form.accountId) errors.accountId = "Vui lòng chọn tài khoản nhân viên.";
   if (!form.fullName.trim()) errors.fullName = "Vui lòng nhập họ và tên.";
   if (!selectedAccount?.email) {
     errors.email = "The selected account has no email address.";
@@ -29,8 +30,8 @@ function validateForm(form, selectedAccount) {
   if (!form.birthDate) errors.birthDate = "Birthdate is required.";
   if (!form.gender) errors.gender = "Gender is required.";
   if (!form.address.trim()) errors.address = "Address is required.";
-  if (!form.speciality.trim()) errors.speciality = "Speciality is required.";
-  if (!form.experience.trim()) errors.experience = "Experience is required.";
+  if (form.role === "dentist" && !form.speciality.trim()) errors.speciality = "Vui lòng nhập chuyên môn.";
+  if (form.role === "dentist" && !form.experience.trim()) errors.experience = "Vui lòng nhập kinh nghiệm.";
 
   return errors;
 }
@@ -51,14 +52,19 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
     fetchAvailableAccounts();
   }, [fetchAvailableAccounts]);
 
-  const selectedAccount = availableAccounts.find(
+  const roleAccounts = availableAccounts.filter((account) => account.role === form.role);
+  const selectedAccount = roleAccounts.find(
     (account) => account.accountId === form.accountId,
   );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setForm((currentForm) => ({ ...currentForm, [name]: value }));
+    setForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+      ...(name === "role" ? { accountId: "", speciality: "", experience: "" } : {}),
+    }));
     setFieldErrors((currentErrors) => ({
       ...currentErrors,
       [name]: "",
@@ -73,7 +79,17 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
     if (Object.keys(nextErrors).length) return;
 
     try {
-      const profile = await createProfile(form);
+      const payload = form.role === "dentist"
+        ? form
+        : {
+            role: form.role,
+            accountId: form.accountId,
+            fullName: form.fullName,
+            birthDate: form.birthDate,
+            gender: form.gender,
+            address: form.address,
+          };
+      const profile = await createProfile(payload);
       onCreated(profile);
     } catch {
       // The hook displays the API error.
@@ -97,8 +113,8 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
           <div className="dentist-profile-create__title">
             <FilePlus2 size={20} aria-hidden="true" />
             <div>
-              <h2 id="create-dentist-profile-title">Tạo hồ sơ nha sĩ</h2>
-              <p>Liên kết tài khoản nha sĩ khả dụng với hồ sơ mới.</p>
+              <h2 id="create-dentist-profile-title">Thêm nhân viên mới</h2>
+              <p>Tạo hồ sơ nha sĩ hoặc lễ tân từ tài khoản khả dụng.</p>
             </div>
           </div>
           <button
@@ -117,7 +133,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
           </div>
         ) : availableAccounts.length === 0 ? (
           <div className="dentist-profile-create__empty">
-            <h3>Không có tài khoản nha sĩ khả dụng</h3>
+            <h3>Không có tài khoản nhân viên khả dụng</h3>
             <p>Vui lòng liên hệ quản trị viên hệ thống.</p>
           </div>
         ) : (
@@ -133,6 +149,14 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
             )}
 
             <label className="dentist-profile-create__field dentist-profile-create__field--wide">
+              <span>Vai trò <strong>*</strong></span>
+              <select name="role" value={form.role} onChange={handleChange}>
+                <option value="dentist">Nha sĩ</option>
+                <option value="receptionist">Lễ tân</option>
+              </select>
+            </label>
+
+            <label className="dentist-profile-create__field dentist-profile-create__field--wide">
               <span>
                 Account <strong>*</strong>
               </span>
@@ -142,8 +166,8 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                 onChange={handleChange}
                 aria-invalid={Boolean(fieldErrors.accountId)}
               >
-                <option value="">Chọn tài khoản nha sĩ khả dụng</option>
-                {availableAccounts.map((account) => (
+                <option value="">Chọn tài khoản {form.role === "dentist" ? "nha sĩ" : "lễ tân"} khả dụng</option>
+                {roleAccounts.map((account) => (
                   <option key={account.accountId} value={account.accountId}>
                     {account.username}
                   </option>
@@ -174,7 +198,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                   </div>
                   <div>
                     <dt>Role</dt>
-                    <dd>Nha sĩ</dd>
+                    <dd>{form.role === "dentist" ? "Nha sĩ" : "Lễ tân"}</dd>
                   </div>
                   <div>
                     <dt>Status</dt>
@@ -228,31 +252,20 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                 </select>
                 {fieldErrors.gender && <small>{fieldErrors.gender}</small>}
               </label>
-              <label className="dentist-profile-create__field">
-                <span>
-                  Speciality <strong>*</strong>
-                </span>
-                <input
-                  name="speciality"
-                  value={form.speciality}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(fieldErrors.speciality)}
-                />
-                {fieldErrors.speciality && <small>{fieldErrors.speciality}</small>}
-              </label>
-              <label className="dentist-profile-create__field dentist-profile-create__field--wide">
-                <span>
-                  Experience <strong>*</strong>
-                </span>
-                <input
-                  name="experience"
-                  placeholder="VD: 5 năm"
-                  value={form.experience}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(fieldErrors.experience)}
-                />
-                {fieldErrors.experience && <small>{fieldErrors.experience}</small>}
-              </label>
+              {form.role === "dentist" && (
+                <>
+                  <label className="dentist-profile-create__field">
+                    <span>Chuyên môn <strong>*</strong></span>
+                    <input name="speciality" value={form.speciality} onChange={handleChange} aria-invalid={Boolean(fieldErrors.speciality)} />
+                    {fieldErrors.speciality && <small>{fieldErrors.speciality}</small>}
+                  </label>
+                  <label className="dentist-profile-create__field dentist-profile-create__field--wide">
+                    <span>Kinh nghiệm <strong>*</strong></span>
+                    <input name="experience" placeholder="VD: 5 năm" value={form.experience} onChange={handleChange} aria-invalid={Boolean(fieldErrors.experience)} />
+                    {fieldErrors.experience && <small>{fieldErrors.experience}</small>}
+                  </label>
+                </>
+              )}
               <label className="dentist-profile-create__field dentist-profile-create__field--wide">
                 <span>
                   Address <strong>*</strong>
@@ -282,7 +295,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                 type="submit"
                 disabled={isCreating}
               >
-                {isCreating ? "Đang tạo..." : "Tạo hồ sơ"}
+                {isCreating ? "Đang tạo..." : "Thêm nhân viên"}
               </button>
             </footer>
           </form>
