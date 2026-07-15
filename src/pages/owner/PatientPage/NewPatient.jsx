@@ -3,7 +3,7 @@ import { usePatientAnalytics } from "../../../hooks/usePatientAnalytics";
 import "./NewPatient.css";
 
 function getCurrentMonthLabel() {
-  return new Date().toLocaleDateString("en-US", {
+  return new Date().toLocaleDateString("vi-VN", {
     month: "long",
     year: "numeric",
   });

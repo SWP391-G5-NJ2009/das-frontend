@@ -12,7 +12,7 @@ function CreateVersionModal({ isFirstVersion, onConfirm, onCancel }) {
 
         const trimmedName = name.trim();
         if (!trimmedName) {
-            setError("Please enter a version name.");
+            setError("Vui lòng nhập tên phiên bản.");
             return;
         }
 
@@ -39,10 +39,10 @@ function CreateVersionModal({ isFirstVersion, onConfirm, onCancel }) {
                 </div>
 
                 <div className="create-version-modal__body">
-                    <p className="create-version-modal__description">
-                        Tạo phiên bản lịch phòng khám mới. Lịch đang áp dụng
-                        schedule will be copied into this version so you can edit it before
-                        it takes effect.
+                        <p className="create-version-modal__description">
+                        Tạo phiên bản mới của lịch phòng khám. Lịch hiện tại đang hoạt động
+                        sẽ được sao chép vào phiên bản này để bạn chỉnh sửa trước khi
+                        nó có hiệu lực.
                     </p>
 
                     <form onSubmit={handleSubmit}>

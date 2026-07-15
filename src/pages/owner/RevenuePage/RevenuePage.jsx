@@ -15,7 +15,7 @@ function RevenuePage() {
         <div className="revenue-page__heading">
           <h1 className="revenue-page__title">Phân tích doanh thu</h1>
           <p className="revenue-page__subtitle">
-            Tổng quan doanh thu của phòng khám.
+            Tổng quan doanh thu phòng khám.
           </p>
         </div>
       </div>
@@ -29,12 +29,12 @@ function RevenuePage() {
       </div>
 
       {isLoading && (
-        <PaymentState isLoading message="Loading payments..." />
+        <PaymentState isLoading message="Đang tải dữ liệu thanh toán..." />
       )}
 
       {!isLoading && error && (
         <PaymentState
-          title="Không thể tải thanh toán"
+          title="Không thể tải dữ liệu thanh toán"
           message={error.message || "Vui lòng thử lại sau."}
           variant="error"
         />
@@ -43,7 +43,7 @@ function RevenuePage() {
       {!isLoading && !error && payments.length === 0 && (
         <PaymentState
           title="Chưa có thanh toán"
-          message="No matching payment records found."
+          message="Không tìm thấy bản ghi thanh toán nào phù hợp."
         />
       )}
 

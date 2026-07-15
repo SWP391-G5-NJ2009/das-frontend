@@ -26,7 +26,7 @@ const PAGE_SIZE = 10;
 const ROLE_CONFIG = {
   patient: {
     title: "Lịch hẹn của tôi",
-    subtitle: "Xem và quản lý các lịch hẹn đã đặt của bạn.",
+    subtitle: "Xem và quản lý các lịch hẹn đã đặt.",
     bookRoute: "/patient/booking",
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
@@ -36,7 +36,7 @@ const ROLE_CONFIG = {
   },
   receptionist: {
     title: "Danh sách lịch hẹn",
-    subtitle: "Quản lý và theo dõi tất cả lịch hẹn của phòng khám.",
+    subtitle: "Quản lý và theo dõi tất cả lịch hẹn phòng khám.",
     bookRoute: "/receptionist/book-appointment",
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
@@ -236,7 +236,7 @@ function AppointmentsPage() {
       setLiftBanTarget(null);
       window.location.reload();
     } catch {
-      setToast({ type: "error", message: "Gỡ chặn đặt lịch thất bại. Vui lòng thử lại." });
+      setToast({ type: "error", message: "Gỡ bỏ hạn chế đặt lịch thất bại. Vui lòng thử lại." });
     } finally {
       setIsLiftingBan(false);
     }
@@ -282,9 +282,10 @@ function AppointmentsPage() {
           <div className="appts-page__urgent-alert" role="alert">
             <AlertTriangle size={20} aria-hidden="true" />
             <div className="appts-page__urgent-copy">
-              <strong>Lịch hẹn cần xử lý khẩn cấp</strong>
+              <strong>Nhiệm vụ sắp xếp lại khẩn cấp</strong>
               <span>
-                Có {conflictAlerts.appointments.length} lịch hẹn xung đột cần lễ tân xử lý.
+                {conflictAlerts.appointments.length} lịch hẹn trùng lịch
+                cần lễ tân xử lý.
               </span>
             </div>
             <button
@@ -292,7 +293,7 @@ function AppointmentsPage() {
               type="button"
               onClick={handleViewConflictAppointments}
             >
-              Xem xung đột
+              Xem trùng lịch
             </button>
           </div>
         )}
@@ -329,7 +330,7 @@ function AppointmentsPage() {
             />
             <div className="appts-page__pagination">
               <p className="appts-page__pagination-info">
-                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} / {appointments.length} lịch hẹn
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} trong tổng số {appointments.length} lịch hẹn
               </p>
               <Pagination
                 currentPage={currentPage}

@@ -26,7 +26,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "payments",
-    label: "Revenue",
+    label: "Doanh thu",
     to: "/owner/revenue",
   },
   {
@@ -36,7 +36,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "calendar_today",
-    label: "Bảng điều khiển lịch hẹn",
+    label: "Lịch hẹn",
     to: "/owner/appointment-dashboard",
   },
   {

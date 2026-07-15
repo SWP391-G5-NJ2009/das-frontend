@@ -46,7 +46,7 @@ function ScheduleManagementPage() {
       refetchVersions();
     } catch (err) {
       const detail = err?.code ? `[${err.code}] ` : "";
-      alert(`${detail}${err.message || "Không thể tạo phiên bản. Vui lòng thử lại."}`);
+      alert(`${detail}${err.message || "Tạo phiên bản thất bại. Vui lòng thử lại."}`);
     }
   }
 
@@ -62,7 +62,7 @@ function ScheduleManagementPage() {
       handleRefetchAll();
     } catch (err) {
       const detail = err?.code ? `[${err.code}] ` : "";
-      alert(`${detail}${err.message || "Không thể kích hoạt lại phiên bản. Vui lòng thử lại."}`);
+      alert(`${detail}${err.message || "Kích hoạt lại phiên bản thất bại. Vui lòng thử lại."}`);
     }
   }
 
@@ -71,9 +71,9 @@ function ScheduleManagementPage() {
       <div className="schedule-config">
         <header className="schedule-config__header">
           <div>
-            <h1 className="schedule-config__title">Bảng cấu hình</h1>
+            <h1 className="schedule-config__title">Bảng cấu hình lịch</h1>
             <p className="schedule-config__subtitle">
-              Cập nhật giờ khám, logic đặt lịch và lịch nghỉ.
+              Cập nhật giờ làm việc, logic hẹn lịch, và lịch nghỉ lễ.
             </p>
           </div>
           {noVersionExists && (
@@ -102,7 +102,7 @@ function ScheduleManagementPage() {
             onClick={() => setActiveTab("holidays")}
           >
             <CalendarX size={18} className="schedule-config__tab-icon" />
-            Holidays
+            Ngày nghỉ
           </button>
         </div>
 

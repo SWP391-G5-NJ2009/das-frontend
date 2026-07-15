@@ -17,23 +17,23 @@ import { clinicScheduleManagementService } from "../../../../services/clinicSche
 import "./WorkingHoursSection.css";
 
 const DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
+  "Thứ hai",
+  "Thứ ba",
+  "Thứ tư",
+  "Thứ năm",
+  "Thứ sáu",
+  "Thứ bảy",
+  "Chủ nhật",
 ];
 
 const DAY_NAMES = {
-  1: "Monday",
-  2: "Tuesday",
-  3: "Wednesday",
-  4: "Thursday",
-  5: "Friday",
-  6: "Saturday",
-  7: "Sunday",
+  1: "Thứ hai",
+  2: "Thứ ba",
+  3: "Thứ tư",
+  4: "Thứ năm",
+  5: "Thứ sáu",
+  6: "Thứ bảy",
+  7: "Chủ nhật",
 };
 
 function ShiftInputRow({ startTime, endTime, onChange }) {
@@ -71,19 +71,19 @@ function DayRow({ dayLabel, shifts, isActive, onClick, editable, onShiftChange, 
       <div className="whs__day-label">
         <span className="whs__day-name">{dayLabel}</span>
         <button className="whs__preview-btn" onClick={onClick}>
-          Preview
+          Xem trước
         </button>
       </div>
       <div className="whs__day-controls">
         {isClosed ? (
-          <span className="whs__closed-text">Closed</span>
+          <span className="whs__closed-text">Đóng cửa</span>
         ) : editable ? (
           shifts.map((shift, i) => (
             <React.Fragment key={i}>
               <div className="whs__shift-line">
                 {shifts.length > 1 && (
                   <span className="whs__shift-label">
-                    {i === 0 ? "Shift 1" : i === 1 ? "Shift 2" : `Shift ${i + 1}`}
+                    {i === 0 ? "Ca 1" : i === 1 ? "Ca 2" : `Ca ${i + 1}`}
                   </span>
                 )}
                 <ShiftInputRow
@@ -107,7 +107,7 @@ function DayRow({ dayLabel, shifts, isActive, onClick, editable, onShiftChange, 
               <div className="whs__shift-line">
                 {shifts.length > 1 && (
                   <span className="whs__shift-label">
-                    {i === 0 ? "Shift 1" : i === 1 ? "Shift 2" : `Shift ${i + 1}`}
+                    {i === 0 ? "Ca 1" : i === 1 ? "Ca 2" : `Ca ${i + 1}`}
                   </span>
                 )}
                 <span className="whs__shift-time">
@@ -205,7 +205,7 @@ function GlobalHoursEditor({ editableShifts, onShiftChange, onAddShift, onRemove
             <div key={i} className="whs__global-shift-row">
               <span className="whs__shift-label">
                 {templateShifts.length > 1
-                  ? `Shift ${i + 1}`
+                  ? `Ca ${i + 1}`
                   : null}
               </span>
               {editable ? (
@@ -603,7 +603,7 @@ function WorkingHoursSection({
       if (si > 0) {
         const prevEnd = selectedShifts[si - 1].shift_end.slice(0, 5);
         const currStart = shift.shift_start.slice(0, 5);
-        slots.push({ type: "break", label: `Shift Break (${prevEnd} - ${currStart})` });
+        slots.push({ type: "break", label: `Nghỉ giữa ca (${prevEnd} - ${currStart})` });
       }
 
       const [startH, startM] = shift.shift_start.slice(0, 5).split(":").map(Number);
@@ -635,7 +635,7 @@ function WorkingHoursSection({
     for (const shift of editableShifts) {
       if (shift.shift_start >= shift.shift_end) {
         setSaveState("idle");
-        alert(`Invalid time range for ${DAY_NAMES[shift.day_of_week]}: start must be before end.`);
+        alert(`Thời gian không hợp lệ cho ${DAY_NAMES[shift.day_of_week]}: giờ bắt đầu phải trước giờ kết thúc.`);
         return;
       }
     }
@@ -696,7 +696,7 @@ function WorkingHoursSection({
       await clinicScheduleManagementService.deleteVersion(versionId);
       onRefetchAll();
     } catch (err) {
-      alert(err.message || "Failed to delete version.");
+      alert(err.message || "Xóa phiên bản thất bại.");
     }
   }
 
@@ -725,10 +725,10 @@ function WorkingHoursSection({
           <span className="whs__viewing-banner-text">
             Đang xem phiên bản "{viewingVersion.name || "Unnamed"}&quot;
             {viewingVersion.effective_date && ` (effective ${viewingVersion.effective_date})`}
-            {viewingFullVersion?.status === "Expired" && " — expired"}
+            {viewingFullVersion?.status === "Expired" && " — đã hết hạn"}
             {!isViewingEditable && viewingFullVersion?.hasLinkedWorkSlots
-              ? " — has existing appointments"
-              : (!isViewingEditable && " — read only")}
+              ? " — có lịch hẹn hiện tại"
+              : (!isViewingEditable && " — chỉ đọc")}
           </span>
           <div className="whs__viewing-banner-actions">
             {viewingVersion.status === "Expired" && onReactivateVersion && (
@@ -737,7 +737,7 @@ function WorkingHoursSection({
                 onClick={() => onReactivateVersion(viewingVersion.version_id)}
               >
                 <RefreshCw size={14} />
-                Reactivate
+                Kích hoạt lại
               </button>
             )}
             <button
@@ -786,10 +786,10 @@ function WorkingHoursSection({
                       {v.status}
                     </span>
                     <span className="whs__version-name">
-                      {v.name || "Unnamed"}
+                      {v.name || "Chưa đặt tên"}
                     </span>
                     <span className="whs__version-date">
-                      Effective: {v.effective_date}
+                      Hiệu lực: {v.effective_date}
                     </span>
                   </div>
                   <div className="whs__version-row-right">
@@ -806,7 +806,7 @@ function WorkingHoursSection({
                       <button
                         className="whs__version-delete"
                         onClick={() => {
-                          if (!window.confirm(`Delete version "${v.name || "Unnamed"}"?`)) return;
+                          if (!window.confirm(`Xóa phiên bản "${v.name || "Chưa đặt tên"}"?`)) return;
                           handleDeleteVersion(v.version_id);
                         }}
                       >
@@ -894,7 +894,7 @@ function WorkingHoursSection({
                     <h2 className="whs__card-title">Xem trước lịch</h2>
                   </div>
                   <span className="whs__preview-label">
-                    {sameHoursAllDays ? "All Active Days" : selectedDay}
+                    {sameHoursAllDays ? "Tất cả ngày hoạt động" : selectedDay}
                   </span>
                 </div>
               </div>
@@ -931,7 +931,7 @@ function WorkingHoursSection({
                   />
                   {minEffectiveDate && (
                     <span className="whs__effective-date-hint">
-                      Minimum: {minEffectiveDate}
+                      Tối thiểu: {minEffectiveDate}
                     </span>
                   )}
                 </div>
@@ -953,7 +953,7 @@ function WorkingHoursSection({
                   <Save size={18} className="whs__btn-icon" />
                 )}
                 {saveState === "saving"
-                  ? "Updating..."
+                  ? "Đang cập nhật..."
                   : saveState === "saved"
                     ? "Đã lưu thành công"
                     : "Lưu thay đổi"}
