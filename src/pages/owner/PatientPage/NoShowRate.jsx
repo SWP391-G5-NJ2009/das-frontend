@@ -3,7 +3,7 @@ import { useNoShowRate } from "../../../hooks/usePatientAnalytics";
 import "./NoShowRate.css";
 
 function getCurrentMonthLabel() {
-    return new Date().toLocaleDateString("en-US", {
+    return new Date().toLocaleDateString("vi-VN", {
         month: "long",
         year: "numeric",
     });
@@ -27,7 +27,7 @@ function NoShowRate() {
         return (
             <section className="no-show-rate no-show-rate--error">
                 <div className="no-show-rate__header">
-                    <h2 className="no-show-rate__title">Tỷ lệ vắng mặt</h2>
+                    <h2 className="no-show-rate__title">Tỷ lệ không đến khám</h2>
                 </div>
                 <p className="no-show-rate__error-text">
                     Không thể tải dữ liệu.
@@ -39,10 +39,10 @@ function NoShowRate() {
     return (
         <section className="no-show-rate">
             <div className="no-show-rate__header">
-                <h2 className="no-show-rate__title">Tỷ lệ vắng mặt</h2>
+                <h2 className="no-show-rate__title">Tỷ lệ không đến khám</h2>
                 <span className="no-show-rate__period">{getCurrentMonthLabel()}</span>
             </div>
-            <p className="no-show-rate__amount">{(data.toLocaleString('en-US', {
+            <p className="no-show-rate__amount">{(data.toLocaleString('vi-VN', {
                 style: 'percent',
                 maximumFractionDigits: 2
             }) ?? 0)}</p>

@@ -21,7 +21,7 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "meeting_room",
-    label: "Phòng trống",
+    label: "Tình trạng phòng",
     to: "/receptionist/rooms",
   },
   {

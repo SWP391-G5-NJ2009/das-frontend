@@ -6,12 +6,11 @@ const STATUS_TABS = [
   { value: "all", label: "Tất cả" },
   { value: "Confirmed", label: "Đã xác nhận" },
   { value: "Checked-in", label: "Đã check-in" },
-  { value: "In-Treatment", label: "Đang điều trị" },
-  { value: "Completed", label: "Hoàn tất" },
-  { value: "Conflict", label: "Xung đột" },
+  { value: "Completed", label: "Hoàn thành" },
+  { value: "Conflict", label: "Trùng lịch" },
   { value: "Cancelled", label: "Đã hủy" },
-  { value: "No-Show", label: "Vắng mặt" },
-  { value: "Resolved No-Show", label: "Đã xử lý vắng mặt" },
+  { value: "No-Show", label: "Không đến" },
+  { value: "Resolved No-Show", label: "Đã xử lý không đến" },
 ];
 
 /* ── Helpers ── */

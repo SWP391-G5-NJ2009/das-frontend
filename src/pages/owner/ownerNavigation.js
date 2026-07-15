@@ -15,18 +15,13 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/clinic-schedule",
   },
   {
-    icon: "analytics",
-    label: "Thống kê",
-    to: "/owner/analytics",
-  },
-  {
     icon: "meeting_room",
     label: "Quản lý phòng",
     to: "/owner/rooms-management",
   },
   {
     icon: "payments",
-    label: "Revenue",
+    label: "Doanh thu",
     to: "/owner/revenue",
   },
   {
@@ -36,7 +31,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "calendar_today",
-    label: "Bảng điều khiển lịch hẹn",
+    label: "Lịch hẹn",
     to: "/owner/appointment-dashboard",
   },
   {

@@ -8,6 +8,7 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPa
 import LandingPage from "./pages/public/LandingPage/LandingPage";
 import ScheduleManagementPage from "./pages/owner/ScheduleManagementPage/ScheduleManagementPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
+import ClinicInfoPage from "./pages/owner/ClinicInfoPage/ClinicInfoPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
@@ -177,6 +178,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ServiceCatalogPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/clinic-info"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <ClinicInfoPage />
               </ProtectedRoute>
             }
           />

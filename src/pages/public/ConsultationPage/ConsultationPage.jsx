@@ -32,7 +32,7 @@ function ConsultationPage() {
     try {
       await consultationService.create(form);
       setForm({ full_name: "", phone: "", email: "", description: ""});
-      setSuccess("Consultation request sent successfully!");
+      setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,7 +58,7 @@ function ConsultationPage() {
                 <h1 id="consultation-title">Yêu cầu tư vấn</h1>
                 <p>
                   Vui lòng để lại thông tin, chúng tôi sẽ liên hệ với bạn
-                  sớm nhất có thể.
+                  trong thời gian sớm nhất.
                 </p>
               </div>
 
@@ -98,7 +98,7 @@ function ConsultationPage() {
               </label>
 
               <label className="consultation-panel__field">
-                <span>Nội dung tư vấn *</span>
+                <span>Chi tiết yêu cầu tư vấn *</span>
                 <textarea
                   name="description"
                   value={form.description}
@@ -126,7 +126,7 @@ function ConsultationPage() {
 
               <p className="consultation-panel__privacy">
                 <LockKeyhole size={16} aria-hidden="true" />
-                Thông tin của bạn được bảo mật tuyệt đối.
+                Thông tin của bạn được giữ bí mật tuyệt đối.
               </p>
               {success && <Toast type="success" message={success} />}
             </form>

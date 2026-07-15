@@ -133,7 +133,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
     e.preventDefault();
     setAddClosureError(null);
     if (!addClosureDate) {
-      setAddClosureError("Please select a date.");
+      setAddClosureError("Vui lòng chọn ngày.");
       return;
     }
     setAddClosureSubmitting(true);
@@ -180,7 +180,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
               </div>
             </div>
             <div className="clinic-holidays__calendar-weekdays">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+              {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((d) => (
                 <div key={d} className="clinic-holidays__calendar-weekday">
                   {d}
                 </div>
@@ -238,8 +238,8 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
               return (
                 <p className="clinic-holidays__empty-text">
                   {isRegularClosure
-                    ? "Regular closure \u2014 no working hours scheduled for this day."
-                    : "No closure recorded for this day."}
+                    ? "Đóng cửa định kỳ \u2014 không có giờ làm việc cho ngày này."
+                    : "Không có thông tin đóng cửa cho ngày này."}
                 </p>
               );
             })() : (
@@ -314,7 +314,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
               </label>
 
               <label className="clinic-holidays__modal-field">
-                <span className="clinic-holidays__modal-label">Reason</span>
+                <span className="clinic-holidays__modal-label">Lý do</span>
                 <input
                   type="text"
                   placeholder="VD: Ngày lễ"
@@ -337,7 +337,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                   type="submit"
                   disabled={addClosureSubmitting}
                 >
-                  {addClosureSubmitting ? "Adding..." : "Add Closure"}
+                  {addClosureSubmitting ? "Đang thêm..." : "Thêm ngày đóng cửa"}
                 </button>
               </div>
             </form>

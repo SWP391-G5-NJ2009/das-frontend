@@ -94,7 +94,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
             </label>
 
             <label className="handle-request-modal__field handle-request-modal__field--description">
-              <span className="handle-request-modal__label">Description</span>
+              <span className="handle-request-modal__label">Mô tả</span>
               <textarea name="description" value={form.description} readOnly />
             </label>
           </div>

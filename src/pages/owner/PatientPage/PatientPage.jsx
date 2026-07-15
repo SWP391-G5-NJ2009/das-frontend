@@ -14,7 +14,7 @@ function RevenuePage() {
     <OwnerPageShell>
       <div className="patient-page__header">
         <div className="patient-page__heading">
-          <h1 className="patient-page__title">Phân tích bệnh nhân</h1>
+          <h1 className="patient-page__title">Thống kê bệnh nhân</h1>
           <p className="patient-page__subtitle">
             Tổng quan bệnh nhân của phòng khám.
           </p>

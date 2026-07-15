@@ -15,10 +15,10 @@ import Spinner from "../../../components/common/Spinner/Spinner";
 import { api } from "../../../services/api";
 import "./AppointmentDashboardPage.css";
 
-const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAY_LABELS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+  "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
 ];
 
 const STATUS_CLASSES = {
@@ -168,14 +168,14 @@ function AppointmentDashboardPage() {
             <p className="appt-dash__eyebrow">Bảng điều khiển chủ phòng khám</p>
             <h1 className="appt-dash__title">Bảng điều khiển lịch hẹn</h1>
             <p className="appt-dash__subtitle">
-              Xem nhanh số lượng lịch hẹn và chi tiết lịch làm việc.
+              Xem tổng quan lịch hẹn và chi tiết lịch trình.
             </p>
           </div>
         </header>
 
         {error && (
           <div className="appt-dash__notice appt-dash__notice--error">
-            <span>{error.message || "Không thể tải dữ liệu."}</span>
+            <span>{error.message || "Tải dữ liệu thất bại."}</span>
           </div>
         )}
 
@@ -206,7 +206,7 @@ function AppointmentDashboardPage() {
                       setCurrentMonth(today.getMonth() + 1);
                     }}
                   >
-                    Today
+                    Hôm nay
                   </button>
                   <button
                     className="appt-dash__nav-btn"
@@ -226,7 +226,7 @@ function AppointmentDashboardPage() {
                     {totalMonthAppointments}
                   </span>
                   <span className="appt-dash__summary-label">
-                    Tổng số lịch hẹn
+                    Tổng lịch hẹn
                   </span>
                 </div>
               </div>
@@ -286,8 +286,7 @@ function AppointmentDashboardPage() {
                 {selectedDate && formatDisplayDate(selectedDate)}
                 {dailyData && (
                   <span className="appt-dash__day-total">
-                    {dailyData.totalAppointments} appointment
-                    {dailyData.totalAppointments !== 1 ? "s" : ""}
+                    {dailyData.totalAppointments} lịch hẹn
                   </span>
                 )}
               </h2>
@@ -332,7 +331,7 @@ function AppointmentDashboardPage() {
                                     STATUS_CLASSES[appt.status] || ""
                                   }`}
                                 >
-                                  {appt.status}
+                                {appt.status === "Confirmed" ? "Đã xác nhận" : appt.status === "Waiting" ? "Đang chờ" : appt.status === "Checked-in" ? "Đã check-in" : appt.status === "Cancelled" ? "Đã hủy" : appt.status === "No-Show" ? "Không đến" : appt.status === "Conflict" ? "Trùng lịch" : appt.status === "In-Treatment" ? "Đang điều trị" : appt.status === "Completed" ? "Hoàn thành" : appt.status}
                                 </span>
                               </div>
                               <div className="appt-dash__appt-details">

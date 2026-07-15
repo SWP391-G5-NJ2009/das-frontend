@@ -67,14 +67,8 @@ function LandingPage() {
 
     try {
       await consultationService.create(form);
-      setForm({
-        full_name: "",
-        phone: "",
-        email: "",
-        description: "",
-        website: "",
-      });
-      setSuccess("Consultation request sent successfully!");
+      setForm({ full_name: "", phone: "", email: "", description: "", website: "" });
+      setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -220,8 +214,8 @@ function LandingPage() {
             <div className="landing-consultation__content">
               <h2>Yêu cầu tư vấn</h2>
               <p>
-                Để lại thông tin, đội ngũ {clinicName} sẽ liên hệ you để tư vấn
-                và hỗ trợ sắp xếp lịch hẹn phù hợp.
+                Để lại thông tin, đội ngũ {clinicName} sẽ liên hệ tư vấn
+                và hỗ trợ bạn đặt lịch hẹn phù hợp.
               </p>
               {clinicInfo && (
                 <ul className="landing-contact">
@@ -286,7 +280,7 @@ function LandingPage() {
                 <textarea
                   name="description"
                   value={form.description}
-                  placeholder="Nội dung tư vấn"
+                  placeholder="Chi tiết yêu cầu tư vấn"
                   rows="5"
                   onChange={handleChange}
                   required
