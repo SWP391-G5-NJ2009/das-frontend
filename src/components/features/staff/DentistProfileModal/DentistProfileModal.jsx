@@ -1,5 +1,6 @@
 import { FileText, UserRound, X } from "lucide-react";
 import PropTypes from "prop-types";
+import ProfileField from "../ProfileField/ProfileField";
 import "./DentistProfileModal.css";
 
 const EMPTY_VALUE = "Not updated";
@@ -32,32 +33,10 @@ function getStatus(status) {
   return { label: "Unknown", modifier: "inactive" };
 }
 
-function ProfileField({ label, value, wide }) {
-  const className = `dentist-profile-modal__field${
-    wide ? " dentist-profile-modal__field--wide" : ""
-  }`;
-
-  return (
-    <label className={className}>
-      <span>{label}</span>
-      <input value={value || EMPTY_VALUE} readOnly />
-    </label>
-  );
-}
-
-ProfileField.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  wide: PropTypes.bool,
-};
-
-ProfileField.defaultProps = {
-  value: "",
-  wide: false,
-};
-
 function DentistProfileModal({ dentist, onClose }) {
   const status = getStatus(dentist.status);
+  const isReceptionist = dentist.role?.toLowerCase() === "receptionist";
+  const profileTitle = isReceptionist ? "Hồ sơ lễ tân" : "Hồ sơ nha sĩ";
 
   return (
     <div
@@ -75,14 +54,9 @@ function DentistProfileModal({ dentist, onClose }) {
         <header className="dentist-profile-modal__header">
           <div className="dentist-profile-modal__title">
             <UserRound size={20} aria-hidden="true" />
-            <h2 id="dentist-profile-title">Hồ sơ nha sĩ</h2>
+            <h2 id="dentist-profile-title">{profileTitle}</h2>
           </div>
-          <button
-            className="dentist-profile-modal__close"
-            type="button"
-            aria-label="Close"
-            onClick={onClose}
-          >
+          <button className="dentist-profile-modal__close" type="button" aria-label="Close" onClick={onClose}>
             <X size={18} aria-hidden="true" />
           </button>
         </header>
@@ -90,7 +64,11 @@ function DentistProfileModal({ dentist, onClose }) {
         <div className="dentist-profile-modal__body">
           <section className="dentist-profile-modal__summary">
             <div className="dentist-profile-modal__heading">
-              <h3>{getDoctorTitle(dentist.fullName)}</h3>
+              <h3>
+                {isReceptionist
+                  ? dentist.fullName || EMPTY_VALUE
+                  : getDoctorTitle(dentist.fullName)}
+              </h3>
               <span
                 className={`dentist-profile-modal__status dentist-profile-modal__status--${status.modifier}`}
               >
@@ -105,24 +83,92 @@ function DentistProfileModal({ dentist, onClose }) {
               Thông tin cá nhân
             </h3>
             <div className="dentist-profile-modal__grid">
+              {isReceptionist && (
+                <>
+                  <ProfileField
+                    label="Mã lễ tân"
+                    value={dentist.profileId}
+                  />
+                  <ProfileField
+                    label="Mã tài khoản"
+                    value={dentist.accountId}
+                  />
+                </>
+              )}
               <ProfileField label="Họ và tên" value={dentist.fullName} />
-              <ProfileField label="Position" value="Specialist Dentist" />
+              {isReceptionist && (
+                <ProfileField label="Position" value="Receptionist" />
+              )}
               <ProfileField label="Số điện thoại" value={dentist.phone} />
               <ProfileField label="Email" value={dentist.email} />
               <ProfileField
-                label="Birthdate"
+                label="Ngày sinh"
                 value={formatBirthDate(dentist.birthDate)}
               />
-              <ProfileField label="Gender" value={dentist.gender} />
-              <ProfileField
-                label="Speciality"
-                value={dentist.speciality || dentist.position}
-                wide
-              />
-              <ProfileField label="Experience" value={dentist.experience} wide />
-              <ProfileField label="Address" value={dentist.address} wide />
+              <ProfileField label="Giới tính" value={dentist.gender} />
+              {isReceptionist ? (
+                <>
+                  <ProfileField
+                    label="Tên đăng nhập"
+                    value={dentist.username}
+                    wide
+                  />
+                  <ProfileField
+                    label="Địa chỉ"
+                    value={dentist.address}
+                    wide
+                  />
+                </>
+              ) : (
+                <ProfileField label="Address" value={dentist.address} wide />
+              )}
             </div>
           </section>
+
+          {!isReceptionist && (
+            <section className="dentist-profile-modal__panel">
+              <h3>
+                <FileText size={20} aria-hidden="true" />
+                Thông tin chuyên môn
+              </h3>
+              <div className="dentist-profile-modal__grid">
+                <ProfileField
+                  label="Speciality"
+                  value={dentist.speciality}
+                />
+                <ProfileField
+                  label="Experience"
+                  value={dentist.experience}
+                />
+              </div>
+            </section>
+          )}
+
+          {!isReceptionist && (
+            <section className="dentist-profile-modal__panel">
+              <h3>
+                <FileText size={20} aria-hidden="true" />
+                Dịch vụ phụ trách ({dentist.services?.length || 0})
+              </h3>
+
+              {dentist.services?.length ? (
+                <ul className="dentist-profile-modal__service-list">
+                  {dentist.services.map((service) => (
+                    <li
+                      className="dentist-profile-modal__service-item"
+                      key={service.id}
+                    >
+                      {service.name || EMPTY_VALUE}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="dentist-profile-modal__service-empty">
+                  Nha sĩ chưa được phân công dịch vụ.
+                </p>
+              )}
+            </section>
+          )}
         </div>
       </section>
     </div>
@@ -131,6 +177,7 @@ function DentistProfileModal({ dentist, onClose }) {
 
 DentistProfileModal.propTypes = {
   dentist: PropTypes.shape({
+    accountId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     address: PropTypes.string,
     birthDate: PropTypes.string,
     email: PropTypes.string,
@@ -138,9 +185,17 @@ DentistProfileModal.propTypes = {
     fullName: PropTypes.string,
     gender: PropTypes.string,
     phone: PropTypes.string,
-    position: PropTypes.string,
+    profileId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    role: PropTypes.string,
+    services: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        name: PropTypes.string,
+      }),
+    ),
     speciality: PropTypes.string,
     status: PropTypes.string,
+    username: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };

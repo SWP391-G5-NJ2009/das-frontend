@@ -1,0 +1,28 @@
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.profile-field__label {
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.profile-field__input {
+  width: 100%;
+  min-height: var(--space-10);
+  padding: var(--space-3);
+  border: var(--border-width-thin) solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-800);
+  font-size: var(--font-size-sm);
+}
+
+@media (min-width: 768px) {
+  .profile-field--wide {
+    grid-column: 1 / -1;
+  }
+}

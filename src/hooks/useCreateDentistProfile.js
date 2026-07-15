@@ -11,7 +11,7 @@ export function useCreateDentistProfile() {
     setIsLoadingAccounts(true);
     setError(null);
     try {
-      const data = await staffService.getAvailableDentistAccounts();
+      const data = await staffService.getAvailableStaffAccounts();
       setAvailableAccounts(data || []);
     } catch (err) {
       setError(err);
@@ -25,7 +25,7 @@ export function useCreateDentistProfile() {
     setIsCreating(true);
     setError(null);
     try {
-      return await staffService.createDentistProfile(payload);
+      return await staffService.createStaffProfile(payload);
     } catch (err) {
       setError(err);
       throw err;

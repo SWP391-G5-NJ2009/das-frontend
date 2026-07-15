@@ -1,4 +1,4 @@
-import { Eye } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import PropTypes from "prop-types";
 import "./StaffTable.css";
 
@@ -34,7 +34,7 @@ function getStatusClass(status) {
   return "staff-table__status staff-table__status--inactive";
 }
 
-function StaffTable({ staff, onViewDentist }) {
+function StaffTable({ staff, onEditStaff, onViewStaff }) {
   return (
     <div className="staff-table">
       <table className="staff-table__table">
@@ -48,7 +48,9 @@ function StaffTable({ staff, onViewDentist }) {
         </thead>
         <tbody>
           {staff.map((item) => {
-            const isDentist = item.role?.toLowerCase() === "dentist";
+            const canEditStaff =
+              ["dentist", "receptionist"].includes(item.role?.toLowerCase()) &&
+              item.profileId;
 
             return (
               <tr key={item.accountId}>
@@ -65,17 +67,28 @@ function StaffTable({ staff, onViewDentist }) {
                   </span>
                 </td>
                 <td>
-                  <button
-                    className={`staff-table__view-button${
-                      isDentist ? "" : " staff-table__view-button--disabled"
-                    }`}
-                    type="button"
-                    aria-label={`View ${item.fullName || "staff"} profile`}
-                    disabled={!isDentist}
-                    onClick={() => onViewDentist(item)}
-                  >
-                    <Eye size={18} aria-hidden="true" />
-                  </button>
+                  <div className="staff-table__actions">
+                    {canEditStaff && (
+                      <button
+                        className="staff-table__action-button staff-table__action-button--edit"
+                        type="button"
+                        aria-label={`Edit ${item.fullName || "dentist"} profile`}
+                        title="Sửa"
+                        onClick={() => onEditStaff(item)}
+                      >
+                        <Pencil size={18} aria-hidden="true" />
+                      </button>
+                    )}
+                    <button
+                      className="staff-table__action-button staff-table__action-button--view"
+                      type="button"
+                      aria-label={`View ${item.fullName || "staff"} profile`}
+                      title="Xem"
+                      onClick={() => onViewStaff(item)}
+                    >
+                      <Eye size={18} aria-hidden="true" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             );
@@ -98,7 +111,8 @@ StaffTable.propTypes = {
       username: PropTypes.string,
     }),
   ).isRequired,
-  onViewDentist: PropTypes.func.isRequired,
+  onEditStaff: PropTypes.func.isRequired,
+  onViewStaff: PropTypes.func.isRequired,
 };
 
 export default StaffTable;
