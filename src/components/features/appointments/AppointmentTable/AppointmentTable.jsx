@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import {
   Ban,
   MessageSquare,
-  Pencil,
   ShieldBan,
   UnlockKeyhole,
 } from "lucide-react";
@@ -23,7 +22,6 @@ function AppointmentTable({
   appointments,
   onCancel,
   onWithin24hCancel,
-  onEdit,
   onLiftBan,
   showPatientInfo,
   actorRole,
@@ -147,17 +145,6 @@ function AppointmentTable({
                     </span>
                   ) : (
                     <div className="appt-table__action-group">
-                      <button
-                        id={`tbl-edit-${appt.id}`}
-                        type="button"
-                        className="appt-table__action-btn appt-table__action-btn--edit"
-                        aria-label={`Chỉnh sửa lịch hẹn của ${appt.patientName}`}
-                        title="Tính năng chỉnh sửa sắp ra mắt"
-                        disabled
-                        onClick={() => onEdit?.(appt)}
-                      >
-                        <Pencil size={15} aria-hidden="true" />
-                      </button>
                       {/* Lift Ban button — only for restricted patients, only for receptionist */}
                       {appt.patientAccountStatus === "Restricted" &&
                         actorRole === "receptionist" && (
@@ -230,7 +217,6 @@ AppointmentTable.propTypes = {
   ).isRequired,
   onCancel: PropTypes.func,
   onWithin24hCancel: PropTypes.func,
-  onEdit: PropTypes.func,
   onLiftBan: PropTypes.func,
   showPatientInfo: PropTypes.bool,
   actorRole: PropTypes.string,
@@ -239,7 +225,6 @@ AppointmentTable.propTypes = {
 AppointmentTable.defaultProps = {
   onCancel: null,
   onWithin24hCancel: null,
-  onEdit: null,
   onLiftBan: null,
   showPatientInfo: true,
   actorRole: "receptionist",

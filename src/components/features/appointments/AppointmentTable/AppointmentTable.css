@@ -190,20 +190,6 @@
   outline-offset: 2px;
 }
 
-.appt-table__action-btn--edit {
-  color: var(--color-primary-700);
-}
-
-.appt-table__action-btn--edit:hover:not(:disabled) {
-  background-color: var(--color-primary-100);
-  transform: scale(1.1);
-}
-
-.appt-table__action-btn--edit:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  transform: none;
-}
 
 .appt-table__action-btn--cancel {
   color: var(--color-error);
