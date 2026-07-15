@@ -7,27 +7,33 @@ import OwnerPageShell from "../OwnerPageShell";
 import { useWorkingHour, useClinicClosures } from "../../../hooks/useClinicScheduleManagement";
 import WorkingHoursSection from "../../../components/features/owner/WorkingHoursSection/WorkingHoursSection";
 import ClinicHolidays from "../../../components/features/owner/ClinicHolidays/ClinicHolidays";
+import { todayVietnam } from "../../../utils/dateUtils";
 import "./ScheduleManagementPage.css";
 
 function ScheduleManagementPage() {
   const { data: workingHourData, isLoading, refetch: refetchWorkingHour } = useWorkingHour();
   const { data: closures, refetch: refetchClosures } = useClinicClosures();
 
-  const activeVersion = workingHourData?.active?.version ?? null;
-  const activeHours = workingHourData?.active?.hours ?? [];
-  const pendingVersion = workingHourData?.pending?.version ?? null;
-  const pendingHours = workingHourData?.pending?.hours ?? [];
+  const today = todayVietnam();
 
-  const hasPendingVersion = !!pendingVersion;
-  const noVersionExists = !activeVersion && !pendingVersion;
+  const allVersionEntries = workingHourData?.versions ?? [];
 
-  const versions = [activeVersion, pendingVersion].filter(Boolean);
+  const versions = allVersionEntries.map((entry) => ({
+    ...entry.version,
+    hours: entry.hours,
+  }));
+
+  const activeVersion = versions.find((v) => v.effective_date <= today) || versions[0] || null;
+  const activeHours = activeVersion?.hours ?? [];
+
+  const hasPendingVersion = versions.some((v) => v.effective_date > today);
+  const noVersionExists = versions.length === 0;
 
   const [activeTab, setActiveTab] = useState("hours");
 
   const closedDays = (() => {
     const closed = new Set([1, 2, 3, 4, 5, 6, 7]);
-    const sourceHours = pendingVersion ? pendingHours : activeHours;
+    const sourceHours = activeVersion?.hours ?? [];
     sourceHours.forEach((s) => closed.delete(s.day_of_week));
     return closed;
   })();
@@ -69,12 +75,10 @@ function ScheduleManagementPage() {
           <WorkingHoursSection
             isLoading={isLoading}
             activeVersion={activeVersion}
-            pendingVersion={pendingVersion}
             hasPendingVersion={hasPendingVersion}
             noVersionExists={noVersionExists}
             versions={versions}
             activeHours={activeHours}
-            pendingHours={pendingHours}
             onRefetchAll={handleRefetchAll}
           />
         )}

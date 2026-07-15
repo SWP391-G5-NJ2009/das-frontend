@@ -746,6 +746,11 @@
   color: var(--color-warning);
 }
 
+.whs__version-badge--expired {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-500);
+}
+
 .whs__version-name {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);

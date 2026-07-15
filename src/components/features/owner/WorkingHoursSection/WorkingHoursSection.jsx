@@ -15,6 +15,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { clinicScheduleManagementService } from "../../../../services/clinicScheduleManagement.service";
+import { todayVietnam } from "../../../../utils/dateUtils";
 import ConflictResolutionModal from "../ConflictResolutionModal/ConflictResolutionModal";
 import "./WorkingHoursSection.css";
 
@@ -265,15 +266,20 @@ GlobalHoursEditor.defaultProps = {
   editable: true,
 };
 
+function getDerivedStatus(version, today, mostRecentActiveId) {
+  if (version.effective_date <= today) {
+    return version.version_id === mostRecentActiveId ? "Active" : "Expired";
+  }
+  return "Pending";
+}
+
 function WorkingHoursSection({
   isLoading,
   activeVersion,
-  pendingVersion,
   hasPendingVersion,
   noVersionExists,
   versions,
   activeHours,
-  pendingHours,
   onRefetchAll,
 }) {
   const [sameHoursAllDays, setSameHoursAllDays] = useState(true);
@@ -291,11 +297,17 @@ function WorkingHoursSection({
   const [conflictData, setConflictData] = useState(null);
   const [showConflictModal, setShowConflictModal] = useState(false);
 
+  const todayStr = todayVietnam();
+
+  const mostRecentActiveId = useMemo(() => {
+    const candidates = versions.filter((v) => v.effective_date <= todayStr);
+    return candidates.length > 0 ? candidates[0].version_id : null;
+  }, [versions, todayStr]);
+
   useEffect(() => {
     if (viewingVersion) return;
-    const sourceHours = hasPendingVersion ? pendingHours : activeHours;
-    if (sourceHours.length > 0) {
-      setEditableShifts(sourceHours.map((s) => ({
+    if (activeHours.length > 0) {
+      setEditableShifts(activeHours.map((s) => ({
         ...s,
         shift_start: s.start_time?.slice(0, 5) ?? "08:00",
         shift_end: s.end_time?.slice(0, 5) ?? "17:00",
@@ -303,7 +315,7 @@ function WorkingHoursSection({
     } else {
       setEditableShifts([]);
     }
-  }, [activeHours, pendingHours, hasPendingVersion, viewingVersion]);
+  }, [activeHours, viewingVersion]);
 
   useEffect(() => {
     if (activeVersion) {
@@ -356,9 +368,12 @@ function WorkingHoursSection({
     ? versions?.find((v) => v.version_id === viewingVersion.version_id) ?? viewingVersion
     : null;
 
-  const todayStr = new Date().toISOString().split("T")[0];
-  const viewingIsPending = viewingFullVersion && viewingFullVersion.effective_date > todayStr;
-  const viewingIsActive = viewingFullVersion && viewingFullVersion.effective_date <= todayStr;
+  const viewingStatus = viewingFullVersion
+    ? getDerivedStatus(viewingFullVersion, todayStr, mostRecentActiveId)
+    : null;
+  const viewingIsPending = viewingStatus === "Pending";
+  const viewingIsActive = viewingStatus === "Active";
+  const viewingIsExpired = viewingStatus === "Expired";
 
   const isViewingEditable = viewingFullVersion && (
     viewingFullVersion.status === "Đang chờ" ||
@@ -655,10 +670,9 @@ function WorkingHoursSection({
       const { hoursPayload } = buildPayloads();
 
       if (!versionId) {
-        const today = new Date().toISOString().split("T")[0];
         const result = await clinicScheduleManagementService.createVersionWithHours(
           "default",
-          today,
+          todayStr,
           hoursPayload
         );
         setSaveState("saved");
@@ -785,13 +799,16 @@ function WorkingHoursSection({
     setConflictData(null);
   }
 
-  async function handleCancelPending() {
-    if (!window.confirm("Hủy phiên bản Pending hiện tại?")) return;
+  async function handleDeleteVersion(versionId) {
+    if (!window.confirm("Xóa phiên bản này? Hành động này không thể hoàn tác.")) return;
     try {
-      await clinicScheduleManagementService.cancelPendingVersion();
+      await clinicScheduleManagementService.deleteVersion(versionId);
+      if (viewingVersion?.version_id === versionId) {
+        setViewingVersion(activeVersion || null);
+      }
       onRefetchAll();
     } catch (err) {
-      alert(err.message || "Hủy phiên bản thất bại.");
+      alert(err.message || "Xóa phiên bản thất bại.");
     }
   }
 
@@ -868,8 +885,8 @@ function WorkingHoursSection({
                   className={`whs__version-row${isViewing ? " whs__version-row--viewing" : ""}`}
                 >
                   <div className="whs__version-row-left">
-                    <span className={`whs__version-badge whs__version-badge--${isActive ? "active" : "pending"}`}>
-                      {isActive ? "Active" : "Pending"}
+                    <span className={`whs__version-badge whs__version-badge--${status.toLowerCase()}`}>
+                      {status}
                     </span>
                     <span className="whs__version-name">
                       {v.name || "Chưa đặt tên"}
@@ -888,11 +905,11 @@ function WorkingHoursSection({
                         <Eye size={14} />
                       </button>
                     )}
-                    {isPending && (
+                    {!v.hasLinkedWorkSlots && (
                       <button
                         className="whs__version-delete"
-                        onClick={handleCancelPending}
-                        title="Hủy phiên bản"
+                        onClick={() => handleDeleteVersion(v.version_id)}
+                        title="Xóa phiên bản"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -1070,11 +1087,7 @@ WorkingHoursSection.propTypes = {
     version_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name: PropTypes.string,
     effective_date: PropTypes.string,
-  }),
-  pendingVersion: PropTypes.shape({
-    version_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    name: PropTypes.string,
-    effective_date: PropTypes.string,
+    hasLinkedWorkSlots: PropTypes.bool,
   }),
   hasPendingVersion: PropTypes.bool.isRequired,
   noVersionExists: PropTypes.bool.isRequired,
@@ -1082,22 +1095,19 @@ WorkingHoursSection.propTypes = {
     PropTypes.shape({
       version_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       name: PropTypes.string,
-      status: PropTypes.string,
       effective_date: PropTypes.string,
+      hasLinkedWorkSlots: PropTypes.bool,
     }),
   ),
   activeHours: PropTypes.array,
-  pendingHours: PropTypes.array,
   onRefetchAll: PropTypes.func.isRequired,
 };
 
 WorkingHoursSection.defaultProps = {
   isLoading: false,
   activeVersion: null,
-  pendingVersion: null,
   versions: [],
   activeHours: [],
-  pendingHours: [],
 };
 
 export default WorkingHoursSection;

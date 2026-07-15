@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AlertTriangle, Calendar, Zap, X } from "lucide-react";
 import { clinicScheduleManagementService } from "../../../../services/clinicScheduleManagement.service";
+import { todayVietnam } from "../../../../utils/dateUtils";
 import "./ConflictResolutionModal.css";
 
 function ConflictResolutionModal({ conflicts, hours, onForceSave, onScheduleForLater, onCancel }) {
@@ -17,7 +18,7 @@ function ConflictResolutionModal({ conflicts, hours, onForceSave, onScheduleForL
                 setSelectedDate(minDate);
             })
             .catch(() => {
-                const today = new Date().toISOString().split("T")[0];
+                const today = todayVietnam();
                 setMinEffectiveDate(today);
                 setSelectedDate(today);
             });
