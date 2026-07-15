@@ -15,11 +15,6 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/clinic-schedule",
   },
   {
-    icon: "analytics",
-    label: "Thống kê",
-    to: "/owner/analytics",
-  },
-  {
     icon: "meeting_room",
     label: "Quản lý phòng",
     to: "/owner/rooms-management",

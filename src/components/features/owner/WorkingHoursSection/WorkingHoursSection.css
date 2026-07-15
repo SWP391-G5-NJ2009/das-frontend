@@ -28,6 +28,18 @@
   outline-offset: 2px;
 }
 
+.whs__btn--primary:disabled {
+  background-color: var(--color-neutral-300);
+  color: var(--color-neutral-500);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.whs__btn--primary:disabled:hover {
+  opacity: 1;
+}
+
 .whs__btn--loading {
   opacity: 0.8;
   background-color: var(--color-success);
@@ -340,7 +352,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 48px;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -709,10 +720,6 @@
   border-bottom: none;
 }
 
-.whs__version-row--active {
-  background-color: var(--color-success-bg);
-}
-
 .whs__version-row-left {
   display: flex;
   align-items: center;
@@ -737,11 +744,6 @@
 .whs__version-badge--pending {
   background-color: var(--color-warning-bg);
   color: var(--color-warning);
-}
-
-.whs__version-badge--expired {
-  background-color: var(--color-neutral-100);
-  color: var(--color-neutral-500);
 }
 
 .whs__version-name {
@@ -885,4 +887,24 @@
 
 .whs__global-day-chip--disabled .whs__global-day-checkbox {
   cursor: not-allowed;
+}
+
+/* No version prompt banner */
+.whs__no-version-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-6);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  line-height: var(--line-height-relaxed);
+}
+
+.whs__no-version-banner-icon {
+  flex-shrink: 0;
+  color: var(--color-error);
 }

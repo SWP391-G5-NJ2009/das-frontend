@@ -12,8 +12,10 @@ import {
   RefreshCw,
   Save,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { clinicScheduleManagementService } from "../../../../services/clinicScheduleManagement.service";
+import ConflictResolutionModal from "../ConflictResolutionModal/ConflictResolutionModal";
 import "./WorkingHoursSection.css";
 
 const DAYS = [
@@ -70,9 +72,11 @@ function DayRow({ dayLabel, shifts, isActive, onClick, editable, onShiftChange, 
     >
       <div className="whs__day-label">
         <span className="whs__day-name">{dayLabel}</span>
-        <button className="whs__preview-btn" onClick={onClick}>
-          Xem trước
-        </button>
+        {!isActive && (
+          <button className="whs__preview-btn" onClick={onClick}>
+            Xem trước
+          </button>
+        )}
       </div>
       <div className="whs__day-controls">
         {isClosed ? (
@@ -189,7 +193,7 @@ function GlobalHoursEditor({ editableShifts, onShiftChange, onAddShift, onRemove
                   onChange={() => onToggleDay(dayNum, !isActive)}
                   disabled={!editable}
                 />
-                <span className="whs__global-day-abbr">{day.slice(0, 3)}</span>
+                <span className="whs__global-day-abbr">{day}</span>
               </label>
             );
           })}
@@ -262,6 +266,7 @@ GlobalHoursEditor.defaultProps = {
 };
 
 function WorkingHoursSection({
+  isLoading,
   activeVersion,
   pendingVersion,
   hasPendingVersion,
@@ -269,10 +274,7 @@ function WorkingHoursSection({
   versions,
   activeHours,
   pendingHours,
-  focusVersionId,
-  onShowCreateVersionModal,
   onRefetchAll,
-  onReactivateVersion,
 }) {
   const [sameHoursAllDays, setSameHoursAllDays] = useState(true);
   const [selectedDay, setSelectedDay] = useState("Monday");
@@ -285,6 +287,9 @@ function WorkingHoursSection({
   const [effectiveDate, setEffectiveDate] = useState("");
   const [minEffectiveDate, setMinEffectiveDate] = useState("");
   const [effectiveDateLoading, setEffectiveDateLoading] = useState(false);
+
+  const [conflictData, setConflictData] = useState(null);
+  const [showConflictModal, setShowConflictModal] = useState(false);
 
   useEffect(() => {
     if (viewingVersion) return;
@@ -305,14 +310,6 @@ function WorkingHoursSection({
       setViewingVersion(activeVersion);
     }
   }, [activeVersion?.version_id]);
-
-  useEffect(() => {
-    if (!focusVersionId) return;
-    const target = versions?.find((v) => v.version_id === focusVersionId);
-    if (target) {
-      setViewingVersion(target);
-    }
-  }, [focusVersionId, versions]);
 
   useEffect(() => {
     if (!viewingVersion) return;
@@ -358,12 +355,17 @@ function WorkingHoursSection({
   const viewingFullVersion = viewingVersion
     ? versions?.find((v) => v.version_id === viewingVersion.version_id) ?? viewingVersion
     : null;
+
+  const todayStr = new Date().toISOString().split("T")[0];
+  const viewingIsPending = viewingFullVersion && viewingFullVersion.effective_date > todayStr;
+  const viewingIsActive = viewingFullVersion && viewingFullVersion.effective_date <= todayStr;
+
   const isViewingEditable = viewingFullVersion && (
     viewingFullVersion.status === "Đang chờ" ||
     viewingFullVersion.status === "Expired" ||
     (viewingFullVersion.status === "Active" && !viewingFullVersion.hasLinkedWorkSlots)
   );
-  const isEditingAllowed = !viewingVersion || isViewingEditable;
+  const isEditingAllowed = !viewingVersion || isViewingEditable || (viewingIsActive && viewingFullVersion?.hasLinkedWorkSlots);
 
   function handleExitViewing() {
     setViewingVersion(activeVersion || null);
@@ -483,6 +485,8 @@ function WorkingHoursSection({
           return { ...s, shift_start: firstShift.shift_start, shift_end: firstShift.shift_end };
         }),
       );
+    } else {
+      setSelectedDay("Thứ hai");
     }
     setSameHoursAllDays((v) => !v);
   }
@@ -649,6 +653,54 @@ function WorkingHoursSection({
     setSaveState("saving");
     try {
       const { hoursPayload } = buildPayloads();
+
+      if (!versionId) {
+        const today = new Date().toISOString().split("T")[0];
+        const result = await clinicScheduleManagementService.createVersionWithHours(
+          "default",
+          today,
+          hoursPayload
+        );
+        setSaveState("saved");
+        setTimeout(() => setSaveState("idle"), 2000);
+        onRefetchAll();
+        return;
+      }
+
+      const result = await clinicScheduleManagementService.saveAll(versionId, hoursPayload);
+
+      if (result && result.success === false) {
+        setConflictData({
+          conflicts: result.conflicts,
+          hours: hoursPayload,
+          versionId,
+        });
+        setShowConflictModal(true);
+        setSaveState("idle");
+        return;
+      }
+
+      if (effectiveDate) {
+        await clinicScheduleManagementService.updateEffectiveDate(versionId, effectiveDate);
+      }
+
+      setSaveState("saved");
+      setTimeout(() => setSaveState("idle"), 2000);
+      onRefetchAll();
+    } catch (err) {
+      const detail = err?.code ? `[${err.code}] ` : "";
+      alert(`${detail}${err.message || "Không thể lưu thay đổi. Vui lòng thử lại."}`);
+      setSaveState("idle");
+    }
+  };
+
+  const handleForceSave = async () => {
+    const versionId = viewingVersion?.version_id || pendingVersion?.version_id || activeVersion?.version_id;
+    if (!versionId) return;
+
+    setSaveState("saving");
+    try {
+      const { hoursPayload } = buildPayloads();
       await Promise.all([
         clinicScheduleManagementService.saveAll(versionId, hoursPayload),
         effectiveDate
@@ -656,6 +708,7 @@ function WorkingHoursSection({
           : Promise.resolve(),
       ]);
 
+      setConflictData(null);
       setSaveState("saved");
       setTimeout(() => setSaveState("idle"), 2000);
       onRefetchAll();
@@ -696,7 +749,49 @@ function WorkingHoursSection({
       await clinicScheduleManagementService.deleteVersion(versionId);
       onRefetchAll();
     } catch (err) {
-      alert(err.message || "Xóa phiên bản thất bại.");
+      const detail = err?.code ? `[${err.code}] ` : "";
+      alert(`${detail}${err.message || "Áp dụng thay đổi thất bại. Vui lòng thử lại."}`);
+      setSaveState("idle");
+      setShowConflictModal(false);
+    }
+  }
+
+  async function handleScheduleForLater(selectedDate) {
+    if (!conflictData) return;
+
+    setSaveState("saving");
+    try {
+      await clinicScheduleManagementService.createVersionWithHours(
+        null,
+        selectedDate,
+        conflictData.hours
+      );
+
+      setShowConflictModal(false);
+      setConflictData(null);
+      setSaveState("saved");
+      setTimeout(() => setSaveState("idle"), 2000);
+      onRefetchAll();
+    } catch (err) {
+      const detail = err?.code ? `[${err.code}] ` : "";
+      alert(`${detail}${err.message || "Tạo phiên bản thất bại. Vui lòng thử lại."}`);
+      setSaveState("idle");
+      setShowConflictModal(false);
+    }
+  }
+
+  function handleCancelConflict() {
+    setShowConflictModal(false);
+    setConflictData(null);
+  }
+
+  async function handleCancelPending() {
+    if (!window.confirm("Hủy phiên bản Pending hiện tại?")) return;
+    try {
+      await clinicScheduleManagementService.cancelPendingVersion();
+      onRefetchAll();
+    } catch (err) {
+      alert(err.message || "Hủy phiên bản thất bại.");
     }
   }
 
@@ -759,15 +854,6 @@ function WorkingHoursSection({
                 <GitBranch size={24} className="whs__card-icon" />
                 <h2 className="whs__card-title">Lịch sử phiên bản</h2>
               </div>
-              <button
-                className={`whs__btn whs__btn--primary${hasPendingVersion ? " whs__btn--disabled" : ""}`}
-                disabled={hasPendingVersion}
-                title={hasPendingVersion ? "Hủy hoặc kích hoạt phiên bản đang chờ trước" : "Tạo phiên bản mới"}
-                onClick={onShowCreateVersionModal}
-              >
-                <Plus size={16} className="whs__btn-icon" />
-                Tạo phiên bản
-              </button>
             </div>
           </div>
           <div className="whs__versions-list">
@@ -779,11 +865,11 @@ function WorkingHoursSection({
               return (
                 <div
                   key={v.version_id}
-                  className={`whs__version-row${isActive ? " whs__version-row--active" : ""}${isViewing ? " whs__version-row--viewing" : ""}`}
+                  className={`whs__version-row${isViewing ? " whs__version-row--viewing" : ""}`}
                 >
                   <div className="whs__version-row-left">
-                    <span className={`whs__version-badge whs__version-badge--${v.status.toLowerCase()}`}>
-                      {v.status}
+                    <span className={`whs__version-badge whs__version-badge--${isActive ? "active" : "pending"}`}>
+                      {isActive ? "Active" : "Pending"}
                     </span>
                     <span className="whs__version-name">
                       {v.name || "Chưa đặt tên"}
@@ -802,13 +888,11 @@ function WorkingHoursSection({
                         <Eye size={14} />
                       </button>
                     )}
-                    {canDelete && (
+                    {isPending && (
                       <button
                         className="whs__version-delete"
-                        onClick={() => {
-                          if (!window.confirm(`Xóa phiên bản "${v.name || "Chưa đặt tên"}"?`)) return;
-                          handleDeleteVersion(v.version_id);
-                        }}
+                        onClick={handleCancelPending}
+                        title="Hủy phiên bản"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -821,152 +905,167 @@ function WorkingHoursSection({
         </section>
       )}
 
-      {!noVersionExists && (
-        <div className="whs__grid">
-          {viewingLoading && (
-            <div className="whs__viewing-loading">
-              <RefreshCw size={18} className="whs__btn-icon--spin" />
-              Đang tải dữ liệu phiên bản...
-            </div>
-          )}
-          <div className="whs__left">
-            <section className="whs__card">
-              <div className="whs__card-header">
-                <div className="whs__card-header-row">
-                  <div className="whs__card-header-left">
-                    <Clock size={24} className="whs__card-icon" />
-                    <h2 className="whs__card-title">Giờ hoạt động</h2>
-                    <label className="whs__same-hours-toggle">
-                      <input
-                        type="checkbox"
-                        className="whs__same-hours-checkbox"
-                        checked={sameHoursAllDays}
-                        onChange={handleToggleSameHours}
-                        disabled={!isEditingAllowed}
-                      />
-                      <span className="whs__same-hours-slider" />
-                      <span className="whs__same-hours-label">
-                        Cùng giờ cho tất cả ngày hoạt động
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              {sameHoursAllDays ? (
-                <GlobalHoursEditor
-                  editableShifts={editableShifts}
-                  onShiftChange={handleGlobalShiftChange}
-                  onAddShift={handleGlobalAddShift}
-                  onRemoveShift={handleGlobalRemoveShift}
-                  onToggleDay={handleToggleDay}
-                  editable={isEditingAllowed}
-                />
-              ) : (
-                <div className="whs__day-list">
-                  {DAYS.map((day) => {
-                    const dayNum = Object.entries(DAY_NAMES).find(([, v]) => v === day)?.[0];
-                    const shifts = editableShifts.filter((s) => String(s.day_of_week) === dayNum) ?? [];
-                    return (
-                      <DayRow
-                        key={day}
-                        dayLabel={day}
-                        shifts={shifts}
-                        isActive={day === selectedDay}
-                        onClick={() => setSelectedDay(day)}
-                        editable={isEditingAllowed}
-                        onShiftChange={handleShiftChange}
-                        onAddShift={handleAddShift}
-                        onRemoveShift={handleRemoveShift}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </section>
+      <div className="whs__grid">
+        {viewingLoading && (
+          <div className="whs__viewing-loading">
+            <RefreshCw size={18} className="whs__btn-icon--spin" />
+            Đang tải dữ liệu phiên bản...
           </div>
-
-          <div className="whs__right">
-            <section className="whs__card whs__preview--sticky">
-              <div className="whs__card-header">
-                <div className="whs__card-header-row">
-                  <div className="whs__card-header-left">
-                    <CalendarDays size={24} className="whs__card-icon" />
-                    <h2 className="whs__card-title">Xem trước lịch</h2>
-                  </div>
-                  <span className="whs__preview-label">
-                    {sameHoursAllDays ? "Tất cả ngày hoạt động" : selectedDay}
-                  </span>
-                </div>
-              </div>
-              <div className="whs__preview-grid">
-                {timeSlots.length === 0 ? (
-                  <p className="whs__empty-text">Không có dữ liệu lịch cho {selectedDay}.</p>
-                ) : timeSlots.map((slot, i) =>
-                  slot.type === "break" ? (
-                    <div key={i} className="whs__preview-break">
-                      <Coffee size={20} className="whs__preview-break-icon" />
-                      <span>{slot.label}</span>
-                    </div>
-                  ) : (
-                    <div key={i} className="whs__preview-slot">
-                      {slot.label}
-                    </div>
-                  ),
-                )}
-              </div>
-              <p className="whs__preview-note">
-                * Xem trước dựa trên thời lượng 30 phút và {sameHoursAllDays ? "tất cả ngày hoạt động" : `ngày ${selectedDay}`} giờ hoạt động.
-              </p>
-
-              <div className="whs__effective-date">
-                <label className="whs__effective-date-label">Ngày hiệu lực</label>
-                <div className="whs__effective-date-row">
-                  <input
-                    type="date"
-                    className="whs__effective-date-input"
-                    value={effectiveDate}
-                    onChange={(e) => setEffectiveDate(e.target.value)}
-                    min={minEffectiveDate || undefined}
-                    disabled={!isEditingAllowed || effectiveDateLoading}
-                  />
-                  {minEffectiveDate && (
-                    <span className="whs__effective-date-hint">
-                      Tối thiểu: {minEffectiveDate}
+        )}
+        <div className="whs__left">
+          <section className="whs__card">
+            <div className="whs__card-header">
+              <div className="whs__card-header-row">
+                <div className="whs__card-header-left">
+                  <Clock size={24} className="whs__card-icon" />
+                  <h2 className="whs__card-title">Giờ hoạt động</h2>
+                  <label className="whs__same-hours-toggle">
+                    <input
+                      type="checkbox"
+                      className="whs__same-hours-checkbox"
+                      checked={sameHoursAllDays}
+                      onChange={handleToggleSameHours}
+                      disabled={!isEditingAllowed}
+                    />
+                    <span className="whs__same-hours-slider" />
+                    <span className="whs__same-hours-label">
+                      Cùng giờ cho tất cả ngày hoạt động
                     </span>
-                  )}
+                  </label>
                 </div>
-                <p className="whs__field-hint">
-                  Phiên bản này sẽ có hiệu lực vào ngày đã chọn. Ngày tối thiểu được đặt sau tất cả lịch hẹn đã đặt hiện tại.
-                </p>
               </div>
-
-              <button
-                className={`whs__btn whs__btn--primary whs__save-btn${saveState !== "idle" ? " whs__btn--loading" : ""}`}
-                onClick={handleSave}
-                disabled={saveState !== "idle" || !isEditingAllowed}
-              >
-                {saveState === "saving" ? (
-                  <RefreshCw size={18} className="whs__btn-icon whs__btn-icon--spin" />
-                ) : saveState === "saved" ? (
-                  <CheckCircle size={18} className="whs__btn-icon" />
-                ) : (
-                  <Save size={18} className="whs__btn-icon" />
-                )}
-                {saveState === "saving"
-                  ? "Đang cập nhật..."
-                  : saveState === "saved"
-                    ? "Đã lưu thành công"
-                    : "Lưu thay đổi"}
-              </button>
-            </section>
-          </div>
+            </div>
+            {sameHoursAllDays ? (
+              <GlobalHoursEditor
+                editableShifts={editableShifts}
+                onShiftChange={handleGlobalShiftChange}
+                onAddShift={handleGlobalAddShift}
+                onRemoveShift={handleGlobalRemoveShift}
+                onToggleDay={handleToggleDay}
+                editable={isEditingAllowed}
+              />
+            ) : (
+              <div className="whs__day-list">
+                {DAYS.map((day) => {
+                  const dayNum = Object.entries(DAY_NAMES).find(([, v]) => v === day)?.[0];
+                  const shifts = editableShifts.filter((s) => String(s.day_of_week) === dayNum) ?? [];
+                  return (
+                    <DayRow
+                      key={day}
+                      dayLabel={day}
+                      shifts={shifts}
+                      isActive={day === selectedDay}
+                      onClick={() => setSelectedDay(day)}
+                      editable={isEditingAllowed}
+                      onShiftChange={handleShiftChange}
+                      onAddShift={handleAddShift}
+                      onRemoveShift={handleRemoveShift}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </section>
         </div>
+
+        <div className="whs__right">
+          <section className="whs__card whs__preview--sticky">
+            <div className="whs__card-header">
+              <div className="whs__card-header-row">
+                <div className="whs__card-header-left">
+                  <CalendarDays size={24} className="whs__card-icon" />
+                  <h2 className="whs__card-title">Xem trước lịch</h2>
+                </div>
+                <span className="whs__preview-label">
+                  {sameHoursAllDays ? "Tất cả ngày hoạt động" : selectedDay}
+                </span>
+              </div>
+            </div>
+            <div className="whs__preview-grid">
+              {timeSlots.length === 0 ? (
+                <p className="whs__empty-text">Không có dữ liệu lịch cho {selectedDay}.</p>
+              ) : timeSlots.map((slot, i) =>
+                slot.type === "break" ? (
+                  <div key={i} className="whs__preview-break">
+                    <Coffee size={20} className="whs__preview-break-icon" />
+                    <span>{slot.label}</span>
+                  </div>
+                ) : (
+                  <div key={i} className="whs__preview-slot">
+                    {slot.label}
+                  </div>
+                ),
+              )}
+            </div>
+            <p className="whs__preview-note">
+              * Xem trước dựa trên thời lượng 30 phút và {sameHoursAllDays ? "tất cả ngày hoạt động" : `ngày ${selectedDay}`} giờ hoạt động.
+            </p>
+
+            <div className="whs__effective-date">
+              <label className="whs__effective-date-label">Ngày hiệu lực</label>
+              <div className="whs__effective-date-row">
+                <input
+                  type="date"
+                  className="whs__effective-date-input"
+                  value={effectiveDate}
+                  onChange={(e) => setEffectiveDate(e.target.value)}
+                  min={minEffectiveDate || undefined}
+                  disabled={!isEditingAllowed || effectiveDateLoading}
+                />
+                {minEffectiveDate && (
+                  <span className="whs__effective-date-hint">
+                    Tối thiểu: {minEffectiveDate}
+                  </span>
+                )}
+              </div>
+              <p className="whs__field-hint">
+                Phiên bản này sẽ có hiệu lực vào ngày đã chọn. Ngày tối thiểu được đặt sau tất cả lịch hẹn đã đặt hiện tại.
+              </p>
+            </div>
+
+            <button
+              className={`whs__btn whs__btn--primary whs__save-btn${saveState !== "idle" ? " whs__btn--loading" : ""}`}
+              onClick={handleSave}
+              disabled={saveState !== "idle" || !isEditingAllowed || (hasPendingVersion && viewingVersion?.version_id !== pendingVersion?.version_id)}
+              title={hasPendingVersion && viewingVersion?.version_id !== pendingVersion?.version_id ? "Vui lòng hủy hoặc kích hoạt phiên bản Pending trước khi lưu." : ""}
+            >
+              {saveState === "saving" ? (
+                <RefreshCw size={18} className="whs__btn-icon whs__btn-icon--spin" />
+              ) : saveState === "saved" ? (
+                <CheckCircle size={18} className="whs__btn-icon" />
+              ) : (
+                <Save size={18} className="whs__btn-icon" />
+              )}
+              {saveState === "saving"
+                ? "Đang cập nhật..."
+                : saveState === "saved"
+                  ? "Đã lưu thành công"
+                  : "Lưu thay đổi"}
+            </button>
+            {hasPendingVersion && viewingVersion?.version_id !== pendingVersion?.version_id && (
+              <p className="whs__field-hint">
+                Vui lòng hủy phiên bản Pending hiện tại trước khi tạo phiên bản mới.
+              </p>
+            )}
+          </section>
+        </div>
+      </div>
+
+      {showConflictModal && conflictData && (
+        <ConflictResolutionModal
+          conflicts={conflictData.conflicts}
+          hours={conflictData.hours}
+          onForceSave={handleForceSave}
+          onScheduleForLater={handleScheduleForLater}
+          onCancel={handleCancelConflict}
+        />
       )}
     </>
   );
 }
 
 WorkingHoursSection.propTypes = {
+  isLoading: PropTypes.bool,
   activeVersion: PropTypes.shape({
     version_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name: PropTypes.string,
@@ -983,26 +1082,22 @@ WorkingHoursSection.propTypes = {
     PropTypes.shape({
       version_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       name: PropTypes.string,
-      status: PropTypes.string.isRequired,
+      status: PropTypes.string,
       effective_date: PropTypes.string,
     }),
   ),
   activeHours: PropTypes.array,
   pendingHours: PropTypes.array,
-  focusVersionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  onShowCreateVersionModal: PropTypes.func.isRequired,
   onRefetchAll: PropTypes.func.isRequired,
-  onReactivateVersion: PropTypes.func,
 };
 
 WorkingHoursSection.defaultProps = {
+  isLoading: false,
   activeVersion: null,
   pendingVersion: null,
-  focusVersionId: null,
   versions: [],
   activeHours: [],
   pendingHours: [],
-  onReactivateVersion: null,
 };
 
 export default WorkingHoursSection;
