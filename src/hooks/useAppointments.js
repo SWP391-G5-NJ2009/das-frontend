@@ -34,6 +34,7 @@ export function useMyAppointments(filters = {}, options = {}) {
           const aIsNull = dateA === null;
           const bIsNull = dateB === null;
           // null ⇒ cuối cùng
+          if (aIsNull && bIsNull) return 0;
           if (aIsNull && !bIsNull) return 1;
           if (!aIsNull && bIsNull) return -1;
           // tương lai trước quá khứ
@@ -121,6 +122,7 @@ export function useAllAppointments(filters = {}, options = {}) {
           const aIsNull = dateA === null;
           const bIsNull = dateB === null;
           // null ⇒ cuối cùng
+          if (aIsNull && bIsNull) return 0;
           if (aIsNull && !bIsNull) return 1;
           if (!aIsNull && bIsNull) return -1;
           // tương lai trước quá khứ

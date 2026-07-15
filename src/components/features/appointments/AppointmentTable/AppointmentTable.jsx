@@ -1,10 +1,5 @@
 import PropTypes from "prop-types";
-import {
-  Ban,
-  MessageSquare,
-  ShieldBan,
-  UnlockKeyhole,
-} from "lucide-react";
+import { Ban, MessageSquare, ShieldBan, UnlockKeyhole } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
@@ -52,7 +47,7 @@ function AppointmentTable({
               Nha sĩ
             </th>
             <th className="appt-table__th appt-table__th--sortable" scope="col">
-              <span>Ngày &amp; Giờ</span>
+              <span>Ngày và giờ</span>
             </th>
             <th className="appt-table__th" scope="col">
               Trạng thái
@@ -90,7 +85,7 @@ function AppointmentTable({
                     {appt.patientAccountStatus === "Restricted" && (
                       <span
                         className="appt-table__booking-banned"
-                        title="Tài khoản này bị hạn chế do 3 lần không đến khám"
+                        title="Tài khoản bệnh nhân bị hạn chế do vắng mặt từ 3 lần trở lên"
                       >
                         <ShieldBan size={10} aria-hidden="true" />
                         Tài khoản bị hạn chế
@@ -152,8 +147,8 @@ function AppointmentTable({
                             id={`tbl-liftban-${appt.id}`}
                             type="button"
                             className="appt-table__action-btn appt-table__action-btn--lift-ban"
-                            aria-label={`Gỡ bỏ hạn chế tài khoản của ${appt.patientName}`}
-                            title="Gỡ bỏ hạn chế tài khoản"
+                            aria-label={`Gỡ hạn chế tài khoản của ${appt.patientName}`}
+                            title="Gỡ hạn chế tài khoản"
                             onClick={() => onLiftBan?.(appt)}
                           >
                             <UnlockKeyhole size={15} aria-hidden="true" />
@@ -170,12 +165,12 @@ function AppointmentTable({
                           }
                           aria-label={
                             within24h
-                              ? "Không thể hủy — trong vòng 24 giờ"
+                              ? "Không thể hủy - lịch hẹn còn dưới 24 giờ"
                               : `Hủy lịch hẹn của ${appt.patientName}`
                           }
                           title={
                             within24h
-                              ? "Trong vòng 24 giờ — liên hệ lễ tân để hủy"
+                              ? "Dưới 24 giờ - liên hệ lễ tân để hủy"
                               : "Hủy lịch hẹn"
                           }
                           onClick={() =>

@@ -311,7 +311,7 @@ function AppointmentsPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message="Không thể tải lịch hẹn. Vui lòng thử lại." />
+          <EmptyState message={`Lỗi: ${error?.message || "Không thể tải lịch hẹn. Vui lòng thử lại."}`} />
         )}
 
         {!isLoading && !error && appointments.length === 0 && (
