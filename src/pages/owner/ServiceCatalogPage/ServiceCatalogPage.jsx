@@ -84,7 +84,7 @@ function OwnerServiceCatalog() {
       service_name: service.service_name || "",
       category_id: service.category_id ? String(service.category_id) : "",
       description: service.description || "",
-      unit_price: service.unit_price || service.price || "",
+      unit_price: (service.unit_price ?? service.price) ?? "",
       slot_occupied: String(service.slot_occupied || 1),
       status: service.status || "Active",
     });
