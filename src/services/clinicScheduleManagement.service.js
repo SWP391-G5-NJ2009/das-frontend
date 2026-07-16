@@ -11,10 +11,6 @@ export const clinicScheduleManagementService = {
     updateEffectiveDate: (id, effectiveDate) =>
         api.patch(`/schedule/management/versions/${id}/effective-date`, { effectiveDate }),
     getMinEffectiveDate: () => api.get("/schedule/management/min-effective-date"),
-    getClosures: () => api.get("/schedule/management/closures"),
-    createClosure: (closureDate, reason) =>
-        api.post("/schedule/management/closures", { closureDate, reason }),
-    deleteClosure: (id) => api.delete(`/schedule/management/closures/${id}`),
     createVersionWithHours: (name, effectiveDate, hours) =>
         api.post("/schedule/management/versions-with-hours", { name, effectiveDate, hours }),
 };
