@@ -55,6 +55,9 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
   const [addClosureError, setAddClosureError] = useState(null);
   const [addClosureSubmitting, setAddClosureSubmitting] = useState(false);
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [closureToDelete, setClosureToDelete] = useState(null);
+
   useEffect(() => {
     if (closures) {
       const mapped = closures.map((c) => {
@@ -124,9 +127,18 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
       const next = (prev) => prev.filter((h) => h.closureId !== closureId);
       setHolidays(next);
       holidaysRef.current = next(holidaysRef.current);
+      setShowDeleteConfirm(false);
+      setClosureToDelete(null);
+      setSelectedClosure(null);
+      setSelectedDayFullDate(null);
     } catch {
       // silently fail
     }
+  };
+
+  const handleRequestDelete = (closureId) => {
+    setClosureToDelete(closureId);
+    setShowDeleteConfirm(true);
   };
 
   const handleAddClosure = async (e) => {
@@ -225,7 +237,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                 </div>
                 <button
                   className="clinic-holidays__delete"
-                  onClick={() => { handleDeleteHoliday(selectedClosure.closureId); setSelectedClosure(null); setSelectedDayFullDate(null); }}
+                  onClick={() => handleRequestDelete(selectedClosure.closureId)}
                 >
                   <Trash2 size={20} />
                 </button>
@@ -269,7 +281,7 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                 </div>
                 <button
                   className="clinic-holidays__delete"
-                  onClick={() => handleDeleteHoliday(h.closureId)}
+                  onClick={() => handleRequestDelete(h.closureId)}
                 >
                   <Trash2 size={20} />
                 </button>
@@ -341,6 +353,53 @@ function ClinicHolidays({ closures, closedDays, onRefetchClosures }) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDeleteConfirm && closureToDelete && (
+        <div
+          className="clinic-holidays__modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowDeleteConfirm(false);
+              setClosureToDelete(null);
+            }
+          }}
+        >
+          <div className="clinic-holidays__modal">
+            <div className="clinic-holidays__modal-header">
+              <h3 className="clinic-holidays__modal-title">Xóa ngày nghỉ</h3>
+              <button
+                className="clinic-holidays__modal-close"
+                type="button"
+                onClick={() => { setShowDeleteConfirm(false); setClosureToDelete(null); }}
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--font-size-sm)", color: "var(--color-neutral-600)", lineHeight: "var(--line-height-relaxed)" }}>
+              Bạn có chắc muốn xóa ngày nghỉ này? Hành động này không thể hoàn tác.
+            </p>
+
+            <div className="clinic-holidays__modal-actions">
+              <button
+                className="clinic-holidays__modal-btn clinic-holidays__modal-btn--cancel"
+                type="button"
+                onClick={() => { setShowDeleteConfirm(false); setClosureToDelete(null); }}
+              >
+                Hủy
+              </button>
+              <button
+                className="clinic-holidays__modal-btn clinic-holidays__modal-btn--submit"
+                type="button"
+                onClick={() => handleDeleteHoliday(closureToDelete)}
+                style={{ backgroundColor: "var(--color-error)" }}
+              >
+                Xóa
+              </button>
+            </div>
           </div>
         </div>
       )}
