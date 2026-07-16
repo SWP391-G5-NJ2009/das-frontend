@@ -16,7 +16,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "analytics",
-    label: "Analytics",
+    label: "Số liệu phòng khám",
     to: "/owner/analytics",
   },
   {
@@ -25,19 +25,19 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/rooms-management",
   },
   {
+    icon: "calendar_today",
+    label: "Bảng điều khiển lịch hẹn",
+    to: "/owner/appointment-dashboard",
+  },
+  {
     icon: "payments",
-    label: "Revenue",
+    label: "Doanh thu",
     to: "/owner/revenue",
   },
   {
     icon: "group",
-    label: "Bệnh nhân",
+    label: "Quản lí bệnh nhân",
     to: "/owner/patient",
-  },
-  {
-    icon: "calendar_today",
-    label: "Bảng điều khiển lịch hẹn",
-    to: "/owner/appointment-dashboard",
   },
   {
     icon: "person",
@@ -45,8 +45,8 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/profile",
   },
   {
-    icon: "groups",
-    label: "Staff",
+    icon: "group",
+    label: "Quản lí nhân sự",
     to: "/owner/staff",
   },
 ];

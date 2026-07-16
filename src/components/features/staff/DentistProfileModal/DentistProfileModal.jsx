@@ -6,10 +6,8 @@ import "./DentistProfileModal.css";
 const EMPTY_VALUE = "Not updated";
 
 function getDoctorTitle(name) {
-  if (!name || name === EMPTY_VALUE) return "Dr. Not updated";
-  if (name.startsWith("Dr.")) return name;
-
-  return name.startsWith("BS.") ? `Dr.${name.slice(3)}` : `Dr. ${name}`;
+  if (!name || name === EMPTY_VALUE) return "Not updated";
+  return `BS. ${name}`;
 }
 
 function formatBirthDate(birthDate) {
@@ -83,22 +81,7 @@ function DentistProfileModal({ dentist, onClose }) {
               Thông tin cá nhân
             </h3>
             <div className="dentist-profile-modal__grid">
-              {isReceptionist && (
-                <>
-                  <ProfileField
-                    label="Mã lễ tân"
-                    value={dentist.profileId}
-                  />
-                  <ProfileField
-                    label="Mã tài khoản"
-                    value={dentist.accountId}
-                  />
-                </>
-              )}
               <ProfileField label="Họ và tên" value={dentist.fullName} />
-              {isReceptionist && (
-                <ProfileField label="Position" value="Receptionist" />
-              )}
               <ProfileField label="Số điện thoại" value={dentist.phone} />
               <ProfileField label="Email" value={dentist.email} />
               <ProfileField
@@ -106,22 +89,7 @@ function DentistProfileModal({ dentist, onClose }) {
                 value={formatBirthDate(dentist.birthDate)}
               />
               <ProfileField label="Giới tính" value={dentist.gender} />
-              {isReceptionist ? (
-                <>
-                  <ProfileField
-                    label="Tên đăng nhập"
-                    value={dentist.username}
-                    wide
-                  />
-                  <ProfileField
-                    label="Địa chỉ"
-                    value={dentist.address}
-                    wide
-                  />
-                </>
-              ) : (
-                <ProfileField label="Address" value={dentist.address} wide />
-              )}
+              <ProfileField label="Địa chỉ" value={dentist.address} wide />
             </div>
           </section>
 

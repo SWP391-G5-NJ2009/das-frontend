@@ -84,7 +84,6 @@ function OwnerStaffPage() {
         <header className="owner-staff__header">
           <div className="owner-staff__heading">
             <h1>Quản lý nhân sự</h1>
-            <p>Quản lý hồ sơ nha sĩ, lễ tân và trạng thái tài khoản.</p>
           </div>
 
           <div className="owner-staff__header-actions">
