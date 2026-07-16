@@ -12,6 +12,7 @@ import {
   Save,
   Trash2,
   AlertTriangle,
+  X,
 } from "lucide-react";
 import { clinicScheduleManagementService } from "../../../../services/clinicScheduleManagement.service";
 import { todayVietnam } from "../../../../utils/dateUtils";
@@ -293,6 +294,9 @@ function WorkingHoursSection({
 
   const [conflictData, setConflictData] = useState(null);
   const [showConflictModal, setShowConflictModal] = useState(false);
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [versionToDelete, setVersionToDelete] = useState(null);
 
   const todayStr = todayVietnam();
 
@@ -746,16 +750,24 @@ function WorkingHoursSection({
   }
 
   async function handleDeleteVersion(versionId) {
-    if (!window.confirm("Xóa phiên bản này? Hành động này không thể hoàn tác.")) return;
     try {
       await clinicScheduleManagementService.deleteVersion(versionId);
       if (viewingVersion?.version_id === versionId) {
         setViewingVersion(activeVersion || null);
       }
+      setShowDeleteConfirm(false);
+      setVersionToDelete(null);
       onRefetchAll();
     } catch (err) {
       alert(err.message || "Xóa phiên bản thất bại.");
+      setShowDeleteConfirm(false);
+      setVersionToDelete(null);
     }
+  }
+
+  function handleRequestDelete(versionId) {
+    setVersionToDelete(versionId);
+    setShowDeleteConfirm(true);
   }
 
   return (
@@ -809,10 +821,10 @@ function WorkingHoursSection({
                         <Eye size={14} />
                       </button>
                     )}
-                    {!v.hasLinkedWorkSlots && (
+                    {status !== "Expired" && !v.hasLinkedWorkSlots && (
                       <button
                         className="whs__version-delete"
-                        onClick={() => handleDeleteVersion(v.version_id)}
+                        onClick={() => handleRequestDelete(v.version_id)}
                         title="Xóa phiên bản"
                       >
                         <Trash2 size={14} />
@@ -974,6 +986,52 @@ function WorkingHoursSection({
           onScheduleForLater={handleScheduleForLater}
           onCancel={handleCancelConflict}
         />
+      )}
+
+      {showDeleteConfirm && versionToDelete && (
+        <div
+          className="whs__modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowDeleteConfirm(false);
+              setVersionToDelete(null);
+            }
+          }}
+        >
+          <div className="whs__modal">
+            <div className="whs__modal-header">
+              <h3 className="whs__modal-title">Xóa phiên bản</h3>
+              <button
+                className="whs__modal-close"
+                type="button"
+                onClick={() => { setShowDeleteConfirm(false); setVersionToDelete(null); }}
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <p className="whs__modal-body">
+              Bạn có chắc muốn xóa phiên bản này? Hành động này không thể hoàn tác.
+            </p>
+
+            <div className="whs__modal-actions">
+              <button
+                className="whs__modal-btn whs__modal-btn--cancel"
+                type="button"
+                onClick={() => { setShowDeleteConfirm(false); setVersionToDelete(null); }}
+              >
+                Hủy
+              </button>
+              <button
+                className="whs__modal-btn whs__modal-btn--delete"
+                type="button"
+                onClick={() => handleDeleteVersion(versionToDelete)}
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
