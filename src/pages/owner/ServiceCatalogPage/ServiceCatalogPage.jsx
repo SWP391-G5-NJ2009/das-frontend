@@ -84,7 +84,7 @@ function OwnerServiceCatalog() {
       service_name: service.service_name || "",
       category_id: service.category_id ? String(service.category_id) : "",
       description: service.description || "",
-      unit_price: service.unit_price || service.price || "",
+      unit_price: (service.unit_price ?? service.price) ?? "",
       slot_occupied: String(service.slot_occupied || 1),
       status: service.status || "Active",
     });
@@ -93,7 +93,7 @@ function OwnerServiceCatalog() {
 
   const handleDeleteService = async (serviceId, serviceName) => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete the service "${serviceName}"?`,
+      `Bạn có chắc chắn muốn xóa dịch vụ "${serviceName}" không?`,
     );
     if (!confirmDelete) return;
 
@@ -111,16 +111,16 @@ function OwnerServiceCatalog() {
     try {
       if (isEditMode) {
         await updateService(currentServiceId, formData);
-        alert("Service updated successfully!");
+        alert("Cập nhật dịch vụ thành công!");
       } else {
         await createService(formData);
-        alert("New service added successfully!");
+        alert("Thêm dịch vụ mới thành công!");
       }
 
       setIsModalOpen(false);
     } catch (err) {
       console.error("Error submitting form:", err);
-      alert(err.message || "Operation failed.");
+      alert(err.message || "Thao tác thất bại.");
     }
   };
 
@@ -218,7 +218,7 @@ function OwnerServiceCatalog() {
                 value={filterCategory}
                 onChange={(e) => { setFilterCategory(e.target.value); setCurrentPage(1); }}
               >
-                <option value="All">All</option>
+                <option value="All">Tất cả</option>
                 {dbCategories.map((cat) => (
                   <option key={cat.category_id} value={cat.category_name}>
                     {cat.category_name}
@@ -251,11 +251,11 @@ function OwnerServiceCatalog() {
                   <thead>
                     <tr>
                       <th>TÊN DỊCH VỤ</th>
-                      <th>CATEGORY</th>
+                      <th>DANH MỤC</th>
                       <th>GIÁ ƯỚC TÍNH (VND)</th>
-                      <th>SLOTS</th>
-                      <th>STATUS</th>
-                      <th style={{ textAlign: "center" }}>ACTIONS</th>
+                      <th>KHUNG GIỜ</th>
+                      <th>TRẠNG THÁI</th>
+                      <th style={{ textAlign: "center" }}>THAO TÁC</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -267,23 +267,23 @@ function OwnerServiceCatalog() {
                               {service.service_name}
                             </span>
                             <span className="sub-desc">
-                              {service.description || "No description"}
+                              {service.description || "Chưa có mô tả"}
                             </span>
                           </div>
                         </td>
                         <td>
                           {service.service_categories?.category_name ||
-                            "Uncategorized"}
+                            "Chưa phân loại"}
                         </td>
                         <td className="price-cell">
                           {Number(
                             service.unit_price || service.price || 0,
-                          ).toLocaleString("en-US")}{" "}
+                          ).toLocaleString("vi-VN")}{" "}
                           VND
                         </td>
                         <td>
                           {service.slot_occupied || 1}{" "}
-                          {(service.slot_occupied || 1) === 1 ? "slot" : "slots"}
+                          {(service.slot_occupied || 1) === 1 ? "khung giờ" : "khung giờ"}
                         </td>
                         <td>
                           <span
@@ -297,7 +297,7 @@ function OwnerServiceCatalog() {
                         <td className="actions-cell">
                           <button
                             className="action-btn edit-btn"
-                            title="Edit"
+                            title="Chỉnh sửa"
                             onClick={() => openEditModal(service)}
                           >
                             <Edit size={18} aria-hidden="true" />
@@ -332,7 +332,7 @@ function OwnerServiceCatalog() {
                 </table>
                 <div className="catalog-pagination">
                   <p className="catalog-pagination__info">
-                    Showing {Math.min((currentPage - 1) * PAGE_SIZE + 1, filteredServices.length)}–{Math.min(currentPage * PAGE_SIZE, filteredServices.length)} of {filteredServices.length} services
+                    Hiển thị {Math.min((currentPage - 1) * PAGE_SIZE + 1, filteredServices.length)}–{Math.min(currentPage * PAGE_SIZE, filteredServices.length)} / {filteredServices.length} dịch vụ
                   </p>
                   <Pagination
                     currentPage={currentPage}
@@ -353,7 +353,7 @@ function OwnerServiceCatalog() {
               <h2>
                 {isEditMode
                   ? "Cập nhật dịch vụ nha khoa"
-                  : "Create New Dental Service"}
+                  : "Thêm dịch vụ nha khoa mới"}
               </h2>
               <button className="close-modal-btn" onClick={closeModal}>
                 &times;
@@ -377,7 +377,7 @@ function OwnerServiceCatalog() {
               <div className="form-row">
                 <div className="form-group">
                   <label>
-                    Category <span style={{ color: "red" }}>*</span>
+                   Danh mục <span style={{ color: "red" }}>*</span>
                   </label>
                   <select
                     name="category_id"
@@ -394,7 +394,7 @@ function OwnerServiceCatalog() {
 
                 {isEditMode && (
                   <div className="form-group">
-                    <label>Status</label>
+                    <label>Trạng thái</label>
                     <select
                       name="status"
                       value={formData.status}
@@ -420,7 +420,7 @@ function OwnerServiceCatalog() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    placeholder="e.g. 500000"
+                    placeholder="VD: 500000"
                   />
                 </div>
 

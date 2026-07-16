@@ -111,7 +111,7 @@ export function usePublicServices() {
         id: String(s.service_id),
         name: s.service_name,
         duration: s.duration_minutes || (s.slot_occupied || 1) * 30,
-        price: s.price || s.unit_price,
+        price: s.price ?? s.unit_price,
         description: s.description || "",
         category: s.category_name || s.service_categories?.category_name || "",
         slotOccupied: s.slot_occupied ?? 1,

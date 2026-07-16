@@ -1,11 +1,5 @@
 import PropTypes from "prop-types";
-import {
-  Ban,
-  MessageSquare,
-  Pencil,
-  ShieldBan,
-  UnlockKeyhole,
-} from "lucide-react";
+import { Ban, MessageSquare, ShieldBan, UnlockKeyhole } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
@@ -23,7 +17,6 @@ function AppointmentTable({
   appointments,
   onCancel,
   onWithin24hCancel,
-  onEdit,
   onLiftBan,
   showPatientInfo,
   actorRole,
@@ -48,7 +41,7 @@ function AppointmentTable({
               </th>
             )}
             <th className="appt-table__th" scope="col">
-              Service
+              Dịch vụ
             </th>
             <th className="appt-table__th" scope="col">
               Nha sĩ
@@ -57,7 +50,7 @@ function AppointmentTable({
               <span>Ngày và giờ</span>
             </th>
             <th className="appt-table__th" scope="col">
-              Status
+              Trạng thái
             </th>
             <th className="appt-table__th appt-table__th--actions" scope="col">
               Thao tác
@@ -117,7 +110,7 @@ function AppointmentTable({
                   </span>
                   {appt.slotOccupied > 1 && (
                     <span className="appt-table__slot-count">
-                      {appt.slotOccupied} slots
+                      {appt.slotOccupied} ca
                     </span>
                   )}
                 </td>
@@ -147,17 +140,6 @@ function AppointmentTable({
                     </span>
                   ) : (
                     <div className="appt-table__action-group">
-                      <button
-                        id={`tbl-edit-${appt.id}`}
-                        type="button"
-                        className="appt-table__action-btn appt-table__action-btn--edit"
-                        aria-label={`Edit appointment for ${appt.patientName}`}
-                        title="Tính năng chỉnh sửa sắp ra mắt"
-                        disabled
-                        onClick={() => onEdit?.(appt)}
-                      >
-                        <Pencil size={15} aria-hidden="true" />
-                      </button>
                       {/* Lift Ban button — only for restricted patients, only for receptionist */}
                       {appt.patientAccountStatus === "Restricted" &&
                         actorRole === "receptionist" && (
@@ -165,7 +147,7 @@ function AppointmentTable({
                             id={`tbl-liftban-${appt.id}`}
                             type="button"
                             className="appt-table__action-btn appt-table__action-btn--lift-ban"
-                            aria-label={`Lift account restriction for ${appt.patientName}`}
+                            aria-label={`Gỡ hạn chế tài khoản của ${appt.patientName}`}
                             title="Gỡ hạn chế tài khoản"
                             onClick={() => onLiftBan?.(appt)}
                           >
@@ -188,7 +170,7 @@ function AppointmentTable({
                           }
                           title={
                             within24h
-                              ? "Within 24 hours — contact reception to cancel"
+                              ? "Dưới 24 giờ - liên hệ lễ tân để hủy"
                               : "Hủy lịch hẹn"
                           }
                           onClick={() =>
@@ -230,7 +212,6 @@ AppointmentTable.propTypes = {
   ).isRequired,
   onCancel: PropTypes.func,
   onWithin24hCancel: PropTypes.func,
-  onEdit: PropTypes.func,
   onLiftBan: PropTypes.func,
   showPatientInfo: PropTypes.bool,
   actorRole: PropTypes.string,
@@ -239,7 +220,6 @@ AppointmentTable.propTypes = {
 AppointmentTable.defaultProps = {
   onCancel: null,
   onWithin24hCancel: null,
-  onEdit: null,
   onLiftBan: null,
   showPatientInfo: true,
   actorRole: "receptionist",

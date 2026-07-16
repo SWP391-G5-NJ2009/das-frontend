@@ -87,10 +87,10 @@ function ReceptionistRequestsPage() {
                   <th>Họ và tên</th>
                   <th>Số điện thoại</th>
                   <th>Email</th>
-                  <th>Description</th>
+                  <th>Mô tả</th>
                   <th>Ngày tạo</th>
-                  <th>Status</th>
-                  <th>Handler</th>
+                  <th>Trạng thái</th>
+                  <th>Người xử lý</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
@@ -98,7 +98,7 @@ function ReceptionistRequestsPage() {
                 {isLoading && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Đang tải yêu cầu...
+                      Đang tải dữ liệu...
                     </td>
                   </tr>
                 )}
@@ -106,7 +106,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && error && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Error: {error.message}
+                      Lỗi: {error.message}
                     </td>
                   </tr>
                 )}
@@ -114,7 +114,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && !error && requests.length === 0 && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Không tìm thấy yêu cầu
+                      Không tìm thấy yêu cầu nào
                     </td>
                   </tr>
                 )}
@@ -152,7 +152,7 @@ function ReceptionistRequestsPage() {
                         {request.description}
                       </td>
                       <td className="receptionist-requests__cell">
-                        {new Date(request.created_at).toLocaleString("en-US")}
+                        {new Date(request.created_at).toLocaleString("vi-VN")}
                       </td>
                       <td className="receptionist-requests__cell">
                         {request.status}
@@ -177,7 +177,7 @@ function ReceptionistRequestsPage() {
 
           <div className="receptionist-requests__pagination">
             <p className="receptionist-requests__pagination-info">
-              Showing {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} of {total} requests
+              Hiển thị {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} trong tổng số {total} yêu cầu
             </p>
             <div className="receptionist-requests__pagination-controls">
               <Pagination

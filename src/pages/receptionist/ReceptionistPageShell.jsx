@@ -27,7 +27,7 @@ function ReceptionistPageShell({
   return (
     <div className="receptionist-page">
       <RoleSidebar
-        ariaLabel="Receptionist navigation"
+        ariaLabel="Điều hướng lễ tân"
         navItems={RECEPTIONIST_NAV_ITEMS}
         footerItems={[footerItems]}
       />
@@ -36,7 +36,7 @@ function ReceptionistPageShell({
         <RoleHeader
           isFixed
           mobileNavItems={RECEPTIONIST_NAV_ITEMS}
-          roleLabel={user?.role || "receptionist"}
+          roleLabel={user?.role || "Lễ tân"}
         />
         <section
           className={`receptionist-page__content${contentClassName ? ` ${contentClassName}` : ""}`}

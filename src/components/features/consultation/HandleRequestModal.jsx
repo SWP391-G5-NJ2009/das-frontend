@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { accountService } from "../../../services/account.service";
 import "./HandleRequestModal.css";
 import { consultationService } from "../../../services/consultation.service";
+import BookingFromConsultationModal from "./BookingFromConsultationModal/BookingFromConsultationModal";
 
 const STATUS_LABELS = {
   Pending: "Đang chờ",
@@ -28,6 +29,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -92,7 +94,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
             </label>
 
             <label className="handle-request-modal__field handle-request-modal__field--description">
-              <span className="handle-request-modal__label">Description</span>
+              <span className="handle-request-modal__label">Mô tả</span>
               <textarea name="description" value={form.description} readOnly />
             </label>
           </div>
@@ -117,6 +119,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
             <button
               className="handle-request-modal__btn handle-request-modal__btn--schedule"
               type="button"
+              onClick={() => setIsBookingModalOpen(true)}
             >
               Đặt lịch hẹn
             </button>
@@ -140,6 +143,18 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
           </div>
         </form>
       </div>
+
+      {isBookingModalOpen && (
+        <BookingFromConsultationModal
+          request={request}
+          onClose={() => setIsBookingModalOpen(false)}
+          onSuccess={() => {
+            setIsBookingModalOpen(false);
+            onClose();
+            onSuccess();
+          }}
+        />
+      )}
     </div>
   );
 }

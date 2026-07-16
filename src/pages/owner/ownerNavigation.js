@@ -25,11 +25,6 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/rooms-management",
   },
   {
-    icon: "calendar_today",
-    label: "Bảng điều khiển lịch hẹn",
-    to: "/owner/appointment-dashboard",
-  },
-  {
     icon: "payments",
     label: "Doanh thu",
     to: "/owner/revenue",
@@ -38,6 +33,11 @@ export const OWNER_NAV_ITEMS = [
     icon: "group",
     label: "Quản lí bệnh nhân",
     to: "/owner/patient",
+  },
+  {
+    icon: "calendar_today",
+    label: "Lịch hẹn",
+    to: "/owner/appointment-dashboard",
   },
   {
     icon: "person",

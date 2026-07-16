@@ -1,6 +1,15 @@
 import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { AlertTriangle, X, User, Stethoscope, Phone, Calendar, Clock, TriangleAlert } from "lucide-react";
+import {
+  AlertTriangle,
+  X,
+  User,
+  Stethoscope,
+  Phone,
+  Calendar,
+  Clock,
+  TriangleAlert,
+} from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./CancelConfirmModal.css";
 
@@ -49,7 +58,14 @@ SummaryRow.defaultProps = {
 /* ─────────────────────────────────────────────────────────────────────────────
    CancelConfirmModal — Main component
 ───────────────────────────────────────────────────────────────────────────── */
-function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading, actorRole }) {
+function CancelConfirmModal({
+  isOpen,
+  appointment,
+  onConfirm,
+  onClose,
+  isLoading,
+  actorRole,
+}) {
   const [note, setNote] = useState("");
 
   const within24h = useMemo(
@@ -106,7 +122,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
           <button
             type="button"
             className="cancel-modal__close"
-            aria-label="Close"
+            aria-label="Đóng"
             onClick={handleClose}
             disabled={isLoading}
           >
@@ -116,14 +132,15 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
 
         {/* ── Body ── */}
         <div className="cancel-modal__body">
-
           {/* Appointment Summary Card */}
           <section
             className="cancel-modal__summary-card"
             aria-label="Chi tiết lịch hẹn"
           >
             <div className="cancel-modal__summary-header">
-              <span className="cancel-modal__summary-heading">Tóm tắt lịch hẹn</span>
+              <span className="cancel-modal__summary-heading">
+                Tóm tắt lịch hẹn
+              </span>
               <Badge status={appointment.status || "Confirmed"} />
             </div>
 
@@ -135,7 +152,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               />
               <SummaryRow
                 icon={Phone}
-                label="Phone"
+                label="Điện thoại"
                 value={appointment.patientPhone}
               />
               <SummaryRow
@@ -145,19 +162,15 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               />
               <SummaryRow
                 icon={Stethoscope}
-                label="Service"
+                label="Dịch vụ"
                 value={appointment.serviceName}
               />
               <SummaryRow
                 icon={Calendar}
-                label="Date"
+                label="Ngày khám"
                 value={formatDisplayDate(appointment.scheduledDate)}
               />
-              <SummaryRow
-                icon={Clock}
-                label="Time"
-                value={timeDisplay}
-              />
+              <SummaryRow icon={Clock} label="Giờ khám" value={timeDisplay} />
             </div>
           </section>
 
@@ -166,20 +179,24 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             <div className="cancel-modal__br13-notice" role="alert">
               <TriangleAlert size={16} aria-hidden="true" />
               <p>
-                <strong>Không thể tự hủy lịch</strong> trong vòng 24 giờ
-                trước lịch hẹn. Vui lòng liên hệ trực tiếp lễ tân để được hỗ trợ.
+                <strong>Không thể tự hủy lịch</strong> trong vòng 24 giờ trước
+                lịch hẹn. Vui lòng liên hệ trực tiếp lễ tân để được hỗ trợ.
               </p>
             </div>
           )}
 
           {/* Operational Warning Box */}
           <div className="cancel-modal__warning-box" role="note">
-            <AlertTriangle size={16} aria-hidden="true" className="cancel-modal__warning-icon" />
+            <AlertTriangle
+              size={16}
+              aria-hidden="true"
+              className="cancel-modal__warning-icon"
+            />
             <p className="cancel-modal__warning-text">
               <strong>Lưu ý:</strong> Xác nhận hủy lịch sẽ{" "}
-              <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại
-              it for public booking. A cancellation notification email will also be
-              sent to the patient automatically.
+              <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại cho
+              phép đặt lịch mới. Email thông báo hủy cũng sẽ được tự động gửi
+              đến bệnh nhân.
             </p>
           </div>
 
@@ -210,7 +227,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             disabled={isLoading}
             id="cancel-modal-back-btn"
           >
-            Back
+            Quay lại
           </button>
           <button
             type="button"
@@ -221,7 +238,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             title={
               within24h
                 ? "Không thể tự hủy trong vòng 24 giờ - hãy liên hệ lễ tân"
-                : "Confirm appointment cancellation"
+                : "Xác nhận hủy lịch hẹn"
             }
             id="cancel-modal-confirm-btn"
           >

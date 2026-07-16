@@ -22,7 +22,7 @@ function OwnerPageShell({ children, contentClassName }) {
       className={`owner-page${contentClassName ? ` ${contentClassName}` : ""}`}
     >
       <RoleSidebar
-        ariaLabel="Clinic owner navigation"
+        ariaLabel="Điều hướng quản lý phòng khám"
         navItems={OWNER_NAV_ITEMS}
         footerItems={[footerItems]}
       />
@@ -31,7 +31,7 @@ function OwnerPageShell({ children, contentClassName }) {
         <RoleHeader
           isFixed
           mobileNavItems={OWNER_NAV_ITEMS}
-          roleLabel={user?.role || "owner"}
+          roleLabel={user?.role || "Chủ phòng khám"}
         />
         <div className="owner-page__content">{children}</div>
       </main>

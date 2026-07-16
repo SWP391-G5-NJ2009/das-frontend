@@ -15,7 +15,9 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="lift-ban-modal-title"
-      onClick={(e) => { if (e.target === e.currentTarget && !isLoading) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !isLoading) onClose();
+      }}
     >
       <div className="lift-ban-modal">
         {/* Header */}
@@ -25,7 +27,7 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
               <ShieldBan size={18} />
             </div>
             <h2 id="lift-ban-modal-title" className="lift-ban-modal__title">
-              Gỡ chặn đặt lịch
+              Gỡ chặn hạn chế
             </h2>
           </div>
           <button
@@ -43,24 +45,32 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
         {/* Body */}
         <div className="lift-ban-modal__body">
           <div className="lift-ban-modal__patient-section">
-            <span className="lift-ban-modal__patient-label">THÔNG TIN BỆNH NHÂN</span>
+            <span className="lift-ban-modal__patient-label">
+              THÔNG TIN BỆNH NHÂN
+            </span>
             <div className="lift-ban-modal__patient-info">
-              <span className="lift-ban-modal__patient-name">{patient.patientName}</span>
+              <span className="lift-ban-modal__patient-name">
+                {patient.patientName}
+              </span>
             </div>
           </div>
 
           <div className="lift-ban-modal__reason-box">
-            <strong>Lý do bị chặn:</strong> Tự động chặn do 3 lần vắng mặt.
-            Tài khoản bệnh nhân đã được đặt thành <strong>Restricted</strong>,
-            preventing login and online booking.
+            <strong>Lý do bị chặn:</strong> Tự động chặn do 3 lần vắng mặt. Tài
+            khoản bệnh nhân đã được đặt thành <strong>Hạn chế</strong>, không
+            thể đăng nhập và đặt lịch trực tuyến.
           </div>
 
           <div className="lift-ban-modal__info-callout">
-            <Info size={15} className="lift-ban-modal__info-icon" aria-hidden="true" />
+            <Info
+              size={15}
+              className="lift-ban-modal__info-icon"
+              aria-hidden="true"
+            />
             <p className="lift-ban-modal__info-text">
-              Khi gỡ chặn, các bản ghi vắng mặt hiện có sẽ được đánh dấu
-              as <strong>"Đã xử lý vắng mặt"</strong> and the patient's
-              trạng thái tài khoản sẽ được khôi phục thành <strong>Active</strong>, cho phép
+              Khi gỡ chặn, các bản ghi vắng mặt hiện có sẽ được đánh dấu là{" "}
+              <strong>"Đã xử lý vắng mặt"</strong> và trạng thái tài khoản bệnh
+              nhân sẽ được khôi phục thành <strong>Hoạt động</strong>, cho phép
               bệnh nhân đăng nhập và đặt lịch trở lại.
             </p>
           </div>
@@ -84,7 +94,7 @@ function LiftBanModal({ isOpen, patient, onConfirm, onClose, isLoading }) {
             onClick={onConfirm}
             disabled={isLoading}
           >
-            {isLoading ? "Đang xử lý..." : "Lift Ban & Resolve"}
+            {isLoading ? "Đang xử lý..." : "Gỡ chặn & Xử lý"}
           </button>
         </div>
       </div>

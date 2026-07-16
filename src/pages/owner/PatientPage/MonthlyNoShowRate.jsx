@@ -12,8 +12,8 @@ import { useMonthlyNoShowRate } from "../../../hooks/usePatientAnalytics";
 import "./MonthlyNoShowRate.css";
 
 const MONTH_NAMES = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "T1", "T2", "T3", "T4", "T5", "T6",
+    "T7", "T8", "T9", "T10", "T11", "T12",
 ];
 
 const LINE_COLOR = "var(--color-primary-700)";
@@ -73,7 +73,7 @@ function MonthlyNoShowRate() {
         return (
             <section className="monthly-no-show-rate monthly-no-show-rate--error">
                 <div className="monthly-no-show-rate__header">
-                    <h2 className="monthly-no-show-rate__title">Tỷ lệ vắng mặt trong 12 tháng gần nhất</h2>
+                    <h2 className="monthly-no-show-rate__title">Tỷ lệ không đến khám 12 tháng gần đây</h2>
                 </div>
                 <p className="monthly-no-show-rate__error-text">
                     Không thể tải dữ liệu.
@@ -86,7 +86,7 @@ function MonthlyNoShowRate() {
         return (
             <section className="monthly-no-show-rate">
                 <div className="monthly-no-show-rate__header">
-                    <h2 className="monthly-no-show-rate__title">Tỷ lệ vắng mặt trong 12 tháng gần nhất</h2>
+                    <h2 className="monthly-no-show-rate__title">Tỷ lệ không đến khám 12 tháng gần đây</h2>
                 </div>
                 <p className="monthly-no-show-rate__empty-text">Không có dữ liệu.</p>
             </section>
@@ -104,7 +104,7 @@ function MonthlyNoShowRate() {
     return (
         <section className="monthly-no-show-rate">
             <div className="monthly-no-show-rate__header">
-                <h2 className="monthly-no-show-rate__title">Tỷ lệ vắng mặt trong 12 tháng gần nhất</h2>
+                <h2 className="monthly-no-show-rate__title">Tỷ lệ không đến khám 12 tháng gần đây</h2>
             </div>
             <div className="monthly-no-show-rate__chart-container">
                 <ResponsiveContainer width="100%" height="100%">
