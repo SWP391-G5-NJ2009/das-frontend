@@ -6,7 +6,6 @@ import AppointmentDashboardPage from "./pages/admin/AppointmentDashboardPage/App
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
-import ScheduleManagementPage from "./pages/owner/ScheduleManagementPage/ScheduleManagementPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
 import ClinicInfoPage from "./pages/owner/ClinicInfoPage/ClinicInfoPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
@@ -178,14 +177,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ClinicInfoPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/owner/clinic-schedule"
-            element={
-              <ProtectedRoute allowedRoles={["owner"]}>
-                <ScheduleManagementPage />
               </ProtectedRoute>
             }
           />

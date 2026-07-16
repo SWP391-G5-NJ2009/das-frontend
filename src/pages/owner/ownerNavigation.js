@@ -10,16 +10,6 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/clinic-info",
   },
   {
-    icon: "calendar_month",
-    label: "Lịch phòng khám",
-    to: "/owner/clinic-schedule",
-  },
-  {
-    icon: "analytics",
-    label: "Số liệu phòng khám",
-    to: "/owner/analytics",
-  },
-  {
     icon: "meeting_room",
     label: "Quản lý phòng",
     to: "/owner/rooms-management",
