@@ -22,7 +22,7 @@ import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmen
 import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
 import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApprovalPage";
-import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
+import RoomsPage from "./pages/owner/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import OwnerStaffPage from "./pages/owner/OwnerStaffPage/OwnerStaffPage";
@@ -114,14 +114,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <ReceptionistBookAppointmentPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/receptionist/rooms"
-            element={
-              <ProtectedRoute allowedRoles={["receptionist"]}>
-                <RoomsPage />
               </ProtectedRoute>
             }
           />

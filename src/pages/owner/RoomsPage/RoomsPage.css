@@ -14,18 +14,6 @@
   width: 20%;
 }
 
-.rooms-table--readonly th:nth-child(1) {
-  width: 20%;
-}
-
-.rooms-table--readonly th:nth-child(2) {
-  width: 55%;
-}
-
-.rooms-table--readonly th:nth-child(3) {
-  width: 25%;
-}
-
 .catalog-table th:last-child {
   text-align: left;
 }

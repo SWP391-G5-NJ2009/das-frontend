@@ -20,7 +20,7 @@ const FORGOT_PASSWORD_CONFIG = {
   staff: {
     IdentifierIcon: UserRound,
     identifierLabel: "Tên đăng nhập",
-    identifierPlaceholder: "",
+    identifierPlaceholder: "E.g: admin",
     identifierType: "text",
     loginPath: "/staff/login",
     requestHelp: "Nhập tên đăng nhập của bạn để nhận mã OTP.",
@@ -30,7 +30,7 @@ const FORGOT_PASSWORD_CONFIG = {
 const PASSWORD_FIELDS = [
   {
     hideLabel: "Hide new password",
-    label: "Password mới",
+    label: "Mật khẩu mới",
     name: "newPassword",
     placeholder: "Nhập mật khẩu mới",
     showLabel: "Show new password",
@@ -220,7 +220,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
       >
         <Link className="forgot-password__back" to={loginPath}>
           <ArrowLeft size={18} aria-hidden="true" />
-          Back
+          Trang chủ
         </Link>
 
         {step === "request" ? (
@@ -328,7 +328,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang xử lý..." : "Confirm and change password"}
+              {isSubmitting ? "Đang xử lý..." : "Xác nhận và thay đổi mật khẩu"}
             </button>
           </form>
         )}
