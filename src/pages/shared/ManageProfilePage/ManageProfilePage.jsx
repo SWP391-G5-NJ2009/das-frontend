@@ -51,7 +51,8 @@ function getDraft(profile) {
 
 function RoleShell({ children, role }) {
   if (role === "admin") return <AdminPageShell>{children}</AdminPageShell>;
-  if (role === "dentist") return <DentistPageShell>{children}</DentistPageShell>;
+  if (role === "dentist")
+    return <DentistPageShell>{children}</DentistPageShell>;
   if (role === "owner") return <OwnerPageShell>{children}</OwnerPageShell>;
   if (role === "receptionist") {
     return <ReceptionistPageShell>{children}</ReceptionistPageShell>;
@@ -226,7 +227,10 @@ function ManageProfilePage() {
 
   return (
     <RoleShell role={role}>
-      <section className="manage-profile" aria-labelledby="manage-profile-title">
+      <section
+        className="manage-profile"
+        aria-labelledby="manage-profile-title"
+      >
         <article className="manage-profile__card">
           <div className="manage-profile__card-header">
             <div>
@@ -239,12 +243,14 @@ function ManageProfilePage() {
                 onClick={startEdit}
                 type="button"
               >
-                Edit
+                Chỉnh sửa
               </button>
             )}
           </div>
 
-          {isLoading && <p className="manage-profile__state">Đang tải hồ sơ...</p>}
+          {isLoading && (
+            <p className="manage-profile__state">Đang tải hồ sơ...</p>
+          )}
           {error && (
             <p className="manage-profile__message manage-profile__message--error">
               {error.message || "Không thể tải hồ sơ."}
@@ -291,7 +297,9 @@ function ManageProfilePage() {
                 <dl className="manage-profile__details">
                   {PROFILE_FIELDS.map((field) => (
                     <div
-                      className={field.wide ? "manage-profile__details-full" : ""}
+                      className={
+                        field.wide ? "manage-profile__details-full" : ""
+                      }
                       key={field.name}
                     >
                       <dt>{field.label}</dt>
@@ -312,7 +320,10 @@ function ManageProfilePage() {
             </div>
           </div>
 
-          <form className="manage-profile__password-form" onSubmit={savePassword}>
+          <form
+            className="manage-profile__password-form"
+            onSubmit={savePassword}
+          >
             <label>
               <span>Mật khẩu hiện tại</span>
               <input
