@@ -92,7 +92,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
       const profile = await createProfile(payload);
       onCreated(profile);
     } catch {
-      // The hook displays the API error.
+      //
     }
   };
 
@@ -180,10 +180,6 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
               <fieldset className="dentist-profile-create__account">
                 <legend>Thông tin tài khoản đã chọn</legend>
                 <dl>
-                  <div>
-                    <dt>Mã tài khoản</dt>
-                    <dd>{selectedAccount.accountId}</dd>
-                  </div>
                   <div>
                     <dt>Tên đăng nhập</dt>
                     <dd>{selectedAccount.username}</dd>

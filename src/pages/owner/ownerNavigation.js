@@ -15,6 +15,11 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/clinic-schedule",
   },
   {
+    icon: "analytics",
+    label: "Số liệu phòng khám",
+    to: "/owner/analytics",
+  },
+  {
     icon: "meeting_room",
     label: "Quản lý phòng",
     to: "/owner/rooms-management",
@@ -26,7 +31,7 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "group",
-    label: "Bệnh nhân",
+    label: "Quản lí bệnh nhân",
     to: "/owner/patient",
   },
   {
@@ -40,8 +45,8 @@ export const OWNER_NAV_ITEMS = [
     to: "/owner/profile",
   },
   {
-    icon: "groups",
-    label: "Nhân viên",
+    icon: "group",
+    label: "Quản lí nhân sự",
     to: "/owner/staff",
   },
 ];
