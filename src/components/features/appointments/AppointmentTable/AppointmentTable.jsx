@@ -46,6 +46,9 @@ function AppointmentTable({
             <th className="appt-table__th" scope="col">
               Nha sĩ
             </th>
+            <th className="appt-table__th" scope="col">
+              Phòng
+            </th>
             <th className="appt-table__th appt-table__th--sortable" scope="col">
               <span>Ngày và giờ</span>
             </th>
@@ -100,6 +103,16 @@ function AppointmentTable({
 
                 <td className="appt-table__td appt-table__td--dentist">
                   {appt.dentistName}
+                </td>
+
+                <td className="appt-table__td appt-table__td--room">
+                  {appt.roomName ? (
+                    <span className="appt-table__room-badge">
+                      {appt.roomName}
+                    </span>
+                  ) : (
+                    <span className="appt-table__room-empty">—</span>
+                  )}
                 </td>
 
                 <td className="appt-table__td appt-table__td--datetime">
@@ -208,6 +221,8 @@ AppointmentTable.propTypes = {
       slotOccupied: PropTypes.number,
       status: PropTypes.string.isRequired,
       notes: PropTypes.string,
+      roomId: PropTypes.number,
+      roomName: PropTypes.string,
     }),
   ).isRequired,
   onCancel: PropTypes.func,

@@ -264,3 +264,26 @@
   max-width: 180px;
 }
 
+/* ─── Room column ───────────────────────────────────── */
+.appt-table__td--room {
+  white-space: nowrap;
+}
+
+.appt-table__room-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-secondary-700);
+  background-color: var(--color-secondary-100);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  transition: background-color var(--transition-fast);
+}
+
+.appt-table__room-empty {
+  color: var(--color-neutral-300);
+  font-size: var(--font-size-base);
+  user-select: none;
+}
