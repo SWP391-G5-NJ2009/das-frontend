@@ -19,23 +19,23 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
       >
         <div className="delete-room-modal__header">
           <h2 className="delete-room-modal__title" id="delete-room-title">
-            Xóa phòng
+            Delete room
           </h2>
           <p className="delete-room-modal__subtitle">
-            Hành động này không thể hoàn tác.
+            This action cannot be undone.
           </p>
         </div>
 
         <div className="delete-room-modal__body">
           <section
             className="delete-room-modal__details"
-            aria-label="Chi tiết phòng"
+            aria-label="Room details"
           >
-            <h3 className="delete-room-modal__details-title">Chi tiết phòng:</h3>
+            <h3 className="delete-room-modal__details-title">Room details:</h3>
             <div className="delete-room-modal__detail-grid">
               <div className="delete-room-modal__detail-item">
                 <span className="delete-room-modal__detail-label">
-                  Tên phòng
+                  Room name
                 </span>
                 <strong className="delete-room-modal__room-name">
                   {room.room_name}
@@ -43,10 +43,10 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
               </div>
               <div className="delete-room-modal__detail-item">
                 <span className="delete-room-modal__detail-label">
-                  Specialization
+                  Dentist
                 </span>
                 <span className="delete-room-modal__detail-value">
-                  {room.specialization || "Unassigned"}
+                  {room.dentist?.full_name || "Unassigned"}
                 </span>
               </div>
               <div className="delete-room-modal__detail-item">
@@ -61,9 +61,7 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
 
           <div className="delete-room-modal__warning" role="alert">
             <AlertCircle size={20} aria-hidden="true" />
-            <span>
-              Cảnh báo: Bạn cần chuyển toàn bộ lịch hẹn của phòng này trước
-            </span>
+            <span>Make sure this room is no longer needed before deleting it.</span>
           </div>
         </div>
 
@@ -74,7 +72,7 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
             onClick={onClose}
             disabled={isDeleting}
           >
-            Hủy
+            Cancel
           </button>
           <button
             className="delete-room-modal__delete-btn"
@@ -83,7 +81,7 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
             disabled={isDeleting}
           >
             <Trash2 size={16} aria-hidden="true" />
-            {isDeleting ? "Đang xóa" : "Xóa"}
+            {isDeleting ? "Deleting" : "Delete"}
           </button>
         </div>
       </div>
@@ -96,9 +94,11 @@ DeleteRoomModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   room: PropTypes.shape({
+    dentist: PropTypes.shape({
+      full_name: PropTypes.string,
+    }),
     room_id: PropTypes.number.isRequired,
     room_name: PropTypes.string.isRequired,
-    specialization: PropTypes.string,
     status: PropTypes.string,
   }).isRequired,
 };
