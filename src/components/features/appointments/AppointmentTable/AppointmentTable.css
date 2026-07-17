@@ -264,3 +264,57 @@
   max-width: 180px;
 }
 
+/* ─── Room column ───────────────────────────────────── */
+.appt-table__td--room {
+  white-space: nowrap;
+}
+
+.appt-table__room-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  transition: background-color var(--transition-fast);
+  /* default fallback */
+  color: var(--color-secondary-700);
+  background-color: var(--color-secondary-100);
+}
+
+/* Room 101 — Blue (primary) */
+.appt-table__room-badge--r1 {
+  color: var(--color-primary-800);
+  background-color: var(--color-primary-100);
+}
+
+/* Room 102 — Teal (secondary) */
+.appt-table__room-badge--r2 {
+  color: var(--color-secondary-800);
+  background-color: var(--color-secondary-100);
+}
+
+/* Room 103 — Amber/warning */
+.appt-table__room-badge--r3 {
+  color: #92400e;
+  background-color: #fef3c7;
+}
+
+/* Room 104 — Purple */
+.appt-table__room-badge--r4 {
+  color: #5b21b6;
+  background-color: #ede9fe;
+}
+
+/* Room 105 — Rose/pink */
+.appt-table__room-badge--r5 {
+  color: #9d174d;
+  background-color: #fce7f3;
+}
+
+.appt-table__room-empty {
+  color: var(--color-neutral-300);
+  font-size: var(--font-size-base);
+  user-select: none;
+}
