@@ -27,5 +27,5 @@ export const RECEPTIONIST_NAV_ITEMS = [
 ];
 
 export const RECEPTIONIST_FOOTER_ITEMS = [
-  { icon: "logout", label: "Dang xuat", to: "/staff/login" },
+  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
 ];
