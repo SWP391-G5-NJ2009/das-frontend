@@ -5,6 +5,13 @@ import "./AppointmentTable.css";
 
 const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict"];
 
+// Map room_id → color variant (r1–r5) via modulo — works for any room_id
+function getRoomColorClass(roomId) {
+  if (!roomId) return "";
+  const variant = ((roomId % 5) || 5);
+  return `appt-table__room-badge--r${variant}`;
+}
+
 /** BR-13: returns true if appointment starts within 24 hours from now */
 function isWithin24Hours(scheduledDate, scheduledTime) {
   if (!scheduledDate || !scheduledTime) return false;
@@ -19,6 +26,7 @@ function AppointmentTable({
   onWithin24hCancel,
   onLiftBan,
   showPatientInfo,
+  showRoom,
   actorRole,
 }) {
   if (appointments.length === 0) return null;
@@ -46,9 +54,11 @@ function AppointmentTable({
             <th className="appt-table__th" scope="col">
               Nha sĩ
             </th>
-            <th className="appt-table__th" scope="col">
-              Phòng
-            </th>
+            {showRoom && (
+              <th className="appt-table__th" scope="col">
+                Phòng
+              </th>
+            )}
             <th className="appt-table__th appt-table__th--sortable" scope="col">
               <span>Ngày và giờ</span>
             </th>
@@ -105,15 +115,24 @@ function AppointmentTable({
                   {appt.dentistName}
                 </td>
 
-                <td className="appt-table__td appt-table__td--room">
-                  {appt.roomName ? (
-                    <span className="appt-table__room-badge">
-                      {appt.roomName}
-                    </span>
-                  ) : (
-                    <span className="appt-table__room-empty">—</span>
-                  )}
-                </td>
+                {showRoom && (
+                  <td className="appt-table__td appt-table__td--room">
+                    {appt.roomName ? (
+                      <span
+                        className={[
+                          "appt-table__room-badge",
+                          getRoomColorClass(appt.roomId),
+                        ]
+                          .join(" ")
+                          .trim()}
+                      >
+                        {appt.roomName}
+                      </span>
+                    ) : (
+                      <span className="appt-table__room-empty">—</span>
+                    )}
+                  </td>
+                )}
 
                 <td className="appt-table__td appt-table__td--datetime">
                   <span className="appt-table__date">{displayDate}</span>
@@ -229,6 +248,7 @@ AppointmentTable.propTypes = {
   onWithin24hCancel: PropTypes.func,
   onLiftBan: PropTypes.func,
   showPatientInfo: PropTypes.bool,
+  showRoom: PropTypes.bool,
   actorRole: PropTypes.string,
 };
 
@@ -237,6 +257,7 @@ AppointmentTable.defaultProps = {
   onWithin24hCancel: null,
   onLiftBan: null,
   showPatientInfo: true,
+  showRoom: true,
   actorRole: "receptionist",
 };
 

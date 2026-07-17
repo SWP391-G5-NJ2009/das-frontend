@@ -31,6 +31,7 @@ const ROLE_CONFIG = {
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
+    showRoom: false,
     showBookBtn: true,
     statusOptions: null,
   },
@@ -41,6 +42,7 @@ const ROLE_CONFIG = {
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
     showPatientInfo: true,
+    showRoom: true,
     showBookBtn: true,
     statusOptions: null,
   },
@@ -51,6 +53,7 @@ const ROLE_CONFIG = {
     bookBtnId: null,
     headingId: "appts-page-title",
     showPatientInfo: true,
+    showRoom: false,
     showBookBtn: false,
     statusOptions: null,
   },
@@ -326,6 +329,7 @@ function AppointmentsPage() {
               onWithin24hCancel={handleWithin24hCancel}
               onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
               showPatientInfo={config.showPatientInfo}
+              showRoom={config.showRoom}
               actorRole={role}
             />
             <div className="appts-page__pagination">
