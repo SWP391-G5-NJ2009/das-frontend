@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   AlertTriangle,
@@ -68,12 +68,33 @@ function CancelConfirmModal({
 }) {
   const [note, setNote] = useState("");
 
-  const within24h = useMemo(
+  const [within24h, setWithin24h] = useState(
     () =>
       actorRole === "patient" &&
       isWithin24Hours(appointment?.scheduledDate, appointment?.scheduledTime),
-    [actorRole, appointment?.scheduledDate, appointment?.scheduledTime],
   );
+
+  useEffect(() => {
+    if (actorRole !== "patient") return;
+    if (!appointment?.scheduledDate || !appointment?.scheduledTime) return;
+
+    const slotDateTime = new Date(
+      `${appointment.scheduledDate}T${appointment.scheduledTime}:00`,
+    );
+    // Thời điểm bắt đầu cấm huỷ = giờ hẹn trừ 24h
+    const deadline = slotDateTime.getTime() - 24 * 60 * 60 * 1000;
+    const msUntilDeadline = deadline - Date.now();
+
+    if (msUntilDeadline <= 0) {
+      // Đã qua ngưỡng 24h rồi khi mở modal
+      setWithin24h(true);
+      return;
+    }
+
+    // Fire chính xác tại thời điểm deadline
+    const timerId = setTimeout(() => setWithin24h(true), msUntilDeadline);
+    return () => clearTimeout(timerId);
+  }, [actorRole, appointment?.scheduledDate, appointment?.scheduledTime]);
 
   const isCancelDisabled = isLoading || within24h;
 
@@ -195,8 +216,8 @@ function CancelConfirmModal({
             <p className="cancel-modal__warning-text">
               <strong>Lưu ý:</strong> Xác nhận hủy lịch sẽ{" "}
               <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại cho
-              phép đặt lịch mới. Email thông báo hủy cũng sẽ được tự động gửi
-              đến bệnh nhân.
+              phép đặt lịch mới. SMS thông báo hủy cũng sẽ được tự động gửi đến
+              bệnh nhân.
             </p>
           </div>
 
