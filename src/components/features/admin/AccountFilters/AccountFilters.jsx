@@ -6,9 +6,9 @@ const STATUS_TABS = [
   { value: "All", label: "Tất cả" },
   { value: "Admin", label: "Admin" },
   { value: "Owner", label: "Chủ phòng khám" },
-  { value: "Lễ tân", label: "Lễ tân" },
-  { value: "Nha sĩ", label: "Nha sĩ" },
-  { value: "Bệnh nhân", label: "Bệnh nhân" },
+  { value: "Receptionist", label: "Lễ tân" },
+  { value: "Dentist", label: "Nha sĩ" },
+  { value: "Patient", label: "Bệnh nhân" },
 ];
 
 function AccountFilters({

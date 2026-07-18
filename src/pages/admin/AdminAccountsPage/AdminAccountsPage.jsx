@@ -40,7 +40,7 @@ function AdminAccountsPage() {
   const [deleteAccount, setDeleteAccount] = useState(null);
 
   const handleStatusChange = useCallback(
-    (status) => setFilters((prev) => ({ ...prev, status })),
+    (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
     [],
   );
 

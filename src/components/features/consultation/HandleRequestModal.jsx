@@ -1,7 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
-import { accountService } from "../../../services/account.service";
 import "./HandleRequestModal.css";
 import { consultationService } from "../../../services/consultation.service";
 import BookingFromConsultationModal from "./BookingFromConsultationModal/BookingFromConsultationModal";
@@ -14,7 +13,7 @@ const STATUS_LABELS = {
   Other: "Khác",
 };
 
-const STATUSES = ["Đang chờ", "Đã xử lý", "Không liên hệ được", "Spam", "Khác"];
+const STATUSES = ["Pending", "Resolved", "Fail-to-contact", "Spam", "Other"];
 
 function HandleRequestModal({ request, onClose, onSuccess }) {
   const [form, setForm] = useState({
@@ -24,7 +23,7 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
     phone: request.phone || "",
     description: request.description,
     created_at: request.created_at,
-    status: request.status || "Đang chờ",
+    status: request.status || "Pending",
     note: request.note || "",
   });
   const [error, setError] = useState(null);
@@ -41,7 +40,8 @@ function HandleRequestModal({ request, onClose, onSuccess }) {
     setIsSubmitting(true);
 
     try {
-      await consultationService.update(request.id, { ...form });
+      const { status, note } = form;
+      await consultationService.update(request.id, { status, note });
       onSuccess();
     } catch (err) {
       setError(err.message);
