@@ -18,7 +18,7 @@ import Pagination from "../../../components/common/Pagination/Pagination";
 function ReceptionistRequestsPage() {
 
   const [filters, setFilters] = useState({
-    status: "Đang chờ",
+    status: "Pending",
     date: "",
     search: "",
     pagination: 1,
