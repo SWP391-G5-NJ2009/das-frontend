@@ -18,5 +18,5 @@ export const consultationService = {
   getAll: () => api.get("/consultations/consultation-requests"),
   create: (data) => api.post("/consultations", data),
   update: (id, data) =>
-    api.put(`/consultations/consultation-requests/${id}`, data),
+    api.patch(`/consultations/consultation-requests/${id}`, data),
 };

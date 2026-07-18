@@ -29,7 +29,7 @@ function ReceptionistRequestsPage() {
   const [handleRequest, setHandleRequest] = useState(null);
 
   const handleStatusChange = useCallback(
-    (status) => setFilters((prev) => ({ ...prev, status })),
+    (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
     [],
   );
 
@@ -132,15 +132,7 @@ function ReceptionistRequestsPage() {
                         {(filters.pagination - 1) * MAX_PAGE + index + 1}
                       </td>
                       <td className="receptionist-requests__cell">
-                        <div className="receptionist-requests__user-cell">
-                          <div
-                            className="receptionist-requests__avatar"
-                            aria-hidden="true"
-                          >
-                            {(request.full_name || "?").charAt(0).toUpperCase()}
-                          </div>
-                          <span>{request.full_name}</span>
-                        </div>
+                        {request.full_name}
                       </td>
                       <td className="receptionist-requests__cell">
                         {request.phone}

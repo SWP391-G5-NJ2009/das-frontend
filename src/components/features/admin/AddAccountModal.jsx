@@ -6,10 +6,9 @@ import "./AddAccountModal.css";
 
 const ROLES = [
   { value: "Admin", label: "Admin" },
-  { value: "Nha sĩ", label: "Nha sĩ" },
-  { value: "Lễ tân", label: "Lễ tân" },
+  { value: "Dentist", label: "Nha sĩ" },
+  { value: "Receptionist", label: "Lễ tân" },
   { value: "Owner", label: "Chủ phòng khám" },
-  { value: "Bệnh nhân", label: "Bệnh nhân" },
 ];
 
 function AddAccountModal({ onClose, onSuccess }) {
@@ -19,7 +18,6 @@ function AddAccountModal({ onClose, onSuccess }) {
     phone: "",
     password: "",
     role_name: "Admin",
-    status: "Active",
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,24 +73,22 @@ function AddAccountModal({ onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Email *</span>
+            <span className="add-account-modal__label">Email</span>
             <input
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
-              required
             />
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Số điện thoại *</span>
+            <span className="add-account-modal__label">Số điện thoại</span>
             <input
               name="phone"
               type="tel"
               value={form.phone}
               onChange={handleChange}
-              required
             />
           </label>
 
@@ -119,14 +115,6 @@ function AddAccountModal({ onClose, onSuccess }) {
                   {role.label}
                 </option>
               ))}
-            </select>
-          </label>
-
-          <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Status</span>
-            <select name="status" value={form.status} onChange={handleChange}>
-              <option value="Active">Hoạt động</option>
-              <option value="Banned">Bị khóa</option>
             </select>
           </label>
 
