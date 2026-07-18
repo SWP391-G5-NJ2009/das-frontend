@@ -260,7 +260,7 @@ function LandingPage() {
                   type="text"
                   name="full_name"
                   value={form.full_name}
-                  placeholder="Họ và tên"
+                  placeholder="Họ và tên *"
                   onChange={handleChange}
                   required
                 />
@@ -277,7 +277,7 @@ function LandingPage() {
                   inputMode="numeric"
                   pattern="[0-9]*"
                   value={form.phone}
-                  placeholder="Số điện thoại"
+                  placeholder="Số điện thoại *"
                   onChange={handleChange}
                   required
                 />
