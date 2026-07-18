@@ -96,7 +96,7 @@ function ConsultationPage() {
                   type="tel"
                   name="phone"
                   inputMode="numeric"
-                  pattern="[0-9]"
+                  pattern="[0-9]*"
                   value={form.phone}
                   placeholder="Nhập số điện thoại liên hệ"
                   onChange={handleChange}
