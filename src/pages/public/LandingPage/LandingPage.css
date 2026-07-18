@@ -390,6 +390,12 @@
   color: var(--color-neutral-600);
 }
 
+.consultation-form__field-error {
+  color: var(--color-error);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+}
+
 .landing-contact {
   display: grid;
   gap: var(--space-4);
@@ -419,14 +425,7 @@
 
 .consultation-form__field {
   display: grid;
-}
-
-.consultation-form__field span {
-  position: absolute;
-  width: var(--space-1);
-  height: var(--space-1);
-  overflow: hidden;
-  clip-path: inset(50%);
+  gap: var(--space-1);
 }
 
 .consultation-form input,
