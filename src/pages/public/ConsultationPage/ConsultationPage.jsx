@@ -64,7 +64,7 @@ function ConsultationPage() {
           />
           <div className="consultation-hero__overlay">
             <form className="consultation-panel" onSubmit={handleSubmit}>
-              {error && <p>{error}</p>}
+              {error && <p className="consultation-panel__error">{error}</p>}
               <div className="consultation-panel__header">
                 <h1 id="consultation-title">Yêu cầu tư vấn</h1>
                 <p>
