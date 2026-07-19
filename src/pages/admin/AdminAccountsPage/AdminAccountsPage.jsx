@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -38,6 +38,14 @@ function AdminAccountsPage() {
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const toastTimer = useRef(null);
+
+  const triggerToast = useCallback(() => {
+    clearTimeout(toastTimer.current);
+    setShowToast(true);
+    toastTimer.current = setTimeout(() => setShowToast(false), 5000);
+  }, []);
 
   const handleStatusChange = useCallback(
     (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
@@ -186,7 +194,7 @@ function AdminAccountsPage() {
         </div>
       </div>
 
-      <div className={`admin-accounts__toast`}>
+      <div className={`admin-accounts__toast${showToast ? " admin-accounts__toast--visible" : ""}`}>
         <CheckCircle
           className="admin-accounts__toast-icon"
           size={20}
@@ -200,6 +208,7 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setShowModal(false);
             refetch();
+            triggerToast();
           }}
         />
       )}

@@ -20,10 +20,14 @@ function AddAccountModal({ onClose, onSuccess }) {
     role_name: "Admin",
   });
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
+    setForm((prev) => ({ ...prev, [name]: cleaned }));
+    setFieldErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSubmit = async (e) => {
@@ -31,10 +35,18 @@ function AddAccountModal({ onClose, onSuccess }) {
     setError(null);
     setIsSubmitting(true);
     try {
-      await accountService.create(form);
+      await accountService.create({ ...form });
       onSuccess();
     } catch (err) {
-      setError(err.message);
+      if (err.code === "VALIDATION_ERROR") {
+        setFieldErrors(err.details);
+      } else if (err.code === "DUPLICATE_USERNAME") {
+        setFieldErrors({ username: [err.message] });
+      } else if (err.code === "INVALID_ROLE") {
+        setFieldErrors({ role_name: [err.message] });
+      } else {
+        setError(err.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -65,11 +77,17 @@ function AddAccountModal({ onClose, onSuccess }) {
           <label className="add-account-modal__field">
             <span className="add-account-modal__label">Tên đăng nhập *</span>
             <input
+              type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
               required
             />
+            {fieldErrors?.username && (
+              <span className="add-account-modal__field-error">
+                {fieldErrors.username[0]}
+              </span>
+            )}
           </label>
 
           <label className="add-account-modal__field">
@@ -80,6 +98,11 @@ function AddAccountModal({ onClose, onSuccess }) {
               value={form.email}
               onChange={handleChange}
             />
+            {fieldErrors?.email && (
+              <span className="add-account-modal__field-error">
+                {fieldErrors.email[0]}
+              </span>
+            )}
           </label>
 
           <label className="add-account-modal__field">
@@ -87,9 +110,16 @@ function AddAccountModal({ onClose, onSuccess }) {
             <input
               name="phone"
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={form.phone}
               onChange={handleChange}
             />
+            {fieldErrors?.phone && (
+              <span className="add-account-modal__field-error">
+                {fieldErrors.phone[0]}
+              </span>
+            )}
           </label>
 
           <label className="add-account-modal__field">
@@ -101,6 +131,11 @@ function AddAccountModal({ onClose, onSuccess }) {
               onChange={handleChange}
               required
             />
+            {fieldErrors?.password && (
+              <span className="add-account-modal__field-error">
+                {fieldErrors.password[0]}
+              </span>
+            )}
           </label>
 
           <label className="add-account-modal__field">
@@ -116,6 +151,11 @@ function AddAccountModal({ onClose, onSuccess }) {
                 </option>
               ))}
             </select>
+            {fieldErrors?.role_name && (
+              <span className="add-account-modal__field-error">
+                {fieldErrors.role_name[0]}
+              </span>
+            )}
           </label>
 
           <div className="add-account-modal__actions">
