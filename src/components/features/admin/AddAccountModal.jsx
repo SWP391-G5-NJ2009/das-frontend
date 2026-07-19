@@ -42,6 +42,8 @@ function AddAccountModal({ onClose, onSuccess }) {
         setFieldErrors(err.details);
       } else if (err.code === "DUPLICATE_USERNAME") {
         setFieldErrors({ username: [err.message] });
+      } else if (err.code === "DUPLICATE_EMAIL") {
+        setFieldErrors({ email: [err.message] });
       } else if (err.code === "INVALID_ROLE") {
         setFieldErrors({ role_name: [err.message] });
       } else {
