@@ -4,11 +4,11 @@ import "./RequestFilters.css";
 
 const STATUS_TABS = [
   { value: "All", label: "Tất cả" },
-  { value: "Đang chờ", label: "Đang chờ" },
-  { value: "Đã xử lý", label: "Đã xử lý" },
+  { value: "Pending", label: "Đang chờ" },
+  { value: "Resolved", label: "Đã xử lý" },
   { value: "Spam", label: "Spam" },
-  { value: "Không liên hệ được", label: "Không liên hệ được" },
-  { value: "Khác", label: "Khác" },
+  { value: "Fail-to-contact", label: "Không liên hệ được" },
+  { value: "Other", label: "Khác" },
 ];
 
 function RequestFilters({

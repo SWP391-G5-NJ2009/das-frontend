@@ -49,6 +49,8 @@ function LandingPage() {
   });
 
   const [error, setError] = useState(null);
+  const [loadedAt] = useState(Date.now());
+  const [fieldErrors, setFieldErrors] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(null);
 
@@ -56,21 +58,27 @@ function LandingPage() {
   const featuredServices = services.slice(0, 6);
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    const {name, value} = e.target;
+    const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
+    setForm((prev) => ({ ...prev, [name]: cleaned }));
+    setFieldErrors((prev) => ({ ...prev , [name]: null}));
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
     setIsSubmitting(true);
-
     try {
-      await consultationService.create(form);
-      setForm({ full_name: "", phone: "", email: "", description: "", website: "" });
+      await consultationService.create({ ...form, loadedAt });
+      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setFieldErrors(null);
       setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
-      setError(err.message);
+      if (err.code === "VALIDATION_ERROR") {
+        setFieldErrors(err.details);
+      } else {
+        setError(err.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -175,7 +183,7 @@ function LandingPage() {
             <p className="landing-message">Đang tải dịch vụ nha khoa...</p>
           ) : servicesError ? (
             <p className="landing-message landing-message--error">
-              Hiện không thể tải dịch vụ nha khoa. Vui lòng thử lại later.
+              Hiện không thể tải dịch vụ nha khoa. Vui lòng thử lại sau.
             </p>
           ) : featuredServices.length === 0 ? (
             <p className="landing-message">
@@ -252,20 +260,32 @@ function LandingPage() {
                   type="text"
                   name="full_name"
                   value={form.full_name}
-                  placeholder="Họ và tên"
+                  placeholder="Họ và tên *"
                   onChange={handleChange}
                   required
                 />
+                {fieldErrors?.full_name && (
+                  <span className="consultation-form__field-error">
+                    {fieldErrors.full_name[0]}
+                  </span>
+                )}
               </label>
               <label className="consultation-form__field">
                 <input
                   type="tel"
                   name="phone"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={form.phone}
-                  placeholder="Số điện thoại"
+                  placeholder="Số điện thoại *"
                   onChange={handleChange}
                   required
                 />
+                {fieldErrors?.phone && (
+                  <span className="consultation-form__field-error">
+                    {fieldErrors.phone[0]}
+                  </span>
+                )}
               </label>
               <label className="consultation-form__field">
                 <input
@@ -275,6 +295,11 @@ function LandingPage() {
                   placeholder="Email"
                   onChange={handleChange}
                 />
+                {fieldErrors?.email && (
+                  <span className="consultation-form__field-error">
+                    {fieldErrors.email[0]}
+                  </span>
+                )}
               </label>
               <label className="consultation-form__field">
                 <textarea
@@ -283,8 +308,12 @@ function LandingPage() {
                   placeholder="Chi tiết yêu cầu tư vấn"
                   rows="5"
                   onChange={handleChange}
-                  required
                 />
+                {fieldErrors?.description && (
+                  <span className="consultation-form__field-error">
+                    {fieldErrors.description[0]}
+                  </span>
+                )}
               </label>
               <input
                 name="website"
@@ -305,7 +334,7 @@ function LandingPage() {
               >
                 {isSubmitting ? "Đang gửi..." : "Gửi yêu cầu tư vấn"}
               </button>
-              {success && <Toast type="success" message={success} />}
+              {success && <Toast type="success" message={success} onClose={() => setSuccess(null)} duration={5000} />}
             </form>
           </div>
         </section>

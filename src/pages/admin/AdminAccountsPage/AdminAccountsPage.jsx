@@ -12,7 +12,6 @@ import {
   Trash2,
   UserPlus,
   Users,
-  CheckCircle,
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
@@ -22,6 +21,7 @@ import AdminPageShell from "../AdminPageShell";
 import PropTypes from "prop-types";
 import AccountFilters from "../../../components/features/admin/AccountFilters/AccountFilters"
 import Pagination from "../../../components/common/Pagination/Pagination"
+import Toast from "../../../components/common/Toast/Toast"
 import "./AdminAccountsPage.css";
 
 function AdminAccountsPage() {
@@ -38,9 +38,10 @@ function AdminAccountsPage() {
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
+  const [toast, setToast] = useState(null);
 
   const handleStatusChange = useCallback(
-    (status) => setFilters((prev) => ({ ...prev, status })),
+    (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
     [],
   );
 
@@ -186,20 +187,14 @@ function AdminAccountsPage() {
         </div>
       </div>
 
-      <div className={`admin-accounts__toast`}>
-        <CheckCircle
-          className="admin-accounts__toast-icon"
-          size={20}
-          aria-hidden="true"
-        />
-        <span>Thao tác đã hoàn tất thành công</span>
-      </div>
+      {toast && <Toast type="success" message={toast} onClose={() => setToast(null)} duration={5000} />}
       {showModal && (
         <AddAccountModal
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
             refetch();
+            setToast("Thêm tài khoản thành công.");
           }}
         />
       )}
