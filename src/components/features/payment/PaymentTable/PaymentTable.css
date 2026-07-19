@@ -1,14 +1,14 @@
 .payment-table {
   overflow-x: auto;
-  background-color: #ffffff;
-  border: 1px solid var(--color-neutral-200);
+  background-color: var(--color-surface);
+  border: var(--border-width-thin) solid var(--color-neutral-200);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
 .payment-table__table {
   width: 100%;
-  min-width: 58rem;
+  min-width: var(--data-table-min-width);
   border-collapse: collapse;
   font-size: var(--font-size-sm);
   font-family: var(--font-family-base);
@@ -25,7 +25,7 @@
   font-weight: var(--font-weight-semibold);
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--letter-spacing-wide);
   white-space: nowrap;
 }
 
@@ -39,7 +39,7 @@
 
 .payment-table__table td {
   padding: var(--space-4);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
   color: var(--color-neutral-600);
   text-align: left;
   vertical-align: middle;
@@ -61,4 +61,60 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-secondary-800);
   white-space: nowrap;
+}
+
+.payment-table__invoice {
+  color: var(--color-primary-700);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.payment-table__no-action {
+  color: var(--color-neutral-400);
+}
+
+.payment-table__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.payment-table__view {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: var(--color-primary-700);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.payment-table__view:hover {
+  color: var(--color-primary-900);
+}
+
+.payment-table__view:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary-700);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.payment-table__pay {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: var(--color-secondary-700);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.payment-table__pay:hover {
+  color: var(--color-secondary-900);
+}
+
+.payment-table__pay:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary-700);
+  outline-offset: var(--focus-ring-offset);
 }
