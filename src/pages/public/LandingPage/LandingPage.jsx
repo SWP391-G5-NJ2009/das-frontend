@@ -334,7 +334,7 @@ function LandingPage() {
               >
                 {isSubmitting ? "Đang gửi..." : "Gửi yêu cầu tư vấn"}
               </button>
-              {success && <Toast type="success" message={success} />}
+              {success && <Toast type="success" message={success} onClose={() => setSuccess(null)} duration={5000} />}
             </form>
           </div>
         </section>
