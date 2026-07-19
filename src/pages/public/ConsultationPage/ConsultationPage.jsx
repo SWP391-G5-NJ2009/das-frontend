@@ -160,7 +160,7 @@ function ConsultationPage() {
                 <LockKeyhole size={16} aria-hidden="true" />
                 Thông tin của bạn được giữ bí mật tuyệt đối.
               </p>
-              {success && <Toast type="success" message={success} />}
+              {success && <Toast type="success" message={success} onClose={() => setSuccess(null)} duration={5000} />}
             </form>
           </div>
         </section>
