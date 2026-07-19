@@ -251,6 +251,7 @@
   .dentist-profile-create__field--wide {
     grid-column: 1 / -1;
   }
+
 }
 
 @media (max-width: 768px) {

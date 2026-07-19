@@ -318,6 +318,20 @@
   opacity: 0.45;
 }
 
+.dentist-waiting-patients__pagination {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.dentist-waiting-patients__pagination-info {
+  margin: 0;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-sm);
+}
+
 @media (max-width: 768px) {
   .dentist-waiting-patients__header {
     flex-direction: column;
@@ -339,5 +353,13 @@
 
   .dentist-waiting-patients__tabs {
     overflow-x: auto;
+  }
+
+}
+
+@media (min-width: 768px) {
+  .dentist-waiting-patients__pagination {
+    align-items: center;
+    flex-direction: row;
   }
 }

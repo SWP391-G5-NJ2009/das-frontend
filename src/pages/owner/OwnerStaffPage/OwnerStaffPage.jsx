@@ -1,5 +1,6 @@
 import { Plus, RefreshCw, Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import DentistProfileCreateModal from "../../../components/features/staff/DentistProfileCreateModal/DentistProfileCreateModal";
 import DentistProfileEditModal from "../../../components/features/staff/DentistProfileEditModal/DentistProfileEditModal";
 import DentistProfileModal from "../../../components/features/staff/DentistProfileModal/DentistProfileModal";
@@ -21,12 +22,15 @@ const STATUS_OPTIONS = [
   { value: "Banned", label: "Bị khóa" },
 ];
 
+const PAGE_SIZE = 5;
+
 function OwnerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [editingDentist, setEditingDentist] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     search: "",
     role: "all",
@@ -34,6 +38,15 @@ function OwnerStaffPage() {
   });
 
   const { staff, isLoading, error, refetch } = useStaff(filters);
+  const totalPages = Math.max(1, Math.ceil(staff.length / PAGE_SIZE));
+  const paginatedStaff = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return staff.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [currentPage, staff]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   const stats = useMemo(
     () => ({
@@ -50,6 +63,7 @@ function OwnerStaffPage() {
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
+    setCurrentPage(1);
 
     setFilters((currentFilters) => ({
       ...currentFilters,
@@ -59,6 +73,7 @@ function OwnerStaffPage() {
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
+    setCurrentPage(1);
 
     setFilters((currentFilters) => ({
       ...currentFilters,
@@ -68,6 +83,7 @@ function OwnerStaffPage() {
 
   const handleProfileCreated = async () => {
     setIsCreateModalOpen(false);
+    setCurrentPage(1);
     setSuccessMessage("Tạo hồ sơ nhân viên thành công.");
     await refetch();
   };
@@ -210,11 +226,25 @@ function OwnerStaffPage() {
         )}
 
         {!isLoading && !error && staff.length > 0 && (
-          <StaffTable
-            staff={staff}
-            onEditStaff={setEditingDentist}
-            onViewStaff={setSelectedStaff}
-          />
+          <>
+            <StaffTable
+              staff={paginatedStaff}
+              onEditStaff={setEditingDentist}
+              onViewStaff={setSelectedStaff}
+            />
+            <div className="owner-staff__pagination">
+              <p className="owner-staff__pagination-info">
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(currentPage * PAGE_SIZE, staff.length)} trong tổng số{" "}
+                {staff.length} nhân viên
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPage={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          </>
         )}
 
         {selectedStaff && (

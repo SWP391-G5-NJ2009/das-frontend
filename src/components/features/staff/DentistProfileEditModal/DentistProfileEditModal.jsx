@@ -1,9 +1,8 @@
 import { Pencil, X } from "lucide-react";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { usePublicServices } from "../../../../hooks/useDentalServices";
 import { staffService } from "../../../../services/staff.service";
-import Spinner from "../../../common/Spinner/Spinner";
+import DentistServiceSelector from "../DentistServiceSelector/DentistServiceSelector";
 import "./DentistProfileEditModal.css";
 
 function createForm(staff) {
@@ -22,7 +21,6 @@ function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
   const [form, setForm] = useState(() => createForm(dentist));
   const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const { services, isLoading, error } = usePublicServices();
   const isReceptionist = dentist.role?.toLowerCase() === "receptionist";
   const title = isReceptionist
     ? "Chỉnh sửa hồ sơ lễ tân"
@@ -34,13 +32,9 @@ function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
     setSubmitError("");
   };
 
-  const toggleService = (serviceId) => {
-    setForm((current) => ({
-      ...current,
-      serviceIds: current.serviceIds.includes(serviceId)
-        ? current.serviceIds.filter((id) => id !== serviceId)
-        : [...current.serviceIds, serviceId],
-    }));
+  const handleServicesChange = (serviceIds) => {
+    setForm((current) => ({ ...current, serviceIds }));
+    setSubmitError("");
   };
 
   const buildPayload = () => ({
@@ -192,33 +186,12 @@ function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
                 </div>
               </fieldset>
 
-              <fieldset className="dentist-profile-edit__section">
-                <legend>Dịch vụ phụ trách</legend>
-                {isLoading && <Spinner />}
-                {error && (
-                  <p className="dentist-profile-edit__alert">
-                    Không thể tải danh sách dịch vụ.
-                  </p>
-                )}
-                {!isLoading && !error && !services.length && (
-                  <p>Không có dịch vụ đang hoạt động.</p>
-                )}
-                <div className="dentist-profile-edit__services">
-                  {services.map((service) => {
-                    const id = String(service.id);
-                    return (
-                      <label key={id}>
-                        <input
-                          type="checkbox"
-                          checked={form.serviceIds.includes(id)}
-                          onChange={() => toggleService(id)}
-                        />
-                        <span>{service.name}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </fieldset>
+              <DentistServiceSelector
+                selectedIds={form.serviceIds}
+                onChange={handleServicesChange}
+                disabled={isSaving}
+                required
+              />
             </>
           )}
 
@@ -228,7 +201,7 @@ function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
             </button>
             <button
               type="submit"
-              disabled={isSaving || (!isReceptionist && isLoading)}
+              disabled={isSaving}
             >
               {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
             </button>

@@ -43,9 +43,6 @@
 .dentist-profile-edit__grid select,
 .dentist-profile-edit__grid textarea { width: 100%; padding: var(--space-3); background: var(--color-neutral-50); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--color-neutral-900); font: inherit; }
 .dentist-profile-edit__grid input:disabled { background: var(--color-neutral-100); color: var(--color-neutral-600); cursor: not-allowed; }
-.dentist-profile-edit__services { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
-.dentist-profile-edit__services label { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); background: var(--color-primary-50); border: 1px solid var(--color-primary-200); border-radius: var(--radius-md); cursor: pointer; }
-.dentist-profile-edit__services input { accent-color: var(--color-primary-700); }
 .dentist-profile-edit__alert { margin: 0; padding: var(--space-3); background: var(--color-error-bg); border-radius: var(--radius-md); color: var(--color-error); }
 .dentist-profile-edit__footer { justify-content: flex-end; gap: var(--space-3); }
 .dentist-profile-edit__footer button { padding: var(--space-3) var(--space-5); background: var(--color-neutral-50); border: 1px solid var(--border-color); border-radius: var(--radius-md); font: inherit; font-weight: var(--font-weight-semibold); cursor: pointer; }
@@ -59,5 +56,4 @@
 @media (min-width: 768px) {
   .dentist-profile-edit__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dentist-profile-edit__wide { grid-column: 1 / -1; }
-  .dentist-profile-edit__services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

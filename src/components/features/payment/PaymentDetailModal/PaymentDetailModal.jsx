@@ -81,7 +81,7 @@ function PaymentDetailModal({ detail, error, isLoading, onClose, showPaymentInfo
             <section className="payment-detail__section">
               <h3>Thông tin hóa đơn</h3>
               <dl className="payment-detail__info">
-                <InfoRow label="Mã hóa đơn" value={`INV-${detail.invoiceId}`} />
+                <InfoRow label="Mã hóa đơn" value={`${detail.invoiceId}`} />
                 <InfoRow label="Bệnh nhân" value={detail.patient?.full_name} />
                 <InfoRow label="SĐT" value={detail.patient?.phone} />
                 <InfoRow label="Bác sĩ phụ trách" value={detail.dentist?.full_name ? `BS. ${detail.dentist.full_name}` : EMPTY_VALUE} />

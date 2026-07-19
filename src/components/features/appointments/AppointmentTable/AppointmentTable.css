@@ -195,6 +195,21 @@
   color: var(--color-error);
 }
 
+.appt-table__action-btn--check-in {
+  color: var(--color-success);
+}
+
+.appt-table__action-btn--check-in:hover {
+  background-color: var(--color-success-bg);
+  transform: scale(1.1);
+}
+
+.appt-table__action-btn--check-in:disabled {
+  color: var(--color-neutral-300);
+  cursor: not-allowed;
+  transform: none;
+}
+
 .appt-table__action-btn--cancel:hover {
   background-color: var(--color-error-bg);
   transform: scale(1.1);
@@ -228,6 +243,63 @@
   color: var(--color-neutral-300);
   font-size: var(--font-size-base);
   user-select: none;
+}
+
+.appt-table__start-treatment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-secondary-700);
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-50);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.appt-table__start-treatment:hover:not(:disabled) {
+  background-color: var(--color-secondary-800);
+}
+
+.appt-table__start-treatment:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.appt-table__start-treatment:disabled {
+  background-color: var(--color-neutral-300);
+  cursor: not-allowed;
+}
+
+.appt-table__record-treatment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-primary-700);
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-50);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.appt-table__record-treatment:hover {
+  background-color: var(--color-primary-800);
+}
+
+.appt-table__record-treatment:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
 }
 
 
