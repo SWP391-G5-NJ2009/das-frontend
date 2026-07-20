@@ -178,9 +178,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             : { patientId: Number(selectedPatient.id) }
           : {}),
       });
-      alert(
-        "Đặt lịch hẹn thành công! Email xác nhận đã được gửi đến hộp thư của bạn.",
-      );
+      alert("Đặt lịch hẹn thành công!");
       if (isReceptionist) {
         navigate("/receptionist/appointments");
       } else {
@@ -283,11 +281,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             className={`book-appointment__step-card${!selectedService ? " book-appointment__step-card--locked" : ""}`}
             aria-labelledby="step-dentist-label"
           >
-            <BookingStepHeader
-              step={3}
-              title="Chọn nha sĩ"
-              icon={UserCheck}
-            />
+            <BookingStepHeader step={3} title="Chọn nha sĩ" icon={UserCheck} />
             {isDentistsLoading && <Spinner />}
             {dentistsError && (
               <p className="book-appointment__locked-msg">
