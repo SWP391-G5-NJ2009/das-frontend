@@ -76,6 +76,17 @@
   color: var(--color-neutral-400);
 }
 
+.dentist-waiting-patients__visually-hidden {
+  position: absolute;
+  width: var(--border-width-thin);
+  height: var(--border-width-thin);
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .dentist-waiting-patients__toolbar-button {
   display: inline-flex;
   align-items: center;

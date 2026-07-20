@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardPlus, History } from "lucide-react";
+import { History, Search } from "lucide-react";
 import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
@@ -26,6 +26,14 @@ function getAppointmentDateTime(appointment) {
 
 function compareAppointmentsDesc(a, b) {
   return getAppointmentDateTime(b).localeCompare(getAppointmentDateTime(a));
+}
+
+function normalizeSearchValue(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 }
 
 function buildPatientRows(appointments) {
@@ -60,6 +68,7 @@ function DentistWaitingPatientsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const { appointments, error, isLoading } = useAllAppointments({});
 
   const patients = useMemo(() => {
@@ -71,15 +80,31 @@ function DentistWaitingPatientsPage() {
     return buildPatientRows(ownAppointments);
   }, [appointments, user?.profileId]);
 
-  const totalPage = Math.max(1, Math.ceil(patients.length / PAGE_SIZE));
+  const filteredPatients = useMemo(() => {
+    const keyword = normalizeSearchValue(searchTerm);
+    if (!keyword) return patients;
+
+    return patients.filter((patient) =>
+      [patient.patientName, patient.patientPhone, patient.serviceName].some(
+        (value) => normalizeSearchValue(value).includes(keyword),
+      ),
+    );
+  }, [patients, searchTerm]);
+
+  const totalPage = Math.max(1, Math.ceil(filteredPatients.length / PAGE_SIZE));
   const paginatedPatients = useMemo(
-    () => patients.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
-    [currentPage, patients],
+    () => filteredPatients.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [currentPage, filteredPatients],
   );
 
   useEffect(() => {
     setCurrentPage((page) => Math.min(page, totalPage));
   }, [totalPage]);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <DentistPageShell>
@@ -96,6 +121,28 @@ function DentistWaitingPatientsPage() {
 
         {!isLoading && !error && patients.length > 0 && (
           <>
+            <div className="dentist-waiting-patients__toolbar">
+              <label className="dentist-waiting-patients__search">
+                <Search aria-hidden="true" size={18} />
+                <span className="dentist-waiting-patients__visually-hidden">
+                  Tìm kiếm bệnh nhân
+                </span>
+                <input
+                  autoComplete="off"
+                  onChange={handleSearchChange}
+                  placeholder="Tìm theo tên, số điện thoại hoặc dịch vụ..."
+                  type="search"
+                  value={searchTerm}
+                />
+              </label>
+            </div>
+
+            {filteredPatients.length === 0 && (
+              <EmptyState message="Không tìm thấy bệnh nhân phù hợp với từ khóa." />
+            )}
+
+            {filteredPatients.length > 0 && (
+              <>
             <div className="dentist-waiting-patients__table-wrap" role="region" aria-label="My Patients list">
               <table className="dentist-waiting-patients__table">
               <thead className="dentist-waiting-patients__table-head">
@@ -146,7 +193,7 @@ function DentistWaitingPatientsPage() {
             </div>
             <div className="dentist-waiting-patients__pagination">
               <p className="dentist-waiting-patients__pagination-info">
-                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, patients.length)} trong tổng số {patients.length} bệnh nhân
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filteredPatients.length)} trong tổng số {filteredPatients.length} bệnh nhân
               </p>
               <Pagination
                 currentPage={currentPage}
@@ -154,6 +201,8 @@ function DentistWaitingPatientsPage() {
                 totalPage={totalPage}
               />
             </div>
+              </>
+            )}
           </>
         )}
       </section>

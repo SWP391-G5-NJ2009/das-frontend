@@ -18,14 +18,14 @@ function formatAppointmentDate(date, time) {
 }
 
 function PaymentTable({
-  dateColumn,
-  onPay,
-  onViewDetail,
+  dateColumn = "appointment",
+  onPay = null,
+  onViewDetail = null,
   payments,
-  showActions,
-  showPatientInfo,
-  showPaymentMethod,
-  showPayAction,
+  showActions = true,
+  showPatientInfo = true,
+  showPaymentMethod = false,
+  showPayAction = false,
 }) {
   const isPaymentDate = dateColumn === "payment";
 
@@ -109,14 +109,4 @@ PaymentTable.propTypes = {
   showPaymentMethod: PropTypes.bool,
   showPayAction: PropTypes.bool,
 };
-PaymentTable.defaultProps = {
-  dateColumn: "appointment",
-  onPay: null,
-  onViewDetail: null,
-  showActions: true,
-  showPatientInfo: true,
-  showPaymentMethod: false,
-  showPayAction: false,
-};
-
 export default PaymentTable;
