@@ -216,6 +216,7 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setDeleteAccount(null);
             refetch();
+            setToast("Xóa tài khoản thành công.");
           }}
         />
       )}

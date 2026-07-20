@@ -1,15 +1,19 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import { accountService } from "../../../services/account.service";
 import "./AddAccountModal.css";
 
 function DeleteConfirmModal({ account, onClose, onSuccess }) {
+  const [error, setError] = useState(null);
+
   const handleDelete = async () => {
+    setError(null);
     try {
       await accountService.delete(account.account_id);
       onSuccess();
     } catch (err) {
-      onClose();
+      setError(err.message);
     }
   };
 
@@ -32,14 +36,9 @@ function DeleteConfirmModal({ account, onClose, onSuccess }) {
           </button>
         </div>
 
-        <p
-          style={{
-            margin: "0 0 var(--space-6)",
-            fontSize: "var(--font-size-sm)",
-            color: "var(--color-neutral-600)",
-            lineHeight: "var(--line-height-relaxed)",
-          }}
-        >
+        {error && <p className="add-account-modal__error">{error}</p>}
+
+        <p className="add-account-modal__description">
           Bạn có chắc muốn xóa <strong>{account.username}</strong>?
           Hành động này không thể hoàn tác.
         </p>
@@ -53,10 +52,9 @@ function DeleteConfirmModal({ account, onClose, onSuccess }) {
             Hủy
           </button>
           <button
-            className="add-account-modal__btn add-account-modal__btn--submit"
+            className="add-account-modal__btn add-account-modal__btn--delete"
             type="button"
             onClick={handleDelete}
-            style={{ backgroundColor: "var(--color-error)" }}
           >
             Xóa
           </button>
