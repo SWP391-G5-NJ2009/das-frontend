@@ -177,7 +177,7 @@ function EditAccountModal({ account, onClose, onSuccess }) {
             <span className="add-account-modal__label">Status</span>
             <select name="status" value={form.status} onChange={handleChange}>
               <option value="Active">Hoạt động</option>
-              <option value="Banned">Bị khóa</option>
+              <option value="Deactivated">Ngừng hoạt động</option>
             </select>
           </label>
 
