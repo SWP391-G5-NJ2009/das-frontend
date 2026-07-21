@@ -8,8 +8,8 @@ const STATUS_TABS = [
   { value: "Booked", label: "Đã đặt lịch" },
   { value: "Resolved", label: "Đã xử lý" },
   { value: "Follow-up", label: "Cần gọi lại" },
-  { value: "Spam", label: "Spam" },
   { value: "Fail-to-contact", label: "Không liên hệ được" },
+  { value: "Spam", label: "Spam" },
   { value: "Other", label: "Khác" },
 ];
 
