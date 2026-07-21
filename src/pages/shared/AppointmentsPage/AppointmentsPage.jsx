@@ -141,42 +141,32 @@ function AppointmentsPage() {
     checkInAppointment,
     startTreatment,
     refetch,
-  } =
-    useAppointmentsByRole(role, filters);
+  } = useAppointmentsByRole(role, filters);
   const conflictAlerts = useAllAppointments(
     isReceptionist ? { status: "Conflict" } : {},
     { enabled: isReceptionist },
   );
 
-  const handleStatusChange = useCallback(
-    (status) => {
-      setFilters((prev) => ({ ...prev, status }));
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const handleStatusChange = useCallback((status) => {
+    setFilters((prev) => ({ ...prev, status }));
+    setCurrentPage(1);
+  }, []);
 
-  const handleDatePartsChange = useCallback(
-    ({ year, month, day }) => {
-      setDateParts({ year, month, day });
-      setFilters((prev) => ({
-        ...prev,
-        date: year && month && day ? `${year}-${month}-${day}` : "",
-        month: year && month && !day ? `${year}-${month}` : "",
-        year: year && !month ? year : "",
-      }));
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const handleDatePartsChange = useCallback(({ year, month, day }) => {
+    setDateParts({ year, month, day });
+    setFilters((prev) => ({
+      ...prev,
+      date: year && month && day ? `${year}-${month}-${day}` : "",
+      month: year && month && !day ? `${year}-${month}` : "",
+      year: year && !month ? year : "",
+    }));
+    setCurrentPage(1);
+  }, []);
 
-  const handleSearchChange = useCallback(
-    (search) => {
-      setFilters((prev) => ({ ...prev, search }));
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const handleSearchChange = useCallback((search) => {
+    setFilters((prev) => ({ ...prev, search }));
+    setCurrentPage(1);
+  }, []);
 
   const handleViewConflictAppointments = useCallback(() => {
     setDateParts({ year: "", month: "", day: "" });
@@ -216,8 +206,7 @@ function AppointmentsPage() {
         await cancelAppointment(appointmentToCancel.id, reason);
         setToast({
           type: "success",
-          message:
-            "Lịch hẹn đã được hủy thành công! Email thông báo đã được gửi đến bệnh nhân.",
+          message: "Lịch hẹn đã được hủy thành công!",
         });
       } finally {
         setIsCancelling(false);
@@ -241,52 +230,73 @@ function AppointmentsPage() {
 
   const handleDismissToast = useCallback(() => setToast(null), []);
 
-  const handleCheckIn = useCallback(async (appointment) => {
-    setCheckingInId(appointment.id);
-    try {
-      await checkInAppointment(appointment.id);
-      setToast({ type: "success", message: "Check-in bệnh nhân thành công." });
-    } catch (requestError) {
-      setToast({
-        type: "error",
-        message: requestError.message || "Không thể check-in bệnh nhân.",
-      });
-    } finally {
-      setCheckingInId(null);
-    }
-  }, [checkInAppointment]);
+  const handleCheckIn = useCallback(
+    async (appointment) => {
+      setCheckingInId(appointment.id);
+      try {
+        await checkInAppointment(appointment.id);
+        setToast({
+          type: "success",
+          message: "Check-in bệnh nhân thành công.",
+        });
+      } catch (requestError) {
+        setToast({
+          type: "error",
+          message: requestError.message || "Không thể check-in bệnh nhân.",
+        });
+      } finally {
+        setCheckingInId(null);
+      }
+    },
+    [checkInAppointment],
+  );
 
-  const handleStartTreatment = useCallback(async (appointment) => {
-    setStartingTreatmentId(appointment.id);
-    try {
-      await startTreatment(appointment.id);
-      setToast({ type: "success", message: "Đã bắt đầu điều trị cho bệnh nhân." });
-      handleStatusChange("In-Treatment");
-    } catch (requestError) {
-      setToast({
-        type: "error",
-        message: requestError.message || "Không thể bắt đầu điều trị.",
-      });
-    } finally {
-      setStartingTreatmentId(null);
-    }
-  }, [handleStatusChange, startTreatment]);
+  const handleStartTreatment = useCallback(
+    async (appointment) => {
+      setStartingTreatmentId(appointment.id);
+      try {
+        await startTreatment(appointment.id);
+        setToast({
+          type: "success",
+          message: "Đã bắt đầu điều trị cho bệnh nhân.",
+        });
+        handleStatusChange("In-Treatment");
+      } catch (requestError) {
+        setToast({
+          type: "error",
+          message: requestError.message || "Không thể bắt đầu điều trị.",
+        });
+      } finally {
+        setStartingTreatmentId(null);
+      }
+    },
+    [handleStatusChange, startTreatment],
+  );
 
-  const handleSaveTreatment = useCallback(async (values) => {
-    setIsSavingTreatment(true);
-    setTreatmentError(null);
-    try {
-      await treatmentService.create({ appointmentId: treatmentTarget.id, ...values });
-      setTreatmentTarget(null);
-      setToast({ type: "success", message: "Đã lưu kết quả và hoàn tất điều trị." });
-      handleStatusChange("Completed");
-      await refetch();
-    } catch (requestError) {
-      setTreatmentError(requestError);
-    } finally {
-      setIsSavingTreatment(false);
-    }
-  }, [handleStatusChange, refetch, treatmentTarget]);
+  const handleSaveTreatment = useCallback(
+    async (values) => {
+      setIsSavingTreatment(true);
+      setTreatmentError(null);
+      try {
+        await treatmentService.create({
+          appointmentId: treatmentTarget.id,
+          ...values,
+        });
+        setTreatmentTarget(null);
+        setToast({
+          type: "success",
+          message: "Đã lưu kết quả và hoàn tất điều trị.",
+        });
+        handleStatusChange("Completed");
+        await refetch();
+      } catch (requestError) {
+        setTreatmentError(requestError);
+      } finally {
+        setIsSavingTreatment(false);
+      }
+    },
+    [handleStatusChange, refetch, treatmentTarget],
+  );
 
   const handleRequestLiftBan = useCallback((appt) => {
     setLiftBanTarget(appt);
@@ -297,11 +307,17 @@ function AppointmentsPage() {
     setIsLiftingBan(true);
     try {
       await patientService.liftBan(liftBanTarget.patientId);
-      setToast({ type: "success", message: "Cập nhật trạng thái biểu mẫu thành công." });
+      setToast({
+        type: "success",
+        message: "Cập nhật trạng thái biểu mẫu thành công.",
+      });
       setLiftBanTarget(null);
       window.location.reload();
     } catch {
-      setToast({ type: "error", message: "Gỡ bỏ hạn chế đặt lịch thất bại. Vui lòng thử lại." });
+      setToast({
+        type: "error",
+        message: "Gỡ bỏ hạn chế đặt lịch thất bại. Vui lòng thử lại.",
+      });
     } finally {
       setIsLiftingBan(false);
     }
@@ -313,7 +329,11 @@ function AppointmentsPage() {
 
   const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
   const paginatedAppointments = useMemo(
-    () => appointments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    () =>
+      appointments.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE,
+      ),
     [appointments, currentPage],
   );
 
@@ -349,8 +369,8 @@ function AppointmentsPage() {
             <div className="appts-page__urgent-copy">
               <strong>Nhiệm vụ sắp xếp lại khẩn cấp</strong>
               <span>
-                {conflictAlerts.appointments.length} lịch hẹn trùng lịch
-                cần lễ tân xử lý.
+                {conflictAlerts.appointments.length} lịch hẹn trùng lịch cần lễ
+                tân xử lý.
               </span>
             </div>
             <button
@@ -376,7 +396,9 @@ function AppointmentsPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message={`Lỗi: ${error?.message || "Không thể tải lịch hẹn. Vui lòng thử lại."}`} />
+          <EmptyState
+            message={`Lỗi: ${error?.message || "Không thể tải lịch hẹn. Vui lòng thử lại."}`}
+          />
         )}
 
         {!isLoading && !error && appointments.length === 0 && (
@@ -392,19 +414,27 @@ function AppointmentsPage() {
               onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
               onCheckIn={role === "receptionist" ? handleCheckIn : null}
               checkingInId={checkingInId}
-              onStartTreatment={role === "dentist" ? handleStartTreatment : null}
+              onStartTreatment={
+                role === "dentist" ? handleStartTreatment : null
+              }
               startingTreatmentId={startingTreatmentId}
-              onRecordTreatment={role === "dentist" ? (appointment) => {
-                setTreatmentError(null);
-                setTreatmentTarget(appointment);
-              } : null}
+              onRecordTreatment={
+                role === "dentist"
+                  ? (appointment) => {
+                      setTreatmentError(null);
+                      setTreatmentTarget(appointment);
+                    }
+                  : null
+              }
               showPatientInfo={config.showPatientInfo}
               showRoom={config.showRoom}
               actorRole={role}
             />
             <div className="appts-page__pagination">
               <p className="appts-page__pagination-info">
-                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} trong tổng số {appointments.length} lịch hẹn
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(currentPage * PAGE_SIZE, appointments.length)} trong
+                tổng số {appointments.length} lịch hẹn
               </p>
               <Pagination
                 currentPage={currentPage}
@@ -438,7 +468,9 @@ function AppointmentsPage() {
           appointment={treatmentTarget}
           error={treatmentError}
           isSubmitting={isSavingTreatment}
-          onClose={() => { if (!isSavingTreatment) setTreatmentTarget(null); }}
+          onClose={() => {
+            if (!isSavingTreatment) setTreatmentTarget(null);
+          }}
           onSubmit={handleSaveTreatment}
         />
       )}
