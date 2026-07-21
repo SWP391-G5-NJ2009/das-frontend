@@ -137,3 +137,15 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.add-account-modal__btn--delete {
+  background-color: var(--color-error);
+  color: #ffffff;
+}
+
+.add-account-modal__description {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-relaxed);
+}

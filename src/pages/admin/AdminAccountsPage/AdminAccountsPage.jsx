@@ -205,6 +205,7 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setEditAccount(null);
             refetch();
+            setToast("Cập nhật tài khoản thành công.");
           }}
         />
       )}
@@ -215,6 +216,7 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setDeleteAccount(null);
             refetch();
+            setToast("Xóa tài khoản thành công.");
           }}
         />
       )}
