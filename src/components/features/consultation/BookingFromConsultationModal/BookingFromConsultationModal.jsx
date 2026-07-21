@@ -112,6 +112,7 @@ function BookingFromConsultationModal({ request, onClose, onSuccess }) {
         serviceId: Number(selectedService.id),
         slotOccupied: selectedService.slotOccupied ?? 1,
         note: "",
+        consultationRequestId: Number(request.id),
         newPatient: {
           fullName: selectedPatient.fullName,
           phone: selectedPatient.phone,
