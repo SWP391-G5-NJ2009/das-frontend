@@ -14,7 +14,8 @@ const STATUS_TABS = [
 function AccountFilters({
   filters,
   onStatusChange,
-  onDateChange,
+  onFromDateChange,
+  onToDateChange,
   onSearchChange,
   statusOptions,
 }) {
@@ -76,16 +77,37 @@ function AccountFilters({
           id="appt-filter-date"
           type="date"
           className="appt-filters__date"
-          value={filters.date}
-          onChange={(e) => onDateChange(e.target.value)}
-          aria-label="Lọc theo ngày"
+          value={filters.from_date}
+          onChange={(e) => onFromDateChange(e.target.value)}
+          aria-label="Lọc từ ngày"
         />
-        {filters.date && (
+        {filters.from_date && (
           <button
             type="button"
             className="appt-filters__date-clear"
-            aria-label="Xóa bộ lọc ngày"
-            onClick={() => onDateChange("")}
+            aria-label="Xóa bộ lọc từ ngày"
+            onClick={() => onFromDateChange("")}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      <div className="appt-filters__date-wrap">
+        <input
+          id="appt-filter-date"
+          type="date"
+          className="appt-filters__date"
+          value={filters.to_date}
+          onChange={(e) => onToDateChange(e.target.value)}
+          aria-label="Lọc đến ngày"
+        />
+        {filters.to_date && (
+          <button
+            type="button"
+            className="appt-filters__date-clear"
+            aria-label="Xóa bộ lọc đến ngày"
+            onClick={() => onToDateChange("")}
           >
             <X size={14} aria-hidden="true" />
           </button>

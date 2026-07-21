@@ -28,7 +28,8 @@ function AdminAccountsPage() {
 
   const [filters, setFilters] = useState({
     status: "All",
-    date: "",
+    from_date: "",
+    to_date: "",
     search: "",
     pagination: 1,
   });
@@ -45,10 +46,16 @@ function AdminAccountsPage() {
     [],
   );
 
-  const handleDateChange = useCallback(
-    (date) => setFilters((prev) => ({ ...prev, date, pagination: 1 })),
+  const handleFromDateChange = useCallback(
+    (from_date) => setFilters((prev) => ({ ...prev, from_date, pagination: 1 })),
     [],
   );
+
+  const handleToDateChange = useCallback(
+    (to_date) => setFilters((prev) => ({ ...prev, to_date, pagination: 1 })),
+    [],
+  );
+
   const handleSearchChange = useCallback(
     (search) => setFilters((prev) => ({ ...prev, search, pagination: 1 })),
     [],
@@ -85,7 +92,8 @@ function AdminAccountsPage() {
         <AccountFilters
           filters={filters}
           onStatusChange={handleStatusChange}
-          onDateChange={handleDateChange}
+          onFromDateChange={handleFromDateChange}
+          onToDateChange={handleToDateChange}
           onSearchChange={handleSearchChange}
         />
 
