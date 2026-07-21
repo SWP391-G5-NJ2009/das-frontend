@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
+import { useAuth } from "../../../context/AuthContext";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
 import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
@@ -40,6 +41,7 @@ const ROLE_MAP = {
 };
 
 function AdminAccountsPage() {
+  const { user } = useAuth();
 
   const [filters, setFilters] = useState({
     role: "All",
@@ -197,7 +199,7 @@ function AdminAccountsPage() {
                       >
                         <Edit size={20} aria-hidden="true" />
                       </button>
-                      {account.status !== "Deactivated" && <button
+                      {account.status !== "Deactivated" && account.account_id !== user.accountId && <button
                         className="admin-accounts__action-btn admin-accounts__action-btn--delete"
                         type="button"
                         onClick={() => setDeleteAccount(account)}
