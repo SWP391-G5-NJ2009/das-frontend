@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { paymentService } from "../services/payment.service";
 
 function normalizePayments(data) {
@@ -15,40 +15,30 @@ function normalizePayments(data) {
 
 export function usePayments() {
   const [payments, setPayments] = useState([]);
+  const [unpaidInvoices, setUnpaidInvoices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchPayments() {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const data = await paymentService.getAllPayments();
-
-        if (isMounted) {
-          setPayments(normalizePayments(data));
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err);
-          setPayments([]);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
+  const fetchPayments = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [data, unpaidData] = await Promise.all([
+        paymentService.getAllPayments(),
+        paymentService.getUnpaidInvoices(),
+      ]);
+      setPayments(normalizePayments(data));
+      setUnpaidInvoices(normalizePayments(unpaidData));
+    } catch (err) {
+      setError(err);
+      setPayments([]);
+      setUnpaidInvoices([]);
+    } finally {
+      setIsLoading(false);
     }
-
-    fetchPayments();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
-  return { payments, isLoading, error };
+  useEffect(() => { fetchPayments(); }, [fetchPayments]);
+
+  return { payments, unpaidInvoices, isLoading, error, refetch: fetchPayments };
 }
