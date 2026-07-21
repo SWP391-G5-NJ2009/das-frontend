@@ -97,12 +97,12 @@ function PaymentDetailModal({ detail, error, isLoading, onClose, showPaymentInfo
                     <thead><tr><th>Nội dung</th><th>Loại</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr></thead>
                     <tbody>{detail.items.map((item) => (
                       <tr key={item.id || item.name}>
-                        <td>{item.name}</td><td><span className={`payment-detail__type payment-detail__type--${item.type === "Thuốc" ? "medicine" : "service"}`}>{item.type}</span></td>
+                        <td>{item.name}</td><td><span className="payment-detail__type payment-detail__type--service">{item.type}</span></td>
                         <td>{formatMoney(item.unitPrice)}</td><td>{item.quantity}</td><td>{formatMoney(item.total)}</td>
                       </tr>
                     ))}</tbody>
                   </table>
-                ) : <p className="payment-detail__empty">Chưa có chi tiết dịch vụ hoặc thuốc.</p>}
+                ) : <p className="payment-detail__empty">Chưa có chi tiết dịch vụ.</p>}
               </div>
             </section>
 

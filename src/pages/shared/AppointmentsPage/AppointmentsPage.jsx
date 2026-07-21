@@ -21,7 +21,6 @@ import {
 } from "../../../hooks/useAppointments";
 import { patientService } from "../../../services/patient.service";
 import { treatmentService } from "../../../services/treatment.service";
-import { useMedicines } from "../../../hooks/useMedicines";
 import "./AppointmentsPage.css";
 
 const PAGE_SIZE = 10;
@@ -133,7 +132,6 @@ function AppointmentsPage() {
   const [treatmentError, setTreatmentError] = useState(null);
   const [isSavingTreatment, setIsSavingTreatment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const medicineCatalog = useMedicines(role === "dentist" && !!treatmentTarget);
 
   const {
     appointments,
@@ -439,9 +437,6 @@ function AppointmentsPage() {
         <TreatmentRecordModal
           appointment={treatmentTarget}
           error={treatmentError}
-          medicines={medicineCatalog.medicines}
-          medicinesError={medicineCatalog.error}
-          isLoadingMedicines={medicineCatalog.isLoading}
           isSubmitting={isSavingTreatment}
           onClose={() => { if (!isSavingTreatment) setTreatmentTarget(null); }}
           onSubmit={handleSaveTreatment}

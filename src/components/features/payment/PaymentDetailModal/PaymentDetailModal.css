@@ -69,7 +69,6 @@
 .payment-detail__items td:last-child { color: var(--color-secondary-800); font-weight: var(--font-weight-semibold); }
 .payment-detail__type { display: inline-flex; padding: var(--space-1) var(--space-2); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
 .payment-detail__type--service { background-color: var(--color-primary-100); color: var(--color-primary-800); }
-.payment-detail__type--medicine { background-color: var(--color-success-bg); color: var(--color-success); }
 .payment-detail__empty { margin: 0; padding: var(--space-6); color: var(--color-neutral-500); text-align: center; }
 .payment-detail__total { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); padding-top: var(--space-5); border-top: var(--border-width-thin) solid var(--color-neutral-200); color: var(--color-neutral-800); text-transform: uppercase; }
 .payment-detail__total strong { color: var(--color-secondary-800); font-size: var(--font-size-2xl); }

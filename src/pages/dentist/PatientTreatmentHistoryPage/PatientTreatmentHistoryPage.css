@@ -182,8 +182,7 @@
   gap: var(--space-1);
 }
 
-.patient-treatment-history__field-row dt,
-.patient-treatment-history__medicine-label {
+.patient-treatment-history__field-row dt {
   color: var(--color-neutral-500);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
@@ -205,67 +204,6 @@
   font-size: var(--font-size-sm);
 }
 
-.patient-treatment-history__prescription {
-  display: grid;
-  overflow: hidden;
-  background-color: var(--color-surface);
-  border: var(--border-width-thin) solid var(--color-secondary-200);
-  border-radius: var(--radius-lg);
-}
-
-.patient-treatment-history__prescription-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background-color: var(--color-secondary-100);
-  border-bottom: var(--border-width-thin) solid var(--color-secondary-200);
-}
-
-.patient-treatment-history__prescription-header h4 {
-  margin: 0;
-  color: var(--color-secondary-900);
-  font-size: var(--font-size-base);
-}
-
-.patient-treatment-history__prescription-header span {
-  color: var(--color-secondary-800);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-}
-
-.patient-treatment-history__medicine {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-bottom: var(--border-width-thin) solid var(--color-neutral-100);
-}
-
-.patient-treatment-history__medicine-field {
-  display: grid;
-  gap: var(--space-1);
-  min-width: 0;
-  color: var(--color-neutral-700);
-  font-size: var(--font-size-sm);
-  overflow-wrap: anywhere;
-}
-
-.patient-treatment-history__medicine-field strong {
-  color: var(--color-neutral-900);
-  font-size: var(--font-size-base);
-}
-
-.patient-treatment-history__prescription-note {
-  margin: 0;
-  padding: var(--space-3) var(--space-4);
-  background-color: var(--color-neutral-50);
-  color: var(--color-neutral-700);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-base);
-}
-
 @media (min-width: 768px) {
   .patient-treatment-history__record-toggle {
     grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 2fr) auto var(--space-8);
@@ -285,8 +223,4 @@
     gap: var(--space-4);
   }
 
-  .patient-treatment-history__medicine {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: var(--space-6);
-  }
 }

@@ -1,7 +1,6 @@
-import { Plus, RefreshCw, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Pagination from "../../../components/common/Pagination/Pagination";
-import DentistProfileCreateModal from "../../../components/features/staff/DentistProfileCreateModal/DentistProfileCreateModal";
 import DentistProfileEditModal from "../../../components/features/staff/DentistProfileEditModal/DentistProfileEditModal";
 import DentistProfileModal from "../../../components/features/staff/DentistProfileModal/DentistProfileModal";
 import StaffState from "../../../components/features/staff/StaffState/StaffState";
@@ -28,7 +27,6 @@ function OwnerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [editingDentist, setEditingDentist] = useState(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
@@ -81,16 +79,13 @@ function OwnerStaffPage() {
     }));
   };
 
-  const handleProfileCreated = async () => {
-    setIsCreateModalOpen(false);
-    setCurrentPage(1);
-    setSuccessMessage("Tạo hồ sơ nhân viên thành công.");
-    await refetch();
-  };
-
-  const handleProfileUpdated = async () => {
+  const handleProfileSaved = async (wasCreated) => {
     setEditingDentist(null);
-    setSuccessMessage("Cập nhật hồ sơ nha sĩ thành công.");
+    setSuccessMessage(
+      wasCreated
+        ? "Tạo hồ sơ nhân viên thành công."
+        : "Cập nhật hồ sơ nhân viên thành công.",
+    );
     await refetch();
   };
 
@@ -102,28 +97,6 @@ function OwnerStaffPage() {
             <h1>Quản lý nhân sự</h1>
           </div>
 
-          <div className="owner-staff__header-actions">
-            <button
-              className="owner-staff__refresh-button"
-              type="button"
-              onClick={refetch}
-              disabled={isLoading}
-            >
-              <RefreshCw size={16} aria-hidden="true" />
-              Refresh
-            </button>
-            <button
-              className="owner-staff__add-button"
-              type="button"
-              onClick={() => {
-                setSuccessMessage("");
-                setIsCreateModalOpen(true);
-              }}
-            >
-              <Plus size={16} aria-hidden="true" />
-              Thêm nhân viên mới
-            </button>
-          </div>
         </header>
 
         <section
@@ -258,14 +231,7 @@ function OwnerStaffPage() {
           <DentistProfileEditModal
             dentist={editingDentist}
             onClose={() => setEditingDentist(null)}
-            onUpdated={handleProfileUpdated}
-          />
-        )}
-
-        {isCreateModalOpen && (
-          <DentistProfileCreateModal
-            onClose={() => setIsCreateModalOpen(false)}
-            onCreated={handleProfileCreated}
+            onSaved={handleProfileSaved}
           />
         )}
       </div>

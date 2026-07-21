@@ -17,11 +17,12 @@ function createForm(staff) {
   };
 }
 
-function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
+function DentistProfileEditModal({ dentist, onClose, onSaved }) {
   const [form, setForm] = useState(() => createForm(dentist));
   const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const isReceptionist = dentist.role?.toLowerCase() === "receptionist";
+  const isCreateMode = !dentist.profileId;
   const title = isReceptionist
     ? "Chỉnh sửa hồ sơ lễ tân"
     : "Chỉnh sửa hồ sơ nha sĩ";
@@ -53,15 +54,30 @@ function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!isReceptionist && form.serviceIds.length === 0) {
+      setSubmitError("Vui lòng chọn ít nhất một dịch vụ phụ trách.");
+      return;
+    }
+
     setIsSaving(true);
     setSubmitError("");
 
     try {
       const payload = buildPayload();
-      const updated = isReceptionist
-        ? await staffService.updateReceptionistProfile(dentist.profileId, payload)
-        : await staffService.updateDentistProfile(dentist.profileId, payload);
-      onUpdated(updated);
+      const saved = isCreateMode
+        ? await staffService.createStaffProfile({
+            ...payload,
+            role: isReceptionist ? "receptionist" : "dentist",
+            accountId: dentist.accountId,
+          })
+        : isReceptionist
+          ? await staffService.updateReceptionistProfile(
+              dentist.profileId,
+              payload,
+            )
+          : await staffService.updateDentistProfile(dentist.profileId, payload);
+      onSaved(isCreateMode, saved);
     } catch (err) {
       setSubmitError(err.message || "Không thể cập nhật hồ sơ nhân viên.");
     } finally {
@@ -215,14 +231,15 @@ function DentistProfileEditModal({ dentist, onClose, onUpdated }) {
 DentistProfileEditModal.propTypes = {
   dentist: PropTypes.shape({
     address: PropTypes.string,
+    accountId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     birthDate: PropTypes.string,
     email: PropTypes.string,
     experience: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     fullName: PropTypes.string,
     gender: PropTypes.string,
     phone: PropTypes.string,
-    profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-      .isRequired,
+    profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     role: PropTypes.string,
     services: PropTypes.arrayOf(
       PropTypes.shape({
@@ -233,7 +250,7 @@ DentistProfileEditModal.propTypes = {
     speciality: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
-  onUpdated: PropTypes.func.isRequired,
+  onSaved: PropTypes.func.isRequired,
 };
 
 export default DentistProfileEditModal;
