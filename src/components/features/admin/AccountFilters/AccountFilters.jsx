@@ -11,6 +11,8 @@ const STATUS_TABS = [
   { value: "Patient", label: "Bệnh nhân" },
 ];
 
+const today = new Date().toISOString().split("T")[0];
+
 function AccountFilters({
   filters,
   onStatusChange,
@@ -72,11 +74,13 @@ function AccountFilters({
         )}
       </div>
 
+      <label className="appt-filters__date-label">Từ ngày</label>
       <div className="appt-filters__date-wrap">
         <input
           id="appt-filter-date"
           type="date"
           className="appt-filters__date"
+          max={today}
           value={filters.from_date}
           onChange={(e) => onFromDateChange(e.target.value)}
           aria-label="Lọc từ ngày"
@@ -93,11 +97,14 @@ function AccountFilters({
         )}
       </div>
 
+      <label className="appt-filters__date-label">Đến ngày</label>
       <div className="appt-filters__date-wrap">
         <input
           id="appt-filter-date"
           type="date"
           className="appt-filters__date"
+          max={today}
+          disabled={!filters.from_date}
           value={filters.to_date}
           onChange={(e) => onToDateChange(e.target.value)}
           aria-label="Lọc đến ngày"
