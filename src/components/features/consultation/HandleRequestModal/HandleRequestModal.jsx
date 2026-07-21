@@ -18,6 +18,7 @@ const STATUS_LABELS = {
 const STATUSES = ["Pending", "Resolved", "Follow-up", "Fail-to-contact", "Spam", "Other"];
 
 function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
+
   const [form, setForm] = useState({
     id: request.id || "",
     full_name: request.full_name || "",
@@ -28,7 +29,9 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
     status: request.status || "Pending",
     note: request.note || "",
   });
+
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
@@ -46,7 +49,11 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
       await consultationService.update(request.id, { status, note });
       onSuccess();
     } catch (err) {
-      setError(err.message);
+      if (err.details) {
+        setFieldErrors(err.details);
+      } else {
+        setError(err.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -125,6 +132,11 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
             <label className="handle-request-modal__field handle-request-modal__field--note">
               <span className="handle-request-modal__label">Ghi chú</span>
               <textarea name="note" value={form.note} onChange={handleChange} />
+              {fieldErrors?.note && (
+                <span className="add-account-modal__field-error">
+                  {fieldErrors.note[0]}
+                </span>
+              )}
             </label>
 
             <button
