@@ -11,23 +11,25 @@ const STATUS_TABS = [
   { value: "Other", label: "Khác" },
 ];
 
+const today = new Date().toISOString().split("T")[0];
+
 function RequestFilters({
   filters,
   onStatusChange,
-  onDateChange,
+  onFromDateChange,
+  onToDateChange,
   onSearchChange,
-  statusOptions,
 }) {
-  const tabs = statusOptions ?? STATUS_TABS;
 
   return (<div className="appt-filters">
-    {/* Status tab strip */}
+
     <div
       className="appt-filters__tabs"
       role="tablist"
       aria-label="Lọc theo trạng thái"
     >
-      {tabs.map((tab) => (
+      <label className="account-filters__date-label">Trạng thái</label>
+      {STATUS_TABS.map((tab) => (
         <button
           key={tab.value}
           id={`appt-filter-tab-${tab.value}`}
@@ -43,7 +45,6 @@ function RequestFilters({
       ))}
     </div>
 
-    {/* Search + date row */}
     <div className="appt-filters__controls">
       <div className="appt-filters__search-wrap">
         <Search
@@ -72,33 +73,60 @@ function RequestFilters({
         )}
       </div>
 
-      <div className="appt-filters__date-wrap">
+      <label className="account-filters__date-label">Từ ngày</label>
+      <div className="account-filters__date-wrap">
         <input
-          id="appt-filter-date"
+          id="account-filter-date"
           type="date"
-          className="appt-filters__date"
-          value={filters.date}
-          onChange={(e) => onDateChange(e.target.value)}
-          aria-label="Lọc theo ngày"
+          className="account-filters__date"
+          max={today}
+          value={filters.from_date}
+          onChange={(e) => onFromDateChange(e.target.value)}
+          aria-label="Lọc từ ngày"
         />
-        {filters.date && (
+        {filters.from_date && (
           <button
             type="button"
-            className="appt-filters__date-clear"
-            aria-label="Xóa bộ lọc ngày"
-            onClick={() => onDateChange("")}
+            className="account-filters__date-clear"
+            aria-label="Xóa bộ lọc từ ngày"
+            onClick={() => onFromDateChange("")}
           >
             <X size={14} aria-hidden="true" />
           </button>
         )}
       </div>
+
+      <label className="account-filters__date-label">Đến ngày</label>
+      <div className="account-filters__date-wrap">
+        <input
+          id="account-filter-date"
+          type="date"
+          className="account-filters__date"
+          min={filters.from_date}
+          max={today}
+          disabled={!filters.from_date}
+          value={filters.to_date}
+          onChange={(e) => onToDateChange(e.target.value)}
+          aria-label="Lọc đến ngày"
+        />
+        {filters.to_date && (
+          <button
+            type="button"
+            className="account-filters__date-clear"
+            aria-label="Xóa bộ lọc đến ngày"
+            onClick={() => onToDateChange("")}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+
     </div>
   </div>
   );
 }
 
-RequestFilters.defaultProps = {
-  statusOptions: null,
-};
+RequestFilters.defaultProps = {};
 
 export default RequestFilters;

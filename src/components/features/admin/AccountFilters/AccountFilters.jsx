@@ -33,7 +33,7 @@ function AccountFilters({
     <div
       className="account-filters__tabs"
       role="tablist"
-      aria-label="Lọc theo trạng thái"
+      aria-label="Lọc theo vai trò"
     >
       <label className="account-filters__date-label">Vai trò</label>
       {ROLE_TABS.map((tab) => (

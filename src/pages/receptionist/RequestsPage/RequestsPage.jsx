@@ -19,7 +19,8 @@ function ReceptionistRequestsPage() {
 
   const [filters, setFilters] = useState({
     status: "Pending",
-    date: "",
+    from_date: "",
+    to_date: "",
     search: "",
     pagination: 1,
   });
@@ -33,10 +34,16 @@ function ReceptionistRequestsPage() {
     [],
   );
 
-  const handleDateChange = useCallback(
-    (date) => setFilters((prev) => ({ ...prev, date, pagination: 1 })),
+  const handleFromDateChange = useCallback(
+    (from_date) => setFilters((prev) => ({ ...prev, from_date, pagination: 1 })),
     [],
   );
+
+  const handleToDateChange = useCallback(
+    (to_date) => setFilters((prev) => ({ ...prev, to_date, pagination: 1 })),
+    [],
+  );
+
   const handleSearchChange = useCallback(
     (search) => setFilters((prev) => ({ ...prev, search, pagination: 1 })),
     [],
@@ -75,7 +82,8 @@ function ReceptionistRequestsPage() {
           <RequestFilters
             filters={filters}
             onStatusChange={handleStatusChange}
-            onDateChange={handleDateChange}
+            onFromDateChange={handleFromDateChange}
+            onToDateChange={handleToDateChange}
             onSearchChange={handleSearchChange}
           />
 
@@ -106,7 +114,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && error && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Lỗi: {error.message}
+                      Đã xảy ra lỗi. Vui lòng thử lại sau.
                     </td>
                   </tr>
                 )}
@@ -141,7 +149,9 @@ function ReceptionistRequestsPage() {
                         {request.email}
                       </td>
                       <td className="receptionist-requests__cell">
-                        {request.description}
+                        {request.description && request.description.length > 20
+                          ? `${request.description.slice(0, 20)}...`
+                          : request.description}
                       </td>
                       <td className="receptionist-requests__cell">
                         {new Date(request.created_at).toLocaleString("vi-VN")}
