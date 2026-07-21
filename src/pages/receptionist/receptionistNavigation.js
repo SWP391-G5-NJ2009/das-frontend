@@ -10,6 +10,11 @@ export const RECEPTIONIST_NAV_ITEMS = [
     to: "/receptionist/appointments",
   },
   {
+    icon: "calendar_month",
+    label: "Dentist Schedules",
+    to: "/receptionist/dentist-schedules",
+  },
+  {
     icon: "payments",
     label: "Payments",
     to: "/receptionist/payments",

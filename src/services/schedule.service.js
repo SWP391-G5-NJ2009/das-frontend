@@ -19,6 +19,8 @@ export const scheduleService = {
   submitMine: (payload) => api.post("/schedules/me/requests", payload),
   updateAvailability: (payload) =>
     api.patch("/schedules/me/availability", payload),
+  getDentists: () => api.get("/schedules/dentists"),
+  viewDentistSchedule: (params) => api.get(`/schedules/view${buildQuery(params)}`),
   getRequests: (params) => api.get(`/schedules/requests${buildQuery(params)}`),
   approve: (scheduleId) =>
     api.patch(`/schedules/requests/${scheduleId}/approve`),
