@@ -116,7 +116,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
     const confirmPassword = formData.get("confirmPassword");
 
     if (newPassword !== confirmPassword) {
-      setError("Password confirmation does not match.");
+      setError("Mật khẩu mới không khớp.");
       setIsSubmitting(false);
       return;
     }

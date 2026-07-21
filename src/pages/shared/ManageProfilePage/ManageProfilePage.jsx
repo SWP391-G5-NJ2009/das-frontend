@@ -197,7 +197,7 @@ function ManageProfilePage() {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setPasswordStatus({
         isLoading: false,
-        error: "Password confirmation does not match.",
+        error: "Mật khẩu mới không khớp.",
         success: "",
       });
       return;
@@ -339,10 +339,8 @@ function ManageProfilePage() {
             <label>
               <span>Mật khẩu mới</span>
               <input
-                minLength={8}
                 name="newPassword"
                 onChange={changePasswordForm}
-                pattern="^(?=.*[A-Za-z])(?=.*\\d).+$"
                 placeholder="Nhập mật khẩu mới"
                 required
                 type="password"

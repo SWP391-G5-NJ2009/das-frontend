@@ -20,7 +20,7 @@ function RoomFormModal({
       >
         <div className="room-form-modal__header">
           <h2 className="room-form-modal__title" id="room-form-title">
-            {isEditMode ? "Update room" : "Create room"}
+            {isEditMode ? "Chỉnh sửa" : "Tạo phòng"}
           </h2>
           <button
             className="room-form-modal__close-btn"
@@ -35,7 +35,7 @@ function RoomFormModal({
         <form onSubmit={onSubmit}>
           <div className="room-form-modal__field">
             <label className="room-form-modal__label" htmlFor="room-name">
-              Room name
+              Tên phòng
             </label>
             <input
               className="room-form-modal__input"
@@ -51,7 +51,7 @@ function RoomFormModal({
 
           <div className="room-form-modal__field">
             <label className="room-form-modal__label" htmlFor="room-dentist">
-              Dentist
+              Bác sĩ
             </label>
             <select
               className="room-form-modal__input"
@@ -71,7 +71,7 @@ function RoomFormModal({
 
           <div className="room-form-modal__field">
             <label className="room-form-modal__label" htmlFor="room-status">
-              Status
+              Trạng thái
             </label>
             <select
               className="room-form-modal__input"
@@ -92,10 +92,10 @@ function RoomFormModal({
               type="button"
               onClick={onClose}
             >
-              Cancel
+              Huỷ
             </button>
             <button className="room-form-modal__save-btn" type="submit">
-              {isEditMode ? "Save changes" : "Save room"}
+              {isEditMode ? "Lưu thay đổi" : "Tạo phòng"}
             </button>
           </div>
         </form>

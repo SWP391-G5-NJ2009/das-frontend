@@ -155,13 +155,14 @@ function RoomsPageContent() {
     <div className="catalog-container">
       <div className="catalog-header">
         <div>
-          <h1 id="rooms-page-title">Rooms</h1>
-          <p className="subtitle">
-            Manage treatment rooms, assigned dentists, and availability.
-          </p>
+          <h1 id="rooms-page-title">Danh sách phòng</h1>
         </div>
-        <button className="btn-add-service" type="button" onClick={openAddModal}>
-          Create room
+        <button
+          className="btn-add-service"
+          type="button"
+          onClick={openAddModal}
+        >
+          Thêm phòng mới
         </button>
       </div>
 
@@ -174,10 +175,10 @@ function RoomsPageContent() {
           <table className="catalog-table rooms-table">
             <thead>
               <tr>
-                <th>Room</th>
-                <th>Dentist</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Phòng</th>
+                <th>Bác sĩ</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
@@ -225,7 +226,7 @@ function RoomsPageContent() {
               {!loadError && sortedRooms.length === 0 && (
                 <tr>
                   <td className="empty-row" colSpan={4}>
-                    No rooms found.
+                    Không tìm thấy phòng.
                   </td>
                 </tr>
               )}
