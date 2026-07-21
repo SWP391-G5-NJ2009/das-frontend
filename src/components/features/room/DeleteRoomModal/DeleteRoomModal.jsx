@@ -19,10 +19,10 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
       >
         <div className="delete-room-modal__header">
           <h2 className="delete-room-modal__title" id="delete-room-title">
-            Delete room
+            Xoá phòng
           </h2>
           <p className="delete-room-modal__subtitle">
-            This action can not be undo.
+            Hành động này không thể hoàn tác.
           </p>
         </div>
 
@@ -31,26 +31,28 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
             className="delete-room-modal__details"
             aria-label="Room details"
           >
-            <h3 className="delete-room-modal__details-title">Room details:</h3>
+            <h3 className="delete-room-modal__details-title">
+              Chi tiết phòng:
+            </h3>
             <div className="delete-room-modal__detail-grid">
               <div className="delete-room-modal__detail-item">
                 <span className="delete-room-modal__detail-label">
-                  Room name
+                  Tên phòng
                 </span>
                 <strong className="delete-room-modal__room-name">
                   {room.room_name}
                 </strong>
               </div>
               <div className="delete-room-modal__detail-item">
-                <span className="delete-room-modal__detail-label">
-                  Specialization
-                </span>
+                <span className="delete-room-modal__detail-label">Bác sĩ</span>
                 <span className="delete-room-modal__detail-value">
-                  {room.specialization || "Unassigned"}
+                  {room.dentist?.full_name || "Unassigned"}
                 </span>
               </div>
               <div className="delete-room-modal__detail-item">
-                <span className="delete-room-modal__detail-label">Status</span>
+                <span className="delete-room-modal__detail-label">
+                  Trạng thái
+                </span>
                 <span className="delete-room-modal__status">
                   <span className="delete-room-modal__status-dot" />
                   {formatRoomStatus(room.status)}
@@ -58,13 +60,6 @@ function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {
               </div>
             </div>
           </section>
-
-          <div className="delete-room-modal__warning" role="alert">
-            <AlertCircle size={20} aria-hidden="true" />
-            <span>
-              Warning: You have to move all the appointments of this room first
-            </span>
-          </div>
         </div>
 
         <div className="delete-room-modal__actions">
@@ -96,9 +91,11 @@ DeleteRoomModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   room: PropTypes.shape({
+    dentist: PropTypes.shape({
+      full_name: PropTypes.string,
+    }),
     room_id: PropTypes.number.isRequired,
     room_name: PropTypes.string.isRequired,
-    specialization: PropTypes.string,
     status: PropTypes.string,
   }).isRequired,
 };

@@ -1,15 +1,16 @@
 import PropTypes from "prop-types";
-import {
-  Ban,
-  MessageSquare,
-  Pencil,
-  ShieldBan,
-  UnlockKeyhole,
-} from "lucide-react";
+import { Ban, ClipboardPlus, MessageSquare, Play, ShieldBan, UnlockKeyhole, UserCheck } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
 const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict"];
+
+// Map room_id → color variant (r1–r5) via modulo — works for any room_id
+function getRoomColorClass(roomId) {
+  if (!roomId) return "";
+  const variant = ((roomId % 5) || 5);
+  return `appt-table__room-badge--r${variant}`;
+}
 
 /** BR-13: returns true if appointment starts within 24 hours from now */
 function isWithin24Hours(scheduledDate, scheduledTime) {
@@ -23,18 +24,29 @@ function AppointmentTable({
   appointments,
   onCancel,
   onWithin24hCancel,
-  onEdit,
   onLiftBan,
+  onCheckIn,
+  checkingInId,
+  onStartTreatment,
+  startingTreatmentId,
+  onRecordTreatment,
   showPatientInfo,
+  showRoom,
   actorRole,
 }) {
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
   if (appointments.length === 0) return null;
 
   return (
     <div
       className="appt-table__wrap"
       role="region"
-      aria-label="Appointment list"
+      aria-label="Danh sách lịch hẹn"
     >
       <table className="appt-table">
         <thead className="appt-table__head">
@@ -44,23 +56,28 @@ function AppointmentTable({
             </th>
             {showPatientInfo && (
               <th className="appt-table__th" scope="col">
-                Patient
+                Bệnh nhân
               </th>
             )}
             <th className="appt-table__th" scope="col">
-              Service
+              Dịch vụ
             </th>
             <th className="appt-table__th" scope="col">
-              Dentist
+              Nha sĩ
             </th>
+            {showRoom && (
+              <th className="appt-table__th" scope="col">
+                Phòng
+              </th>
+            )}
             <th className="appt-table__th appt-table__th--sortable" scope="col">
-              <span>Date &amp; Time</span>
+              <span>Ngày và giờ</span>
             </th>
             <th className="appt-table__th" scope="col">
-              Status
+              Trạng thái
             </th>
             <th className="appt-table__th appt-table__th--actions" scope="col">
-              Actions
+              Thao tác
             </th>
           </tr>
         </thead>
@@ -92,10 +109,10 @@ function AppointmentTable({
                     {appt.patientAccountStatus === "Restricted" && (
                       <span
                         className="appt-table__booking-banned"
-                        title="This patient's account is restricted due to 3+ no-shows"
+                        title="Tài khoản bệnh nhân bị hạn chế do vắng mặt từ 3 lần trở lên"
                       >
                         <ShieldBan size={10} aria-hidden="true" />
-                        Restricted Account
+                        Tài khoản bị hạn chế
                       </span>
                     )}
                   </td>
@@ -109,6 +126,25 @@ function AppointmentTable({
                   {appt.dentistName}
                 </td>
 
+                {showRoom && (
+                  <td className="appt-table__td appt-table__td--room">
+                    {appt.roomName ? (
+                      <span
+                        className={[
+                          "appt-table__room-badge",
+                          getRoomColorClass(appt.roomId),
+                        ]
+                          .join(" ")
+                          .trim()}
+                      >
+                        {appt.roomName}
+                      </span>
+                    ) : (
+                      <span className="appt-table__room-empty">—</span>
+                    )}
+                  </td>
+                )}
+
                 <td className="appt-table__td appt-table__td--datetime">
                   <span className="appt-table__date">{displayDate}</span>
                   <span className="appt-table__time">
@@ -117,7 +153,7 @@ function AppointmentTable({
                   </span>
                   {appt.slotOccupied > 1 && (
                     <span className="appt-table__slot-count">
-                      {appt.slotOccupied} slots
+                      {appt.slotOccupied} ca
                     </span>
                   )}
                 </td>
@@ -139,25 +175,55 @@ function AppointmentTable({
 
                 <td className="appt-table__td appt-table__td--actions">
                   {actorRole === "dentist" ? (
-                    <span
-                      className="appt-table__view-only"
-                      aria-label="View only"
-                    >
-                      —
-                    </span>
+                    appt.status === "Checked-in" ? (
+                      <button
+                        id={`tbl-start-treatment-${appt.id}`}
+                        type="button"
+                        className="appt-table__start-treatment"
+                        aria-label={`Bắt đầu điều trị cho ${appt.patientName}`}
+                        disabled={startingTreatmentId === appt.id}
+                        onClick={() => onStartTreatment?.(appt)}
+                      >
+                        <span>{startingTreatmentId === appt.id ? "Đang xử lý..." : "Bắt đầu điều trị"}</span>
+                      </button>
+                    ) : appt.status === "In-Treatment" ? (
+                      <button
+                        id={`tbl-record-treatment-${appt.id}`}
+                        type="button"
+                        className="appt-table__record-treatment"
+                        aria-label={`Ghi kết quả điều trị cho ${appt.patientName}`}
+                        onClick={() => onRecordTreatment?.(appt)}
+                      >
+                        <ClipboardPlus size={15} aria-hidden="true" />
+                        <span>Ghi kết quả</span>
+                      </button>
+                    ) : (
+                      <span className="appt-table__view-only" aria-label="Chỉ xem">—</span>
+                    )
                   ) : (
                     <div className="appt-table__action-group">
-                      <button
-                        id={`tbl-edit-${appt.id}`}
-                        type="button"
-                        className="appt-table__action-btn appt-table__action-btn--edit"
-                        aria-label={`Edit appointment for ${appt.patientName}`}
-                        title="Edit feature coming soon"
-                        disabled
-                        onClick={() => onEdit?.(appt)}
-                      >
-                        <Pencil size={15} aria-hidden="true" />
-                      </button>
+                      {actorRole === "receptionist" &&
+                        ["Confirmed", "No-Show"].includes(appt.status) &&
+                        appt.scheduledDate && (
+                        <button
+                          id={`tbl-checkin-${appt.id}`}
+                          type="button"
+                          className="appt-table__action-btn appt-table__action-btn--check-in"
+                          aria-label={`Check-in bệnh nhân ${appt.patientName}`}
+                          title={
+                            appt.scheduledDate === today
+                              ? "Check-in"
+                              : "Chỉ có thể check-in trong ngày hẹn"
+                          }
+                          disabled={
+                            checkingInId === appt.id ||
+                            appt.scheduledDate !== today
+                          }
+                          onClick={() => onCheckIn?.(appt)}
+                        >
+                          <UserCheck size={16} aria-hidden="true" />
+                        </button>
+                      )}
                       {/* Lift Ban button — only for restricted patients, only for receptionist */}
                       {appt.patientAccountStatus === "Restricted" &&
                         actorRole === "receptionist" && (
@@ -165,8 +231,8 @@ function AppointmentTable({
                             id={`tbl-liftban-${appt.id}`}
                             type="button"
                             className="appt-table__action-btn appt-table__action-btn--lift-ban"
-                            aria-label={`Lift account restriction for ${appt.patientName}`}
-                            title="Lift Account Restriction"
+                            aria-label={`Gỡ hạn chế tài khoản của ${appt.patientName}`}
+                            title="Gỡ hạn chế tài khoản"
                             onClick={() => onLiftBan?.(appt)}
                           >
                             <UnlockKeyhole size={15} aria-hidden="true" />
@@ -183,13 +249,13 @@ function AppointmentTable({
                           }
                           aria-label={
                             within24h
-                              ? "Cannot cancel — within 24 hours of appointment"
-                              : `Cancel appointment for ${appt.patientName}`
+                              ? "Không thể hủy - lịch hẹn còn dưới 24 giờ"
+                              : `Hủy lịch hẹn của ${appt.patientName}`
                           }
                           title={
                             within24h
-                              ? "Within 24 hours — contact reception to cancel"
-                              : "Cancel appointment"
+                              ? "Dưới 24 giờ - liên hệ lễ tân để hủy"
+                              : "Hủy lịch hẹn"
                           }
                           onClick={() =>
                             within24h ? onWithin24hCancel?.() : onCancel?.(appt)
@@ -226,22 +292,34 @@ AppointmentTable.propTypes = {
       slotOccupied: PropTypes.number,
       status: PropTypes.string.isRequired,
       notes: PropTypes.string,
+      roomId: PropTypes.number,
+      roomName: PropTypes.string,
     }),
   ).isRequired,
   onCancel: PropTypes.func,
   onWithin24hCancel: PropTypes.func,
-  onEdit: PropTypes.func,
   onLiftBan: PropTypes.func,
+  onCheckIn: PropTypes.func,
+  checkingInId: PropTypes.string,
+  onStartTreatment: PropTypes.func,
+  startingTreatmentId: PropTypes.string,
+  onRecordTreatment: PropTypes.func,
   showPatientInfo: PropTypes.bool,
+  showRoom: PropTypes.bool,
   actorRole: PropTypes.string,
 };
 
 AppointmentTable.defaultProps = {
   onCancel: null,
   onWithin24hCancel: null,
-  onEdit: null,
   onLiftBan: null,
+  onCheckIn: null,
+  checkingInId: null,
+  onStartTreatment: null,
+  startingTreatmentId: null,
+  onRecordTreatment: null,
   showPatientInfo: true,
+  showRoom: true,
   actorRole: "receptionist",
 };
 

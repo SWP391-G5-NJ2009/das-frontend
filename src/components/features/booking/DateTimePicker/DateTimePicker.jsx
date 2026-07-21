@@ -3,20 +3,20 @@ import PropTypes from "prop-types";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import "./DateTimePicker.css";
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Tháng 1",
+  "Tháng 2",
+  "Tháng 3",
+  "Tháng 4",
+  "Tháng 5",
+  "Tháng 6",
+  "Tháng 7",
+  "Tháng 8",
+  "Tháng 9",
+  "Tháng 10",
+  "Tháng 11",
+  "Tháng 12",
 ];
 
 function getDaysInMonth(year, month) {
@@ -66,6 +66,7 @@ function DateTimePicker({
   slots,
   enforceTimingRule,
   slotOccupied,
+  bookedTimeSet,
 }) {
   const today = new Date();
   const [viewYear, setViewYear] = useState(
@@ -117,14 +118,33 @@ function DateTimePicker({
     const past = isTodayDate && isSlotPast(slot.time);
     const tooSoon =
       isTodayDate && enforceTimingRule && isSlotWithin30Min(slot.time);
-    return slot.status === "Available" && !past && !tooSoon;
+    const alreadyBooked =
+      bookedTimeSet &&
+      selectedDate &&
+      bookedTimeSet.has(
+        `${
+          [
+            selectedDate.getFullYear(),
+            String(selectedDate.getMonth() + 1).padStart(2, "0"),
+            String(selectedDate.getDate()).padStart(2, "0"),
+          ].join("-")
+        }|${slot.time}`,
+      );
+    return {
+      available: slot.status === "Available" && !past && !tooSoon && !alreadyBooked,
+      alreadyBooked: !!alreadyBooked,
+    };
   });
 
+  function isSlotAvailable(idx) {
+    return slotAvailability[idx]?.available ?? false;
+  }
+
   function canBeStartSlot(idx) {
-    if (!slotAvailability[idx]) return false;
+    if (!isSlotAvailable(idx)) return false;
     if (!isMultiSlot) return true;
     for (let k = 0; k < normalizedSlotCount; k++) {
-      if (idx + k >= slots.length || !slotAvailability[idx + k]) return false;
+      if (idx + k >= slots.length || !isSlotAvailable(idx + k)) return false;
       if (k > 0) {
         const prevTimeEnd = slots[idx + k - 1].timeEnd;
         const currTime = slots[idx + k].time;
@@ -156,7 +176,7 @@ function DateTimePicker({
             className="date-time-picker__nav-btn"
             onClick={handlePrevMonth}
             disabled={!canGoPrev}
-            aria-label="Previous month"
+            aria-label="Tháng trước"
           >
             <ChevronLeft size={16} />
           </button>
@@ -168,7 +188,7 @@ function DateTimePicker({
             type="button"
             className="date-time-picker__nav-btn"
             onClick={handleNextMonth}
-            aria-label="Next month"
+            aria-label="Tháng sau"
           >
             <ChevronRight size={16} />
           </button>
@@ -189,7 +209,7 @@ function DateTimePicker({
         <div
           className="date-time-picker__days"
           role="grid"
-          aria-label="Date selection grid"
+          aria-label="Lưới chọn ngày"
         >
           {/* Empty cells for first day offset */}
           {Array.from({ length: firstDay }).map((_, i) => (
@@ -220,7 +240,7 @@ function DateTimePicker({
                   .join(" ")}
                 onClick={() => !past && onSelectDate(date)}
                 disabled={past}
-                aria-label={`${day} ${MONTHS[viewMonth]} ${viewYear}${isToday ? ", today" : ""}${past ? ", past" : ""}`}
+                aria-label={`${day} ${MONTHS[viewMonth]} ${viewYear}${isToday ? ", hôm nay" : ""}${past ? ", đã qua" : ""}`}
                 aria-pressed={isSelected}
                 role="gridcell"
               >
@@ -234,7 +254,7 @@ function DateTimePicker({
       {/* Time Slots */}
       <div className="date-time-picker__slots">
         <p className="date-time-picker__slots-label">
-          Available Time Slots
+          Khung giờ còn trống
           {selectedDate && (
             <span className="date-time-picker__slots-date">
               {" "}
@@ -248,27 +268,28 @@ function DateTimePicker({
           <div className="date-time-picker__slot-info" role="note">
             <Clock size={13} aria-hidden="true" />
             <span>
-              This service requires{" "}
-              <strong>{normalizedSlotCount} consecutive slots</strong> (
-              {normalizedSlotCount * 30} min). Selecting a start time will
-              automatically reserve all {normalizedSlotCount} slots.
+              Dịch vụ này cần{" "}
+              <strong>{normalizedSlotCount} khung giờ liên tiếp</strong> (
+              {normalizedSlotCount * 30} phút). Khi chọn giờ bắt đầu, hệ thống sẽ
+              tự động giữ tất cả {normalizedSlotCount} khung giờ.
             </span>
           </div>
         )}
 
         {!selectedDate ? (
           <p className="date-time-picker__slots-empty">
-            Please select a date to view available time slots.
+            Vui lòng chọn ngày để xem khung giờ còn trống.
           </p>
         ) : slots.length === 0 ? (
           <p className="date-time-picker__slots-empty">
-            No available time slots for this date.
+            Không có khung giờ trống cho ngày này.
           </p>
         ) : (
           <div className="date-time-picker__slots-grid">
             {slots.map((slot, idx) => {
-              const individuallyAvailable = slotAvailability[idx];
+              const individuallyAvailable = isSlotAvailable(idx);
               const canStart = canBeStartSlot(idx);
+              const isAlreadyBooked = slotAvailability[idx]?.alreadyBooked ?? false;
 
               const isRangeStart =
                 selectedStartIdx >= 0 && idx === selectedStartIdx;
@@ -299,21 +320,23 @@ function DateTimePicker({
                 isSlotWithin30Min(slot.time);
 
               const buildTitle = () => {
+                if (isAlreadyBooked)
+                  return `${slot.time} – bạn đã có lịch hẹn vào giờ này`;
                 if (isClickableFollowOn)
-                  return `Click to start from ${slot.time} instead`;
+                  return `Nhấp để bắt đầu từ ${slot.time}`;
                 if (isRangeFollowOn)
-                  return `${slot.time} – automatically included in booking`;
+                  return `${slot.time} – được tự động bao gồm trong lịch hẹn`;
                 if (isInsufficientStart)
-                  return `${slot.time} – available, but not enough consecutive slots after this time for the full service`;
+                  return `${slot.time} – có trống, nhưng không đủ khung giờ liên tiếp sau để hoàn thành dịch vụ`;
                 if (isMultiSlot && canStart)
-                  return `Select start time ${slot.time} (reserves ${normalizedSlotCount} consecutive slots)`;
+                  return `Chọn giờ bắt đầu ${slot.time} (giữ ${normalizedSlotCount} khung giờ liên tiếp)`;
                 if (!isMultiSlot && individuallyAvailable)
-                  return `Select time ${slot.time}`;
-                if (past) return `${slot.time} - unavailable (time has passed)`;
+                  return `Chọn giờ ${slot.time}`;
+                if (past) return `${slot.time} - không khả dụng (giờ đã qua)`;
                 if (tooSoon)
-                  return `${slot.time} - unavailable (less than 30 minutes away)`;
-                if (slot.status === "Booked") return `${slot.time} - booked`;
-                return `${slot.time} - unavailable`;
+                  return `${slot.time} - không khả dụng (còn dưới 30 phút)`;
+                if (slot.status === "Booked") return `${slot.time} - đã được đặt`;
+                return `${slot.time} - không khả dụng`;
               };
 
               return (
@@ -322,9 +345,11 @@ function DateTimePicker({
                   type="button"
                   className={[
                     "date-time-picker__slot",
-                    isDisabled && !isInsufficientStart
-                      ? "date-time-picker__slot--disabled"
-                      : "",
+                    isAlreadyBooked
+                      ? "date-time-picker__slot--my-booked"
+                      : isDisabled && !isInsufficientStart
+                        ? "date-time-picker__slot--disabled"
+                        : "",
                     isInsufficientStart
                       ? "date-time-picker__slot--insufficient"
                       : "",
@@ -380,6 +405,7 @@ DateTimePicker.propTypes = {
   ).isRequired,
   enforceTimingRule: PropTypes.bool,
   slotOccupied: PropTypes.number,
+  bookedTimeSet: PropTypes.instanceOf(Set),
 };
 
 DateTimePicker.defaultProps = {
@@ -387,6 +413,7 @@ DateTimePicker.defaultProps = {
   selectedSlotId: null,
   enforceTimingRule: false,
   slotOccupied: 1,
+  bookedTimeSet: null,
 };
 
 export default DateTimePicker;

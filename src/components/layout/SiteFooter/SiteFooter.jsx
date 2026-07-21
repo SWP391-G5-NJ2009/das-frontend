@@ -11,11 +11,11 @@ function SiteFooter({ clinicInfo = null }) {
           <Link className="site-footer__brand" to="/">
             {clinicName}
           </Link>
-          <p>&copy; 2026 {clinicName}. All rights reserved.</p>
+          <p>&copy; 2026 {clinicName}. Bảo lưu mọi quyền.</p>
         </div>
 
         {clinicInfo && (
-          <ul className="site-footer__contact" aria-label="Clinic contact">
+          <ul className="site-footer__contact" aria-label="Liên hệ phòng khám">
             <li>{clinicInfo.hotline}</li>
             <li>{clinicInfo.address}</li>
             <li>{clinicInfo.operating_hours}</li>

@@ -10,11 +10,11 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
 
   const validate = useCallback(() => {
     const next = {};
-    if (!fullName.trim()) next.fullName = "Full name is required.";
+    if (!fullName.trim()) next.fullName = "Vui lòng nhập họ và tên.";
     if (!phone.trim()) {
-      next.phone = "Phone number is required.";
+      next.phone = "Vui lòng nhập số điện thoại.";
     } else if (!/^[0-9]{9,11}$/.test(phone.trim())) {
-      next.phone = "Enter a valid phone number (9–11 digits).";
+      next.phone = "Nhập số điện thoại hợp lệ (9-11 chữ số).";
     }
     return next;
   }, [fullName, phone]);
@@ -59,14 +59,14 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
           <div className="add-patient-modal__title-row">
             <UserPlus size={20} aria-hidden="true" className="add-patient-modal__title-icon" />
             <h2 id="add-patient-modal-title" className="add-patient-modal__title">
-              Add New Patient
+              Thêm bệnh nhân mới
             </h2>
           </div>
           <button
             type="button"
             className="add-patient-modal__close-btn"
             onClick={handleClose}
-            aria-label="Close modal"
+            aria-label="Đóng hộp thoại"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -77,13 +77,13 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
           {/* Full Name */}
           <div className="add-patient-modal__field">
             <label htmlFor="new-patient-fullname" className="add-patient-modal__label">
-              Full Name <span aria-hidden="true">*</span>
+              Họ và tên <span aria-hidden="true">*</span>
             </label>
             <input
               id="new-patient-fullname"
               type="text"
               className={`add-patient-modal__input${errors.fullName ? " add-patient-modal__input--error" : ""}`}
-              placeholder="Enter patient's full name"
+              placeholder="Nhập họ tên bệnh nhân"
               value={fullName}
               onChange={(e) => {
                 setFullName(e.target.value);
@@ -102,7 +102,7 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
           {/* Phone */}
           <div className="add-patient-modal__field">
             <label htmlFor="new-patient-phone" className="add-patient-modal__label">
-              Phone Number <span aria-hidden="true">*</span>
+              Số điện thoại <span aria-hidden="true">*</span>
             </label>
             <input
               id="new-patient-phone"
@@ -130,13 +130,13 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
               className="add-patient-modal__btn add-patient-modal__btn--cancel"
               onClick={handleClose}
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"
               className="add-patient-modal__btn add-patient-modal__btn--save"
             >
-              Add Patient
+              Thêm bệnh nhân
             </button>
           </div>
         </form>

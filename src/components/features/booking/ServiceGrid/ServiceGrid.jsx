@@ -32,9 +32,9 @@ function ServiceGrid({ services, selectedServiceId, onSelect }) {
               className="service-grid__select"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              aria-label="Filter services by category"
+              aria-label="Lọc dịch vụ theo danh mục"
             >
-              <option value={ALL_CATEGORY}>All categories</option>
+              <option value={ALL_CATEGORY}>Tất cả danh mục</option>
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
@@ -51,9 +51,9 @@ function ServiceGrid({ services, selectedServiceId, onSelect }) {
       )}
 
       {/* ── Service Cards ── */}
-      <div className="service-grid" role="list" aria-label="Dental service list">
+      <div className="service-grid" role="list" aria-label="Danh sách dịch vụ nha khoa">
         {filtered.length === 0 ? (
-          <p className="service-grid__empty">No services in this category.</p>
+          <p className="service-grid__empty">Không có dịch vụ trong danh mục này.</p>
         ) : (
           filtered.map((service) => {
             const isSelected = service.id === selectedServiceId;

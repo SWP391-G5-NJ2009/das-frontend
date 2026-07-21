@@ -1,7 +1,11 @@
 import { api } from "./api";
 
 export const staffService = {
+    createStaffProfile: (payload) => api.post("/staff/profiles", payload),
+    getAvailableStaffAccounts: () => api.get("/staff/accounts/available"),
     createDentistProfile: (payload) => api.post("/staff/dentists", payload),
+    updateDentistProfile: (dentistId, payload) => api.patch(`/staff/dentists/${dentistId}`, payload),
+    updateReceptionistProfile: (receptionistId, payload) => api.patch(`/staff/receptionists/${receptionistId}`, payload),
     getAvailableDentistAccounts: () => api.get("/staff/dentist-accounts/available"),
     getAll: (filters = {}) => {
         const params = new URLSearchParams();

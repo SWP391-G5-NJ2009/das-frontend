@@ -27,11 +27,11 @@ function getInitials(name) {
 }
 
 const ROLE_LABELS = {
-  admin: "Admin",
-  dentist: "Dentist",
-  owner: "Clinic Owner",
-  patient: "Patient",
-  receptionist: "Receptionist",
+  admin: "Quản trị viên",
+  dentist: "Nha sĩ",
+  owner: "Chủ phòng khám",
+  patient: "Bệnh nhân",
+  receptionist: "Lễ tân",
 };
 
 function getRoleLabel(roleLabel) {
@@ -54,7 +54,9 @@ function RoleHeader({ isFixed, mobileNavItems, roleLabel }) {
             type="button"
             aria-expanded={isMobileMenuOpen}
             aria-label={
-              isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
+              isMobileMenuOpen
+                ? "Close navigation menu"
+                : "Open navigation menu"
             }
             onClick={() => setIsMobileMenuOpen((current) => !current)}
           >
@@ -68,7 +70,7 @@ function RoleHeader({ isFixed, mobileNavItems, roleLabel }) {
           {isMobileMenuOpen && (
             <nav
               className="role-header__mobile-menu"
-              aria-label="Quick navigation"
+              aria-label="Điều hướng nhanh"
             >
               {mobileNavItems.map((item) => (
                 <NavLink

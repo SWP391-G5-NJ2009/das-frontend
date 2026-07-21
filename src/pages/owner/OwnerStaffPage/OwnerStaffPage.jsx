@@ -1,6 +1,6 @@
-import { Plus, RefreshCw, Search } from "lucide-react";
-import { useMemo, useState } from "react";
-import DentistProfileCreateModal from "../../../components/features/staff/DentistProfileCreateModal/DentistProfileCreateModal";
+import { Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import DentistProfileModal from "../../../components/features/staff/DentistProfileModal/DentistProfileModal";
 import StaffState from "../../../components/features/staff/StaffState/StaffState";
 import StaffTable from "../../../components/features/staff/StaffTable/StaffTable";
@@ -9,22 +9,24 @@ import OwnerPageShell from "../OwnerPageShell";
 import "./OwnerStaffPage.css";
 
 const ROLE_OPTIONS = [
-  { value: "all", label: "All roles" },
-  { value: "dentist", label: "Dentist" },
-  { value: "receptionist", label: "Receptionist" },
+  { value: "all", label: "Tất cả" },
+  { value: "dentist", label: "Nha sĩ" },
+  { value: "receptionist", label: "Lễ tân" },
 ];
 
 const STATUS_OPTIONS = [
-  { value: "all", label: "All statuses" },
-  { value: "Active", label: "Active" },
-  { value: "Banned", label: "Banned" },
+  { value: "all", label: "Tất cả" },
+  { value: "Active", label: "Hoạt động" },
+  { value: "Banned", label: "Bị khóa" },
 ];
+
+const PAGE_SIZE = 5;
 
 function OwnerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
-  const [selectedDentist, setSelectedDentist] = useState(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     search: "",
     role: "all",
@@ -32,22 +34,19 @@ function OwnerStaffPage() {
   });
 
   const { staff, isLoading, error, refetch } = useStaff(filters);
+  const totalPages = Math.max(1, Math.ceil(staff.length / PAGE_SIZE));
+  const paginatedStaff = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return staff.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [currentPage, staff]);
 
-  const stats = useMemo(
-    () => ({
-      total: staff.length,
-      dentists: staff.filter(
-        (item) => item.role?.toLowerCase() === "dentist",
-      ).length,
-      receptionists: staff.filter(
-        (item) => item.role?.toLowerCase() === "receptionist",
-      ).length,
-    }),
-    [staff],
-  );
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
+    setCurrentPage(1);
 
     setFilters((currentFilters) => ({
       ...currentFilters,
@@ -57,6 +56,7 @@ function OwnerStaffPage() {
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
+    setCurrentPage(1);
 
     setFilters((currentFilters) => ({
       ...currentFilters,
@@ -64,65 +64,29 @@ function OwnerStaffPage() {
     }));
   };
 
-  const handleProfileCreated = async () => {
-    setIsCreateModalOpen(false);
-    setSuccessMessage("Dentist profile created successfully.");
+  const handleProfileSaved = async (wasCreated, saved) => {
+    setSelectedStaff((current) => (current ? { ...current, ...saved } : current));
+    setSuccessMessage(
+      wasCreated
+        ? "Tạo hồ sơ nhân viên thành công."
+        : "Cập nhật hồ sơ nhân viên thành công.",
+    );
     await refetch();
   };
 
   return (
-    <OwnerPageShell>
+    <OwnerPageShell contentClassName="owner-staff-page">
       <div className="owner-staff">
         <header className="owner-staff__header">
-          <h1>Staff Management</h1>
-
-          <div className="owner-staff__header-actions">
-            <button
-              className="owner-staff__refresh-button"
-              type="button"
-              onClick={refetch}
-              disabled={isLoading}
-            >
-              <RefreshCw size={16} aria-hidden="true" />
-              Refresh
-            </button>
-            <button
-              className="owner-staff__add-button"
-              type="button"
-              onClick={() => {
-                setSuccessMessage("");
-                setIsCreateModalOpen(true);
-              }}
-            >
-              <Plus size={16} aria-hidden="true" />
-              Add New Dentist
-            </button>
+          <div className="owner-staff__heading">
+            <h1>Quản lý nhân sự</h1>
           </div>
+
         </header>
 
         <section
-          className="owner-staff__summary"
-          aria-label="Staff overview"
-        >
-          <article className="owner-staff__summary-card">
-            <span>Total staff</span>
-            <strong>{stats.total}</strong>
-          </article>
-
-          <article className="owner-staff__summary-card">
-            <span>Dentists</span>
-            <strong>{stats.dentists}</strong>
-          </article>
-
-          <article className="owner-staff__summary-card">
-            <span>Receptionists</span>
-            <strong>{stats.receptionists}</strong>
-          </article>
-        </section>
-
-        <section
           className="owner-staff__toolbar"
-          aria-label="Staff filters"
+          aria-label="Bộ lọc nhân sự"
         >
           <form
             className="owner-staff__search-form"
@@ -133,18 +97,18 @@ function OwnerStaffPage() {
 
               <input
                 type="search"
-                aria-label="Search staff"
-                placeholder="Search by name or username..."
+                aria-label="Tìm nhân sự"
+                placeholder="Tìm theo tên hoặc tên đăng nhập..."
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
               />
             </div>
 
-            <button type="submit">Search</button>
+            <button type="submit">Tìm kiếm</button>
           </form>
 
           <label className="owner-staff__filter">
-            <span>Role</span>
+            <span>Vai trò</span>
 
             <select
               name="role"
@@ -160,7 +124,7 @@ function OwnerStaffPage() {
           </label>
 
           <label className="owner-staff__filter">
-            <span>Status</span>
+            <span>Trạng thái</span>
 
             <select
               name="status"
@@ -186,34 +150,45 @@ function OwnerStaffPage() {
 
         {!isLoading && error && (
           <StaffState
-            title="Unable to load staff"
-            message={error.message || "Please try again later."}
+            title="Không thể tải nhân sự"
+            message={error.message || "Vui lòng thử lại sau."}
             variant="error"
           />
         )}
 
         {!isLoading && !error && staff.length === 0 && (
           <StaffState
-            title="No staff found"
+            title="Không tìm thấy nhân sự"
             message="No matching staff members were found."
           />
         )}
 
         {!isLoading && !error && staff.length > 0 && (
-          <StaffTable staff={staff} onViewDentist={setSelectedDentist} />
+          <>
+            <StaffTable
+              staff={paginatedStaff}
+              onViewStaff={setSelectedStaff}
+            />
+            <div className="owner-staff__pagination">
+              <p className="owner-staff__pagination-info">
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(currentPage * PAGE_SIZE, staff.length)} trong tổng số{" "}
+                {staff.length} nhân viên
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPage={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          </>
         )}
 
-        {selectedDentist && (
+        {selectedStaff && (
           <DentistProfileModal
-            dentist={selectedDentist}
-            onClose={() => setSelectedDentist(null)}
-          />
-        )}
-
-        {isCreateModalOpen && (
-          <DentistProfileCreateModal
-            onClose={() => setIsCreateModalOpen(false)}
-            onCreated={handleProfileCreated}
+            dentist={selectedStaff}
+            onClose={() => setSelectedStaff(null)}
+            onSaved={handleProfileSaved}
           />
         )}
       </div>

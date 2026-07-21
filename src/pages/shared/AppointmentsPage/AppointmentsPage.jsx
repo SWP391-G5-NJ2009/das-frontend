@@ -12,6 +12,7 @@ import AppointmentFilters from "../../../components/features/appointments/Appoin
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
 import LiftBanModal from "../../../components/features/appointments/LiftBanModal/LiftBanModal";
+import TreatmentRecordModal from "../../../components/features/treatments/TreatmentRecordModal/TreatmentRecordModal";
 import Toast from "../../../components/common/Toast/Toast";
 import Pagination from "../../../components/common/Pagination/Pagination";
 import {
@@ -19,38 +20,42 @@ import {
   useAllAppointments,
 } from "../../../hooks/useAppointments";
 import { patientService } from "../../../services/patient.service";
+import { treatmentService } from "../../../services/treatment.service";
 import "./AppointmentsPage.css";
 
 const PAGE_SIZE = 10;
 
 const ROLE_CONFIG = {
   patient: {
-    title: "My Appointments",
-    subtitle: "View and manage your scheduled appointments.",
+    title: "Lịch hẹn của tôi",
+    subtitle: "Xem và quản lý các lịch hẹn đã đặt.",
     bookRoute: "/patient/booking",
     bookBtnId: "patient-book-new-btn",
     headingId: "appts-page-title",
     showPatientInfo: false,
+    showRoom: false,
     showBookBtn: true,
     statusOptions: null,
   },
   receptionist: {
-    title: "Appointment List",
-    subtitle: "Manage and track all clinic appointments.",
+    title: "Danh sách lịch hẹn",
+    subtitle: "Quản lý và theo dõi tất cả lịch hẹn phòng khám.",
     bookRoute: "/receptionist/book-appointment",
     bookBtnId: "book-appointment-nav-btn",
     headingId: "appts-page-title",
     showPatientInfo: true,
+    showRoom: true,
     showBookBtn: true,
     statusOptions: null,
   },
   dentist: {
-    title: "My Appointments",
-    subtitle: "View all appointments assigned to you.",
+    title: "Lịch hẹn của tôi",
+    subtitle: "Xem tất cả lịch hẹn được phân công cho bạn.",
     bookRoute: null,
     bookBtnId: null,
     headingId: "appts-page-title",
     showPatientInfo: true,
+    showRoom: false,
     showBookBtn: false,
     statusOptions: null,
   },
@@ -121,44 +126,47 @@ function AppointmentsPage() {
   const [liftBanTarget, setLiftBanTarget] = useState(null);
   const [isLiftingBan, setIsLiftingBan] = useState(false);
   const [toast, setToast] = useState(null);
+  const [checkingInId, setCheckingInId] = useState(null);
+  const [startingTreatmentId, setStartingTreatmentId] = useState(null);
+  const [treatmentTarget, setTreatmentTarget] = useState(null);
+  const [treatmentError, setTreatmentError] = useState(null);
+  const [isSavingTreatment, setIsSavingTreatment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { appointments, isLoading, error, cancelAppointment } =
-    useAppointmentsByRole(role, filters);
+  const {
+    appointments,
+    isLoading,
+    error,
+    cancelAppointment,
+    checkInAppointment,
+    startTreatment,
+    refetch,
+  } = useAppointmentsByRole(role, filters);
   const conflictAlerts = useAllAppointments(
     isReceptionist ? { status: "Conflict" } : {},
     { enabled: isReceptionist },
   );
 
-  const handleStatusChange = useCallback(
-    (status) => {
-      setFilters((prev) => ({ ...prev, status }));
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const handleStatusChange = useCallback((status) => {
+    setFilters((prev) => ({ ...prev, status }));
+    setCurrentPage(1);
+  }, []);
 
-  const handleDatePartsChange = useCallback(
-    ({ year, month, day }) => {
-      setDateParts({ year, month, day });
-      setFilters((prev) => ({
-        ...prev,
-        date: year && month && day ? `${year}-${month}-${day}` : "",
-        month: year && month && !day ? `${year}-${month}` : "",
-        year: year && !month ? year : "",
-      }));
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const handleDatePartsChange = useCallback(({ year, month, day }) => {
+    setDateParts({ year, month, day });
+    setFilters((prev) => ({
+      ...prev,
+      date: year && month && day ? `${year}-${month}-${day}` : "",
+      month: year && month && !day ? `${year}-${month}` : "",
+      year: year && !month ? year : "",
+    }));
+    setCurrentPage(1);
+  }, []);
 
-  const handleSearchChange = useCallback(
-    (search) => {
-      setFilters((prev) => ({ ...prev, search }));
-      setCurrentPage(1);
-    },
-    [],
-  );
+  const handleSearchChange = useCallback((search) => {
+    setFilters((prev) => ({ ...prev, search }));
+    setCurrentPage(1);
+  }, []);
 
   const handleViewConflictAppointments = useCallback(() => {
     setDateParts({ year: "", month: "", day: "" });
@@ -198,8 +206,7 @@ function AppointmentsPage() {
         await cancelAppointment(appointmentToCancel.id, reason);
         setToast({
           type: "success",
-          message:
-            "The appointment has been cancelled successfully! A notification email has been sent to the patient.",
+          message: "Lịch hẹn đã được hủy thành công!",
         });
       } finally {
         setIsCancelling(false);
@@ -217,11 +224,79 @@ function AppointmentsPage() {
     setToast({
       type: "warning",
       message:
-        "Appointments can only be cancelled at least 24 hours in advance. Please contact the receptionist directly for assistance.",
+        "Chỉ có thể hủy lịch hẹn trước ít nhất 24 giờ. Vui lòng liên hệ trực tiếp với lễ tân để được hỗ trợ.",
     });
   }, []);
 
   const handleDismissToast = useCallback(() => setToast(null), []);
+
+  const handleCheckIn = useCallback(
+    async (appointment) => {
+      setCheckingInId(appointment.id);
+      try {
+        await checkInAppointment(appointment.id);
+        setToast({
+          type: "success",
+          message: "Check-in bệnh nhân thành công.",
+        });
+      } catch (requestError) {
+        setToast({
+          type: "error",
+          message: requestError.message || "Không thể check-in bệnh nhân.",
+        });
+      } finally {
+        setCheckingInId(null);
+      }
+    },
+    [checkInAppointment],
+  );
+
+  const handleStartTreatment = useCallback(
+    async (appointment) => {
+      setStartingTreatmentId(appointment.id);
+      try {
+        await startTreatment(appointment.id);
+        setToast({
+          type: "success",
+          message: "Đã bắt đầu điều trị cho bệnh nhân.",
+        });
+        handleStatusChange("In-Treatment");
+      } catch (requestError) {
+        setToast({
+          type: "error",
+          message: requestError.message || "Không thể bắt đầu điều trị.",
+        });
+      } finally {
+        setStartingTreatmentId(null);
+      }
+    },
+    [handleStatusChange, startTreatment],
+  );
+
+  const handleSaveTreatment = useCallback(
+    async (values) => {
+      setIsSavingTreatment(true);
+      setTreatmentError(null);
+      try {
+        await treatmentService.create({
+          appointmentId: treatmentTarget.id,
+          ...values,
+        });
+        setTreatmentTarget(null);
+        setToast({
+          type: "success",
+          message: "Đã lưu kết quả và hoàn tất điều trị.",
+        });
+        handleStatusChange("Completed");
+        await refetch();
+      } catch (requestError) {
+        setTreatmentError(requestError);
+      } finally {
+        setIsSavingTreatment(false);
+      }
+    },
+    [handleStatusChange, refetch, treatmentTarget],
+  );
 
   const handleRequestLiftBan = useCallback((appt) => {
     setLiftBanTarget(appt);
@@ -232,11 +307,17 @@ function AppointmentsPage() {
     setIsLiftingBan(true);
     try {
       await patientService.liftBan(liftBanTarget.patientId);
-      setToast({ type: "success", message: "Update form status successfully." });
+      setToast({
+        type: "success",
+        message: "Cập nhật trạng thái biểu mẫu thành công.",
+      });
       setLiftBanTarget(null);
       window.location.reload();
     } catch {
-      setToast({ type: "error", message: "Failed to lift booking ban. Please try again." });
+      setToast({
+        type: "error",
+        message: "Gỡ bỏ hạn chế đặt lịch thất bại. Vui lòng thử lại.",
+      });
     } finally {
       setIsLiftingBan(false);
     }
@@ -248,7 +329,11 @@ function AppointmentsPage() {
 
   const totalPage = Math.max(1, Math.ceil(appointments.length / PAGE_SIZE));
   const paginatedAppointments = useMemo(
-    () => appointments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    () =>
+      appointments.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE,
+      ),
     [appointments, currentPage],
   );
 
@@ -270,10 +355,10 @@ function AppointmentsPage() {
               type="button"
               className="appts-page__book-btn"
               onClick={() => navigate(config.bookRoute)}
-              aria-label="Book new appointment"
+              aria-label="Đặt lịch hẹn mới"
             >
               <CalendarPlus size={18} aria-hidden="true" />
-              Book New Appointment
+              Đặt lịch hẹn mới
             </button>
           )}
         </div>
@@ -282,11 +367,10 @@ function AppointmentsPage() {
           <div className="appts-page__urgent-alert" role="alert">
             <AlertTriangle size={20} aria-hidden="true" />
             <div className="appts-page__urgent-copy">
-              <strong>Urgent rescheduling task</strong>
+              <strong>Nhiệm vụ sắp xếp lại khẩn cấp</strong>
               <span>
-                {conflictAlerts.appointments.length} conflict appointment
-                {conflictAlerts.appointments.length === 1 ? "" : "s"} need
-                receptionist follow-up.
+                {conflictAlerts.appointments.length} lịch hẹn trùng lịch cần lễ
+                tân xử lý.
               </span>
             </div>
             <button
@@ -294,7 +378,7 @@ function AppointmentsPage() {
               type="button"
               onClick={handleViewConflictAppointments}
             >
-              View conflicts
+              Xem trùng lịch
             </button>
           </div>
         )}
@@ -312,11 +396,13 @@ function AppointmentsPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message="Unable to load appointments. Please try again." />
+          <EmptyState
+            message={`Lỗi: ${error?.message || "Không thể tải lịch hẹn. Vui lòng thử lại."}`}
+          />
         )}
 
         {!isLoading && !error && appointments.length === 0 && (
-          <EmptyState message="No appointments found." />
+          <EmptyState message="Không tìm thấy lịch hẹn nào." />
         )}
 
         {!isLoading && !error && appointments.length > 0 && (
@@ -326,12 +412,29 @@ function AppointmentsPage() {
               onCancel={handleRequestCancel}
               onWithin24hCancel={handleWithin24hCancel}
               onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
+              onCheckIn={role === "receptionist" ? handleCheckIn : null}
+              checkingInId={checkingInId}
+              onStartTreatment={
+                role === "dentist" ? handleStartTreatment : null
+              }
+              startingTreatmentId={startingTreatmentId}
+              onRecordTreatment={
+                role === "dentist"
+                  ? (appointment) => {
+                      setTreatmentError(null);
+                      setTreatmentTarget(appointment);
+                    }
+                  : null
+              }
               showPatientInfo={config.showPatientInfo}
+              showRoom={config.showRoom}
               actorRole={role}
             />
             <div className="appts-page__pagination">
               <p className="appts-page__pagination-info">
-                Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, appointments.length)} of {appointments.length} appointments
+                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(currentPage * PAGE_SIZE, appointments.length)} trong
+                tổng số {appointments.length} lịch hẹn
               </p>
               <Pagination
                 currentPage={currentPage}
@@ -359,6 +462,18 @@ function AppointmentsPage() {
         onClose={handleCloseLiftBanModal}
         isLoading={isLiftingBan}
       />
+
+      {treatmentTarget && (
+        <TreatmentRecordModal
+          appointment={treatmentTarget}
+          error={treatmentError}
+          isSubmitting={isSavingTreatment}
+          onClose={() => {
+            if (!isSavingTreatment) setTreatmentTarget(null);
+          }}
+          onSubmit={handleSaveTreatment}
+        />
+      )}
 
       {toast && (
         <Toast

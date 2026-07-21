@@ -16,6 +16,7 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import { usePatientSearch } from "../../../hooks/usePatientSearch";
 import { useAvailableSlots } from "../../../hooks/useAvailableSlots";
+import { usePatientBookedTimes } from "../../../hooks/usePatientBookedTimes";
 import { appointmentService } from "../../../services/appointment.service";
 import PatientSearchSection from "../../../components/features/booking/PatientSearchSection/PatientSearchSection";
 import ServiceGrid from "../../../components/features/booking/ServiceGrid/ServiceGrid";
@@ -38,7 +39,6 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     error: servicesError,
   } = usePublicServices();
 
-  /* ── Patient Search (receptionist only — real API) ── */
   const {
     searchQuery,
     searchResults,
@@ -50,7 +50,6 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     handleClearPatient,
   } = usePatientSearch();
 
-  /* Auto-fill patient info from logged-in user (patient role only) */
   useEffect(() => {
     if (!isReceptionist && user) {
       setSelectedPatient({
@@ -61,7 +60,6 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     }
   }, [isReceptionist, user, setSelectedPatient]);
 
-  /* ── Booking Step State ── */
   const [selectedService, setSelectedService] = useState(null);
   const [selectedDentist, setSelectedDentist] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -70,14 +68,12 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
 
-  /* ── Dentists from API (re-fetches when service changes) ── */
   const {
     dentists,
     isLoading: isDentistsLoading,
     error: dentistsError,
   } = useDentistsByService(selectedService?.id ?? null);
 
-  /* ── Available Slots from API (re-fetches when dentist or date changes) ── */
   const {
     slots,
     isLoading: isSlotsLoading,
@@ -85,9 +81,13 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     refetch: refetchSlots,
   } = useAvailableSlots(selectedDentist?.id ?? null, selectedDate ?? null);
 
+  const { bookedTimeSet, refetch: refetchBookedTimes } = usePatientBookedTimes(
+    !isReceptionist,
+    isReceptionist ? selectedPatient?.id ?? null : null,
+  );
+
   const phoneNumber = selectedPatient?.phone || "";
 
-  /* ── Handlers ── */
   const handleSaveNewPatient = useCallback(
     (newPatient) => {
       setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
@@ -122,19 +122,16 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
 
   const handleSelectSlot = useCallback(
     (slot) => {
-      // For multi-slot services, compute the end time of the LAST truly consecutive slot
       const slotOccupied = selectedService?.slotOccupied ?? 1;
       if (slotOccupied > 1) {
         const startIdx = slots.findIndex((s) => s.id === slot.id);
         let lastIdx = startIdx;
 
-        // Walk forward, only counting slots that are truly time-adjacent (no lunch break gaps)
         for (let k = 1; k < slotOccupied; k++) {
           const nextIdx = lastIdx + 1;
-          if (nextIdx >= slots.length) break; // no more slots
+          if (nextIdx >= slots.length) break;
           const prevTimeEnd = slots[lastIdx]?.timeEnd;
           const nextTime = slots[nextIdx]?.time;
-          // Stop if there's a gap (e.g., lunch break) or time data is missing
           if (!prevTimeEnd || !nextTime || prevTimeEnd !== nextTime) break;
           lastIdx = nextIdx;
         }
@@ -176,7 +173,6 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         serviceId: Number(selectedService.id),
         note: "",
         slotOccupied: selectedService.slotOccupied ?? 1,
-        // Receptionist: send patientId for existing patients, or newPatient for walk-ins
         ...(isReceptionist
           ? String(selectedPatient.id).startsWith("new-")
             ? {
@@ -188,26 +184,30 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             : { patientId: Number(selectedPatient.id) }
           : {}),
       });
-      alert(
-        "Appointment booked successfully! A confirmation email has been sent to your inbox.",
-      );
+      alert("Đặt lịch hẹn thành công!");
       if (isReceptionist) {
         navigate("/receptionist/appointments");
       } else {
         navigate("/patient/appointments");
       }
     } catch (err) {
-      // BR-02: Slot was claimed by another user between selection and confirmation.
-      // Refetch slots so the taken slot turns dark/disabled, then show MSG02.
       if (err?.code === "SLOT_TAKEN") {
         setSelectedSlot(null);
         refetchSlots();
         alert(
-          "This time slot has just been booked by another user.\n" +
-            "The availability has been updated — please select a different time.",
+          "Khung giờ này vừa được đặt bởi người dùng khác.\n" +
+            "Danh sách giờ trống đã được cập nhật — vui lòng chọn giờ khác.",
+        );
+      } else if (err?.code === "DUPLICATE_SLOT_BOOKING") {
+        setSelectedSlot(null);
+        refetchSlots();
+        refetchBookedTimes();
+        alert(
+          "Bệnh nhân vừa có một lịch hẹn được đặt vào khung giờ này.\n" +
+            "Danh sách giờ đã được cập nhật — vui lòng chọn giờ khác.",
         );
       } else {
-        alert(err?.message || "Booking failed. Please try again!");
+        alert(err?.message || "Đặt lịch thất bại. Vui lòng thử lại!");
       }
     } finally {
       setIsSubmitting(false);
@@ -221,9 +221,9 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     navigate,
     isReceptionist,
     refetchSlots,
+    refetchBookedTimes,
   ]);
 
-  /* ── Render ── */
   const content = (
     <div className="book-appointment">
       <div className="book-appointment__heading-row">
@@ -236,21 +236,19 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           id="book-appointment-title"
           className="book-appointment__page-title"
         >
-          Book new appointment
+          Đặt lịch hẹn mới
         </h1>
       </div>
 
       <div className="book-appointment__layout">
-        {/* ── Main form column ── */}
         <div className="book-appointment__form-col">
-          {/* Step 1 — Patient */}
           <section
             className="book-appointment__step-card"
             aria-labelledby="step-patient-label"
           >
             <BookingStepHeader
               step={1}
-              title="Patient information"
+              title="Thông tin bệnh nhân"
               icon={User}
             />
             <PatientSearchSection
@@ -270,20 +268,19 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             />
           </section>
 
-          {/* Step 2 — Service */}
           <section
             className="book-appointment__step-card"
             aria-labelledby="step-service-label"
           >
             <BookingStepHeader
               step={2}
-              title="Select service"
+              title="Chọn dịch vụ"
               icon={Stethoscope}
             />
             {isServicesLoading && <Spinner />}
             {servicesError && (
               <p className="book-appointment__locked-msg">
-                The list of services could not be loaded. Please try again.
+                Không thể tải danh sách dịch vụ. Vui lòng thử lại.
               </p>
             )}
             {!isServicesLoading && !servicesError && (
@@ -295,20 +292,15 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             )}
           </section>
 
-          {/* Step 3 — Dentist */}
           <section
             className={`book-appointment__step-card${!selectedService ? " book-appointment__step-card--locked" : ""}`}
             aria-labelledby="step-dentist-label"
           >
-            <BookingStepHeader
-              step={3}
-              title="Select dentist"
-              icon={UserCheck}
-            />
+            <BookingStepHeader step={3} title="Chọn nha sĩ" icon={UserCheck} />
             {isDentistsLoading && <Spinner />}
             {dentistsError && (
               <p className="book-appointment__locked-msg">
-                Could not load dentists for this service. Please try again.
+                Không thể tải nha sĩ cho dịch vụ này. Vui lòng thử lại.
               </p>
             )}
             {!isDentistsLoading && !dentistsError && (
@@ -320,26 +312,25 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
             )}
           </section>
 
-          {/* Step 4 — Date & Time */}
           <section
             className={`book-appointment__step-card${!selectedDentist ? " book-appointment__step-card--locked" : ""}`}
             aria-labelledby="step-datetime-label"
           >
             <BookingStepHeader
               step={4}
-              title="Select date and time"
+              title="Chọn ngày và giờ"
               icon={CalendarClock}
             />
             {!selectedDentist ? (
               <p className="book-appointment__locked-msg">
-                Please select a dentist first to view available slots.
+                Vui lòng chọn nha sĩ trước để xem khung giờ trống.
               </p>
             ) : (
               <>
                 {isSlotsLoading && <Spinner />}
                 {slotsError && (
                   <p className="book-appointment__locked-msg">
-                    Could not load available slots. Please try again.
+                    Không thể tải khung giờ trống. Vui lòng thử lại.
                   </p>
                 )}
                 {!isSlotsLoading && !slotsError && (
@@ -351,6 +342,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
                     slots={slots}
                     enforceTimingRule={!isReceptionist}
                     slotOccupied={selectedService?.slotOccupied ?? 1}
+                    bookedTimeSet={bookedTimeSet}
                   />
                 )}
               </>
@@ -358,7 +350,6 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           </section>
         </div>
 
-        {/* ── Sidebar ── */}
         <div className="book-appointment__sidebar-col">
           <BookingSummary
             patient={selectedPatient}
@@ -373,7 +364,6 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         </div>
       </div>
 
-      {/* ── Add Patient Modal (Receptionist only) ── */}
       {isReceptionist && (
         <AddPatientModal
           isOpen={isAddPatientModalOpen}

@@ -18,36 +18,36 @@ import DentistPageShell from "../DentistPageShell";
 import "./DentistScheduleManagement.css";
 
 const WEEKDAY_LABELS = {
-  1: "Mon",
-  2: "Tue",
-  3: "Wed",
-  4: "Thu",
-  5: "Fri",
-  6: "Sat",
-  0: "Sun",
+  1: "T2",
+  2: "T3",
+  3: "T4",
+  4: "T5",
+  5: "T6",
+  6: "T7",
+  0: "CN",
 };
 
 const FALLBACK_WEEKDAYS = [
-  { value: 1, label: "Mon" },
-  { value: 2, label: "Tue" },
-  { value: 3, label: "Wed" },
-  { value: 4, label: "Thu" },
-  { value: 5, label: "Fri" },
-  { value: 6, label: "Sat" },
+  { value: 1, label: "T2" },
+  { value: 2, label: "T3" },
+  { value: 3, label: "T4" },
+  { value: 4, label: "T5" },
+  { value: 5, label: "T6" },
+  { value: 6, label: "T7" },
 ];
 
 const STATUS_COPY = {
   Pending: {
     className: "dentist-schedule__status dentist-schedule__status--pending",
-    label: "Pending owner approval",
+    label: "Chờ chủ phòng khám duyệt",
   },
   Scheduled: {
     className: "dentist-schedule__status dentist-schedule__status--approved",
-    label: "Published",
+    label: "Đã công bố",
   },
   Denied: {
     className: "dentist-schedule__status dentist-schedule__status--denied",
-    label: "Denied",
+    label: "Đã từ chối",
   },
 };
 
@@ -242,7 +242,7 @@ function getDefaultForm() {
 }
 
 function formatScheduleTime(schedule) {
-  if (!schedule.startTime || !schedule.endTime) return "No slots selected";
+  if (!schedule.startTime || !schedule.endTime) return "Chưa chọn khung giờ";
   return `${schedule.startTime} - ${schedule.endTime}`;
 }
 
@@ -311,16 +311,17 @@ function ScheduleEditor({
       >
         <header className="dentist-schedule__modal-header">
           <div>
-            <h2 id="schedule-editor-title">Create/Edit Schedule</h2>
+            <h2 id="schedule-editor-title">Tạo/Sửa lịch</h2>
             <p>
               Mark busy slots for next month between day 1 and day 15.
+              Đăng ký lịch làm việc tháng tới từ ngày 1 đến ngày 15.
             </p>
           </div>
           <button
             className="dentist-schedule__icon-btn"
             type="button"
             onClick={onClose}
-            aria-label="Close schedule editor"
+            aria-label="Đóng trình chỉnh sửa lịch"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -332,18 +333,22 @@ function ScheduleEditor({
             slots will be unavailable; all other selected-day slots remain
             available after approval. Target month:{" "}
             {scheduleWindow.targetMonthStart} to {scheduleWindow.targetMonthEnd}.
+            Giờ đã cấu hình: {clinic.openTime} - {clinic.closeTime}. Target
+            month: {scheduleWindow.targetMonthStart} to{" "}
+            {scheduleWindow.targetMonthEnd}.
           </div>
 
           {!canSubmit && (
             <div className="dentist-schedule__notice dentist-schedule__notice--error">
-              Schedule editing is closed. Dentists can edit next month's
-              schedule only from day 1 to day 15.
+              Đã đóng chỉnh sửa lịch. Nha sĩ chỉ có thể chỉnh lịch tháng tới
+              từ ngày 1 đến ngày 15.
             </div>
           )}
 
           {!hasScheduleSetup && (
             <div className="dentist-schedule__notice dentist-schedule__notice--error">
               Clinic working days or time slots are not configured.
+              Ngày làm việc, khung giờ hoặc phòng điều trị của phòng khám chưa được cấu hình.
             </div>
           )}
 
@@ -354,12 +359,12 @@ function ScheduleEditor({
               checked={form.applyForMonth}
               onChange={onChange}
             />
-            <span>Apply selected working days for all next month</span>
+            <span>Áp dụng các ngày làm việc đã chọn cho toàn bộ tháng tới</span>
           </label>
 
           <div className="dentist-schedule__form-grid">
             <label className="dentist-schedule__field">
-              <span>Start date</span>
+              <span>Ngày bắt đầu</span>
               <input
                 type="date"
                 name="startDate"
@@ -372,7 +377,7 @@ function ScheduleEditor({
               />
             </label>
             <label className="dentist-schedule__field">
-              <span>End date</span>
+              <span>Ngày kết thúc</span>
               <input
                 type="date"
                 name="endDate"
@@ -387,7 +392,7 @@ function ScheduleEditor({
           </div>
 
           <fieldset className="dentist-schedule__weekday-group">
-            <legend>Working days</legend>
+            <legend>Ngày làm việc</legend>
             <div className="dentist-schedule__weekday-list">
               {weekdayOptions.map((day) => (
                 <button
@@ -454,6 +459,7 @@ function ScheduleEditor({
             </div>
           </fieldset>
 
+
           <footer className="dentist-schedule__modal-actions">
             <button
               className="dentist-schedule__button dentist-schedule__button--secondary"
@@ -461,7 +467,7 @@ function ScheduleEditor({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Cancel
+              Hủy
             </button>
             <button
               className="dentist-schedule__button dentist-schedule__button--primary"
@@ -469,7 +475,7 @@ function ScheduleEditor({
               disabled={isSubmitting || !canSubmit}
             >
               <Send size={16} aria-hidden="true" />
-              {isSubmitting ? "Verifying..." : "Verify Schedule"}
+              {isSubmitting ? "Đang kiểm tra..." : "Kiểm tra lịch"}
             </button>
           </footer>
         </form>
@@ -494,14 +500,14 @@ function ConflictWarningModal({
       >
         <header className="dentist-schedule__modal-header dentist-schedule__modal-header--warning">
           <div>
-            <h2 id="availability-conflict-title">MSG25: Confirmed appointments found</h2>
-            <p>Review affected patients before force-blocking the selected time.</p>
+            <h2 id="availability-conflict-title">MSG25: Tìm thấy lịch hẹn đã xác nhận</h2>
+            <p>Xem lại các bệnh nhân bị ảnh hưởng trước khi buộc khóa khung giờ đã chọn.</p>
           </div>
           <button
             className="dentist-schedule__icon-btn"
             type="button"
             onClick={onCancel}
-            aria-label="Close conflict warning"
+            aria-label="Đóng cảnh báo xung đột"
             disabled={isSubmitting}
           >
             <X size={18} aria-hidden="true" />
@@ -512,8 +518,8 @@ function ConflictWarningModal({
           <div className="dentist-schedule__warning-box">
             <AlertTriangle size={20} aria-hidden="true" />
             <span>
-              Force blocking will mark these appointments as Conflict and push
-              them to receptionist rescheduling.
+              Buộc khóa sẽ đánh dấu các lịch hẹn này là Xung đột và chuyển
+              cho lễ tân sắp xếp lại.
             </span>
           </div>
 
@@ -541,7 +547,7 @@ function ConflictWarningModal({
             onClick={onCancel}
             disabled={isSubmitting}
           >
-            Cancel Change
+            Hủy thay đổi
           </button>
           <button
             className="dentist-schedule__button dentist-schedule__button--danger"
@@ -549,7 +555,7 @@ function ConflictWarningModal({
             onClick={onForce}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Blocking..." : "Force Block & Delegate Rescheduling"}
+            {isSubmitting ? "Đang khóa..." : "Buộc khóa & chuyển xử lý đổi lịch"}
           </button>
         </footer>
       </section>
@@ -640,7 +646,7 @@ function DentistScheduleManagement() {
 
   const stats = useMemo(
     () => ({
-      pending: schedules.filter((schedule) => schedule.status === "Pending").length,
+      pending: schedules.filter((schedule) => schedule.status === "Đang chờ").length,
       published: schedules.filter((schedule) => schedule.status === "Scheduled").length,
       denied: schedules.filter((schedule) => schedule.status === "Denied").length,
     }),
@@ -667,7 +673,7 @@ function DentistScheduleManagement() {
     if (!canEditSchedule) {
       setError(
         new Error(
-          "Schedule editing is closed. Dentists can edit next month's schedule only from day 1 to day 15.",
+          "Đã đóng chỉnh sửa lịch. Nha sĩ chỉ có thể chỉnh lịch tháng tới từ ngày 1 đến ngày 15.",
         ),
       );
       return;
@@ -840,7 +846,7 @@ function DentistScheduleManagement() {
 
     try {
       const result = await scheduleService.updateAvailability(payload);
-      setMessage(result.message || "MSG24: Availability updated successfully.");
+      setMessage(result.message || "MSG24: Đã cập nhật trạng thái khả dụng.");
       setAvailabilityReason("");
       setSelectedSlotIds([]);
       setConflictWarning(null);
@@ -889,11 +895,11 @@ function DentistScheduleManagement() {
       <div className="dentist-schedule">
         <header className="dentist-schedule__header">
           <div>
-            <p className="dentist-schedule__eyebrow">My Schedule</p>
-            <h1>Schedule Management</h1>
+            <p className="dentist-schedule__eyebrow">Lịch của tôi</p>
+            <h1>Quản lý lịch làm việc</h1>
             <p className="dentist-schedule__subtitle">
-              Manage monthly working shifts and block emergency unavailable
-              slots when needed.
+              Quản lý ca làm hằng tháng và khóa khung giờ khẩn cấp
+              khi cần.
             </p>
           </div>
           <div className="dentist-schedule__header-actions">
@@ -912,35 +918,35 @@ function DentistScheduleManagement() {
               disabled={!canEditSchedule}
               title={
                 canEditSchedule
-                  ? "Create/Edit Schedule"
-                  : "Schedule editing opens from day 1 to day 15"
+                  ? "Tạo/Sửa lịch"
+                  : "Chỉnh sửa lịch mở từ ngày 1 đến ngày 15"
               }
             >
               <Plus size={16} aria-hidden="true" />
-              Create/Edit Schedule
+              Tạo/Sửa lịch
             </button>
           </div>
         </header>
 
-        <section className="dentist-schedule__summary" aria-label="Schedule summary">
+        <section className="dentist-schedule__summary" aria-label="Tóm tắt lịch">
           <div>
             <span>{stats.pending}</span>
-            <p>Pending</p>
+            <p>Đang chờ</p>
           </div>
           <div>
             <span>{stats.published}</span>
-            <p>Published</p>
+            <p>Đã công bố</p>
           </div>
           <div>
             <span>{stats.denied}</span>
-            <p>Denied</p>
+            <p>Đã từ chối</p>
           </div>
         </section>
 
         {!canEditSchedule && (
           <div className="dentist-schedule__notice dentist-schedule__notice--warning">
-            Monthly schedule editing is closed. Availability blocking remains
-            available for published emergency changes.
+            Đã đóng chỉnh sửa lịch tháng. Bạn vẫn có thể khóa khung giờ
+            cho các thay đổi khẩn cấp đã công bố.
           </div>
         )}
 
@@ -953,7 +959,7 @@ function DentistScheduleManagement() {
 
         {error && (
           <div className="dentist-schedule__notice dentist-schedule__notice--error">
-            <span>{error.message || "Unable to load schedule."}</span>
+            <span>{error.message || "Không thể tải lịch."}</span>
           </div>
         )}
 
@@ -987,8 +993,8 @@ function DentistScheduleManagement() {
             />
           </div>
 
-          <aside className="dentist-schedule__details" aria-label="Schedule details">
-            <h2>Selected shift</h2>
+          <aside className="dentist-schedule__details" aria-label="Chi tiết lịch">
+            <h2>Ca đã chọn</h2>
             {selectedSchedule ? (
               <div className="dentist-schedule__details-body">
                 <span
@@ -1010,10 +1016,6 @@ function DentistScheduleManagement() {
                     <dd>{formatScheduleTime(selectedSchedule)}</dd>
                   </div>
                   <div>
-                    <dt>Room</dt>
-                    <dd>{selectedSchedule.roomName}</dd>
-                  </div>
-                  <div>
                     <dt>Slots</dt>
                     <dd>{selectedSchedule.slotCount}</dd>
                   </div>
@@ -1021,7 +1023,7 @@ function DentistScheduleManagement() {
 
                 {selectedSchedule.status === "Denied" && (
                   <div className="dentist-schedule__owner-note" role="alert">
-                    <strong>MSG23: Request denied</strong>
+                    <strong>MSG23: Yêu cầu bị từ chối</strong>
                     <p>{selectedSchedule.ownerNote || "No owner note provided."}</p>
                   </div>
                 )}
@@ -1031,7 +1033,7 @@ function DentistScheduleManagement() {
                     className="dentist-schedule__availability-form"
                     onSubmit={handleAvailabilitySubmit}
                   >
-                    <h3>Update availability</h3>
+                    <h3>Cập nhật khả dụng</h3>
                     <label className="dentist-schedule__checkbox">
                       <input
                         type="checkbox"
@@ -1042,7 +1044,7 @@ function DentistScheduleManagement() {
                           )
                         }
                       />
-                      <span>Block entire shift</span>
+                      <span>Khóa toàn bộ ca</span>
                     </label>
 
                     <div className="dentist-schedule__slot-list">
@@ -1079,7 +1081,7 @@ function DentistScheduleManagement() {
                         }
                         rows="4"
                         required
-                        placeholder="Emergency, sudden illness, leave..."
+                        placeholder="Việc khẩn cấp, ốm đột xuất, nghỉ phép..."
                       />
                     </label>
 
@@ -1094,7 +1096,7 @@ function DentistScheduleManagement() {
                       <Ban size={16} aria-hidden="true" />
                       {isAvailabilitySubmitting
                         ? "Updating..."
-                        : "Update Status"}
+                        : "Cập nhật trạng thái"}
                     </button>
                   </form>
                 )}
@@ -1102,7 +1104,7 @@ function DentistScheduleManagement() {
             ) : (
               <div className="dentist-schedule__empty-details">
                 <Clock size={22} aria-hidden="true" />
-                <p>Select a shift on the calendar to view or update slots.</p>
+                <p>Chọn một ca trên lịch để xem hoặc cập nhật khung giờ.</p>
               </div>
             )}
           </aside>

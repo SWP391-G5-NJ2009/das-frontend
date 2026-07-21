@@ -232,6 +232,28 @@
 }
 
 /*
+ * Slot that the current patient already has an active appointment at.
+ * Shown in warning orange to communicate "you're already booked here".
+ */
+.date-time-picker__slot--my-booked {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+  cursor: not-allowed;
+  font-style: italic;
+  position: relative;
+}
+
+.date-time-picker__slot--my-booked::after {
+  content: "✓";
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.6rem;
+  font-style: normal;
+}
+
+/*
  * Slot is individually Available but cannot be a multi-slot start
  * because there are not enough consecutive slots after it.
  * Visually distinct from --disabled (no strikethrough, dashed border).

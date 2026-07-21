@@ -1,6 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { AlertTriangle, X, User, Stethoscope, Phone, Calendar, Clock, TriangleAlert } from "lucide-react";
+import {
+  AlertTriangle,
+  X,
+  User,
+  Stethoscope,
+  Phone,
+  Calendar,
+  Clock,
+  TriangleAlert,
+} from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./CancelConfirmModal.css";
 
@@ -49,15 +58,43 @@ SummaryRow.defaultProps = {
 /* ─────────────────────────────────────────────────────────────────────────────
    CancelConfirmModal — Main component
 ───────────────────────────────────────────────────────────────────────────── */
-function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading, actorRole }) {
+function CancelConfirmModal({
+  isOpen,
+  appointment,
+  onConfirm,
+  onClose,
+  isLoading,
+  actorRole,
+}) {
   const [note, setNote] = useState("");
 
-  const within24h = useMemo(
+  const [within24h, setWithin24h] = useState(
     () =>
       actorRole === "patient" &&
       isWithin24Hours(appointment?.scheduledDate, appointment?.scheduledTime),
-    [actorRole, appointment?.scheduledDate, appointment?.scheduledTime],
   );
+
+  useEffect(() => {
+    if (actorRole !== "patient") return;
+    if (!appointment?.scheduledDate || !appointment?.scheduledTime) return;
+
+    const slotDateTime = new Date(
+      `${appointment.scheduledDate}T${appointment.scheduledTime}:00`,
+    );
+    // Thời điểm bắt đầu cấm huỷ = giờ hẹn trừ 24h
+    const deadline = slotDateTime.getTime() - 24 * 60 * 60 * 1000;
+    const msUntilDeadline = deadline - Date.now();
+
+    if (msUntilDeadline <= 0) {
+      // Đã qua ngưỡng 24h rồi khi mở modal
+      setWithin24h(true);
+      return;
+    }
+
+    // Fire chính xác tại thời điểm deadline
+    const timerId = setTimeout(() => setWithin24h(true), msUntilDeadline);
+    return () => clearTimeout(timerId);
+  }, [actorRole, appointment?.scheduledDate, appointment?.scheduledTime]);
 
   const isCancelDisabled = isLoading || within24h;
 
@@ -100,13 +137,13 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
               <AlertTriangle size={20} />
             </span>
             <h2 id="cancel-modal-title" className="cancel-modal__title">
-              Cancel Appointment
+              Hủy lịch hẹn
             </h2>
           </div>
           <button
             type="button"
             className="cancel-modal__close"
-            aria-label="Close"
+            aria-label="Đóng"
             onClick={handleClose}
             disabled={isLoading}
           >
@@ -116,48 +153,45 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
 
         {/* ── Body ── */}
         <div className="cancel-modal__body">
-
           {/* Appointment Summary Card */}
           <section
             className="cancel-modal__summary-card"
-            aria-label="Appointment details"
+            aria-label="Chi tiết lịch hẹn"
           >
             <div className="cancel-modal__summary-header">
-              <span className="cancel-modal__summary-heading">Appointment Summary</span>
+              <span className="cancel-modal__summary-heading">
+                Tóm tắt lịch hẹn
+              </span>
               <Badge status={appointment.status || "Confirmed"} />
             </div>
 
             <div className="cancel-modal__summary-rows">
               <SummaryRow
                 icon={User}
-                label="Patient"
+                label="Bệnh nhân"
                 value={appointment.patientName}
               />
               <SummaryRow
                 icon={Phone}
-                label="Phone"
+                label="Điện thoại"
                 value={appointment.patientPhone}
               />
               <SummaryRow
                 icon={Stethoscope}
-                label="Dentist"
+                label="Nha sĩ"
                 value={appointment.dentistName}
               />
               <SummaryRow
                 icon={Stethoscope}
-                label="Service"
+                label="Dịch vụ"
                 value={appointment.serviceName}
               />
               <SummaryRow
                 icon={Calendar}
-                label="Date"
+                label="Ngày khám"
                 value={formatDisplayDate(appointment.scheduledDate)}
               />
-              <SummaryRow
-                icon={Clock}
-                label="Time"
-                value={timeDisplay}
-              />
+              <SummaryRow icon={Clock} label="Giờ khám" value={timeDisplay} />
             </div>
           </section>
 
@@ -166,34 +200,38 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             <div className="cancel-modal__br13-notice" role="alert">
               <TriangleAlert size={16} aria-hidden="true" />
               <p>
-                <strong>Self-service cancellation is unavailable</strong> within 24 hours
-                of your appointment. Please contact the receptionist directly for assistance.
+                <strong>Không thể tự hủy lịch</strong> trong vòng 24 giờ trước
+                lịch hẹn. Vui lòng liên hệ trực tiếp lễ tân để được hỗ trợ.
               </p>
             </div>
           )}
 
           {/* Operational Warning Box */}
           <div className="cancel-modal__warning-box" role="note">
-            <AlertTriangle size={16} aria-hidden="true" className="cancel-modal__warning-icon" />
+            <AlertTriangle
+              size={16}
+              aria-hidden="true"
+              className="cancel-modal__warning-icon"
+            />
             <p className="cancel-modal__warning-text">
-              <strong>Heads up:</strong> Confirming this cancellation will{" "}
-              <strong>immediately release</strong> the associated time slot and reopen
-              it for public booking. A cancellation notification email will also be
-              sent to the patient automatically.
+              <strong>Lưu ý:</strong> Xác nhận hủy lịch sẽ{" "}
+              <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại cho
+              phép đặt lịch mới. SMS thông báo hủy cũng sẽ được tự động gửi đến
+              bệnh nhân.
             </p>
           </div>
 
           {/* Additional Note */}
           <div className="cancel-modal__note-field">
             <label htmlFor="cancel-modal-note" className="cancel-modal__label">
-              Additional Note{" "}
-              <span className="cancel-modal__optional">(optional)</span>
+              Ghi chú bổ sung{" "}
+              <span className="cancel-modal__optional">(không bắt buộc)</span>
             </label>
             <textarea
               id="cancel-modal-note"
               className="cancel-modal__textarea"
               rows={3}
-              placeholder="Log any specific context or remarks from the client..."
+              placeholder="Ghi lại ngữ cảnh hoặc lưu ý cụ thể từ khách hàng..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
               disabled={isCancelDisabled}
@@ -210,7 +248,7 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             disabled={isLoading}
             id="cancel-modal-back-btn"
           >
-            Back
+            Quay lại
           </button>
           <button
             type="button"
@@ -220,12 +258,12 @@ function CancelConfirmModal({ isOpen, appointment, onConfirm, onClose, isLoading
             aria-busy={isLoading}
             title={
               within24h
-                ? "Cannot self-cancel within 24 hours — contact the receptionist"
-                : "Confirm appointment cancellation"
+                ? "Không thể tự hủy trong vòng 24 giờ - hãy liên hệ lễ tân"
+                : "Xác nhận hủy lịch hẹn"
             }
             id="cancel-modal-confirm-btn"
           >
-            {isLoading ? "Cancelling…" : "Cancel Appointment"}
+            {isLoading ? "Đang hủy..." : "Hủy lịch hẹn"}
           </button>
         </div>
       </dialog>

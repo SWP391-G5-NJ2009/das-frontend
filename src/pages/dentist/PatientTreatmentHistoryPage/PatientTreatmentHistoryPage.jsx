@@ -6,12 +6,21 @@ import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { usePatientTreatments } from "../../../hooks/usePatientTreatments";
+import { useAuth } from "../../../context/AuthContext";
+import PatientPageShell from "../../patient/PatientPageShell";
 import DentistPageShell from "../DentistPageShell";
 import "./PatientTreatmentHistoryPage.css";
 
 function formatDate(value) {
   if (!value) return "Not updated";
-  return new Intl.DateTimeFormat("en-US").format(new Date(value));
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Not updated";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
 }
 
 function formatTime(record) {
@@ -80,16 +89,15 @@ function TreatmentRecordRow({ record }) {
       {isExpanded && (
         <div className="patient-treatment-history__record-details">
           <dl className="patient-treatment-history__field-list">
-            <FieldRow label="Diagnosis" value={record.diagnosis} />
-            <FieldRow label="Treatment note" value={record.treatmentNote} />
-            <FieldRow label="Appointment note" value={record.appointmentNote} />
-            <FieldRow label="Appointment" value={record.appointmentId} />
+            <FieldRow label="Chấn đoán" value={record.diagnosis} />
+            <FieldRow label="Ghi chú điều trị" value={record.treatmentNote} />
+            <FieldRow label="Ghi chú lịch hẹn" value={record.appointmentNote} />
           </dl>
           {!hasValue(record.diagnosis) &&
             !hasValue(record.treatmentNote) &&
             !hasValue(record.appointmentNote) && (
               <p className="patient-treatment-history__record-empty">
-                No clinical notes recorded.
+                Chưa có ghi chú lâm sàng.
               </p>
             )}
         </div>
@@ -127,34 +135,45 @@ function getHeaderMeta({ patient, treatments }) {
   return meta;
 }
 
-function PatientTreatmentHistoryPage() {
+function PatientTreatmentHistoryPage({ viewer }) {
   const { patientId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const isPatientView = viewer === "patient";
   const patient = location.state?.patient || {};
-  const { error, isLoading, treatments } = usePatientTreatments(patientId);
-  const patientName = patient.patientName || `Patient #${patientId}`;
-  const headerMeta = getHeaderMeta({ patient, treatments });
+  const { error, isLoading, treatments } = usePatientTreatments(
+    isPatientView ? null : patientId,
+  );
+  const patientName = isPatientView
+    ? user?.fullName || "Hồ sơ của tôi"
+    : patient.patientName || `Bệnh nhân #${patientId}`;
+  const headerMeta = isPatientView
+    ? [`${treatments.length} lần điều trị`, user?.phone].filter(Boolean)
+    : getHeaderMeta({ patient, treatments });
+  const PageShell = isPatientView ? PatientPageShell : DentistPageShell;
 
   return (
-    <DentistPageShell>
+    <PageShell>
       <section
         className="patient-treatment-history"
         aria-labelledby="patient-treatment-history-title"
       >
-        <button
-          className="patient-treatment-history__back-button"
-          onClick={() => navigate("/dentist/patients")}
-          type="button"
-        >
-          <ArrowLeft aria-hidden="true" size={16} />
-          <span>Back to patients</span>
-        </button>
+        {!isPatientView && (
+          <button
+            className="patient-treatment-history__back-button"
+            onClick={() => navigate("/dentist/patients")}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" size={16} />
+            <span>Quay lại danh sách bệnh nhân</span>
+          </button>
+        )}
 
         <header className="patient-treatment-history__header">
           <div>
             <p className="patient-treatment-history__eyebrow">
-              Treatment history
+              Lịch sử điều trị
             </p>
             <h1
               className="patient-treatment-history__title"
@@ -173,7 +192,7 @@ function PatientTreatmentHistoryPage() {
         {isLoading && <Spinner />}
 
         {!isLoading && error && (
-          <EmptyState message="Unable to load treatment history. Please try again." />
+          <EmptyState message="Không thể tải lịch sử điều trị. Vui lòng thử lại." />
         )}
 
         {!isLoading && !error && treatments.length === 0 && (
@@ -191,10 +210,16 @@ function PatientTreatmentHistoryPage() {
           </div>
         )}
       </section>
-    </DentistPageShell>
+    </PageShell>
   );
 }
 
-PatientTreatmentHistoryPage.propTypes = {};
+PatientTreatmentHistoryPage.propTypes = {
+  viewer: PropTypes.oneOf(["dentist", "patient"]),
+};
+
+PatientTreatmentHistoryPage.defaultProps = {
+  viewer: "dentist",
+};
 
 export default PatientTreatmentHistoryPage;

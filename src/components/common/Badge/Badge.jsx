@@ -3,30 +3,24 @@ import "./Badge.css";
 
 const STATUS_CLASS = {
   Confirmed: "confirmed",
-  Waiting: "waiting",
   "Checked-in": "checked-in",
   Cancelled: "cancelled",
   "No-Show": "no-show",
   Conflict: "conflict",
   "In-Treatment": "in-treatment",
   Completed: "completed",
-  Pending: "pending",
-  Failed: "failed",
-  Refunded: "refunded",
+  "Resolved No-Show": "resolved-no-show",
 };
 
 const STATUS_LABEL = {
-  Confirmed: "Confirmed",
-  Waiting: "Waiting",
-  "Checked-in": "Checked-in",
-  Cancelled: "Cancelled",
-  "No-Show": "No-Show",
-  Conflict: "Conflict",
-  "In-Treatment": "In Treatment",
-  Completed: "Completed",
-  Pending: "Pending",
-  Failed: "Failed",
-  Refunded: "Refunded",
+  Confirmed: "Đã xác nhận",
+  "Checked-in": "Đã check-in",
+  Cancelled: "Đã hủy",
+  "No-Show": "Vắng mặt",
+  Conflict: "Xung đột",
+  "In-Treatment": "Đang điều trị",
+  Completed: "Hoàn tất",
+  "Resolved No-Show": "Đã xử lý vắng mặt",
 };
 
 function Badge({ status }) {

@@ -20,12 +20,12 @@ function StaffLoginPage() {
 
   return (
     <AuthLoginLayout
-      title="Staff login"
-      subtitle="Please log in with your internal account."
-      credentialLabel="Username"
+      title="Đăng nhập nhân viên"
+      subtitle="Hãy đăng nhập để quản lí hồ sơ cá nhân của bạn."
+      credentialLabel="Tên đăng nhập"
       credentialName="username"
       credentialType="text"
-      credentialPlaceholder="Enter username"
+      credentialPlaceholder="E.g: admin"
       CredentialIcon={User}
       error={error}
       forgotPasswordPath="/staff/forgot-password"

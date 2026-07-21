@@ -13,7 +13,7 @@
 .payment-list__heading {
   display: grid;
   gap: var(--space-2);
-  max-width: 44rem;
+  max-width: var(--text-content-max-width);
 }
 
 .payment-list__heading h1 {
@@ -27,4 +27,49 @@
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-neutral-500);
+}
+
+.payment-list__tabs {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
+}
+
+.payment-list__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background-color: var(--color-transparent);
+  border: 0;
+  border-bottom: var(--focus-ring-width) solid var(--color-transparent);
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+}
+
+.payment-list__tab span {
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-neutral-100);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.payment-list__tab--active {
+  border-bottom-color: var(--color-secondary-700);
+  color: var(--color-secondary-800);
+  font-weight: var(--font-weight-semibold);
+}
+
+.payment-list__tab:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary-700);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (min-width: 640px) {
+  .payment-list__tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

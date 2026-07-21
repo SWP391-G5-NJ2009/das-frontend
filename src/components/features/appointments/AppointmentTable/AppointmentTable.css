@@ -190,23 +190,24 @@
   outline-offset: 2px;
 }
 
-.appt-table__action-btn--edit {
-  color: var(--color-primary-700);
-}
-
-.appt-table__action-btn--edit:hover:not(:disabled) {
-  background-color: var(--color-primary-100);
-  transform: scale(1.1);
-}
-
-.appt-table__action-btn--edit:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  transform: none;
-}
 
 .appt-table__action-btn--cancel {
   color: var(--color-error);
+}
+
+.appt-table__action-btn--check-in {
+  color: var(--color-success);
+}
+
+.appt-table__action-btn--check-in:hover {
+  background-color: var(--color-success-bg);
+  transform: scale(1.1);
+}
+
+.appt-table__action-btn--check-in:disabled {
+  color: var(--color-neutral-300);
+  cursor: not-allowed;
+  transform: none;
 }
 
 .appt-table__action-btn--cancel:hover {
@@ -244,6 +245,63 @@
   user-select: none;
 }
 
+.appt-table__start-treatment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-secondary-700);
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-50);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.appt-table__start-treatment:hover:not(:disabled) {
+  background-color: var(--color-secondary-800);
+}
+
+.appt-table__start-treatment:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.appt-table__start-treatment:disabled {
+  background-color: var(--color-neutral-300);
+  cursor: not-allowed;
+}
+
+.appt-table__record-treatment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-primary-700);
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-50);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.appt-table__record-treatment:hover {
+  background-color: var(--color-primary-800);
+}
+
+.appt-table__record-treatment:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
 
 /* Cancellation / booking note shown below the status badge */
 .appt-table__td--status {
@@ -278,3 +336,57 @@
   max-width: 180px;
 }
 
+/* ─── Room column ───────────────────────────────────── */
+.appt-table__td--room {
+  white-space: nowrap;
+}
+
+.appt-table__room-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  transition: background-color var(--transition-fast);
+  /* default fallback */
+  color: var(--color-secondary-700);
+  background-color: var(--color-secondary-100);
+}
+
+/* Room 101 — Blue (primary) */
+.appt-table__room-badge--r1 {
+  color: var(--color-primary-800);
+  background-color: var(--color-primary-100);
+}
+
+/* Room 102 — Teal (secondary) */
+.appt-table__room-badge--r2 {
+  color: var(--color-secondary-800);
+  background-color: var(--color-secondary-100);
+}
+
+/* Room 103 — Amber/warning */
+.appt-table__room-badge--r3 {
+  color: #92400e;
+  background-color: #fef3c7;
+}
+
+/* Room 104 — Purple */
+.appt-table__room-badge--r4 {
+  color: #5b21b6;
+  background-color: #ede9fe;
+}
+
+/* Room 105 — Rose/pink */
+.appt-table__room-badge--r5 {
+  color: #9d174d;
+  background-color: #fce7f3;
+}
+
+.appt-table__room-empty {
+  color: var(--color-neutral-300);
+  font-size: var(--font-size-base);
+  user-select: none;
+}

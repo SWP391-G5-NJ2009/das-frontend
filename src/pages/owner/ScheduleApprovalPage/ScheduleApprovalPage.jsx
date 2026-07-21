@@ -6,10 +6,10 @@ import OwnerPageShell from "../OwnerPageShell";
 import "./ScheduleApprovalPage.css";
 
 const STATUS_OPTIONS = [
-  { value: "", label: "All" },
-  { value: "Pending", label: "Pending" },
-  { value: "Scheduled", label: "Published" },
-  { value: "Denied", label: "Denied" },
+  { value: "", label: "Tất cả" },
+  { value: "Pending", label: "Đang chờ" },
+  { value: "Scheduled", label: "Đã xuất bản" },
+  { value: "Denied", label: "Đã từ chối" },
 ];
 
 function getStatusClass(status) {
@@ -25,7 +25,7 @@ function getStatusClass(status) {
 }
 
 function formatTime(schedule) {
-  if (!schedule.startTime || !schedule.endTime) return "No slots";
+  if (!schedule.startTime || !schedule.endTime) return "Không có lịch";
   return `${schedule.startTime} - ${schedule.endTime}`;
 }
 
@@ -33,11 +33,11 @@ function ScheduleApprovalPage() {
   const [denialReason, setDenialReason] = useState("");
   const [denialTarget, setDenialTarget] = useState(null);
   const [error, setError] = useState(null);
-  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [isActionsLoading, setIsActionsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [requests, setRequests] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("Pending");
+  const [statusFilter, setStatusFilter] = useState("Đang chờ");
 
   const fetchRequests = useCallback(async () => {
     setIsLoading(true);
@@ -61,7 +61,7 @@ function ScheduleApprovalPage() {
 
   const stats = useMemo(
     () => ({
-      pending: requests.filter((request) => request.status === "Pending").length,
+      pending: requests.filter((request) => request.status === "Đang chờ").length,
       published: requests.filter((request) => request.status === "Scheduled").length,
       denied: requests.filter((request) => request.status === "Denied").length,
     }),
@@ -69,18 +69,18 @@ function ScheduleApprovalPage() {
   );
 
   const handleApprove = async (schedule) => {
-    setIsActionLoading(true);
+    setIsActionsLoading(true);
     setError(null);
     setMessage("");
 
     try {
       await scheduleService.approve(schedule.id);
-      setMessage("MSG22: Schedule accepted and published to patient booking calendar.");
+      setMessage("MSG22: Lịch đã được chấp nhận và công bố lên lịch đặt hẹn của bệnh nhân.");
       await fetchRequests();
     } catch (err) {
       setError(err);
     } finally {
-      setIsActionLoading(false);
+      setIsActionsLoading(false);
     }
   };
 
@@ -94,7 +94,7 @@ function ScheduleApprovalPage() {
     event.preventDefault();
     if (!denialTarget) return;
 
-    setIsActionLoading(true);
+    setIsActionsLoading(true);
     setError(null);
 
     try {
@@ -108,7 +108,7 @@ function ScheduleApprovalPage() {
     } catch (err) {
       setError(err);
     } finally {
-      setIsActionLoading(false);
+      setIsActionsLoading(false);
     }
   };
 
@@ -117,11 +117,11 @@ function ScheduleApprovalPage() {
       <div className="schedule-approval">
         <header className="schedule-approval__header">
           <div>
-            <p className="schedule-approval__eyebrow">Clinic Schedule</p>
-            <h1>Schedule Approval</h1>
+            <p className="schedule-approval__eyebrow">Lịch phòng khám</p>
+            <h1>Duyệt lịch làm việc</h1>
             <p>
-              Review dentist weekly shift requests before they are published to
-              patient booking.
+              Xem xét yêu cầu lịch tuần của nha sĩ trước khi xuất bản lên
+              lịch hẹn bệnh nhân.
             </p>
           </div>
           <button
@@ -130,28 +130,28 @@ function ScheduleApprovalPage() {
             onClick={fetchRequests}
           >
             <RefreshCw size={16} aria-hidden="true" />
-            Refresh
+            Làm mới
           </button>
         </header>
 
-        <section className="schedule-approval__summary" aria-label="Request summary">
+        <section className="schedule-approval__summary" aria-label="Tóm tắt yêu cầu">
           <div>
             <span>{stats.pending}</span>
-            <p>Pending</p>
+            <p>Đang chờ</p>
           </div>
           <div>
             <span>{stats.published}</span>
-            <p>Published</p>
+            <p>Đã xuất bản</p>
           </div>
           <div>
             <span>{stats.denied}</span>
-            <p>Denied</p>
+            <p>Đã từ chối</p>
           </div>
         </section>
 
         <section className="schedule-approval__toolbar">
           <label>
-            <span>Status</span>
+            <span>Trạng thái</span>
             <select
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
@@ -173,7 +173,7 @@ function ScheduleApprovalPage() {
 
         {error && (
           <div className="schedule-approval__notice schedule-approval__notice--error">
-            {error.message || "Unable to process schedule request."}
+            {error.message || "Không thể xử lý yêu cầu lịch."}
           </div>
         )}
 
@@ -186,13 +186,13 @@ function ScheduleApprovalPage() {
             <table className="schedule-approval__table">
               <thead>
                 <tr>
-                  <th>Dentist</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Room</th>
-                  <th>Status</th>
-                  <th>Owner note</th>
-                  <th>Actions</th>
+                  <th>Nha sĩ</th>
+                  <th>Ngày</th>
+                  <th>Giờ</th>
+                  <th>Phòng</th>
+                  <th>Trạng thái</th>
+                  <th>Ghi chú chủ phòng khám</th>
+                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -205,8 +205,8 @@ function ScheduleApprovalPage() {
                     <td>
                       <span className={getStatusClass(request.status)}>
                         {request.status === "Scheduled"
-                          ? "Published"
-                          : request.status}
+                          ? "Đã xuất bản"
+                          : request.status === "Pending" ? "Đang chờ" : request.status === "Denied" ? "Đã từ chối" : request.status}
                       </span>
                     </td>
                     <td>{request.ownerNote || "-"}</td>
@@ -215,11 +215,11 @@ function ScheduleApprovalPage() {
                         <button
                           className="schedule-approval__icon-btn schedule-approval__icon-btn--approve"
                           type="button"
-                          title="Approve"
-                          aria-label={`Approve schedule ${request.date}`}
+                          title="Duyệt"
+                          aria-label={`Duyệt lịch ${request.date}`}
                           onClick={() => handleApprove(request)}
                           disabled={
-                            isActionLoading || request.status !== "Pending"
+                            isActionsLoading || request.status !== "Đang chờ"
                           }
                         >
                           <Check size={18} aria-hidden="true" />
@@ -227,11 +227,11 @@ function ScheduleApprovalPage() {
                         <button
                           className="schedule-approval__icon-btn schedule-approval__icon-btn--deny"
                           type="button"
-                          title="Deny"
-                          aria-label={`Deny schedule ${request.date}`}
+                          title="Từ chối"
+                          aria-label={`Từ chối lịch ${request.date}`}
                           onClick={() => openDenyModal(request)}
                           disabled={
-                            isActionLoading || request.status !== "Pending"
+                            isActionsLoading || request.status !== "Đang chờ"
                           }
                         >
                           <X size={18} aria-hidden="true" />
@@ -243,7 +243,7 @@ function ScheduleApprovalPage() {
                 {requests.length === 0 && (
                   <tr>
                     <td className="schedule-approval__empty" colSpan={7}>
-                      No schedule requests found.
+                      Không tìm thấy yêu cầu lịch nào.
                     </td>
                   </tr>
                 )}
@@ -262,7 +262,7 @@ function ScheduleApprovalPage() {
             >
               <header className="schedule-approval__modal-header">
                 <div>
-                  <h2 id="deny-schedule-title">Deny Schedule Request</h2>
+                  <h2 id="deny-schedule-title">Từ chối yêu cầu lịch</h2>
                   <p>
                     {denialTarget.dentistName} - {denialTarget.date} -{" "}
                     {formatTime(denialTarget)}
@@ -272,20 +272,20 @@ function ScheduleApprovalPage() {
                   className="schedule-approval__icon-btn"
                   type="button"
                   onClick={() => setDenialTarget(null)}
-                  aria-label="Close deny modal"
+                  aria-label="Đóng hộp thoại từ chối"
                 >
                   <X size={18} aria-hidden="true" />
                 </button>
               </header>
               <form className="schedule-approval__deny-form" onSubmit={handleDeny}>
                 <label>
-                  <span>Owner note</span>
+                  <span>Ghi chú chủ phòng khám</span>
                   <textarea
                     value={denialReason}
                     onChange={(event) => setDenialReason(event.target.value)}
                     rows="5"
                     required
-                    placeholder="Explain why this schedule cannot be accepted."
+                    placeholder="Giải thích lý do không thể chấp nhận lịch này."
                   />
                 </label>
                 <footer className="schedule-approval__modal-actions">
@@ -293,16 +293,16 @@ function ScheduleApprovalPage() {
                     className="schedule-approval__button schedule-approval__button--secondary"
                     type="button"
                     onClick={() => setDenialTarget(null)}
-                    disabled={isActionLoading}
+                    disabled={isActionsLoading}
                   >
-                    Cancel
+                    Hủy
                   </button>
                   <button
                     className="schedule-approval__button schedule-approval__button--danger"
                     type="submit"
-                    disabled={isActionLoading}
+                    disabled={isActionsLoading}
                   >
-                    {isActionLoading ? "Sending..." : "Deny request"}
+                    {isActionLoading ? "Đang gửi..." : "Từ chối yêu cầu"}
                   </button>
                 </footer>
               </form>

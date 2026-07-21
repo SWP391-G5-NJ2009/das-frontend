@@ -1,0 +1,35 @@
+.patient-payment-history {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.patient-payment-history__header {
+  display: grid;
+  gap: var(--space-1);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.patient-payment-history__header p,
+.patient-payment-history__header h1,
+.patient-payment-history__header span {
+  margin: 0;
+}
+
+.patient-payment-history__header p {
+  color: var(--color-primary-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.patient-payment-history__header h1 {
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+}
+
+.patient-payment-history__header span {
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}

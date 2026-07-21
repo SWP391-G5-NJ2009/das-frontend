@@ -3,7 +3,7 @@ import { useReturningPatient } from "../../../hooks/usePatientAnalytics";
 import "./ReturningPatient.css";
 
 function getCurrentMonthLabel() {
-  return new Date().toLocaleDateString("en-US", {
+  return new Date().toLocaleDateString("vi-VN", {
     month: "long",
     year: "numeric",
   });
@@ -27,10 +27,10 @@ function ReturningPatientCount() {
     return (
       <section className="returning-patient returning-patient--error">
         <div className="returning-patient__header">
-          <h2 className="returning-patient__title">Returning Patients</h2>
+          <h2 className="returning-patient__title">Bệnh nhân quay lại</h2>
         </div>
         <p className="returning-patient__error-text">
-          Unable to load data.
+          Không thể tải dữ liệu.
         </p>
       </section>
     );
@@ -39,7 +39,7 @@ function ReturningPatientCount() {
   return (
     <section className="returning-patient">
       <div className="returning-patient__header">
-        <h2 className="returning-patient__title">Returning Patients</h2>
+        <h2 className="returning-patient__title">Bệnh nhân quay lại</h2>
         <span className="returning-patient__period">{getCurrentMonthLabel()}</span>
       </div>
       <p className="returning-patient__amount">{(data ?? 0)}</p>

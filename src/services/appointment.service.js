@@ -27,14 +27,29 @@ export const appointmentService = {
   cancel: (appointmentId, reason = "") =>
     api.patch(`/appointments/${appointmentId}/cancel`, { reason }),
 
+  /** Receptionist: check in a confirmed appointment */
+  checkIn: (appointmentId) =>
+    api.patch(`/appointments/${appointmentId}/checkin`),
+
+  /** Dentist: start treatment for an assigned checked-in appointment */
+  startTreatment: (appointmentId) =>
+    api.patch(`/appointments/${appointmentId}/start-treatment`),
+
   /** Edit an appointment (service, dentist, or slot) — FE stub only, BE not yet implemented */
   edit: (appointmentId, payload) =>
     api.patch(`/appointments/${appointmentId}`, payload),
 
-  /**
-   * Book a new appointment.
-   * @param {{ slotId, serviceId, note, patientId? }} payload
-   *   patientId is only required when called by a receptionist.
-   */
   book: (payload) => api.post("/appointments", payload),
+
+  /**
+   * Patient: get list of { date, startTime } for all active appointments.
+   * Used to disable already-booked time slots in the booking UI.
+   */
+  getMyBookedTimes: () => api.get("/appointments/my/booked-times"),
+
+  /**
+   * Receptionist: get list of { date, startTime } for a specific patient's active appointments.
+   */
+  getPatientBookedTimes: (patientId) =>
+    api.get(`/appointments/patient-booked-times?patientId=${patientId}`),
 };

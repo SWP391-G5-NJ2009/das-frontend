@@ -13,8 +13,8 @@ import { useMonthlyRevenue } from "../../../hooks/useRevenue";
 import "./MonthlyRevenue.css";
 
 const MONTH_NAMES = [
-  "Jan","Feb","Mar","Apr","May","Jun",
-  "Jul","Aug","Sep","Oct","Nov","Dec",
+  "T1","T2","T3","T4","T5","T6",
+  "T7","T8","T9","T10","T11","T12",
 ];
 
 const BAR_COLOR_DEFAULT = "var(--color-primary-700)";
@@ -84,10 +84,10 @@ function MonthlyRevenueSummary() {
     return (
       <section className="monthly-revenue monthly-revenue--error">
         <div className="monthly-revenue__header">
-          <h2 className="monthly-revenue__title">Last 12 Months&apos; Revenue</h2>
+          <h2 className="monthly-revenue__title">Doanh thu 12 tháng gần đây</h2>
         </div>
         <p className="monthly-revenue__error-text">
-          Unable to load revenue data.
+          Không thể tải dữ liệu doanh thu.
         </p>
       </section>
     );
@@ -97,9 +97,9 @@ function MonthlyRevenueSummary() {
     return (
       <section className="monthly-revenue">
         <div className="monthly-revenue__header">
-          <h2 className="monthly-revenue__title">Last 12 Months&apos; Revenue</h2>
+          <h2 className="monthly-revenue__title">Doanh thu 12 tháng gần đây</h2>
         </div>
-        <p className="monthly-revenue__empty-text">No revenue data available.</p>
+        <p className="monthly-revenue__empty-text">Không có dữ liệu doanh thu.</p>
       </section>
     );
   }
@@ -115,7 +115,7 @@ function MonthlyRevenueSummary() {
   return (
     <section className="monthly-revenue">
       <div className="monthly-revenue__header">
-        <h2 className="monthly-revenue__title">Last 12 Months&apos; Revenue</h2>
+        <h2 className="monthly-revenue__title">Doanh thu 12 tháng gần đây</h2>
       </div>
       <div className="monthly-revenue__chart-container">
         <ResponsiveContainer width="100%" height="100%">

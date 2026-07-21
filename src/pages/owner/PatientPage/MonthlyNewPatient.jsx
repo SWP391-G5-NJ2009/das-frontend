@@ -13,8 +13,8 @@ import { useMonthlyNewPatient } from "../../../hooks/usePatientAnalytics";
 import "./MonthlyNewPatient.css";
 
 const MONTH_NAMES = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "T1", "T2", "T3", "T4", "T5", "T6",
+    "T7", "T8", "T9", "T10", "T11", "T12",
 ];
 
 const BAR_COLOR_DEFAULT = "var(--color-primary-700)";
@@ -77,10 +77,10 @@ function MonthlyNewPatientCount() {
         return (
             <section className="monthly-new-patient monthly-new-patient--error">
                 <div className="monthly-new-patient__header">
-                    <h2 className="monthly-new-patient__title">Last 12 Months&apos; New Patient</h2>
+                    <h2 className="monthly-new-patient__title">Bệnh nhân mới 12 tháng gần đây</h2>
                 </div>
                 <p className="monthly-new-patient__error-text">
-                    Unable to load data.
+                    Không thể tải dữ liệu.
                 </p>
             </section>
         );
@@ -90,9 +90,9 @@ function MonthlyNewPatientCount() {
         return (
             <section className="monthly-new-patient">
                 <div className="monthly-new-patient__header">
-                    <h2 className="monthly-new-patient__title">Last 12 Months&apos; New Patient</h2>
+                    <h2 className="monthly-new-patient__title">Bệnh nhân mới 12 tháng gần đây</h2>
                 </div>
-                <p className="monthly-new-patient__empty-text">No data available.</p>
+                <p className="monthly-new-patient__empty-text">Không có dữ liệu.</p>
             </section>
         );
     }
@@ -108,7 +108,7 @@ function MonthlyNewPatientCount() {
     return (
         <section className="monthly-new-patient">
             <div className="monthly-new-patient__header">
-                <h2 className="monthly-new-patient__title">Last 12 Months&apos; New Patient</h2>
+                <h2 className="monthly-new-patient__title">Bệnh nhân mới 12 tháng gần đây</h2>
             </div>
             <div className="monthly-new-patient__chart-container">
                 <ResponsiveContainer width="100%" height="100%">

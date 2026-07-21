@@ -703,40 +703,6 @@
   margin: var(--space-1) 0 0 0;
 }
 
-/* ===== Toast ===== */
-.admin-accounts__toast {
-  position: fixed;
-  bottom: var(--space-6);
-  right: var(--space-6);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-6);
-  background-color: var(--color-neutral-800);
-  color: #ffffff;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  z-index: var(--z-toast);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  transform: translateY(80px);
-  opacity: 0;
-  transition:
-    transform var(--transition-slow),
-    opacity var(--transition-slow);
-  pointer-events: none;
-}
-
-.admin-accounts__toast--visible {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.admin-accounts__toast-icon {
-  color: var(--color-primary-300);
-  font-size: 20px;
-}
-
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .admin-accounts__stats {

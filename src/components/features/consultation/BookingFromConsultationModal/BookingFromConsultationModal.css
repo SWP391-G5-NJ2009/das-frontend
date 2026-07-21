@@ -1,0 +1,191 @@
+﻿.bfc-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: calc(var(--z-modal) + 10);
+  padding: var(--space-6) var(--space-4);
+  overflow-y: auto;
+}
+
+.bfc-modal {
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 1160px;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Header */
+.bfc-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.bfc-modal__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bfc-modal__title-icon {
+  color: var(--color-secondary-700);
+}
+
+.bfc-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+.bfc-modal__close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: var(--radius-full);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.bfc-modal__close:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-800);
+}
+
+/* Patient banner */
+.bfc-modal__patient-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background-color: var(--color-secondary-100);
+  border-bottom: 1px solid var(--color-secondary-200);
+  flex-wrap: wrap;
+}
+
+.bfc-modal__patient-icon {
+  color: var(--color-secondary-700);
+  flex-shrink: 0;
+}
+
+.bfc-modal__patient-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-secondary-900);
+}
+
+.bfc-modal__patient-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+}
+
+.bfc-modal__patient-sep {
+  color: var(--color-neutral-400);
+  font-size: var(--font-size-sm);
+}
+
+.bfc-modal__patient-phone {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+}
+
+.bfc-modal__patient-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  background-color: var(--color-secondary-700);
+  color: #ffffff;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  margin-left: var(--space-1);
+}
+
+/* Error banner */
+.bfc-modal__error {
+  margin: 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  border: 1px solid rgba(198, 40, 40, 0.2);
+}
+
+/* Body: 2-column layout */
+.bfc-modal__body {
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+  gap: var(--space-6);
+  align-items: start;
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+/* Form column */
+.bfc-modal__form-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Step cards */
+.bfc-modal__step-card {
+  background-color: #ffffff;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.bfc-modal__step-card:hover {
+  border-color: var(--color-neutral-200);
+  box-shadow: var(--shadow-md);
+}
+
+.bfc-modal__step-card--locked {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.bfc-modal__locked-msg {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-400);
+  font-style: italic;
+  margin: 0;
+  padding: var(--space-2) 0;
+}
+
+/* Sidebar */
+.bfc-modal__sidebar-col {
+  position: sticky;
+  top: var(--space-6);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .bfc-modal__body {
+    grid-template-columns: 1fr;
+  }
+
+  .bfc-modal__sidebar-col {
+    order: -1;
+    position: static;
+  }
+}

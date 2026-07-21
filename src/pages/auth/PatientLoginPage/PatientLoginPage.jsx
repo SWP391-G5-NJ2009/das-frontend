@@ -20,12 +20,12 @@ function PatientLoginPage() {
 
   return (
     <AuthLoginLayout
-      title="Welcome back"
-      subtitle="Please log in to manage your profile."
-      credentialLabel="Phone number"
+      title="Chào mừng trở lại"
+      subtitle="Hãy đăng nhập để quản lí hồ sơ cá nhân của bạn."
+      credentialLabel="Số điện thoại"
       credentialName="phone"
       credentialType="tel"
-      credentialPlaceholder="Enter phone number"
+      credentialPlaceholder="09xx xxx xxx"
       CredentialIcon={Phone}
       error={error}
       forgotPasswordPath="/forgot-password"

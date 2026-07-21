@@ -1,19 +1,17 @@
 import { useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import { Edit, Trash2 } from "lucide-react";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import DeleteRoomModal from "../../../components/features/room/DeleteRoomModal/DeleteRoomModal";
 import RoomFormModal from "../../../components/features/room/RoomFormModal/RoomFormModal";
-import { useAuth } from "../../../context/AuthContext";
 import { useRooms } from "../../../hooks/useRooms";
-import OwnerPageShell from "../../owner/OwnerPageShell";
-import ReceptionistPageShell from "../../receptionist/ReceptionistPageShell";
-import "../../owner/ServiceCatalogPage/ServiceCatalogPage.css";
+import { useStaff } from "../../../hooks/useStaff";
+import OwnerPageShell from "../OwnerPageShell";
+import "../ServiceCatalogPage/ServiceCatalogPage.css";
 import "./RoomsPage.css";
 
 const EMPTY_FORM = {
   room_name: "",
-  specialization: "",
+  dentist_id: "",
   status: "Available",
 };
 
@@ -37,9 +35,14 @@ function getStatusBadgeClass(status) {
   return "badge badge--neutral status-badge";
 }
 
-function RoomsPageContent({ canManage }) {
+function RoomsPageContent() {
   const { createRoom, deleteRoom, error, isLoading, rooms, updateRoom } =
     useRooms();
+  const {
+    staff: dentists,
+    isLoading: areDentistsLoading,
+    error: dentistError,
+  } = useStaff({ role: "dentist" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentRoomId, setCurrentRoomId] = useState(null);
@@ -59,6 +62,18 @@ function RoomsPageContent({ canManage }) {
     [rooms],
   );
 
+  const dentistOptions = useMemo(
+    () =>
+      [...dentists]
+        .filter((dentist) => dentist.profileId)
+        .sort((firstDentist, secondDentist) =>
+          String(firstDentist.fullName || "").localeCompare(
+            String(secondDentist.fullName || ""),
+          ),
+        ),
+    [dentists],
+  );
+
   const openAddModal = () => {
     setIsEditMode(false);
     setCurrentRoomId(null);
@@ -71,7 +86,7 @@ function RoomsPageContent({ canManage }) {
     setCurrentRoomId(room.room_id);
     setFormData({
       room_name: room.room_name || "",
-      specialization: room.specialization || "",
+      dentist_id: room.dentist_id ? String(room.dentist_id) : "",
       status: formatRoomStatus(room.status),
     });
     setIsModalOpen(true);
@@ -92,11 +107,16 @@ function RoomsPageContent({ canManage }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const payload = {
+      ...formData,
+      dentist_id: formData.dentist_id ? Number(formData.dentist_id) : null,
+    };
+
     try {
       if (isEditMode) {
-        await updateRoom(currentRoomId, formData);
+        await updateRoom(currentRoomId, payload);
       } else {
-        await createRoom(formData);
+        await createRoom(payload);
       }
 
       closeModal();
@@ -129,89 +149,84 @@ function RoomsPageContent({ canManage }) {
     }
   };
 
+  const loadError = error || dentistError;
+
   return (
     <div className="catalog-container">
       <div className="catalog-header">
         <div>
-          <h1 id="rooms-page-title">Rooms</h1>
-          <p className="subtitle">
-            {canManage
-              ? "Manage treatment rooms and their availability."
-              : "View current treatment room availability."}
-          </p>
+          <h1 id="rooms-page-title">Danh sách phòng</h1>
         </div>
-        {canManage && (
-          <button className="btn-add-service" type="button" onClick={openAddModal}>
-            Create new room
-          </button>
-        )}
+        <button
+          className="btn-add-service"
+          type="button"
+          onClick={openAddModal}
+        >
+          Thêm phòng mới
+        </button>
       </div>
 
       <div className="table-responsive">
-        {isLoading ? (
+        {isLoading || areDentistsLoading ? (
           <div className="loading-container">
             <Spinner />
           </div>
         ) : (
-          <table
-            className={`catalog-table rooms-table${canManage ? "" : " rooms-table--readonly"}`}
-          >
+          <table className="catalog-table rooms-table">
             <thead>
               <tr>
-                <th>Room</th>
-                <th>Specialization</th>
-                <th>Status</th>
-                {canManage && <th>Actions</th>}
+                <th>Phòng</th>
+                <th>Bác sĩ</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
-              {error && (
+              {loadError && (
                 <tr>
-                  <td className="empty-row" colSpan={canManage ? 4 : 3}>
-                    {error.message || "Unable to load rooms."}
+                  <td className="empty-row" colSpan={4}>
+                    {loadError.message || "Unable to load rooms."}
                   </td>
                 </tr>
               )}
-              {!error &&
+              {!loadError &&
                 sortedRooms.map((room) => (
                   <tr key={room.room_id}>
                     <td>
                       <span className="price-cell">{room.room_name}</span>
                     </td>
-                    <td>{room.specialization || "Unassigned"}</td>
+                    <td>{room.dentist?.full_name || "Unassigned"}</td>
                     <td>
                       <span className={getStatusBadgeClass(room.status)}>
                         {formatRoomStatus(room.status)}
                       </span>
                     </td>
-                    {canManage && (
-                      <td className="actions-cell">
-                        <button
-                          className="action-btn edit-btn"
-                          type="button"
-                          title="Edit room"
-                          aria-label={`Edit room ${room.room_name}`}
-                          onClick={() => openEditModal(room)}
-                        >
-                          <Edit size={18} aria-hidden="true" />
-                        </button>
-                        <button
-                          className="action-btn delete-btn"
-                          type="button"
-                          title="Delete room"
-                          aria-label={`Delete room ${room.room_name}`}
-                          onClick={() => openDeleteModal(room)}
-                        >
-                          <Trash2 size={18} aria-hidden="true" />
-                        </button>
-                      </td>
-                    )}
+                    <td className="actions-cell">
+                      <button
+                        className="action-btn edit-btn"
+                        type="button"
+                        title="Edit room"
+                        aria-label={`Edit room ${room.room_name}`}
+                        onClick={() => openEditModal(room)}
+                      >
+                        <Edit size={18} aria-hidden="true" />
+                      </button>
+                      <button
+                        className="action-btn delete-btn"
+                        type="button"
+                        title="Delete room"
+                        aria-label={`Delete room ${room.room_name}`}
+                        onClick={() => openDeleteModal(room)}
+                      >
+                        <Trash2 size={18} aria-hidden="true" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
-              {!error && sortedRooms.length === 0 && (
+              {!loadError && sortedRooms.length === 0 && (
                 <tr>
-                  <td className="empty-row" colSpan={canManage ? 4 : 3}>
-                    No rooms found.
+                  <td className="empty-row" colSpan={4}>
+                    Không tìm thấy phòng.
                   </td>
                 </tr>
               )}
@@ -220,8 +235,9 @@ function RoomsPageContent({ canManage }) {
         )}
       </div>
 
-      {canManage && isModalOpen && (
+      {isModalOpen && (
         <RoomFormModal
+          dentistOptions={dentistOptions}
           formData={formData}
           isEditMode={isEditMode}
           onChange={handleInputChange}
@@ -229,7 +245,7 @@ function RoomsPageContent({ canManage }) {
           onSubmit={handleSubmit}
         />
       )}
-      {canManage && roomPendingDelete && (
+      {roomPendingDelete && (
         <DeleteRoomModal
           isDeleting={isDeleting}
           onClose={closeDeleteModal}
@@ -241,30 +257,13 @@ function RoomsPageContent({ canManage }) {
   );
 }
 
-RoomsPageContent.propTypes = {
-  canManage: PropTypes.bool.isRequired,
-};
+RoomsPageContent.propTypes = {};
 
 function RoomsPage() {
-  const { user } = useAuth();
-  const canManage = user?.role === "owner";
-  const content = <RoomsPageContent canManage={canManage} />;
-
-  if (canManage) {
-    return (
-      <OwnerPageShell contentClassName="owner-catalog-page">
-        {content}
-      </OwnerPageShell>
-    );
-  }
-
   return (
-    <ReceptionistPageShell
-      contentClassName="owner-catalog-page"
-      contentLabelledBy="rooms-page-title"
-    >
-      {content}
-    </ReceptionistPageShell>
+    <OwnerPageShell contentClassName="owner-catalog-page">
+      <RoomsPageContent />
+    </OwnerPageShell>
   );
 }
 

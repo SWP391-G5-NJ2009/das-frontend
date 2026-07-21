@@ -11,36 +11,35 @@ const otpSlots = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"];
 const FORGOT_PASSWORD_CONFIG = {
   patient: {
     IdentifierIcon: Phone,
-    identifierLabel: "Phone number",
-    identifierPlaceholder: "Enter phone number",
+    identifierLabel: "Số điện thoại",
+    identifierPlaceholder: "09xx xxx xxx",
     identifierType: "tel",
     loginPath: "/login",
-    requestHelp: "Enter your phone number to receive an OTP.",
+    requestHelp: "Nhập số điện thoại của bạn để nhận mã OTP",
   },
   staff: {
     IdentifierIcon: UserRound,
-    identifierLabel: "Username",
-    identifierPlaceholder: "Enter your staff username",
+    identifierLabel: "Tên đăng nhập",
+    identifierPlaceholder: "E.g: admin",
     identifierType: "text",
     loginPath: "/staff/login",
-    requestHelp:
-      "Enter your username to receive an OTP on the phone number linked to your staff account.",
+    requestHelp: "Nhập tên đăng nhập của bạn để nhận mã OTP.",
   },
 };
 
 const PASSWORD_FIELDS = [
   {
     hideLabel: "Hide new password",
-    label: "New password",
+    label: "Mật khẩu mới",
     name: "newPassword",
-    placeholder: "Enter new password",
+    placeholder: "Nhập mật khẩu mới",
     showLabel: "Show new password",
   },
   {
     hideLabel: "Hide password confirmation",
-    label: "Confirm new password",
+    label: "Xác nhận mật khẩu mới",
     name: "confirmPassword",
-    placeholder: "Re-enter new password",
+    placeholder: "Nhập lại mật khẩu mới",
     showLabel: "Show password confirmation",
   },
 ];
@@ -100,7 +99,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
       setDevOtp(data.devOtp || null);
       setStep("reset");
     } catch (err) {
-      setError(err.message || "Unable to send OTP.");
+      setError(err.message || "Không thể gửi OTP.");
     } finally {
       setIsSubmitting(false);
     }
@@ -117,7 +116,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
     const confirmPassword = formData.get("confirmPassword");
 
     if (newPassword !== confirmPassword) {
-      setError("Password confirmation does not match.");
+      setError("Mật khẩu mới không khớp.");
       setIsSubmitting(false);
       return;
     }
@@ -138,7 +137,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
       });
       navigate(loginPath, { replace: true });
     } catch (err) {
-      setError(err.message || "Unable to reset password.");
+      setError(err.message || "Không thể đặt lại mật khẩu.");
     } finally {
       setIsSubmitting(false);
     }
@@ -154,7 +153,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
       setResetAccountId(data.accountId);
       setDevOtp(data.devOtp || null);
     } catch (err) {
-      setError(err.message || "Unable to resend OTP.");
+      setError(err.message || "Không thể gửi lại OTP.");
     } finally {
       setIsSubmitting(false);
     }
@@ -210,9 +209,9 @@ function ForgotPasswordPage({ mode = "patient" }) {
     <main className="forgot-password">
       <section
         className="forgot-password__hero"
-        aria-label="DentalCare clinic space"
+        aria-label="Không gian phòng khám DentalCare"
       >
-        <img src={heroLogin} alt="Dental chair at DentalCare clinic" />
+        <img src={heroLogin} alt="Ghế nha khoa tại phòng khám DentalCare" />
       </section>
 
       <section
@@ -221,13 +220,13 @@ function ForgotPasswordPage({ mode = "patient" }) {
       >
         <Link className="forgot-password__back" to={loginPath}>
           <ArrowLeft size={18} aria-hidden="true" />
-          Back
+          Trang chủ
         </Link>
 
         {step === "request" ? (
           <form className="forgot-password__form" onSubmit={handleRequestOtp}>
             <div className="forgot-password__heading">
-              <h2 id="forgot-password-title">Forgot password?</h2>
+              <h2 id="forgot-password-title">Quên mật khẩu?</h2>
               <p>{requestHelp}</p>
             </div>
 
@@ -251,7 +250,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Sending..." : "Send OTP"}
+              {isSubmitting ? "Đang gửi..." : "Gửi OTP"}
               <Send size={18} aria-hidden="true" />
             </button>
           </form>
@@ -261,22 +260,22 @@ function ForgotPasswordPage({ mode = "patient" }) {
             onSubmit={handleResetPassword}
           >
             <div className="forgot-password__heading">
-              <h2 id="forgot-password-title">Verify and reset password</h2>
+              <h2 id="forgot-password-title">Xác minh và đặt lại mật khẩu</h2>
               <p>
-                An OTP has been created for your account. Please enter the code
-                below.
+                Mã OTP đã được tạo cho tài khoản của bạn. Vui lòng nhập mã bên
+                dưới.
               </p>
             </div>
 
             {devOtp && (
-              <p className="forgot-password__dev-otp">Dev OTP: {devOtp}</p>
+              <p className="forgot-password__dev-otp">OTP dev: {devOtp}</p>
             )}
             {error && <p className="forgot-password__error">{error}</p>}
 
-            <div className="forgot-password__otp" aria-label="Enter OTP">
+            <div className="forgot-password__otp" aria-label="Nhập OTP">
               {otpSlots.map((slot, index) => (
                 <input
-                  aria-label="One OTP digit"
+                  aria-label="Một chữ số OTP"
                   autoComplete={index === 0 ? "one-time-code" : "off"}
                   inputMode="numeric"
                   key={slot}
@@ -292,9 +291,9 @@ function ForgotPasswordPage({ mode = "patient" }) {
             </div>
 
             <p className="forgot-password__resend">
-              Did not receive the code?{" "}
+              Chưa nhận được mã?{" "}
               <button type="button" onClick={handleResendOtp}>
-                Resend code
+                Gửi lại mã
               </button>
             </p>
 
@@ -329,7 +328,7 @@ function ForgotPasswordPage({ mode = "patient" }) {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Processing..." : "Confirm and change password"}
+              {isSubmitting ? "Đang xử lý..." : "Xác nhận và thay đổi mật khẩu"}
             </button>
           </form>
         )}

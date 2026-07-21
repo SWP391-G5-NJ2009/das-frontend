@@ -1,18 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { slotService } from "../services/slot.service";
 
-/**
- * Fetch available time slots for a dentist on a specific date.
- * Re-fetches automatically whenever dentistId or date changes.
- *
- * @param {string|null} dentistId
- * @param {string|null} date - "YYYY-MM-DD"
- *
- * Returns:
- *  - slots: Array<{ id, time, timeEnd, status }>
- *  - isLoading: boolean
- *  - error: Error | null
- */
 export function useAvailableSlots(dentistId, date) {
   const [slots, setSlots] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

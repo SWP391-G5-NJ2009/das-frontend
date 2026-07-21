@@ -3,30 +3,31 @@ import { Search, X, CalendarCheck } from "lucide-react";
 import "./AppointmentFilters.css";
 
 const STATUS_TABS = [
-  { value: "all", label: "All" },
-  { value: "Confirmed", label: "Confirmed" },
-  { value: "Checked-in", label: "Checked-in" },
-  { value: "Completed", label: "Completed" },
-  { value: "Conflict", label: "Conflict" },
-  { value: "Cancelled", label: "Cancelled" },
-  { value: "No-Show", label: "No-Show" },
-  { value: "Resolved No-Show", label: "Resolved No-Show" },
+  { value: "all", label: "Tất cả" },
+  { value: "Confirmed", label: "Đã xác nhận" },
+  { value: "Checked-in", label: "Đã check-in" },
+  { value: "In-Treatment", label: "Đang điều trị" },
+  { value: "Completed", label: "Hoàn tất" },
+  { value: "Conflict", label: "Xung đột" },
+  { value: "Cancelled", label: "Đã hủy" },
+  { value: "No-Show", label: "Vắng mặt" },
+  { value: "Resolved No-Show", label: "Đã xử lý vắng mặt" },
 ];
 
 /* ── Helpers ── */
 const MONTHS = [
-  { value: "01", label: "January" },
-  { value: "02", label: "February" },
-  { value: "03", label: "March" },
-  { value: "04", label: "April" },
-  { value: "05", label: "May" },
-  { value: "06", label: "June" },
-  { value: "07", label: "July" },
-  { value: "08", label: "August" },
-  { value: "09", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
+  { value: "01", label: "Tháng 1" },
+  { value: "02", label: "Tháng 2" },
+  { value: "03", label: "Tháng 3" },
+  { value: "04", label: "Tháng 4" },
+  { value: "05", label: "Tháng 5" },
+  { value: "06", label: "Tháng 6" },
+  { value: "07", label: "Tháng 7" },
+  { value: "08", label: "Tháng 8" },
+  { value: "09", label: "Tháng 9" },
+  { value: "10", label: "Tháng 10" },
+  { value: "11", label: "Tháng 11" },
+  { value: "12", label: "Tháng 12" },
 ];
 
 function getDaysInMonth(year, month) {
@@ -68,7 +69,11 @@ function AppointmentFilters({
     // Clamp day if needed when month/year combo has fewer days
     const newDays = newYear && month ? getDaysInMonth(newYear, month) : 31;
     const clampedDay = day && Number(day) > newDays ? "" : day;
-    onDatePartsChange({ year: newYear, month: newYear ? month : "", day: clampedDay });
+    onDatePartsChange({
+      year: newYear,
+      month: newYear ? month : "",
+      day: clampedDay,
+    });
   }
 
   function handleMonthChange(e) {
@@ -98,7 +103,7 @@ function AppointmentFilters({
       <div
         className="appt-filters__tabs"
         role="tablist"
-        aria-label="Filter by status"
+        aria-label="Lọc theo trạng thái"
       >
         {tabs.map((tab) => (
           <button
@@ -130,16 +135,16 @@ function AppointmentFilters({
             id="appt-filter-search"
             type="text"
             className="appt-filters__search"
-            placeholder="Search by patient, service, dentist..."
+            placeholder="Tìm theo bệnh nhân, dịch vụ, nha sĩ..."
             value={filters.search}
             onChange={(e) => onSearchChange(e.target.value)}
-            aria-label="Search appointments"
+            aria-label="Tìm lịch hẹn"
           />
           {filters.search && (
             <button
               type="button"
               className="appt-filters__search-clear"
-              aria-label="Clear search"
+              aria-label="Xóa tìm kiếm"
               onClick={() => onSearchChange("")}
             >
               <X size={14} aria-hidden="true" />
@@ -157,11 +162,11 @@ function AppointmentFilters({
               isTodayActive ? " appt-filters__today-btn--active" : ""
             }`}
             onClick={onTodayClick}
-            aria-label="Filter appointments for today"
+            aria-label="Lọc lịch hẹn hôm nay"
             aria-pressed={isTodayActive}
           >
             <CalendarCheck size={14} aria-hidden="true" />
-            Today
+            Hôm nay
           </button>
 
           {/* Year */}
@@ -171,9 +176,9 @@ function AppointmentFilters({
               className={`appt-filters__select${year ? " appt-filters__select--active" : ""}`}
               value={year}
               onChange={handleYearChange}
-              aria-label="Filter by year"
+              aria-label="Lọc theo năm"
             >
-              <option value="">-- Year --</option>
+              <option value="">-- Năm --</option>
               {yearOptions.map((y) => (
                 <option key={y} value={y}>
                   {y}
@@ -184,7 +189,7 @@ function AppointmentFilters({
               <button
                 type="button"
                 className="appt-filters__select-clear"
-                aria-label="Clear year filter"
+                aria-label="Xóa bộ lọc năm"
                 onClick={clearYear}
               >
                 <X size={14} aria-hidden="true" />
@@ -200,15 +205,15 @@ function AppointmentFilters({
                 !year
                   ? " appt-filters__select--disabled"
                   : month
-                  ? " appt-filters__select--active"
-                  : ""
+                    ? " appt-filters__select--active"
+                    : ""
               }`}
               value={month}
               onChange={handleMonthChange}
               disabled={!year}
-              aria-label="Filter by month"
+              aria-label="Lọc theo tháng"
             >
-              <option value="">-- Month --</option>
+              <option value="">-- Tháng --</option>
               {MONTHS.map((m) => (
                 <option key={m.value} value={m.value}>
                   {m.label}
@@ -219,7 +224,7 @@ function AppointmentFilters({
               <button
                 type="button"
                 className="appt-filters__select-clear"
-                aria-label="Clear month filter"
+                aria-label="Xóa bộ lọc tháng"
                 onClick={clearMonth}
               >
                 <X size={14} aria-hidden="true" />
@@ -235,18 +240,18 @@ function AppointmentFilters({
                 !month
                   ? " appt-filters__select--disabled"
                   : day
-                  ? " appt-filters__select--active"
-                  : ""
+                    ? " appt-filters__select--active"
+                    : ""
               }`}
               value={day}
               onChange={handleDayChange}
               disabled={!month}
-              aria-label="Filter by day"
+              aria-label="Lọc theo ngày"
             >
-              <option value="">-- Day --</option>
+              <option value="">-- Ngày --</option>
               {dayOptions.map((d) => (
                 <option key={d} value={d}>
-                  Day {Number(d)}
+                  Ngày {Number(d)}
                 </option>
               ))}
             </select>
@@ -254,7 +259,7 @@ function AppointmentFilters({
               <button
                 type="button"
                 className="appt-filters__select-clear"
-                aria-label="Clear day filter"
+                aria-label="Xóa bộ lọc ngày"
                 onClick={clearDay}
               >
                 <X size={14} aria-hidden="true" />

@@ -2,7 +2,14 @@ import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import "./RoomFormModal.css";
 
-function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
+function RoomFormModal({
+  dentistOptions,
+  formData,
+  isEditMode,
+  onChange,
+  onClose,
+  onSubmit,
+}) {
   return (
     <div className="room-form-modal__overlay" role="presentation">
       <div
@@ -13,7 +20,7 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
       >
         <div className="room-form-modal__header">
           <h2 className="room-form-modal__title" id="room-form-title">
-            {isEditMode ? "Update Room" : "Create New Room"}
+            {isEditMode ? "Chỉnh sửa" : "Tạo phòng"}
           </h2>
           <button
             className="room-form-modal__close-btn"
@@ -28,7 +35,7 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
         <form onSubmit={onSubmit}>
           <div className="room-form-modal__field">
             <label className="room-form-modal__label" htmlFor="room-name">
-              Room Name
+              Tên phòng
             </label>
             <input
               className="room-form-modal__input"
@@ -43,26 +50,28 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
           </div>
 
           <div className="room-form-modal__field">
-            <label
-              className="room-form-modal__label"
-              htmlFor="room-specialization"
-            >
-              Specialization
+            <label className="room-form-modal__label" htmlFor="room-dentist">
+              Bác sĩ
             </label>
-            <input
+            <select
               className="room-form-modal__input"
-              id="room-specialization"
-              name="specialization"
-              type="text"
-              value={formData.specialization}
+              id="room-dentist"
+              name="dentist_id"
+              value={formData.dentist_id}
               onChange={onChange}
-              placeholder="General examination"
-            />
+            >
+              <option value="">Unassigned</option>
+              {dentistOptions.map((dentist) => (
+                <option key={dentist.profileId} value={dentist.profileId}>
+                  {dentist.fullName}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="room-form-modal__field">
             <label className="room-form-modal__label" htmlFor="room-status">
-              Status
+              Trạng thái
             </label>
             <select
               className="room-form-modal__input"
@@ -83,10 +92,10 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
               type="button"
               onClick={onClose}
             >
-              Cancel
+              Huỷ
             </button>
             <button className="room-form-modal__save-btn" type="submit">
-              {isEditMode ? "Save Changes" : "Save Room"}
+              {isEditMode ? "Lưu thay đổi" : "Tạo phòng"}
             </button>
           </div>
         </form>
@@ -96,9 +105,15 @@ function RoomFormModal({ formData, isEditMode, onChange, onClose, onSubmit }) {
 }
 
 RoomFormModal.propTypes = {
+  dentistOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      fullName: PropTypes.string.isRequired,
+      profileId: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
   formData: PropTypes.shape({
     room_name: PropTypes.string.isRequired,
-    specialization: PropTypes.string.isRequired,
+    dentist_id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
   }).isRequired,
   isEditMode: PropTypes.bool.isRequired,

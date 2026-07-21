@@ -1,0 +1,164 @@
+.clinic-edit-modal__overlay {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: var(--color-overlay);
+  z-index: var(--z-modal);
+}
+
+.clinic-edit-modal {
+  width: min(100%, 34rem);
+  overflow: hidden;
+  background-color: var(--color-surface);
+  border: var(--border-width-thin) solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+}
+
+.clinic-edit-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-bottom: var(--border-width-thin) solid var(--border-color);
+}
+
+.clinic-edit-modal__title {
+  margin: 0 0 var(--space-1);
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.clinic-edit-modal__subtitle {
+  margin: 0;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-sm);
+}
+
+.clinic-edit-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--space-8);
+  height: var(--space-8);
+  padding: 0;
+  background-color: var(--color-transparent);
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+}
+
+.clinic-edit-modal__close:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+}
+
+.clinic-edit-modal__close:focus-visible,
+.clinic-edit-modal__button:focus-visible,
+.clinic-edit-modal__field input:focus-visible,
+.clinic-edit-modal__field textarea:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary-700);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.clinic-edit-modal__form {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+
+.clinic-edit-modal__error {
+  margin: 0;
+  padding: var(--space-3);
+  background-color: var(--color-error-bg);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+}
+
+.clinic-edit-modal__field {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.clinic-edit-modal__time-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.clinic-edit-modal__field input,
+.clinic-edit-modal__field textarea {
+  width: 100%;
+  padding: var(--space-3);
+  background-color: var(--color-surface);
+  border: var(--border-width-thin) solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-900);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  resize: vertical;
+}
+
+.clinic-edit-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.clinic-edit-modal__button {
+  padding: var(--space-3) var(--space-5);
+  border: var(--border-width-thin) solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.clinic-edit-modal__button--cancel {
+  background-color: var(--color-surface);
+  color: var(--color-neutral-700);
+}
+
+.clinic-edit-modal__button--save {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: var(--color-surface);
+}
+
+.clinic-edit-modal__button:hover:not(:disabled) {
+  box-shadow: var(--shadow-sm);
+}
+
+.clinic-edit-modal__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 639px) {
+  .clinic-edit-modal__actions {
+    flex-direction: column-reverse;
+  }
+
+  .clinic-edit-modal__button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 640px) {
+  .clinic-edit-modal__time-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

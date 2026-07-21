@@ -12,7 +12,6 @@ import {
   Trash2,
   UserPlus,
   Users,
-  CheckCircle,
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
@@ -22,6 +21,7 @@ import AdminPageShell from "../AdminPageShell";
 import PropTypes from "prop-types";
 import AccountFilters from "../../../components/features/admin/AccountFilters/AccountFilters"
 import Pagination from "../../../components/common/Pagination/Pagination"
+import Toast from "../../../components/common/Toast/Toast"
 import "./AdminAccountsPage.css";
 
 function AdminAccountsPage() {
@@ -38,9 +38,10 @@ function AdminAccountsPage() {
   const [showModal, setShowModal] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
+  const [toast, setToast] = useState(null);
 
   const handleStatusChange = useCallback(
-    (status) => setFilters((prev) => ({ ...prev, status })),
+    (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
     [],
   );
 
@@ -57,9 +58,9 @@ function AdminAccountsPage() {
     <AdminPageShell>
       <div className="admin-accounts__page-header">
         <div>
-          <h2 className="admin-accounts__page-title">Account Management</h2>
+          <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
           <p className="admin-accounts__page-desc">
-            Add, update, or remove user access in the system.
+            Thêm, cập nhật hoặc xóa quyền truy cập người dùng trong hệ thống.
           </p>
         </div>
         <button
@@ -68,7 +69,7 @@ function AdminAccountsPage() {
           onClick={() => setShowModal(true)}
         >
           <UserPlus size={20} aria-hidden="true" />
-          Add new account
+          Thêm tài khoản mới
         </button>
       </div>
 
@@ -77,7 +78,7 @@ function AdminAccountsPage() {
       <div className="admin-accounts__card">
         <div className="admin-accounts__card-header">
           <div className="admin-accounts__card-title-group">
-            <h4 className="admin-accounts__card-title">Account list</h4>
+            <h4 className="admin-accounts__card-title">Danh sách tài khoản</h4>
           </div>
         </div>
 
@@ -93,19 +94,19 @@ function AdminAccountsPage() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Username</th>
+                <th>Tên đăng nhập</th>
                 <th>Email</th>
-                <th>Phone number</th>
+                <th>Số điện thoại</th>
                 <th>Status</th>
-                <th>Account type</th>
-                <th>Actions</th>
+                <th>Loại tài khoản</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {isLoading && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
-                    Loading accounts...
+                    Đang tải tài khoản...
                   </td>
                 </tr>
               )}
@@ -121,7 +122,7 @@ function AdminAccountsPage() {
               {!isLoading && !error && accounts.length === 0 && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
-                    No accounts found
+                    Không tìm thấy tài khoản
                   </td>
                 </tr>
               )}
@@ -186,20 +187,14 @@ function AdminAccountsPage() {
         </div>
       </div>
 
-      <div className={`admin-accounts__toast`}>
-        <CheckCircle
-          className="admin-accounts__toast-icon"
-          size={20}
-          aria-hidden="true"
-        />
-        <span>Action completed successfully</span>
-      </div>
+      {toast && <Toast type="success" message={toast} onClose={() => setToast(null)} duration={5000} />}
       {showModal && (
         <AddAccountModal
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
             refetch();
+            setToast("Thêm tài khoản thành công.");
           }}
         />
       )}
@@ -210,6 +205,7 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setEditAccount(null);
             refetch();
+            setToast("Cập nhật tài khoản thành công.");
           }}
         />
       )}
@@ -220,6 +216,7 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setDeleteAccount(null);
             refetch();
+            setToast("Xóa tài khoản thành công.");
           }}
         />
       )}

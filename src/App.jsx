@@ -1,16 +1,18 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
+import AppointmentDashboardPage from "./pages/admin/AppointmentDashboardPage/AppointmentDashboardPage";
+
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
-import ScheduleManagementPage from "./pages/owner/ScheduleManagementPage/ScheduleManagementPage";
 import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
+import ClinicInfoPage from "./pages/owner/ClinicInfoPage/ClinicInfoPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
+import PaymentHistoryPage from "./pages/patient/PaymentHistoryPage/PaymentHistoryPage";
 import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
 import PatientTreatmentHistoryPage from "./pages/dentist/PatientTreatmentHistoryPage/PatientTreatmentHistoryPage";
-import HistoryPage from "./pages/patient/HistoryPage/HistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
 import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
@@ -20,7 +22,7 @@ import DentistScheduleViewPage from "./pages/receptionist/DentistScheduleViewPag
 import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
 import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApprovalPage";
-import RoomsPage from "./pages/shared/RoomsPage/RoomsPage";
+import RoomsPage from "./pages/owner/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
 import OwnerStaffPage from "./pages/owner/OwnerStaffPage/OwnerStaffPage";
@@ -71,7 +73,15 @@ function App() {
             path="/patient/history"
             element={
               <ProtectedRoute allowedRoles={["patient"]}>
-                <HistoryPage />
+                <PatientTreatmentHistoryPage viewer="patient" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/payments"
+            element={
+              <ProtectedRoute allowedRoles={["patient"]}>
+                <PaymentHistoryPage />
               </ProtectedRoute>
             }
           />
@@ -120,14 +130,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
                 <DentistScheduleViewPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/receptionist/rooms"
-            element={
-              <ProtectedRoute allowedRoles={["receptionist"]}>
-                <RoomsPage />
               </ProtectedRoute>
             }
           />
@@ -188,18 +190,18 @@ function App() {
             }
           />
           <Route
-            path="/owner/clinic-schedule"
+            path="/owner/clinic-info"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
-                <ScheduleApprovalPage />
+                <ClinicInfoPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/schedule-config"
+            path="/owner/clinic-schedule"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
-                <ScheduleManagementPage />
+                <ScheduleApprovalPage />
               </ProtectedRoute>
             }
           />
@@ -232,6 +234,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <PatientPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/appointment-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <AppointmentDashboardPage />
               </ProtectedRoute>
             }
           />

@@ -5,6 +5,7 @@ import {
   UserCheck,
   CalendarClock,
   Info,
+  Tag,
 } from "lucide-react";
 import "./BookingSummary.css";
 
@@ -21,7 +22,7 @@ function BookingSummary({
   const hasAll = patient && service && dentist && date && slot;
 
   const formattedDate = date
-    ? date.toLocaleDateString("en-US", {
+    ? date.toLocaleDateString("vi-VN", {
         weekday: "short",
         day: "2-digit",
         month: "2-digit",
@@ -30,17 +31,17 @@ function BookingSummary({
     : null;
 
   const formattedFee = service?.price
-    ? new Intl.NumberFormat("en-US", {
+    ? new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
       }).format(service.price)
     : null;
 
   return (
-    <aside className="booking-summary" aria-label="Appointment Summary">
+    <aside className="booking-summary" aria-label="Tóm tắt lịch hẹn">
       <div className="booking-summary__header">
         <CalendarClock size={18} aria-hidden="true" />
-        <h3 className="booking-summary__title">Appointment Summary</h3>
+        <h3 className="booking-summary__title">Tóm tắt lịch hẹn</h3>
       </div>
 
       <div className="booking-summary__body">
@@ -52,7 +53,7 @@ function BookingSummary({
             <User size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">PATIENT</span>
+            <span className="booking-summary__row-label">BỆNH NHÂN</span>
             {patient ? (
               <>
                 <span className="booking-summary__row-value">
@@ -64,7 +65,7 @@ function BookingSummary({
               </>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No patient selected
+                Chưa chọn bệnh nhân
               </span>
             )}
           </div>
@@ -78,19 +79,19 @@ function BookingSummary({
             <Stethoscope size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">SERVICE</span>
+            <span className="booking-summary__row-label">DỊCH VỤ</span>
             {service ? (
               <>
                 <span className="booking-summary__row-value">
                   {service.name}
                 </span>
                 <span className="booking-summary__row-sub">
-                  {service.duration} minutes
+                  {service.duration} phút
                 </span>
               </>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No service selected
+                Chưa chọn dịch vụ
               </span>
             )}
           </div>
@@ -104,14 +105,14 @@ function BookingSummary({
             <UserCheck size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">DENTIST</span>
+            <span className="booking-summary__row-label">NHA SĨ</span>
             {dentist ? (
               <span className="booking-summary__row-value">
                 {dentist.fullName}
               </span>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No dentist selected
+                Chưa chọn nha sĩ
               </span>
             )}
           </div>
@@ -125,14 +126,14 @@ function BookingSummary({
             <CalendarClock size={16} />
           </div>
           <div className="booking-summary__row-content">
-            <span className="booking-summary__row-label">DATE & TIME</span>
+            <span className="booking-summary__row-label">NGÀY & GIỜ</span>
             {date && slot ? (
               <span className="booking-summary__row-value">
                 {slot.time}{slot.timeEnd ? ` – ${slot.timeEnd}` : ""}, {formattedDate}
               </span>
             ) : (
               <span className="booking-summary__row-placeholder">
-                No date/time selected
+                Chưa chọn ngày/giờ
               </span>
             )}
           </div>
@@ -141,8 +142,20 @@ function BookingSummary({
         {/* Fee */}
         {formattedFee && (
           <div className="booking-summary__fee">
-            <span className="booking-summary__fee-label">Estimated fee:</span>
-            <span className="booking-summary__fee-value">{formattedFee}</span>
+            <div className="booking-summary__fee-header">
+              <Tag size={14} aria-hidden="true" className="booking-summary__fee-icon" />
+              <span className="booking-summary__fee-label">GIÁ DỊCH VỤ</span>
+            </div>
+            <div className="booking-summary__fee-body">
+              <span className="booking-summary__fee-service-name">
+                {service.name}
+              </span>
+              <span className="booking-summary__fee-value">{formattedFee}</span>
+            </div>
+            <p className="booking-summary__fee-note">
+              * Giá trên là mức tham khảo cho dịch vụ. Chi phí thực tế có thể
+              thay đổi tùy theo tình trạng răng miệng của bệnh nhân.
+            </p>
           </div>
         )}
       </div>
@@ -157,7 +170,7 @@ function BookingSummary({
           disabled={!hasAll || isSubmitting}
           aria-disabled={!hasAll || isSubmitting}
         >
-          {isSubmitting ? "Processing..." : "Confirm Booking"}
+          {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
         </button>
         <button
           type="button"
@@ -166,7 +179,7 @@ function BookingSummary({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Cancel
+          Hủy
         </button>
       </div>
 
@@ -174,8 +187,8 @@ function BookingSummary({
       <div className="booking-summary__notice" role="note">
         <Info size={14} aria-hidden="true" />
         <p className="booking-summary__notice-text">
-          The system will automatically send a booking confirmation email to the
-          patient's email address after you click Confirm.
+          Hệ thống sẽ tự động gửi email xác nhận đặt lịch đến
+          địa chỉ email của bệnh nhân sau khi bạn bấm Xác nhận.
         </p>
       </div>
     </aside>

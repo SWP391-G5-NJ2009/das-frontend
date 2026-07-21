@@ -92,6 +92,12 @@
   box-shadow: 0 0 0 2px var(--color-primary-200);
 }
 
+.add-account-modal__field-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin: 0;
+}
+
 .add-account-modal__actions {
   display: flex;
   justify-content: flex-end;
@@ -130,4 +136,16 @@
 .add-account-modal__btn--submit:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.add-account-modal__btn--delete {
+  background-color: var(--color-error);
+  color: #ffffff;
+}
+
+.add-account-modal__description {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-relaxed);
 }

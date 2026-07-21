@@ -1,12 +1,12 @@
 export const RECEPTIONIST_NAV_ITEMS = [
   {
     icon: "assignment",
-    label: "Consultation Requests",
+    label: "Yêu cầu tư vấn",
     to: "/receptionist/consultation-request",
   },
   {
     icon: "calendar_today",
-    label: "Appointments",
+    label: "Danh sách lịch hẹn",
     to: "/receptionist/appointments",
   },
   {
@@ -16,26 +16,21 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "payments",
-    label: "Payments",
+    label: "Quản lý thanh toán",
     to: "/receptionist/payments",
   },
   {
     icon: "person_add",
-    label: "Patient Registration",
+    label: "Đăng ký bệnh nhân",
     to: "/receptionist/patient-registration",
   },
   {
-    icon: "meeting_room",
-    label: "Rooms Availability",
-    to: "/receptionist/rooms",
-  },
-  {
     icon: "person",
-    label: "Manage Profile",
+    label: "Quản lý hồ sơ",
     to: "/receptionist/profile",
   },
 ];
 
 export const RECEPTIONIST_FOOTER_ITEMS = [
-  { icon: "logout", label: "Log out", to: "/staff/login" },
+  { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
 ];
