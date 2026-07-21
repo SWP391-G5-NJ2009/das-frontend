@@ -66,6 +66,7 @@ function DateTimePicker({
   slots,
   enforceTimingRule,
   slotOccupied,
+  bookedTimeSet,
 }) {
   const today = new Date();
   const [viewYear, setViewYear] = useState(
@@ -117,14 +118,33 @@ function DateTimePicker({
     const past = isTodayDate && isSlotPast(slot.time);
     const tooSoon =
       isTodayDate && enforceTimingRule && isSlotWithin30Min(slot.time);
-    return slot.status === "Available" && !past && !tooSoon;
+    const alreadyBooked =
+      bookedTimeSet &&
+      selectedDate &&
+      bookedTimeSet.has(
+        `${
+          [
+            selectedDate.getFullYear(),
+            String(selectedDate.getMonth() + 1).padStart(2, "0"),
+            String(selectedDate.getDate()).padStart(2, "0"),
+          ].join("-")
+        }|${slot.time}`,
+      );
+    return {
+      available: slot.status === "Available" && !past && !tooSoon && !alreadyBooked,
+      alreadyBooked: !!alreadyBooked,
+    };
   });
 
+  function isSlotAvailable(idx) {
+    return slotAvailability[idx]?.available ?? false;
+  }
+
   function canBeStartSlot(idx) {
-    if (!slotAvailability[idx]) return false;
+    if (!isSlotAvailable(idx)) return false;
     if (!isMultiSlot) return true;
     for (let k = 0; k < normalizedSlotCount; k++) {
-      if (idx + k >= slots.length || !slotAvailability[idx + k]) return false;
+      if (idx + k >= slots.length || !isSlotAvailable(idx + k)) return false;
       if (k > 0) {
         const prevTimeEnd = slots[idx + k - 1].timeEnd;
         const currTime = slots[idx + k].time;
@@ -267,8 +287,9 @@ function DateTimePicker({
         ) : (
           <div className="date-time-picker__slots-grid">
             {slots.map((slot, idx) => {
-              const individuallyAvailable = slotAvailability[idx];
+              const individuallyAvailable = isSlotAvailable(idx);
               const canStart = canBeStartSlot(idx);
+              const isAlreadyBooked = slotAvailability[idx]?.alreadyBooked ?? false;
 
               const isRangeStart =
                 selectedStartIdx >= 0 && idx === selectedStartIdx;
@@ -299,6 +320,8 @@ function DateTimePicker({
                 isSlotWithin30Min(slot.time);
 
               const buildTitle = () => {
+                if (isAlreadyBooked)
+                  return `${slot.time} – bạn đã có lịch hẹn vào giờ này`;
                 if (isClickableFollowOn)
                   return `Nhấp để bắt đầu từ ${slot.time}`;
                 if (isRangeFollowOn)
@@ -322,9 +345,11 @@ function DateTimePicker({
                   type="button"
                   className={[
                     "date-time-picker__slot",
-                    isDisabled && !isInsufficientStart
-                      ? "date-time-picker__slot--disabled"
-                      : "",
+                    isAlreadyBooked
+                      ? "date-time-picker__slot--my-booked"
+                      : isDisabled && !isInsufficientStart
+                        ? "date-time-picker__slot--disabled"
+                        : "",
                     isInsufficientStart
                       ? "date-time-picker__slot--insufficient"
                       : "",
@@ -380,6 +405,7 @@ DateTimePicker.propTypes = {
   ).isRequired,
   enforceTimingRule: PropTypes.bool,
   slotOccupied: PropTypes.number,
+  bookedTimeSet: PropTypes.instanceOf(Set),
 };
 
 DateTimePicker.defaultProps = {
@@ -387,6 +413,7 @@ DateTimePicker.defaultProps = {
   selectedSlotId: null,
   enforceTimingRule: false,
   slotOccupied: 1,
+  bookedTimeSet: null,
 };
 
 export default DateTimePicker;
