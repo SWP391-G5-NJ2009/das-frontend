@@ -21,12 +21,12 @@ export const OWNER_NAV_ITEMS = [
   },
   {
     icon: "group",
-    label: "Quản lí bệnh nhân",
+    label: "Thống kê bệnh nhân",
     to: "/owner/patient",
   },
   {
     icon: "calendar_today",
-    label: "Lịch hẹn",
+    label: "Thống kê lịch hẹn",
     to: "/owner/appointment-dashboard",
   },
   {

@@ -6,12 +6,12 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "calendar_today",
-    label: "Lịch hẹn",
+    label: "Danh sách lịch hẹn",
     to: "/receptionist/appointments",
   },
   {
     icon: "payments",
-    label: "Thanh toán",
+    label: "Quản lý thanh toán",
     to: "/receptionist/payments",
   },
   {
