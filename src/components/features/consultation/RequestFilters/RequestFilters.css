@@ -1,27 +1,24 @@
-/* AppointmentFilters — BEM */
-
-/* Wrapper */
-.appt-filters {
+.request-filters {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
 
-/* ── Status tabs ── */
-.appt-filters__tabs {
+.request-filters__tabs {
   display: flex;
   gap: var(--space-2);
+  align-items: center;
   overflow-x: auto;
   padding-bottom: var(--space-1);
   scrollbar-width: none;
 }
 
-.appt-filters__tabs::-webkit-scrollbar {
+.request-filters__tabs::-webkit-scrollbar {
   display: none;
 }
 
-.appt-filters__tab {
+.request-filters__tab {
   display: inline-flex;
   align-items: center;
   padding: var(--space-2) var(--space-4);
@@ -41,18 +38,18 @@
     box-shadow var(--transition-fast);
 }
 
-.appt-filters__tab:hover {
+.request-filters__tab:hover {
   border-color: var(--color-primary-400);
   color: var(--color-primary-700);
   background-color: var(--color-primary-50);
 }
 
-.appt-filters__tab:focus-visible {
+.request-filters__tab:focus-visible {
   outline: 2px solid var(--color-primary-700);
   outline-offset: 2px;
 }
 
-.appt-filters__tab--active {
+.request-filters__tab--active {
   background-color: var(--color-primary-700);
   border-color: var(--color-primary-700);
   color: #ffffff;
@@ -60,27 +57,26 @@
   box-shadow: var(--shadow-sm);
 }
 
-.appt-filters__tab--active:hover {
+.request-filters__tab--active:hover {
   background-color: var(--color-primary-800);
   border-color: var(--color-primary-800);
   color: #ffffff;
 }
 
-/* ── Controls row (search + date) ── */
-.appt-filters__controls {
+.request-filters__controls {
   display: flex;
   gap: var(--space-3);
+  align-items: center;
   flex-wrap: wrap;
 }
 
-/* Search */
-.appt-filters__search-wrap {
+.request-filters__search-wrap {
   position: relative;
   flex: 1;
   min-width: 200px;
 }
 
-.appt-filters__search-icon {
+.request-filters__search-icon {
   position: absolute;
   left: var(--space-3);
   top: 50%;
@@ -89,7 +85,7 @@
   pointer-events: none;
 }
 
-.appt-filters__search {
+.request-filters__search {
   width: 100%;
   padding: var(--space-2) var(--space-8) var(--space-2) var(--space-8);
   border: 1.5px solid var(--border-color);
@@ -101,17 +97,17 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.appt-filters__search::placeholder {
+.request-filters__search::placeholder {
   color: var(--color-neutral-400);
 }
 
-.appt-filters__search:focus {
+.request-filters__search:focus {
   outline: none;
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 3px var(--color-primary-100);
 }
 
-.appt-filters__search-clear {
+.request-filters__search-clear {
   position: absolute;
   right: var(--space-3);
   top: 50%;
@@ -129,19 +125,26 @@
   transition: background-color var(--transition-fast);
 }
 
-.appt-filters__search-clear:hover {
+.request-filters__search-clear:hover {
   background-color: var(--color-neutral-300);
 }
 
-/* Date picker */
-.appt-filters__date-wrap {
+.request-filters__date-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+.request-filters__date-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
   flex-shrink: 0;
 }
 
-.appt-filters__date {
+.request-filters__date {
   padding: var(--space-2) var(--space-4);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -153,13 +156,20 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.appt-filters__date:focus {
+.request-filters__date:disabled {
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-300);
+  border-color: var(--color-neutral-200);
+  cursor: not-allowed;
+}
+
+.request-filters__date:focus {
   outline: none;
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 3px var(--color-primary-100);
 }
 
-.appt-filters__date-clear {
+.request-filters__date-clear {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,22 +184,20 @@
   transition: background-color var(--transition-fast);
 }
 
-.appt-filters__date-clear:hover {
+.request-filters__date-clear:hover {
   background-color: var(--color-neutral-300);
 }
 
-
-/* Responsive */
 @media (max-width: 640px) {
-  .appt-filters__controls {
+  .request-filters__controls {
     flex-direction: column;
   }
 
-  .appt-filters__date-wrap {
+  .request-filters__date-wrap {
     width: 100%;
   }
 
-  .appt-filters__date {
+  .request-filters__date {
     width: 100%;
   }
 }

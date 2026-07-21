@@ -21,22 +21,22 @@ function RequestFilters({
   onSearchChange,
 }) {
 
-  return (<div className="appt-filters">
+  return (<div className="request-filters">
 
     <div
-      className="appt-filters__tabs"
+      className="request-filters__tabs"
       role="tablist"
       aria-label="Lọc theo trạng thái"
     >
-      <label className="account-filters__date-label">Trạng thái</label>
+      <label className="request-filters__date-label">Trạng thái</label>
       {STATUS_TABS.map((tab) => (
         <button
           key={tab.value}
-          id={`appt-filter-tab-${tab.value}`}
+          id={`request-filter-tab-${tab.value}`}
           role="tab"
           type="button"
           aria-selected={filters.status === tab.value}
-          className={`appt-filters__tab${filters.status === tab.value ? " appt-filters__tab--active" : ""
+          className={`request-filters__tab${filters.status === tab.value ? " request-filters__tab--active" : ""
             }`}
           onClick={() => onStatusChange(tab.value)}
         >
@@ -45,26 +45,26 @@ function RequestFilters({
       ))}
     </div>
 
-    <div className="appt-filters__controls">
-      <div className="appt-filters__search-wrap">
+    <div className="request-filters__controls">
+      <div className="request-filters__search-wrap">
         <Search
           size={16}
-          className="appt-filters__search-icon"
+          className="request-filters__search-icon"
           aria-hidden="true"
         />
         <input
-          id="appt-filter-search"
+          id="request-filter-search"
           type="text"
-          className="appt-filters__search"
+          className="request-filters__search"
           placeholder="Tìm theo họ tên, số điện thoại, email, hoặc nội dung tin nhắn"
           value={filters.search}
           onChange={(e) => onSearchChange(e.target.value)}
-          aria-label="Tìm lịch hẹn"
+          aria-label="Tìm yêu cầu tư vấn"
         />
         {filters.search && (
           <button
             type="button"
-            className="appt-filters__search-clear"
+            className="request-filters__search-clear"
             aria-label="Xóa tìm kiếm"
             onClick={() => onSearchChange("")}
           >
@@ -73,12 +73,12 @@ function RequestFilters({
         )}
       </div>
 
-      <label className="account-filters__date-label">Từ ngày</label>
-      <div className="account-filters__date-wrap">
+      <label className="request-filters__date-label">Từ ngày</label>
+      <div className="request-filters__date-wrap">
         <input
-          id="account-filter-date"
+          id="request-filter-date-from"
           type="date"
-          className="account-filters__date"
+          className="request-filters__date"
           max={today}
           value={filters.from_date}
           onChange={(e) => onFromDateChange(e.target.value)}
@@ -87,21 +87,24 @@ function RequestFilters({
         {filters.from_date && (
           <button
             type="button"
-            className="account-filters__date-clear"
+            className="request-filters__date-clear"
             aria-label="Xóa bộ lọc từ ngày"
-            onClick={() => onFromDateChange("")}
+            onClick={() => {
+              onFromDateChange("")
+              onToDateChange("")
+            }}
           >
             <X size={14} aria-hidden="true" />
           </button>
         )}
       </div>
 
-      <label className="account-filters__date-label">Đến ngày</label>
-      <div className="account-filters__date-wrap">
+      <label className="request-filters__date-label">Đến ngày</label>
+      <div className="request-filters__date-wrap">
         <input
-          id="account-filter-date"
+          id="request-filter-date-to"
           type="date"
-          className="account-filters__date"
+          className="request-filters__date"
           min={filters.from_date}
           max={today}
           disabled={!filters.from_date}
@@ -112,7 +115,7 @@ function RequestFilters({
         {filters.to_date && (
           <button
             type="button"
-            className="account-filters__date-clear"
+            className="request-filters__date-clear"
             aria-label="Xóa bộ lọc đến ngày"
             onClick={() => onToDateChange("")}
           >

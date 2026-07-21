@@ -112,7 +112,10 @@ function AccountFilters({
             type="button"
             className="account-filters__date-clear"
             aria-label="Xóa bộ lọc từ ngày"
-            onClick={() => onFromDateChange("")}
+            onClick={() => {
+              onFromDateChange("")
+              onToDateChange("")
+            }}
           >
             <X size={14} aria-hidden="true" />
           </button>
