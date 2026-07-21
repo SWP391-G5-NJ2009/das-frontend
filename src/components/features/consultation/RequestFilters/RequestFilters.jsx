@@ -55,7 +55,7 @@ function RequestFilters({
           id="appt-filter-search"
           type="text"
           className="appt-filters__search"
-          placeholder="Tìm theo bệnh nhân, dịch vụ, nha sĩ..."
+          placeholder="Tìm theo họ tên, số điện thoại, email, hoặc nội dung tin nhắn"
           value={filters.search}
           onChange={(e) => onSearchChange(e.target.value)}
           aria-label="Tìm lịch hẹn"

@@ -25,10 +25,10 @@ function ConsultationPage() {
   const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
-    setFieldErrors((prev) => ({ ...prev , [name]: null}));
+    setFieldErrors((prev) => ({ ...prev, [name]: null }));
   }
 
   const handleSubmit = async (e) => {
@@ -64,7 +64,7 @@ function ConsultationPage() {
           />
           <div className="consultation-hero__overlay">
             <form className="consultation-panel" onSubmit={handleSubmit}>
-              {error && <p className="consultation-panel__error">{error}</p>}
+
               <div className="consultation-panel__header">
                 <h1 id="consultation-title">Yêu cầu tư vấn</h1>
                 <p>
@@ -150,6 +150,8 @@ function ConsultationPage() {
                 value={form.website}
                 onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
               />
+
+              {error && <p className="consultation-panel__error">{error}</p>}
 
               <button className="consultation-panel__submit" type="submit" disabled={isSubmitting}>
                 <Send size={18} aria-hidden="true" />
