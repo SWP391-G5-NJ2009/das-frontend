@@ -67,7 +67,7 @@ function AdminAccountsPage() {
         <div>
           <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
           <p className="admin-accounts__page-desc">
-            Thêm, cập nhật hoặc xóa quyền truy cập người dùng trong hệ thống.
+            Thêm, cập nhật hoặc xóa tài khoản nhân viên trong hệ thống.
           </p>
         </div>
         <button
@@ -123,7 +123,7 @@ function AdminAccountsPage() {
               {error && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
-                    Error: {error.message}
+                    Đã xảy ra lỗi. Vui lòng thử lại sau.
                   </td>
                 </tr>
               )}
@@ -169,13 +169,14 @@ function AdminAccountsPage() {
                       >
                         <Edit size={20} aria-hidden="true" />
                       </button>
-                      <button
+                      {account.status !== "Deactivated" && <button
                         className="admin-accounts__action-btn admin-accounts__action-btn--delete"
                         type="button"
                         onClick={() => setDeleteAccount(account)}
                       >
                         <Trash2 size={20} aria-hidden="true" />
-                      </button>
+                      </button>}
+                      
                     </td>
                   </tr>
                 ))}
@@ -185,7 +186,7 @@ function AdminAccountsPage() {
 
         <div className="admin-accounts__pagination">
           <p className="admin-accounts__pagination-info">
-            Showing {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} of {total} accounts
+            Hiển thị {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} trong tổng số {total} tài khoản
           </p>
           <div className="admin-accounts__pagination-controls">
             <Pagination
