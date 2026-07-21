@@ -1,4 +1,4 @@
-import { Eye, Pencil } from "lucide-react";
+import { Eye } from "lucide-react";
 import PropTypes from "prop-types";
 import "./StaffTable.css";
 
@@ -34,24 +34,22 @@ function getStatusClass(status) {
   return "staff-table__status staff-table__status--inactive";
 }
 
-function StaffTable({ staff, onEditStaff, onViewStaff }) {
+function StaffTable({ staff, onViewStaff }) {
   return (
     <div className="staff-table">
       <table className="staff-table__table">
         <thead>
           <tr>
             <th scope="col">Tên / Tên đăng nhập</th>
-            <th scope="col">Role</th>
-            <th scope="col">Status</th>
+            <th scope="col">Email</th>
+            <th scope="col">Số điện thoại</th>
+            <th scope="col">Vai trò</th>
+            <th scope="col">Trạng thái</th>
             <th scope="col">Thao tác</th>
           </tr>
         </thead>
         <tbody>
           {staff.map((item) => {
-            const canEditStaff = ["dentist", "receptionist"].includes(
-              item.role?.toLowerCase(),
-            );
-
             return (
               <tr key={item.accountId}>
                 <td>
@@ -60,6 +58,8 @@ function StaffTable({ staff, onEditStaff, onViewStaff }) {
                     item.fullName ||
                     "Not updated"}
                 </td>
+                <td>{item.email || "Chưa cập nhật"}</td>
+                <td>{item.phone || "Chưa cập nhật"}</td>
                 <td>{getRoleLabel(item.role)}</td>
                 <td>
                   <span className={getStatusClass(item.status)}>
@@ -68,17 +68,6 @@ function StaffTable({ staff, onEditStaff, onViewStaff }) {
                 </td>
                 <td>
                   <div className="staff-table__actions">
-                    {canEditStaff && (
-                      <button
-                        className="staff-table__action-button staff-table__action-button--edit"
-                        type="button"
-                        aria-label={`Edit ${item.fullName || "dentist"} profile`}
-                        title="Sửa"
-                        onClick={() => onEditStaff(item)}
-                      >
-                        <Pencil size={18} aria-hidden="true" />
-                      </button>
-                    )}
                     <button
                       className="staff-table__action-button staff-table__action-button--view"
                       type="button"
@@ -105,13 +94,14 @@ StaffTable.propTypes = {
       accountId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
       fullName: PropTypes.string,
+      email: PropTypes.string,
+      phone: PropTypes.string,
       profileId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       role: PropTypes.string,
       status: PropTypes.string,
       username: PropTypes.string,
     }),
   ).isRequired,
-  onEditStaff: PropTypes.func.isRequired,
   onViewStaff: PropTypes.func.isRequired,
 };
 

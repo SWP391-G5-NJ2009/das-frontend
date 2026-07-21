@@ -204,15 +204,21 @@ function AppointmentTable({
                     <div className="appt-table__action-group">
                       {actorRole === "receptionist" &&
                         ["Confirmed", "No-Show"].includes(appt.status) &&
-                        appt.scheduledDate &&
-                        appt.scheduledDate >= today && (
+                        appt.scheduledDate && (
                         <button
                           id={`tbl-checkin-${appt.id}`}
                           type="button"
                           className="appt-table__action-btn appt-table__action-btn--check-in"
                           aria-label={`Check-in bệnh nhân ${appt.patientName}`}
-                          title="Check-in"
-                          disabled={checkingInId === appt.id}
+                          title={
+                            appt.scheduledDate === today
+                              ? "Check-in"
+                              : "Chỉ có thể check-in trong ngày hẹn"
+                          }
+                          disabled={
+                            checkingInId === appt.id ||
+                            appt.scheduledDate !== today
+                          }
                           onClick={() => onCheckIn?.(appt)}
                         >
                           <UserCheck size={16} aria-hidden="true" />

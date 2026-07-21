@@ -91,6 +91,12 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.clinic-edit-modal__time-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
 .clinic-edit-modal__field input,
 .clinic-edit-modal__field textarea {
   width: 100%;
@@ -148,5 +154,11 @@
 
   .clinic-edit-modal__button {
     width: 100%;
+  }
+}
+
+@media (min-width: 640px) {
+  .clinic-edit-modal__time-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

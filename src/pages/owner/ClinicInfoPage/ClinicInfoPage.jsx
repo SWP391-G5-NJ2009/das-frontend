@@ -26,6 +26,8 @@ function ClinicInfoPage() {
     clinicName: "",
     address: "",
     hotline: "",
+    openTime: "",
+    closeTime: "",
   });
 
   const openEditModal = () => {
@@ -33,6 +35,8 @@ function ClinicInfoPage() {
       clinicName: clinicInfo.clinic_name || "",
       address: clinicInfo.address || "",
       hotline: clinicInfo.hotline || "",
+      openTime: clinicInfo.open_time?.slice(0, 5) || "",
+      closeTime: clinicInfo.close_time?.slice(0, 5) || "",
     });
     setSaveError("");
     setIsEditOpen(true);
