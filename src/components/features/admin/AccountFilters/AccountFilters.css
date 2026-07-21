@@ -1,32 +1,32 @@
-.appt-filters {
+.account-filters {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
 
-.appt-filters__date-label {
+.account-filters__date-label {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-600);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
 }
 
-.appt-filters__date-wrap {
+.account-filters__date-wrap {
   position: relative;
   display: flex;
   align-items: center;
   flex-shrink: 0;
 }
 
-.appt-filters__date:disabled {
+.account-filters__date:disabled {
   background-color: var(--color-neutral-50);
   color: var(--color-neutral-300);
   border-color: var(--color-neutral-200);
   cursor: not-allowed;
 }
 
-.appt-filters__tabs {
+.account-filters__tabs {
   display: flex;
   gap: var(--space-2);
   overflow-x: auto;
@@ -34,11 +34,11 @@
   scrollbar-width: none;
 }
 
-.appt-filters__tabs::-webkit-scrollbar {
+.account-filters__tabs::-webkit-scrollbar {
   display: none;
 }
 
-.appt-filters__tab {
+.account-filters__tab {
   display: inline-flex;
   align-items: center;
   padding: var(--space-2) var(--space-4);
@@ -58,18 +58,18 @@
     box-shadow var(--transition-fast);
 }
 
-.appt-filters__tab:hover {
+.account-filters__tab:hover {
   border-color: var(--color-primary-400);
   color: var(--color-primary-700);
   background-color: var(--color-primary-50);
 }
 
-.appt-filters__tab:focus-visible {
+.account-filters__tab:focus-visible {
   outline: 2px solid var(--color-primary-700);
   outline-offset: 2px;
 }
 
-.appt-filters__tab--active {
+.account-filters__tab--active {
   background-color: var(--color-primary-700);
   border-color: var(--color-primary-700);
   color: #ffffff;
@@ -77,14 +77,14 @@
   box-shadow: var(--shadow-sm);
 }
 
-.appt-filters__tab--active:hover {
+.account-filters__tab--active:hover {
   background-color: var(--color-primary-800);
   border-color: var(--color-primary-800);
   color: #ffffff;
 }
 
 /* ── Controls row (search + date) ── */
-.appt-filters__controls {
+.account-filters__controls {
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -92,13 +92,13 @@
 }
 
 /* Search */
-.appt-filters__search-wrap {
+.account-filters__search-wrap {
   position: relative;
   flex: 1;
   min-width: 200px;
 }
 
-.appt-filters__search-icon {
+.account-filters__search-icon {
   position: absolute;
   left: var(--space-3);
   top: 50%;
@@ -107,7 +107,7 @@
   pointer-events: none;
 }
 
-.appt-filters__search {
+.account-filters__search {
   width: 100%;
   padding: var(--space-2) var(--space-8) var(--space-2) var(--space-8);
   border: 1.5px solid var(--border-color);
@@ -119,17 +119,17 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.appt-filters__search::placeholder {
+.account-filters__search::placeholder {
   color: var(--color-neutral-400);
 }
 
-.appt-filters__search:focus {
+.account-filters__search:focus {
   outline: none;
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 3px var(--color-primary-100);
 }
 
-.appt-filters__search-clear {
+.account-filters__search-clear {
   position: absolute;
   right: var(--space-3);
   top: 50%;
@@ -147,12 +147,12 @@
   transition: background-color var(--transition-fast);
 }
 
-.appt-filters__search-clear:hover {
+.account-filters__search-clear:hover {
   background-color: var(--color-neutral-300);
 }
 
 /* Date selectors group */
-.appt-filters__date-group {
+.account-filters__date-group {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -161,7 +161,7 @@
 }
 
 /* Today shortcut button */
-.appt-filters__today-btn {
+.account-filters__today-btn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -182,18 +182,18 @@
     box-shadow var(--transition-fast);
 }
 
-.appt-filters__today-btn:hover {
+.account-filters__today-btn:hover {
   border-color: var(--color-secondary-400);
   color: var(--color-secondary-700);
   background-color: var(--color-secondary-100);
 }
 
-.appt-filters__today-btn:focus-visible {
+.account-filters__today-btn:focus-visible {
   outline: 2px solid var(--color-secondary-700);
   outline-offset: 2px;
 }
 
-.appt-filters__today-btn--active {
+.account-filters__today-btn--active {
   background-color: var(--color-secondary-700);
   border-color: var(--color-secondary-700);
   color: #ffffff;
@@ -201,19 +201,19 @@
   box-shadow: var(--shadow-sm);
 }
 
-.appt-filters__today-btn--active:hover {
+.account-filters__today-btn--active:hover {
   background-color: var(--color-secondary-800);
   border-color: var(--color-secondary-800);
   color: #ffffff;
 }
 
-.appt-filters__select-wrap {
+.account-filters__select-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.appt-filters__select {
+.account-filters__select {
   appearance: none;
   padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
   border: 1.5px solid var(--color-neutral-300);
@@ -234,7 +234,7 @@
 }
 
 /* Active / has-value state — highlighted with primary accent */
-.appt-filters__select--active {
+.account-filters__select--active {
   border-color: var(--color-primary-700);
   background-color: var(--color-primary-50);
   color: var(--color-primary-800);
@@ -242,13 +242,13 @@
   box-shadow: 0 0 0 2px var(--color-primary-100);
 }
 
-.appt-filters__select:focus {
+.account-filters__select:focus {
   outline: none;
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 3px var(--color-primary-100);
 }
 
-.appt-filters__select--disabled {
+.account-filters__select--disabled {
   background-color: var(--color-neutral-50);
   color: var(--color-neutral-300);
   cursor: not-allowed;
@@ -257,7 +257,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cfd8dc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 
-.appt-filters__select-clear {
+.account-filters__select-clear {
   position: absolute;
   right: var(--space-6);
   display: flex;
@@ -274,7 +274,7 @@
   z-index: 1;
 }
 
-.appt-filters__select-clear:hover {
+.account-filters__select-clear:hover {
   background-color: var(--color-primary-700);
   color: #ffffff;
   transform: scale(1.1);
@@ -283,15 +283,15 @@
 
 /* Responsive */
 @media (max-width: 640px) {
-  .appt-filters__controls {
+  .account-filters__controls {
     flex-direction: column;
   }
 
-  .appt-filters__date-wrap {
+  .account-filters__date-wrap {
     width: 100%;
   }
 
-  .appt-filters__date {
+  .account-filters__date {
     width: 100%;
   }
 }
