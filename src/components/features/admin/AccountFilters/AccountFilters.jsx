@@ -33,7 +33,7 @@ function AccountFilters({
       {tabs.map((tab) => (
         <button
           key={tab.value}
-          id={`appt-filter-tab-${tab.value}`}
+          id={`account-filter-tab-${tab.value}`}
           role="tab"
           type="button"
           aria-selected={filters.status === tab.value}
@@ -54,7 +54,7 @@ function AccountFilters({
           aria-hidden="true"
         />
         <input
-          id="appt-filter-search"
+          id="account-filter-search"
           type="text"
           className="account-filters__search"
           placeholder="Tìm theo bệnh nhân, dịch vụ, nha sĩ..."
@@ -77,7 +77,7 @@ function AccountFilters({
       <label className="account-filters__date-label">Từ ngày</label>
       <div className="account-filters__date-wrap">
         <input
-          id="appt-filter-date"
+          id="account-filter-date"
           type="date"
           className="account-filters__date"
           max={today}
@@ -100,9 +100,10 @@ function AccountFilters({
       <label className="account-filters__date-label">Đến ngày</label>
       <div className="account-filters__date-wrap">
         <input
-          id="appt-filter-date"
+          id="account-filter-date"
           type="date"
           className="account-filters__date"
+          min={filters.from_date}
           max={today}
           disabled={!filters.from_date}
           value={filters.to_date}
