@@ -16,6 +16,7 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import { usePatientSearch } from "../../../hooks/usePatientSearch";
 import { useAvailableSlots } from "../../../hooks/useAvailableSlots";
+import { usePatientBookedTimes } from "../../../hooks/usePatientBookedTimes";
 import { appointmentService } from "../../../services/appointment.service";
 import PatientSearchSection from "../../../components/features/booking/PatientSearchSection/PatientSearchSection";
 import ServiceGrid from "../../../components/features/booking/ServiceGrid/ServiceGrid";
@@ -79,6 +80,11 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     error: slotsError,
     refetch: refetchSlots,
   } = useAvailableSlots(selectedDentist?.id ?? null, selectedDate ?? null);
+
+  const { bookedTimeSet, refetch: refetchBookedTimes } = usePatientBookedTimes(
+    !isReceptionist,
+    isReceptionist ? selectedPatient?.id ?? null : null,
+  );
 
   const phoneNumber = selectedPatient?.phone || "";
 
@@ -192,6 +198,14 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
           "Khung giờ này vừa được đặt bởi người dùng khác.\n" +
             "Danh sách giờ trống đã được cập nhật — vui lòng chọn giờ khác.",
         );
+      } else if (err?.code === "DUPLICATE_SLOT_BOOKING") {
+        setSelectedSlot(null);
+        refetchSlots();
+        refetchBookedTimes();
+        alert(
+          "Bệnh nhân vừa có một lịch hẹn được đặt vào khung giờ này.\n" +
+            "Danh sách giờ đã được cập nhật — vui lòng chọn giờ khác.",
+        );
       } else {
         alert(err?.message || "Đặt lịch thất bại. Vui lòng thử lại!");
       }
@@ -207,6 +221,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
     navigate,
     isReceptionist,
     refetchSlots,
+    refetchBookedTimes,
   ]);
 
   const content = (
@@ -327,6 +342,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
                     slots={slots}
                     enforceTimingRule={!isReceptionist}
                     slotOccupied={selectedService?.slotOccupied ?? 1}
+                    bookedTimeSet={bookedTimeSet}
                   />
                 )}
               </>
