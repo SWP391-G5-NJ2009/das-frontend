@@ -24,6 +24,21 @@ import Pagination from "../../../components/common/Pagination/Pagination"
 import Toast from "../../../components/common/Toast/Toast"
 import "./AdminAccountsPage.css";
 
+const MAX_PAGE = 20;
+
+const STATUS_MAP = {
+  Active: "Hoạt động",
+  Deactivated: "Ngừng hoạt động",
+};
+
+const ROLE_MAP = {
+  Admin: "Admin",
+  Owner: "Chủ phòng khám",
+  Receptionist: "Lễ tân",
+  Dentist: "Nha sĩ",
+  Patient: "Bệnh nhân",
+};
+
 function AdminAccountsPage() {
 
   const [filters, setFilters] = useState({
@@ -34,7 +49,6 @@ function AdminAccountsPage() {
     search: "",
     pagination: 1,
   });
-  const MAX_PAGE = 20;
 
   const { accounts, total, isLoading, error, refetch } = useAccounts(filters);
   const [addAccount, setAddAccount] = useState(false);
@@ -166,11 +180,11 @@ function AdminAccountsPage() {
                       <span
                         className={`admin-accounts__role-badge admin-accounts__role-badge--${(account.role?.role_name || "").toLowerCase()}`}
                       >
-                        {account.role?.role_name}
+                        {ROLE_MAP[account.role?.role_name] || account.role?.role_name}
                       </span>
                     </td>
 
-                    <td className="admin-accounts__cell">{account.status}</td>
+                    <td className="admin-accounts__cell">{STATUS_MAP[account.status] || account.status}</td>
 
                     <td className="admin-accounts__cell">
                       {new Date(account.created_date).toLocaleString("vi-VN")}

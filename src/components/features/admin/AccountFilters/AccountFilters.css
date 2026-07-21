@@ -45,7 +45,7 @@
 .account-filters__date-label {
   font-size: var(--font-size-sm);
   color: var(--color-neutral-600);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-bold);
   white-space: nowrap;
 }
 
