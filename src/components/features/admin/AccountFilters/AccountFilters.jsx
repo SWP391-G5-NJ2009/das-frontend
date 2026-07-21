@@ -21,7 +21,7 @@ function AccountFilters({
   const tabs = statusOptions ?? STATUS_TABS;
 
   return (<div className="appt-filters">
-    {/* Status tab strip */}
+
     <div
       className="appt-filters__tabs"
       role="tablist"
@@ -43,7 +43,6 @@ function AccountFilters({
       ))}
     </div>
 
-    {/* Search + date row */}
     <div className="appt-filters__controls">
       <div className="appt-filters__search-wrap">
         <Search

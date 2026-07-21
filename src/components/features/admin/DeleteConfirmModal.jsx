@@ -1,19 +1,15 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import { accountService } from "../../../services/account.service";
 import "./AddAccountModal.css";
 
-function DeleteConfirmModal({ account, onClose, onSuccess }) {
-  const [error, setError] = useState(null);
-
+function DeleteConfirmModal({ account, onClose, onSuccess, onError }) {
   const handleDelete = async () => {
-    setError(null);
     try {
       await accountService.delete(account.account_id);
       onSuccess();
     } catch (err) {
-      setError(err.message);
+      onError(err.message);
     }
   };
 
@@ -35,8 +31,6 @@ function DeleteConfirmModal({ account, onClose, onSuccess }) {
             <X size={20} aria-hidden="true" />
           </button>
         </div>
-
-        {error && <p className="add-account-modal__error">{error}</p>}
 
         <p className="add-account-modal__description">
           Bạn có chắc muốn xóa <strong>{account.username}</strong>?
@@ -71,6 +65,7 @@ DeleteConfirmModal.propTypes = {
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
 };
 
 export default DeleteConfirmModal;
