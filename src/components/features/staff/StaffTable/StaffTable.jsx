@@ -48,9 +48,9 @@ function StaffTable({ staff, onEditStaff, onViewStaff }) {
         </thead>
         <tbody>
           {staff.map((item) => {
-            const canEditStaff =
-              ["dentist", "receptionist"].includes(item.role?.toLowerCase()) &&
-              item.profileId;
+            const canEditStaff = ["dentist", "receptionist"].includes(
+              item.role?.toLowerCase(),
+            );
 
             return (
               <tr key={item.accountId}>

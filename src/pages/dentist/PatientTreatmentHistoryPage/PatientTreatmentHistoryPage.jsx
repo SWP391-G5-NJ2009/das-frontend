@@ -13,7 +13,14 @@ import "./PatientTreatmentHistoryPage.css";
 
 function formatDate(value) {
   if (!value) return "Not updated";
-  return new Intl.DateTimeFormat("en-US").format(new Date(value));
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Not updated";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
 }
 
 function formatTime(record) {
@@ -93,31 +100,6 @@ function TreatmentRecordRow({ record }) {
                 Chưa có ghi chú lâm sàng.
               </p>
             )}
-          {((record.medicines || []).length > 0 || hasValue(record.prescriptionNote)) && (
-            <section className="patient-treatment-history__prescription" aria-label="Đơn thuốc">
-              <div className="patient-treatment-history__prescription-header">
-                <h4>Đơn thuốc</h4>
-                <span>{(record.medicines || []).length} loại thuốc</span>
-              </div>
-              {(record.medicines || []).map((medicine, index) => (
-                <div className="patient-treatment-history__medicine" key={medicine.id || `${medicine.name}-${index}`}>
-                  <div className="patient-treatment-history__medicine-field">
-                    <span className="patient-treatment-history__medicine-label">Tên thuốc</span>
-                    <strong>{medicine.name}</strong>
-                  </div>
-                  <div className="patient-treatment-history__medicine-field">
-                    <span className="patient-treatment-history__medicine-label">Liều dùng</span>
-                    <span>{medicine.dosage || "Chưa có liều dùng"}</span>
-                  </div>
-                </div>
-              ))}
-              {hasValue(record.prescriptionNote) && (
-                <p className="patient-treatment-history__prescription-note">
-                  <strong>Ghi chú:</strong> {record.prescriptionNote}
-                </p>
-              )}
-            </section>
-          )}
         </div>
       )}
     </article>
@@ -136,14 +118,6 @@ TreatmentRecordRow.propTypes = {
     status: PropTypes.string,
     treatment: PropTypes.string,
     treatmentNote: PropTypes.string,
-    prescriptionNote: PropTypes.string,
-    medicines: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        name: PropTypes.string.isRequired,
-        dosage: PropTypes.string,
-      }),
-    ),
   }).isRequired,
 };
 
