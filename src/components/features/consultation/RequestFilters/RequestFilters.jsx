@@ -5,7 +5,9 @@ import "./RequestFilters.css";
 const STATUS_TABS = [
   { value: "All", label: "Tất cả" },
   { value: "Pending", label: "Đang chờ" },
+  { value: "Booked", label: "Đã đặt lịch" },
   { value: "Resolved", label: "Đã xử lý" },
+  { value: "Follow-up", label: "Cần gọi lại" },
   { value: "Spam", label: "Spam" },
   { value: "Fail-to-contact", label: "Không liên hệ được" },
   { value: "Other", label: "Khác" },

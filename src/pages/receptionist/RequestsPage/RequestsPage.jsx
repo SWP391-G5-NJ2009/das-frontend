@@ -8,7 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import { useConsultationRequests } from "../../../hooks/useConsultationRequests";
-import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal";
+import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal/HandleRequestModal";
 import ReceptionistPageShell from "../ReceptionistPageShell";
 import RequestFilters from "../../../components/features/consultation/RequestFilters/RequestFilters"
 import PropTypes from "prop-types";
@@ -199,6 +199,7 @@ function ReceptionistRequestsPage() {
             setHandleRequest(null);
             refetch();
           }}
+          refetch={refetch}
         />
       )}
     </ReceptionistPageShell>
