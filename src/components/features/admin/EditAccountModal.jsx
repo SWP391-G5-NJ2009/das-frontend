@@ -11,7 +11,7 @@ const ROLES = [
   { value: "Owner", label: "Chủ phòng khám" },
 ];
 
-function EditAccountModal({ account, onClose, onSuccess }) {
+function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
   const [form, setForm] = useState({
     username: account.username || "",
     email: account.email || "",
@@ -173,13 +173,17 @@ function EditAccountModal({ account, onClose, onSuccess }) {
             )}
           </label>
 
-          <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Status</span>
-            <select name="status" value={form.status} onChange={handleChange}>
-              <option value="Active">Hoạt động</option>
-              <option value="Deactivated">Ngừng hoạt động</option>
-            </select>
-          </label>
+          {account.account_id !== userAccount &&
+            <label className="add-account-modal__field">
+              <span className="add-account-modal__label">Status</span>
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleChange}>
+                <option value="Active">Hoạt động</option>
+                <option value="Deactivated">Ngừng hoạt động</option>
+              </select>
+            </label>}
 
           <div className="add-account-modal__actions">
             <button

@@ -241,6 +241,7 @@ function AdminAccountsPage() {
       {editAccount && (
         <EditAccountModal
           account={editAccount}
+          userAccount = {user.accountId}
           onClose={() => setEditAccount(null)}
           onSuccess={() => {
             setEditAccount(null);
