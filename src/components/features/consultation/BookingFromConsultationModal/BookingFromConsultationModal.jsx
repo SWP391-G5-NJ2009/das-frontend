@@ -116,6 +116,7 @@ function BookingFromConsultationModal({ request, onClose, onSuccess }) {
           fullName: selectedPatient.fullName,
           phone: selectedPatient.phone,
         },
+        consultationRequestId: Number(request.id),
       });
       onSuccess();
     } catch (err) {
