@@ -1,0 +1,66 @@
+.dentist-service-selector {
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.dentist-service-selector[aria-invalid="true"] {
+  border-color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+.dentist-service-selector legend {
+  padding: 0 var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-service-selector legend strong,
+.dentist-service-selector__error {
+  color: var(--color-error);
+}
+
+.dentist-service-selector__options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+.dentist-service-selector__options label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-primary-200);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-50);
+  color: var(--color-neutral-800);
+  cursor: pointer;
+}
+
+.dentist-service-selector__options input {
+  accent-color: var(--color-primary-700);
+}
+
+.dentist-service-selector__options input:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.dentist-service-selector__state,
+.dentist-service-selector__error {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.dentist-service-selector__state {
+  color: var(--color-neutral-600);
+}
+
+@media (min-width: 768px) {
+  .dentist-service-selector__options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

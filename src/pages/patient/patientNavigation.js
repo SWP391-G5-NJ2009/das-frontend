@@ -6,6 +6,7 @@ export const PATIENT_NAV_ITEMS = [
     to: "/patient/appointments",
   },
   { icon: "history", label: "Lịch sử điều trị", to: "/patient/history" },
+  { icon: "payments", label: "Thanh toán", to: "/patient/payments" },
   { icon: "person", label: "Quản lý hồ sơ", to: "/patient/profile" },
 ];
 

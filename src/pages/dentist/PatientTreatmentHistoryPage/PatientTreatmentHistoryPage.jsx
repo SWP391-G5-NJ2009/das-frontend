@@ -6,6 +6,8 @@ import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { usePatientTreatments } from "../../../hooks/usePatientTreatments";
+import { useAuth } from "../../../context/AuthContext";
+import PatientPageShell from "../../patient/PatientPageShell";
 import DentistPageShell from "../DentistPageShell";
 import "./PatientTreatmentHistoryPage.css";
 
@@ -80,10 +82,9 @@ function TreatmentRecordRow({ record }) {
       {isExpanded && (
         <div className="patient-treatment-history__record-details">
           <dl className="patient-treatment-history__field-list">
-            <FieldRow label="Diagnosis" value={record.diagnosis} />
+            <FieldRow label="Chấn đoán" value={record.diagnosis} />
             <FieldRow label="Ghi chú điều trị" value={record.treatmentNote} />
             <FieldRow label="Ghi chú lịch hẹn" value={record.appointmentNote} />
-            <FieldRow label="Appointment" value={record.appointmentId} />
           </dl>
           {!hasValue(record.diagnosis) &&
             !hasValue(record.treatmentNote) &&
@@ -92,6 +93,31 @@ function TreatmentRecordRow({ record }) {
                 Chưa có ghi chú lâm sàng.
               </p>
             )}
+          {((record.medicines || []).length > 0 || hasValue(record.prescriptionNote)) && (
+            <section className="patient-treatment-history__prescription" aria-label="Đơn thuốc">
+              <div className="patient-treatment-history__prescription-header">
+                <h4>Đơn thuốc</h4>
+                <span>{(record.medicines || []).length} loại thuốc</span>
+              </div>
+              {(record.medicines || []).map((medicine, index) => (
+                <div className="patient-treatment-history__medicine" key={medicine.id || `${medicine.name}-${index}`}>
+                  <div className="patient-treatment-history__medicine-field">
+                    <span className="patient-treatment-history__medicine-label">Tên thuốc</span>
+                    <strong>{medicine.name}</strong>
+                  </div>
+                  <div className="patient-treatment-history__medicine-field">
+                    <span className="patient-treatment-history__medicine-label">Liều dùng</span>
+                    <span>{medicine.dosage || "Chưa có liều dùng"}</span>
+                  </div>
+                </div>
+              ))}
+              {hasValue(record.prescriptionNote) && (
+                <p className="patient-treatment-history__prescription-note">
+                  <strong>Ghi chú:</strong> {record.prescriptionNote}
+                </p>
+              )}
+            </section>
+          )}
         </div>
       )}
     </article>
@@ -110,6 +136,14 @@ TreatmentRecordRow.propTypes = {
     status: PropTypes.string,
     treatment: PropTypes.string,
     treatmentNote: PropTypes.string,
+    prescriptionNote: PropTypes.string,
+    medicines: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        name: PropTypes.string.isRequired,
+        dosage: PropTypes.string,
+      }),
+    ),
   }).isRequired,
 };
 
@@ -127,29 +161,40 @@ function getHeaderMeta({ patient, treatments }) {
   return meta;
 }
 
-function PatientTreatmentHistoryPage() {
+function PatientTreatmentHistoryPage({ viewer }) {
   const { patientId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const isPatientView = viewer === "patient";
   const patient = location.state?.patient || {};
-  const { error, isLoading, treatments } = usePatientTreatments(patientId);
-  const patientName = patient.patientName || `Patient #${patientId}`;
-  const headerMeta = getHeaderMeta({ patient, treatments });
+  const { error, isLoading, treatments } = usePatientTreatments(
+    isPatientView ? null : patientId,
+  );
+  const patientName = isPatientView
+    ? user?.fullName || "Hồ sơ của tôi"
+    : patient.patientName || `Bệnh nhân #${patientId}`;
+  const headerMeta = isPatientView
+    ? [`${treatments.length} lần điều trị`, user?.phone].filter(Boolean)
+    : getHeaderMeta({ patient, treatments });
+  const PageShell = isPatientView ? PatientPageShell : DentistPageShell;
 
   return (
-    <DentistPageShell>
+    <PageShell>
       <section
         className="patient-treatment-history"
         aria-labelledby="patient-treatment-history-title"
       >
-        <button
-          className="patient-treatment-history__back-button"
-          onClick={() => navigate("/dentist/patients")}
-          type="button"
-        >
-          <ArrowLeft aria-hidden="true" size={16} />
-          <span>Quay lại danh sách bệnh nhân</span>
-        </button>
+        {!isPatientView && (
+          <button
+            className="patient-treatment-history__back-button"
+            onClick={() => navigate("/dentist/patients")}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" size={16} />
+            <span>Quay lại danh sách bệnh nhân</span>
+          </button>
+        )}
 
         <header className="patient-treatment-history__header">
           <div>
@@ -191,10 +236,16 @@ function PatientTreatmentHistoryPage() {
           </div>
         )}
       </section>
-    </DentistPageShell>
+    </PageShell>
   );
 }
 
-PatientTreatmentHistoryPage.propTypes = {};
+PatientTreatmentHistoryPage.propTypes = {
+  viewer: PropTypes.oneOf(["dentist", "patient"]),
+};
+
+PatientTreatmentHistoryPage.defaultProps = {
+  viewer: "dentist",
+};
 
 export default PatientTreatmentHistoryPage;

@@ -27,6 +27,13 @@ export const appointmentService = {
   cancel: (appointmentId, reason = "") =>
     api.patch(`/appointments/${appointmentId}/cancel`, { reason }),
 
+  /** Receptionist: check in a confirmed appointment */
+  checkIn: (appointmentId) => api.patch(`/appointments/${appointmentId}/checkin`),
+
+  /** Dentist: start treatment for an assigned checked-in appointment */
+  startTreatment: (appointmentId) =>
+    api.patch(`/appointments/${appointmentId}/start-treatment`),
+
   /** Edit an appointment (service, dentist, or slot) — FE stub only, BE not yet implemented */
   edit: (appointmentId, payload) =>
     api.patch(`/appointments/${appointmentId}`, payload),

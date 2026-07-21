@@ -3,13 +3,21 @@ import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import "./PaymentConfirmModal.css";
 
-const formatMoney = (value) => `${new Intl.NumberFormat("vi-VN").format(Number(value) || 0)}đ`;
+const formatMoney = (value) =>
+  `${new Intl.NumberFormat("vi-VN").format(Number(value) || 0)}đ`;
 
-function PaymentConfirmModal({ invoice, isSubmitting, error, onClose, onConfirm }) {
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+function PaymentConfirmModal({
+  invoice,
+  isSubmitting,
+  error,
+  onClose,
+  onConfirm,
+}) {
+  const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
 
   useEffect(() => {
-    const closeOnEscape = (event) => event.key === "Escape" && !isSubmitting && onClose();
+    const closeOnEscape = (event) =>
+      event.key === "Escape" && !isSubmitting && onClose();
     document.addEventListener("keydown", closeOnEscape);
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [isSubmitting, onClose]);
@@ -20,29 +28,68 @@ function PaymentConfirmModal({ invoice, isSubmitting, error, onClose, onConfirm 
   };
 
   return (
-    <div className="payment-confirm__overlay" onMouseDown={(event) => event.target === event.currentTarget && !isSubmitting && onClose()} role="presentation">
-      <section aria-labelledby="payment-confirm-title" aria-modal="true" className="payment-confirm" role="dialog">
+    <div
+      className="payment-confirm__overlay"
+      onMouseDown={(event) =>
+        event.target === event.currentTarget && !isSubmitting && onClose()
+      }
+      role="presentation"
+    >
+      <section
+        aria-labelledby="payment-confirm-title"
+        aria-modal="true"
+        className="payment-confirm"
+        role="dialog"
+      >
         <header className="payment-confirm__header">
           <h2 id="payment-confirm-title">Thanh toán hóa đơn</h2>
-          <button aria-label="Đóng" className="payment-confirm__close" disabled={isSubmitting} onClick={onClose} type="button"><X /></button>
+          <button
+            aria-label="Đóng"
+            className="payment-confirm__close"
+            disabled={isSubmitting}
+            onClick={onClose}
+            type="button"
+          >
+            <X />
+          </button>
         </header>
         <form className="payment-confirm__body" onSubmit={submit}>
           <div className="payment-confirm__summary">
-            <span>INV-{invoice.invoice_id}</span>
+            <span>Mã hóa đơn: {invoice.invoice_id}</span>
             <strong>{formatMoney(invoice.amount)}</strong>
           </div>
           <label className="payment-confirm__field">
             <span>Phương thức thanh toán</span>
-            <select disabled={isSubmitting} onChange={(event) => setPaymentMethod(event.target.value)} value={paymentMethod}>
-              <option value="cash">Tiền mặt</option>
-              <option value="bank_transfer">Chuyển khoản</option>
-              <option value="card">Thẻ</option>
+            <select
+              disabled={isSubmitting}
+              onChange={(event) => setPaymentMethod(event.target.value)}
+              value={paymentMethod}
+            >
+              <option value="Tiền mặt">Tiền mặt</option>
+              <option value="Chuyển khoản">Chuyển khoản</option>
             </select>
           </label>
-          {error && <p className="payment-confirm__error" role="alert">{error.message}</p>}
+          {error && (
+            <p className="payment-confirm__error" role="alert">
+              {error.message}
+            </p>
+          )}
           <footer className="payment-confirm__actions">
-            <button className="payment-confirm__button payment-confirm__button--cancel" disabled={isSubmitting} onClick={onClose} type="button">Hủy</button>
-            <button className="payment-confirm__button payment-confirm__button--submit" disabled={isSubmitting} type="submit">{isSubmitting ? "Đang xử lý..." : "Xác nhận thanh toán"}</button>
+            <button
+              className="payment-confirm__button payment-confirm__button--cancel"
+              disabled={isSubmitting}
+              onClick={onClose}
+              type="button"
+            >
+              Hủy
+            </button>
+            <button
+              className="payment-confirm__button payment-confirm__button--submit"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {isSubmitting ? "Đang xử lý..." : "Xác nhận thanh toán"}
+            </button>
           </footer>
         </form>
       </section>
@@ -54,7 +101,8 @@ PaymentConfirmModal.propTypes = {
   error: PropTypes.instanceOf(Error),
   invoice: PropTypes.shape({
     amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    invoice_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    invoice_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
   }).isRequired,
   isSubmitting: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,

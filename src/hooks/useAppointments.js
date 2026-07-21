@@ -176,11 +176,29 @@ export function useAllAppointments(filters = {}, options = {}) {
     [fetchAppointments],
   );
 
+  const checkInAppointment = useCallback(
+    async (appointmentId) => {
+      await appointmentService.checkIn(appointmentId);
+      await fetchAppointments();
+    },
+    [fetchAppointments],
+  );
+
+  const startTreatment = useCallback(
+    async (appointmentId) => {
+      await appointmentService.startTreatment(appointmentId);
+      await fetchAppointments();
+    },
+    [fetchAppointments],
+  );
+
   return {
     appointments,
     isLoading,
     error,
     cancelAppointment,
+    checkInAppointment,
+    startTreatment,
     refetch: fetchAppointments,
   };
 }

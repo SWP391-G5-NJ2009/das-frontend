@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Ban, MessageSquare, ShieldBan, UnlockKeyhole } from "lucide-react";
+import { Ban, ClipboardPlus, MessageSquare, Play, ShieldBan, UnlockKeyhole, UserCheck } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
@@ -25,10 +25,21 @@ function AppointmentTable({
   onCancel,
   onWithin24hCancel,
   onLiftBan,
+  onCheckIn,
+  checkingInId,
+  onStartTreatment,
+  startingTreatmentId,
+  onRecordTreatment,
   showPatientInfo,
   showRoom,
   actorRole,
 }) {
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
   if (appointments.length === 0) return null;
 
   return (
@@ -164,14 +175,49 @@ function AppointmentTable({
 
                 <td className="appt-table__td appt-table__td--actions">
                   {actorRole === "dentist" ? (
-                    <span
-                      className="appt-table__view-only"
-                      aria-label="Chỉ xem"
-                    >
-                      —
-                    </span>
+                    appt.status === "Checked-in" ? (
+                      <button
+                        id={`tbl-start-treatment-${appt.id}`}
+                        type="button"
+                        className="appt-table__start-treatment"
+                        aria-label={`Bắt đầu điều trị cho ${appt.patientName}`}
+                        disabled={startingTreatmentId === appt.id}
+                        onClick={() => onStartTreatment?.(appt)}
+                      >
+                        <span>{startingTreatmentId === appt.id ? "Đang xử lý..." : "Bắt đầu điều trị"}</span>
+                      </button>
+                    ) : appt.status === "In-Treatment" ? (
+                      <button
+                        id={`tbl-record-treatment-${appt.id}`}
+                        type="button"
+                        className="appt-table__record-treatment"
+                        aria-label={`Ghi kết quả điều trị cho ${appt.patientName}`}
+                        onClick={() => onRecordTreatment?.(appt)}
+                      >
+                        <ClipboardPlus size={15} aria-hidden="true" />
+                        <span>Ghi kết quả</span>
+                      </button>
+                    ) : (
+                      <span className="appt-table__view-only" aria-label="Chỉ xem">—</span>
+                    )
                   ) : (
                     <div className="appt-table__action-group">
+                      {actorRole === "receptionist" &&
+                        ["Confirmed", "No-Show"].includes(appt.status) &&
+                        appt.scheduledDate &&
+                        appt.scheduledDate >= today && (
+                        <button
+                          id={`tbl-checkin-${appt.id}`}
+                          type="button"
+                          className="appt-table__action-btn appt-table__action-btn--check-in"
+                          aria-label={`Check-in bệnh nhân ${appt.patientName}`}
+                          title="Check-in"
+                          disabled={checkingInId === appt.id}
+                          onClick={() => onCheckIn?.(appt)}
+                        >
+                          <UserCheck size={16} aria-hidden="true" />
+                        </button>
+                      )}
                       {/* Lift Ban button — only for restricted patients, only for receptionist */}
                       {appt.patientAccountStatus === "Restricted" &&
                         actorRole === "receptionist" && (
@@ -247,6 +293,11 @@ AppointmentTable.propTypes = {
   onCancel: PropTypes.func,
   onWithin24hCancel: PropTypes.func,
   onLiftBan: PropTypes.func,
+  onCheckIn: PropTypes.func,
+  checkingInId: PropTypes.string,
+  onStartTreatment: PropTypes.func,
+  startingTreatmentId: PropTypes.string,
+  onRecordTreatment: PropTypes.func,
   showPatientInfo: PropTypes.bool,
   showRoom: PropTypes.bool,
   actorRole: PropTypes.string,
@@ -256,6 +307,11 @@ AppointmentTable.defaultProps = {
   onCancel: null,
   onWithin24hCancel: null,
   onLiftBan: null,
+  onCheckIn: null,
+  checkingInId: null,
+  onStartTreatment: null,
+  startingTreatmentId: null,
+  onRecordTreatment: null,
   showPatientInfo: true,
   showRoom: true,
   actorRole: "receptionist",

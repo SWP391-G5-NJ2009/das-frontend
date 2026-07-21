@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import Spinner from "../../../common/Spinner/Spinner";
 import { useCreateDentistProfile } from "../../../../hooks/useCreateDentistProfile";
+import DentistServiceSelector from "../DentistServiceSelector/DentistServiceSelector";
 import "./DentistProfileCreateModal.css";
 
 const EMPTY_FORM = {
@@ -14,6 +15,7 @@ const EMPTY_FORM = {
   address: "",
   speciality: "",
   experience: "",
+  serviceIds: [],
 };
 
 function validateForm(form, selectedAccount) {
@@ -22,16 +24,20 @@ function validateForm(form, selectedAccount) {
   if (!form.accountId) errors.accountId = "Vui lòng chọn tài khoản nhân viên.";
   if (!form.fullName.trim()) errors.fullName = "Vui lòng nhập họ và tên.";
   if (!selectedAccount?.email) {
-    errors.email = "The selected account has no email address.";
+    errors.email = "Tài khoản đã chọn chưa có địa chỉ email.";
   }
   if (!selectedAccount?.phone) {
-    errors.phone = "The selected account has no phone number.";
+    errors.phone = "Tài khoản đã chọn chưa có số điện thoại.";
   }
-  if (!form.birthDate) errors.birthDate = "Birthdate is required.";
-  if (!form.gender) errors.gender = "Gender is required.";
-  if (!form.address.trim()) errors.address = "Address is required.";
+  if (!form.birthDate) errors.birthDate = "Vui lòng chọn ngày sinh.";
+  if (!form.gender) errors.gender = "Vui lòng chọn giới tính.";
+  if (!form.address.trim()) errors.address = "Vui lòng nhập địa chỉ.";
   if (form.role === "dentist" && !form.speciality.trim()) errors.speciality = "Vui lòng nhập chuyên môn.";
   if (form.role === "dentist" && !form.experience.trim()) errors.experience = "Vui lòng nhập kinh nghiệm.";
+
+  if (form.role === "dentist" && form.serviceIds.length === 0) {
+    errors.serviceIds = "Vui lòng chọn ít nhất một dịch vụ.";
+  }
 
   return errors;
 }
@@ -47,7 +53,6 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
     fetchAvailableAccounts,
     createProfile,
   } = useCreateDentistProfile();
-
   useEffect(() => {
     fetchAvailableAccounts();
   }, [fetchAvailableAccounts]);
@@ -63,12 +68,22 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
     setForm((currentForm) => ({
       ...currentForm,
       [name]: value,
-      ...(name === "role" ? { accountId: "", speciality: "", experience: "" } : {}),
+      ...(name === "role"
+        ? { accountId: "", speciality: "", experience: "", serviceIds: [] }
+        : {}),
     }));
     setFieldErrors((currentErrors) => ({
       ...currentErrors,
       [name]: "",
       ...(name === "accountId" ? { email: "", phone: "" } : {}),
+    }));
+  };
+
+  const handleServicesChange = (serviceIds) => {
+    setForm((currentForm) => ({ ...currentForm, serviceIds }));
+    setFieldErrors((currentErrors) => ({
+      ...currentErrors,
+      serviceIds: "",
     }));
   };
 
@@ -119,7 +134,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
           </div>
           <button
             type="button"
-            aria-label="Close"
+            aria-label="Đóng"
             onClick={onClose}
             disabled={isCreating}
           >
@@ -158,7 +173,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
 
             <label className="dentist-profile-create__field dentist-profile-create__field--wide">
               <span>
-                Account <strong>*</strong>
+                Tài khoản <strong>*</strong>
               </span>
               <select
                 name="accountId"
@@ -186,19 +201,19 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                   </div>
                   <div>
                     <dt>Email</dt>
-                    <dd>{selectedAccount.email || "Not updated"}</dd>
+                    <dd>{selectedAccount.email || "Chưa cập nhật"}</dd>
                   </div>
                   <div>
                     <dt>Số điện thoại</dt>
-                    <dd>{selectedAccount.phone || "Not updated"}</dd>
+                    <dd>{selectedAccount.phone || "Chưa cập nhật"}</dd>
                   </div>
                   <div>
-                    <dt>Role</dt>
+                    <dt>Vai trò</dt>
                     <dd>{form.role === "dentist" ? "Nha sĩ" : "Lễ tân"}</dd>
                   </div>
                   <div>
-                    <dt>Status</dt>
-                    <dd>{selectedAccount.status}</dd>
+                    <dt>Trạng thái</dt>
+                    <dd>{selectedAccount.status === "Active" ? "Hoạt động" : selectedAccount.status}</dd>
                   </div>
                 </dl>
                 {fieldErrors.email && <small>{fieldErrors.email}</small>}
@@ -221,7 +236,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
               </label>
               <label className="dentist-profile-create__field">
                 <span>
-                  Birthdate <strong>*</strong>
+                  Ngày sinh <strong>*</strong>
                 </span>
                 <input
                   name="birthDate"
@@ -234,7 +249,7 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
               </label>
               <label className="dentist-profile-create__field">
                 <span>
-                  Gender <strong>*</strong>
+                  Giới tính <strong>*</strong>
                 </span>
                 <select
                   name="gender"
@@ -260,11 +275,20 @@ function DentistProfileCreateModal({ onClose, onCreated }) {
                     <input name="experience" placeholder="VD: 5 năm" value={form.experience} onChange={handleChange} aria-invalid={Boolean(fieldErrors.experience)} />
                     {fieldErrors.experience && <small>{fieldErrors.experience}</small>}
                   </label>
+                  <div className="dentist-profile-create__field--wide">
+                    <DentistServiceSelector
+                      selectedIds={form.serviceIds}
+                      onChange={handleServicesChange}
+                      disabled={isCreating}
+                      errorMessage={fieldErrors.serviceIds}
+                      required
+                    />
+                  </div>
                 </>
               )}
               <label className="dentist-profile-create__field dentist-profile-create__field--wide">
                 <span>
-                  Address <strong>*</strong>
+                  Địa chỉ <strong>*</strong>
                 </span>
                 <textarea
                   name="address"
