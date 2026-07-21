@@ -27,6 +27,7 @@ import "./AdminAccountsPage.css";
 function AdminAccountsPage() {
 
   const [filters, setFilters] = useState({
+    role: "All",
     status: "All",
     from_date: "",
     to_date: "",
@@ -40,6 +41,11 @@ function AdminAccountsPage() {
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
   const [toast, setToast] = useState({ message: null, type: null });
+
+  const handleRoleChange = useCallback(
+    (role) => setFilters((prev) => ({ ...prev, role, pagination: 1 })),
+    [],
+  );
 
   const handleStatusChange = useCallback(
     (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
@@ -91,6 +97,7 @@ function AdminAccountsPage() {
 
         <AccountFilters
           filters={filters}
+          onRoleChange={handleRoleChange}
           onStatusChange={handleStatusChange}
           onFromDateChange={handleFromDateChange}
           onToDateChange={handleToDateChange}
@@ -105,8 +112,8 @@ function AdminAccountsPage() {
                 <th>Tên đăng nhập</th>
                 <th>Email</th>
                 <th>Số điện thoại</th>
-                <th>Status</th>
                 <th>Loại tài khoản</th>
+                <th>Trạng thái</th>
                 <th>Ngày tạo</th>
                 <th>Thao tác</th>
               </tr>
@@ -140,17 +147,21 @@ function AdminAccountsPage() {
                 !error &&
                 accounts.map((account, index) => (
                   <tr key={account.account_id} className="admin-accounts__row">
+
                     <td className="admin-accounts__cell admin-accounts__cell--num">
                       {index + (filters.pagination - 1) * MAX_PAGE + 1}
                     </td>
+
                     <td className="admin-accounts__cell">
                       <div className="admin-accounts__user-cell">
                         <span>{account.username}</span>
                       </div>
                     </td>
+
                     <td className="admin-accounts__cell">{account.email}</td>
+
                     <td className="admin-accounts__cell">{account.phone}</td>
-                    <td className="admin-accounts__cell">{account.status}</td>
+
                     <td className="admin-accounts__cell">
                       <span
                         className={`admin-accounts__role-badge admin-accounts__role-badge--${(account.role?.role_name || "").toLowerCase()}`}
@@ -158,6 +169,9 @@ function AdminAccountsPage() {
                         {account.role?.role_name}
                       </span>
                     </td>
+
+                    <td className="admin-accounts__cell">{account.status}</td>
+
                     <td className="admin-accounts__cell">
                       {new Date(account.created_date).toLocaleString("vi-VN")}
                     </td>
@@ -176,7 +190,7 @@ function AdminAccountsPage() {
                       >
                         <Trash2 size={20} aria-hidden="true" />
                       </button>}
-                      
+
                     </td>
                   </tr>
                 ))}

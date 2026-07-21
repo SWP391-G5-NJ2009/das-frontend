@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Search, X } from "lucide-react";
 import "./AccountFilters.css";
 
-const STATUS_TABS = [
+const ROLE_TABS = [
   { value: "All", label: "Tất cả" },
   { value: "Admin", label: "Admin" },
   { value: "Owner", label: "Chủ phòng khám" },
@@ -11,17 +11,22 @@ const STATUS_TABS = [
   { value: "Patient", label: "Bệnh nhân" },
 ];
 
+const STATUS_TABS = [
+  { value: "All", label: "Tất cả" },
+  { value: "Active", label: "Hoạt động" },
+  { value: "Deactivated", label: "Ngừng hoạt động" },
+];
+
 const today = new Date().toISOString().split("T")[0];
 
 function AccountFilters({
   filters,
+  onRoleChange,
   onStatusChange,
   onFromDateChange,
   onToDateChange,
   onSearchChange,
-  statusOptions,
 }) {
-  const tabs = statusOptions ?? STATUS_TABS;
 
   return (<div className="account-filters">
 
@@ -30,7 +35,24 @@ function AccountFilters({
       role="tablist"
       aria-label="Lọc theo trạng thái"
     >
-      {tabs.map((tab) => (
+      <label className="account-filters__date-label">Vai trò</label>
+      {ROLE_TABS.map((tab) => (
+        <button
+          key={tab.value}
+          id={`account-filter-tab-${tab.value}`}
+          role="tab"
+          type="button"
+          aria-selected={filters.role === tab.value}
+          className={`account-filters__tab${filters.role === tab.value ? " account-filters__tab--active" : ""
+            }`}
+          onClick={() => onRoleChange(tab.value)}
+        >
+          {tab.label}
+        </button>
+      ))}
+
+      <label className="account-filters__date-label">Trạng thái</label>
+      {STATUS_TABS.map((tab) => (
         <button
           key={tab.value}
           id={`account-filter-tab-${tab.value}`}
@@ -126,8 +148,6 @@ function AccountFilters({
   );
 }
 
-AccountFilters.defaultProps = {
-  statusOptions: null,
-};
+AccountFilters.defaultProps = {};
 
 export default AccountFilters;
