@@ -1,12 +1,14 @@
-import { FileText, UserRound, X } from "lucide-react";
+import { FileText, Pencil, UserRound, X } from "lucide-react";
 import PropTypes from "prop-types";
+import { useState } from "react";
 import ProfileField from "../ProfileField/ProfileField";
+import DentistProfileEditModal from "../DentistProfileEditModal/DentistProfileEditModal";
 import "./DentistProfileModal.css";
 
-const EMPTY_VALUE = "Not updated";
+const EMPTY_VALUE = "Chưa cập nhật";
 
 function getDoctorTitle(name) {
-  if (!name || name === EMPTY_VALUE) return "Not updated";
+  if (!name || name === EMPTY_VALUE) return EMPTY_VALUE;
   return `BS. ${name}`;
 }
 
@@ -28,13 +30,37 @@ function getStatus(status) {
     return { label: "Bị khóa", modifier: "banned" };
   }
 
-  return { label: "Unknown", modifier: "inactive" };
+  return { label: "Không xác định", modifier: "inactive" };
 }
 
-function DentistProfileModal({ dentist, onClose }) {
+function getGenderLabel(gender) {
+  const normalizedGender = gender?.toLowerCase();
+
+  if (normalizedGender === "male") return "Nam";
+  if (normalizedGender === "female") return "Nữ";
+
+  return gender || EMPTY_VALUE;
+}
+
+function DentistProfileModal({ dentist, onClose, onSaved }) {
+  const [isEditing, setIsEditing] = useState(false);
   const status = getStatus(dentist.status);
   const isReceptionist = dentist.role?.toLowerCase() === "receptionist";
   const profileTitle = isReceptionist ? "Hồ sơ lễ tân" : "Hồ sơ nha sĩ";
+
+  if (isEditing) {
+    return (
+      <DentistProfileEditModal
+        dentist={dentist}
+        onCancel={() => setIsEditing(false)}
+        onClose={onClose}
+        onSaved={(wasCreated, saved) => {
+          setIsEditing(false);
+          onSaved(wasCreated, saved);
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -54,9 +80,19 @@ function DentistProfileModal({ dentist, onClose }) {
             <UserRound size={20} aria-hidden="true" />
             <h2 id="dentist-profile-title">{profileTitle}</h2>
           </div>
-          <button className="dentist-profile-modal__close" type="button" aria-label="Close" onClick={onClose}>
-            <X size={18} aria-hidden="true" />
-          </button>
+          <div className="dentist-profile-modal__header-actions">
+            <button
+              className="dentist-profile-modal__edit"
+              type="button"
+              onClick={() => setIsEditing(true)}
+            >
+              <Pencil size={16} aria-hidden="true" />
+              Chỉnh sửa
+            </button>
+            <button className="dentist-profile-modal__close" type="button" aria-label="Close" onClick={onClose}>
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
         <div className="dentist-profile-modal__body">
@@ -88,7 +124,10 @@ function DentistProfileModal({ dentist, onClose }) {
                 label="Ngày sinh"
                 value={formatBirthDate(dentist.birthDate)}
               />
-              <ProfileField label="Giới tính" value={dentist.gender} />
+              <ProfileField
+                label="Giới tính"
+                value={getGenderLabel(dentist.gender)}
+              />
               <ProfileField label="Địa chỉ" value={dentist.address} wide />
             </div>
           </section>
@@ -101,11 +140,11 @@ function DentistProfileModal({ dentist, onClose }) {
               </h3>
               <div className="dentist-profile-modal__grid">
                 <ProfileField
-                  label="Speciality"
+                  label="Chuyên môn"
                   value={dentist.speciality}
                 />
                 <ProfileField
-                  label="Experience"
+                  label="Kinh nghiệm"
                   value={dentist.experience}
                 />
               </div>
@@ -166,6 +205,7 @@ DentistProfileModal.propTypes = {
     username: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
+  onSaved: PropTypes.func.isRequired,
 };
 
 export default DentistProfileModal;

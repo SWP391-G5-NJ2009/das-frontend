@@ -1,7 +1,6 @@
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Pagination from "../../../components/common/Pagination/Pagination";
-import DentistProfileEditModal from "../../../components/features/staff/DentistProfileEditModal/DentistProfileEditModal";
 import DentistProfileModal from "../../../components/features/staff/DentistProfileModal/DentistProfileModal";
 import StaffState from "../../../components/features/staff/StaffState/StaffState";
 import StaffTable from "../../../components/features/staff/StaffTable/StaffTable";
@@ -26,7 +25,6 @@ const PAGE_SIZE = 5;
 function OwnerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const [editingDentist, setEditingDentist] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
@@ -45,19 +43,6 @@ function OwnerStaffPage() {
   useEffect(() => {
     setCurrentPage((page) => Math.min(page, totalPages));
   }, [totalPages]);
-
-  const stats = useMemo(
-    () => ({
-      total: staff.length,
-      dentists: staff.filter(
-        (item) => item.role?.toLowerCase() === "dentist",
-      ).length,
-      receptionists: staff.filter(
-        (item) => item.role?.toLowerCase() === "receptionist",
-      ).length,
-    }),
-    [staff],
-  );
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
@@ -79,8 +64,8 @@ function OwnerStaffPage() {
     }));
   };
 
-  const handleProfileSaved = async (wasCreated) => {
-    setEditingDentist(null);
+  const handleProfileSaved = async (wasCreated, saved) => {
+    setSelectedStaff((current) => (current ? { ...current, ...saved } : current));
     setSuccessMessage(
       wasCreated
         ? "Tạo hồ sơ nhân viên thành công."
@@ -98,26 +83,6 @@ function OwnerStaffPage() {
           </div>
 
         </header>
-
-        <section
-          className="owner-staff__summary"
-          aria-label="Tổng quan nhân sự"
-        >
-          <article className="owner-staff__summary-card">
-            <span>Tổng nhân sự</span>
-            <strong>{stats.total}</strong>
-          </article>
-
-          <article className="owner-staff__summary-card">
-            <span>Nha sĩ</span>
-            <strong>{stats.dentists}</strong>
-          </article>
-
-          <article className="owner-staff__summary-card">
-            <span>Lễ tân</span>
-            <strong>{stats.receptionists}</strong>
-          </article>
-        </section>
 
         <section
           className="owner-staff__toolbar"
@@ -202,7 +167,6 @@ function OwnerStaffPage() {
           <>
             <StaffTable
               staff={paginatedStaff}
-              onEditStaff={setEditingDentist}
               onViewStaff={setSelectedStaff}
             />
             <div className="owner-staff__pagination">
@@ -224,13 +188,6 @@ function OwnerStaffPage() {
           <DentistProfileModal
             dentist={selectedStaff}
             onClose={() => setSelectedStaff(null)}
-          />
-        )}
-
-        {editingDentist && (
-          <DentistProfileEditModal
-            dentist={editingDentist}
-            onClose={() => setEditingDentist(null)}
             onSaved={handleProfileSaved}
           />
         )}

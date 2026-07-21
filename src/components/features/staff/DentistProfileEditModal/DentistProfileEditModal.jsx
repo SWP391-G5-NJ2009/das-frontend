@@ -8,6 +8,8 @@ import "./DentistProfileEditModal.css";
 function createForm(staff) {
   return {
     fullName: staff.fullName || "",
+    email: staff.email || "",
+    phone: staff.phone || "",
     birthDate: staff.birthDate?.split("T")[0] || "",
     gender: staff.gender || "",
     address: staff.address || "",
@@ -17,7 +19,7 @@ function createForm(staff) {
   };
 }
 
-function DentistProfileEditModal({ dentist, onClose, onSaved }) {
+function DentistProfileEditModal({ dentist, onCancel, onClose, onSaved }) {
   const [form, setForm] = useState(() => createForm(dentist));
   const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -40,6 +42,8 @@ function DentistProfileEditModal({ dentist, onClose, onSaved }) {
 
   const buildPayload = () => ({
     fullName: form.fullName,
+    email: form.email,
+    phone: form.phone,
     birthDate: form.birthDate,
     gender: form.gender,
     address: form.address,
@@ -156,12 +160,25 @@ function DentistProfileEditModal({ dentist, onClose, onSaved }) {
                 </select>
               </label>
               <label>
-                <span>Email (không thể chỉnh sửa)</span>
-                <input value={dentist.email || "Chưa cập nhật"} disabled />
+                <span>Email</span>
+                <input
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  maxLength={254}
+                />
               </label>
               <label>
-                <span>Số điện thoại (không thể chỉnh sửa)</span>
-                <input value={dentist.phone || "Chưa cập nhật"} disabled />
+                <span>Số điện thoại</span>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={handleChange}
+                  pattern="[0-9]{10,11}"
+                  maxLength={11}
+                />
               </label>
               <label className="dentist-profile-edit__wide">
                 <span>Địa chỉ</span>
@@ -212,7 +229,7 @@ function DentistProfileEditModal({ dentist, onClose, onSaved }) {
           )}
 
           <footer className="dentist-profile-edit__footer">
-            <button type="button" onClick={onClose} disabled={isSaving}>
+            <button type="button" onClick={onCancel || onClose} disabled={isSaving}>
               Hủy
             </button>
             <button
@@ -250,7 +267,12 @@ DentistProfileEditModal.propTypes = {
     speciality: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
   onSaved: PropTypes.func.isRequired,
+};
+
+DentistProfileEditModal.defaultProps = {
+  onCancel: null,
 };
 
 export default DentistProfileEditModal;

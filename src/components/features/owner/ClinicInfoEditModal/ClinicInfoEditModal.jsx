@@ -17,9 +17,6 @@ function ClinicInfoEditModal({ error, formData, isSaving, onChange, onClose, onS
             <h2 className="clinic-edit-modal__title" id="clinic-edit-modal-title">
               Chỉnh sửa thông tin phòng khám
             </h2>
-            <p className="clinic-edit-modal__subtitle">
-              Giờ hoạt động được quản lý tại trang Lịch phòng khám.
-            </p>
           </div>
           <button
             className="clinic-edit-modal__close"
@@ -72,6 +69,32 @@ function ClinicInfoEditModal({ error, formData, isSaving, onChange, onClose, onS
             />
           </label>
 
+          <div className="clinic-edit-modal__time-grid">
+            <label className="clinic-edit-modal__field" htmlFor="clinic-open-time">
+              <span>Giờ mở cửa</span>
+              <input
+                id="clinic-open-time"
+                name="openTime"
+                type="time"
+                value={formData.openTime}
+                onChange={onChange}
+                required
+              />
+            </label>
+
+            <label className="clinic-edit-modal__field" htmlFor="clinic-close-time">
+              <span>Giờ đóng cửa</span>
+              <input
+                id="clinic-close-time"
+                name="closeTime"
+                type="time"
+                value={formData.closeTime}
+                onChange={onChange}
+                required
+              />
+            </label>
+          </div>
+
           <footer className="clinic-edit-modal__actions">
             <button
               className="clinic-edit-modal__button clinic-edit-modal__button--cancel"
@@ -101,6 +124,8 @@ ClinicInfoEditModal.propTypes = {
     clinicName: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     hotline: PropTypes.string.isRequired,
+    openTime: PropTypes.string.isRequired,
+    closeTime: PropTypes.string.isRequired,
   }).isRequired,
   isSaving: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
