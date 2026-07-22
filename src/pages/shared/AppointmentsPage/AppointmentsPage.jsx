@@ -57,7 +57,13 @@ const ROLE_CONFIG = {
     showPatientInfo: true,
     showRoom: false,
     showBookBtn: false,
-    statusOptions: null,
+    statusOptions: [
+      { value: "all", label: "Tất cả" },
+      { value: "Confirmed", label: "Đã xác nhận" },
+      { value: "Checked-in", label: "Đã check-in" },
+      { value: "In-Treatment", label: "Đang điều trị" },
+      { value: "Completed", label: "Hoàn tất" },
+    ],
   },
 };
 
@@ -72,6 +78,7 @@ function useAppointmentsByRole(role, filters) {
   });
   return role === "patient" ? patient : staff;
 }
+
 
 function PageShell({ role, children }) {
   if (role === "receptionist") {
@@ -107,15 +114,19 @@ function AppointmentsPage() {
   const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
   const todayDay = String(today.getDate()).padStart(2, "0");
 
-  const [dateParts, setDateParts] = useState({
-    year: todayYear,
-    month: todayMonth,
-    day: todayDay,
-  });
+  const isPatient = role === "patient";
+
+  const [dateParts, setDateParts] = useState(
+    isPatient
+      ? { year: "", month: "", day: "" }
+      : { year: todayYear, month: todayMonth, day: todayDay }
+  );
+
+  const isDentist = role === "dentist";
 
   const [filters, setFilters] = useState({
-    status: "all",
-    date: `${todayYear}-${todayMonth}-${todayDay}`,
+    status: isPatient ? "Confirmed" : isReceptionist ? "Confirmed" : isDentist ? "Checked-in" : "all",
+    date: isPatient ? "" : `${todayYear}-${todayMonth}-${todayDay}`,
     month: "",
     year: "",
     search: "",
