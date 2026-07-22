@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
-import { accountService } from "../../../services/account.service";
-import "./AddAccountModal.css";
+import { accountService } from "../../../../services/account.service";
+import "./DeleteConfirmModal.css";
 
 function DeleteConfirmModal({ account, onClose, onSuccess, onError }) {
   const handleDelete = async () => {
@@ -15,16 +15,16 @@ function DeleteConfirmModal({ account, onClose, onSuccess, onError }) {
 
   return (
     <div
-      className="add-account-modal__overlay"
+      className="delete-confirm-modal__overlay"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="add-account-modal">
-        <div className="add-account-modal__header">
-          <h3 className="add-account-modal__title">Xóa tài khoản</h3>
+      <div className="delete-confirm-modal">
+        <div className="delete-confirm-modal__header">
+          <h3 className="delete-confirm-modal__title">Xóa tài khoản</h3>
           <button
-            className="add-account-modal__close"
+            className="delete-confirm-modal__close"
             type="button"
             onClick={onClose}
           >
@@ -32,21 +32,21 @@ function DeleteConfirmModal({ account, onClose, onSuccess, onError }) {
           </button>
         </div>
 
-        <p className="add-account-modal__description">
+        <p className="delete-confirm-modal__description">
           Bạn có chắc muốn xóa <strong>{account.username}</strong>?
           Hành động này không thể hoàn tác.
         </p>
 
-        <div className="add-account-modal__actions">
+        <div className="delete-confirm-modal__actions">
           <button
-            className="add-account-modal__btn add-account-modal__btn--cancel"
+            className="delete-confirm-modal__btn delete-confirm-modal__btn--cancel"
             type="button"
             onClick={onClose}
           >
             Hủy
           </button>
           <button
-            className="add-account-modal__btn add-account-modal__btn--delete"
+            className="delete-confirm-modal__btn delete-confirm-modal__btn--delete"
             type="button"
             onClick={handleDelete}
           >

@@ -1,14 +1,15 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
-import { accountService } from "../../../services/account.service";
+import { accountService } from "../../../../services/account.service";
 import "./AddAccountModal.css";
 
 const ROLES = [
   { value: "Admin", label: "Admin" },
   { value: "Dentist", label: "Nha sĩ" },
   { value: "Receptionist", label: "Lễ tân" },
-  { value: "Manager", label: "Quản lý" },
+  { value: "Owner", label: "Chủ phòng khám" },
+  { value: "Patient", label: "Bệnh nhân" },
 ];
 
 function AddAccountModal({ onClose, onSuccess }) {
