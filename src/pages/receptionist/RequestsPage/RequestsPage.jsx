@@ -14,6 +14,7 @@ import RequestFilters from "../../../components/features/consultation/RequestFil
 import PropTypes from "prop-types";
 import "./RequestsPage.css";
 import Pagination from "../../../components/common/Pagination/Pagination";
+import Toast from "../../../components/common/Toast/Toast";
 
 function ReceptionistRequestsPage() {
 
@@ -28,6 +29,7 @@ function ReceptionistRequestsPage() {
   const MAX_PAGE = 20;
   const { requests, total, isLoading, error, refetch } = useConsultationRequests(filters);
   const [handleRequest, setHandleRequest] = useState(null);
+  const [toast, setToast] = useState({ message: null, type: null });
 
   const handleStatusChange = useCallback(
     (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
@@ -50,6 +52,7 @@ function ReceptionistRequestsPage() {
   );
 
   return (
+    <>
     <ReceptionistPageShell
       contentClassName="receptionist-requests"
       contentLabelledBy="receptionist-requests-title"
@@ -198,11 +201,22 @@ function ReceptionistRequestsPage() {
           onSuccess={() => {
             setHandleRequest(null);
             refetch();
+            setToast({ message: "Cập nhật yêu cầu thành công.", type: "success" });
           }}
           refetch={refetch}
         />
       )}
     </ReceptionistPageShell>
+
+      {toast.message && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast({ message: null, type: null })}
+          duration={5000}
+        />
+      )}
+    </>
   );
 }
 
