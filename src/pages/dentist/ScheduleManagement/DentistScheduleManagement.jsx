@@ -183,6 +183,19 @@ function getShiftOptions(meta) {
   ];
 }
 
+function getSlotConfigIdsForTimeRange(meta, calendarDay, startTime, endTime) {
+  if (!startTime || !endTime) return [];
+
+  return (meta?.timeSlots || [])
+    .filter(
+      (slot) =>
+        dbDayToCalendarDay(slot.dayOfWeek) === calendarDay &&
+        slot.startTime >= startTime &&
+        slot.endTime <= endTime,
+    )
+    .map((slot) => Number(slot.slot_config_id));
+}
+
 function normalizeFormForMeta(form, meta) {
   const scheduleWindow = meta?.scheduleWindow || getNextMonthBounds();
   const weekdayOptions = getWeekdayOptions(meta);
@@ -190,20 +203,23 @@ function normalizeFormForMeta(form, meta) {
   const selectedWeekdays = form.weekdays.filter((day) =>
     allowedWeekdays.includes(day),
   );
-  const shiftOptions = getShiftOptions(meta);
-  const selectedShift = shiftOptions.find(
-    (option) => option.id === form.shiftPreset,
+  const nextWeekdays = selectedWeekdays.length
+    ? selectedWeekdays
+    : allowedWeekdays.slice(0, Math.min(2, allowedWeekdays.length));
+  const allowedSlotConfigIds = new Set(
+    (meta?.timeSlots || [])
+      .filter((slot) =>
+        nextWeekdays.includes(dbDayToCalendarDay(slot.dayOfWeek)),
+      )
+      .map((slot) => Number(slot.slot_config_id)),
   );
-  const fallbackShift = selectedShift || shiftOptions[0];
 
   return {
     ...form,
-    weekdays: selectedWeekdays.length
-      ? selectedWeekdays
-      : allowedWeekdays.slice(0, Math.min(2, allowedWeekdays.length)),
-    shiftPreset: fallbackShift?.id || "custom",
-    startTime: selectedShift ? form.startTime : fallbackShift?.startTime || form.startTime,
-    endTime: selectedShift ? form.endTime : fallbackShift?.endTime || form.endTime,
+    weekdays: nextWeekdays,
+    busySlotConfigIds: (form.busySlotConfigIds || []).filter((slotConfigId) =>
+      allowedSlotConfigIds.has(Number(slotConfigId)),
+    ),
     ...(form.applyForMonth
       ? {
           startDate: scheduleWindow.targetMonthStart,
@@ -221,9 +237,7 @@ function getDefaultForm() {
     startDate: nextMonth.targetMonthStart,
     endDate: nextMonth.targetMonthEnd,
     weekdays: [],
-    shiftPreset: "",
-    startTime: "08:00",
-    endTime: "12:00",
+    busySlotConfigIds: [],
   };
 }
 
@@ -268,19 +282,24 @@ function ScheduleEditor({
   onChange,
   onClose,
   onSubmit,
+  onToggleBusySlot,
   onToggleWeekday,
 }) {
-  const rooms = meta?.rooms || [];
   const clinic = meta?.clinic || { openTime: "08:00", closeTime: "20:00" };
   const scheduleWindow = meta?.scheduleWindow || getNextMonthBounds();
   const weekdayOptions = getWeekdayOptions(meta);
-  const shiftOptions = getShiftOptions(meta);
   const hasScheduleSetup =
-    rooms.length > 0 && weekdayOptions.length > 0 && shiftOptions.length > 0;
+    weekdayOptions.length > 0 && (meta?.timeSlots || []).length > 0;
   const canSubmit =
     scheduleWindow.isOpen !== false &&
     hasScheduleSetup &&
     form.weekdays.length > 0;
+  const selectedWeekdayOptions = weekdayOptions.filter((day) =>
+    form.weekdays.includes(day.value),
+  );
+  const busySlotIds = new Set(
+    (form.busySlotConfigIds || []).map((slotConfigId) => Number(slotConfigId)),
+  );
 
   return (
     <div className="dentist-schedule__modal-overlay" role="presentation">
@@ -294,6 +313,7 @@ function ScheduleEditor({
           <div>
             <h2 id="schedule-editor-title">Tạo/Sửa lịch</h2>
             <p>
+              Mark busy slots for next month between day 1 and day 15.
               Đăng ký lịch làm việc tháng tới từ ngày 1 đến ngày 15.
             </p>
           </div>
@@ -309,6 +329,10 @@ function ScheduleEditor({
 
         <form className="dentist-schedule__form" onSubmit={onSubmit}>
           <div className="dentist-schedule__rule-note">
+            Configured hours: {clinic.openTime} - {clinic.closeTime}. Busy
+            slots will be unavailable; all other selected-day slots remain
+            available after approval. Target month:{" "}
+            {scheduleWindow.targetMonthStart} to {scheduleWindow.targetMonthEnd}.
             Giờ đã cấu hình: {clinic.openTime} - {clinic.closeTime}. Target
             month: {scheduleWindow.targetMonthStart} to{" "}
             {scheduleWindow.targetMonthEnd}.
@@ -323,6 +347,7 @@ function ScheduleEditor({
 
           {!hasScheduleSetup && (
             <div className="dentist-schedule__notice dentist-schedule__notice--error">
+              Clinic working days or time slots are not configured.
               Ngày làm việc, khung giờ hoặc phòng điều trị của phòng khám chưa được cấu hình.
             </div>
           )}
@@ -387,65 +412,53 @@ function ScheduleEditor({
             </div>
           </fieldset>
 
+          <fieldset className="dentist-schedule__busy-group">
+            <legend>Busy slots</legend>
+            <p className="dentist-schedule__field-hint">
+              Select only unavailable slots. Unselected slots are treated as
+              free working time.
+            </p>
+            <div className="dentist-schedule__busy-days">
+              {selectedWeekdayOptions.map((day) => {
+                const daySlots = (meta?.timeSlots || []).filter(
+                  (slot) => dbDayToCalendarDay(slot.dayOfWeek) === day.value,
+                );
 
-          <fieldset className="dentist-schedule__shift-group">
-            <legend>Giờ làm việc</legend>
-            <div className="dentist-schedule__shift-list">
-              {shiftOptions.map((preset) => (
-                <button
-                  key={preset.id}
-                  className={`dentist-schedule__shift${
-                    form.shiftPreset === preset.id
-                      ? " dentist-schedule__shift--active"
-                      : ""
-                  }`}
-                  type="button"
-                  onClick={() =>
-                    onChange({
-                      target: {
-                        name: "shiftPreset",
-                        value: preset.id,
-                        dataset: {
-                          startTime: preset.startTime,
-                          endTime: preset.endTime,
-                        },
-                      },
-                    })
-                  }
-                  aria-pressed={form.shiftPreset === preset.id}
-                >
-                  {preset.label}
-                </button>
-              ))}
+                return (
+                  <section
+                    className="dentist-schedule__busy-day"
+                    key={day.value}
+                    aria-label={`${day.label} busy slots`}
+                  >
+                    <h3>{day.label}</h3>
+                    <div className="dentist-schedule__busy-slot-grid">
+                      {daySlots.map((slot) => {
+                        const slotConfigId = Number(slot.slot_config_id);
+                        const isBusy = busySlotIds.has(slotConfigId);
+
+                        return (
+                          <button
+                            key={slot.slot_config_id}
+                            className={`dentist-schedule__busy-slot${
+                              isBusy
+                                ? " dentist-schedule__busy-slot--selected"
+                                : ""
+                            }`}
+                            type="button"
+                            onClick={() => onToggleBusySlot(slotConfigId)}
+                            aria-pressed={isBusy}
+                          >
+                            {slot.startTime} - {slot.endTime}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                );
+              })}
             </div>
           </fieldset>
 
-          <div className="dentist-schedule__form-grid">
-            <label className="dentist-schedule__field">
-              <span>Giờ bắt đầu</span>
-              <input
-                type="time"
-                name="startTime"
-                value={form.startTime}
-                min={clinic.openTime}
-                max={clinic.closeTime}
-                onChange={onChange}
-                required
-              />
-            </label>
-            <label className="dentist-schedule__field">
-              <span>Giờ kết thúc</span>
-              <input
-                type="time"
-                name="endTime"
-                value={form.endTime}
-                min={clinic.openTime}
-                max={clinic.closeTime}
-                onChange={onChange}
-                required
-              />
-            </label>
-          </div>
 
           <footer className="dentist-schedule__modal-actions">
             <button
@@ -697,9 +710,12 @@ function DentistScheduleManagement() {
       weekdays: [selectedWeekday],
       ...(!selectionInfo.allDay
         ? {
-            startTime: toTimeValue(selectedStart),
-            endTime: toTimeValue(selectedEndTime),
-            shiftPreset: "custom",
+            busySlotConfigIds: getSlotConfigIdsForTimeRange(
+              meta,
+              selectedWeekday,
+              toTimeValue(selectedStart),
+              toTimeValue(selectedEndTime),
+            ),
           }
         : {}),
     }));
@@ -728,7 +744,7 @@ function DentistScheduleManagement() {
   };
 
   const handleInputChange = (event) => {
-    const { checked, dataset, name, type, value } = event.target;
+    const { checked, name, type, value } = event.target;
 
     if (name === "applyForMonth") {
       setForm((prevForm) => ({
@@ -744,22 +760,9 @@ function DentistScheduleManagement() {
       return;
     }
 
-    if (name === "shiftPreset") {
-      setForm((prevForm) => ({
-        ...prevForm,
-        shiftPreset: value,
-        startTime: dataset.startTime,
-        endTime: dataset.endTime,
-      }));
-      return;
-    }
-
     setForm((prevForm) => ({
       ...prevForm,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === "startTime" || name === "endTime"
-        ? { shiftPreset: "custom" }
-        : {}),
     }));
   };
 
@@ -770,6 +773,25 @@ function DentistScheduleManagement() {
         : sortCalendarWeekdays([...prevForm.weekdays, day]);
 
       return { ...prevForm, weekdays: nextWeekdays };
+    });
+  };
+
+  const handleToggleBusySlot = (slotConfigId) => {
+    setForm((prevForm) => {
+      const currentIds = new Set(
+        (prevForm.busySlotConfigIds || []).map((id) => Number(id)),
+      );
+
+      if (currentIds.has(slotConfigId)) {
+        currentIds.delete(slotConfigId);
+      } else {
+        currentIds.add(slotConfigId);
+      }
+
+      return {
+        ...prevForm,
+        busySlotConfigIds: [...currentIds].sort((first, second) => first - second),
+      };
     });
   };
 
@@ -784,8 +806,7 @@ function DentistScheduleManagement() {
         startDate: form.startDate,
         endDate: form.endDate,
         weekdays: form.weekdays,
-        startTime: form.startTime,
-        endTime: form.endTime,
+        busySlotConfigIds: form.busySlotConfigIds || [],
         reason: "Dentist updated monthly work schedule.",
       });
 
@@ -1097,6 +1118,7 @@ function DentistScheduleManagement() {
             onChange={handleInputChange}
             onClose={() => setIsEditorOpen(false)}
             onSubmit={handleSubmit}
+            onToggleBusySlot={handleToggleBusySlot}
             onToggleWeekday={handleToggleWeekday}
           />
         )}

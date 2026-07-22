@@ -18,6 +18,7 @@ import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPag
 import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
+import DentistScheduleViewPage from "./pages/receptionist/DentistScheduleViewPage/DentistScheduleViewPage";
 import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
 import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApprovalPage";
@@ -125,6 +126,14 @@ function App() {
             }
           />
           <Route
+            path="/receptionist/dentist-schedules"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <DentistScheduleViewPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/receptionist/profile"
             element={
               <ProtectedRoute allowedRoles={["receptionist"]}>
@@ -189,18 +198,18 @@ function App() {
             }
           />
           <Route
-            path="/owner/rooms-management"
-            element={
-              <ProtectedRoute allowedRoles={["owner"]}>
-                <RoomsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/owner/clinic-schedule"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
                 <ScheduleApprovalPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/rooms-management"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <RoomsPage />
               </ProtectedRoute>
             }
           />

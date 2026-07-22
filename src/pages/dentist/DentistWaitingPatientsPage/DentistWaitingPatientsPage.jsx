@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { History, Search } from "lucide-react";
+import { CalendarPlus, History, Search, X } from "lucide-react";
 import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
@@ -14,6 +14,24 @@ const PAGE_SIZE = 10;
 
 function formatDate(date) {
   return date ? date.split("-").reverse().join("/") : "Chưa có lịch";
+}
+
+function toIsoDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getDefaultFollowUpForm() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  return {
+    appointmentDate: toIsoDate(tomorrow),
+    appointmentTime: "09:00",
+    reason: "",
+  };
 }
 
 function getPatientKey(appointment) {
@@ -64,10 +82,112 @@ function buildPatientRows(appointments) {
     .sort((a, b) => compareAppointmentsDesc(a.latestAppointment, b.latestAppointment));
 }
 
+function FollowUpReminderModal({
+  error,
+  form,
+  patient,
+  onChange,
+  onClose,
+  onSubmit,
+}) {
+  if (!patient) return null;
+
+  return (
+    <div className="dentist-waiting-patients__modal-overlay" role="presentation">
+      <section
+        className="dentist-waiting-patients__modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="follow-up-title"
+      >
+        <header className="dentist-waiting-patients__modal-header">
+          <div>
+            <h2 id="follow-up-title">Schedule Follow-up Appointment</h2>
+            <p>{patient.patientName}</p>
+          </div>
+          <button
+            className="dentist-waiting-patients__modal-close"
+            type="button"
+            onClick={onClose}
+            aria-label="Close follow-up reminder"
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
+        </header>
+
+        <form className="dentist-waiting-patients__follow-up-form" onSubmit={onSubmit}>
+          {error && (
+            <div className="dentist-waiting-patients__form-error">
+              {error}
+            </div>
+          )}
+
+          <div className="dentist-waiting-patients__form-grid">
+            <label>
+              <span>Appointment date</span>
+              <input
+                type="date"
+                name="appointmentDate"
+                value={form.appointmentDate}
+                min={toIsoDate(new Date())}
+                onChange={onChange}
+                required
+              />
+            </label>
+            <label>
+              <span>Appointment time</span>
+              <input
+                type="time"
+                name="appointmentTime"
+                value={form.appointmentTime}
+                onChange={onChange}
+                required
+              />
+            </label>
+          </div>
+
+          <label>
+            <span>Treatment reason</span>
+            <textarea
+              name="reason"
+              value={form.reason}
+              onChange={onChange}
+              rows="4"
+              maxLength={500}
+              placeholder="Treatment progress check, recovery monitoring..."
+              required
+            />
+          </label>
+
+          <footer className="dentist-waiting-patients__modal-actions">
+            <button
+              className="dentist-waiting-patients__modal-btn dentist-waiting-patients__modal-btn--secondary"
+              type="button"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="dentist-waiting-patients__modal-btn dentist-waiting-patients__modal-btn--primary"
+              type="submit"
+            >
+              Confirm Reminder
+            </button>
+          </footer>
+        </form>
+      </section>
+    </div>
+  );
+}
+
 function DentistWaitingPatientsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [followUpError, setFollowUpError] = useState("");
+  const [followUpForm, setFollowUpForm] = useState(getDefaultFollowUpForm);
+  const [followUpMessage, setFollowUpMessage] = useState("");
+  const [followUpTarget, setFollowUpTarget] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { appointments, error, isLoading } = useAllAppointments({});
 
@@ -106,6 +226,45 @@ function DentistWaitingPatientsPage() {
     setCurrentPage(1);
   };
 
+  const openFollowUpModal = (patient) => {
+    setFollowUpTarget(patient);
+    setFollowUpForm(getDefaultFollowUpForm());
+    setFollowUpError("");
+    setFollowUpMessage("");
+  };
+
+  const handleFollowUpChange = (event) => {
+    const { name, value } = event.target;
+    setFollowUpForm((prevForm) => ({ ...prevForm, [name]: value }));
+  };
+
+  const handleFollowUpSubmit = (event) => {
+    event.preventDefault();
+
+    const reason = followUpForm.reason.trim();
+    const followUpDateTime = new Date(
+      `${followUpForm.appointmentDate}T${followUpForm.appointmentTime}:00`,
+    );
+
+    if (!reason) {
+      setFollowUpError("Treatment reason is required.");
+      return;
+    }
+
+    if (Number.isNaN(followUpDateTime.getTime()) || followUpDateTime <= new Date()) {
+      setFollowUpError("Follow-up date and time must be in the future.");
+      return;
+    }
+
+    setFollowUpMessage(
+      `The follow-up appointment has been successfully scheduled for ${formatDate(
+        followUpForm.appointmentDate,
+      )} at ${followUpForm.appointmentTime}. Reminder message will be shown to patient a day before follow-up appointment.`,
+    );
+    setFollowUpTarget(null);
+    setFollowUpError("");
+  };
+
   return (
     <DentistPageShell>
       <section className="dentist-waiting-patients" aria-labelledby="dentist-waiting-patients-title">
@@ -136,6 +295,12 @@ function DentistWaitingPatientsPage() {
                 />
               </label>
             </div>
+
+        {followUpMessage && (
+          <div className="dentist-waiting-patients__notice">
+            {followUpMessage}
+          </div>
+        )}
 
             {filteredPatients.length === 0 && (
               <EmptyState message="Không tìm thấy bệnh nhân phù hợp với từ khóa." />
@@ -184,6 +349,15 @@ function DentistWaitingPatientsPage() {
                         >
                           <History aria-hidden="true" size={15} />
                         </button>
+                        <button
+                          aria-label={`Schedule follow-up for ${patient.patientName}`}
+                          className="dentist-waiting-patients__icon-action dentist-waiting-patients__icon-action--follow-up"
+                          onClick={() => openFollowUpModal(patient)}
+                          title="Schedule follow-up reminder"
+                          type="button"
+                        >
+                          <CalendarPlus aria-hidden="true" size={15} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -205,6 +379,15 @@ function DentistWaitingPatientsPage() {
             )}
           </>
         )}
+
+        <FollowUpReminderModal
+          error={followUpError}
+          form={followUpForm}
+          patient={followUpTarget}
+          onChange={handleFollowUpChange}
+          onClose={() => setFollowUpTarget(null)}
+          onSubmit={handleFollowUpSubmit}
+        />
       </section>
     </DentistPageShell>
   );
