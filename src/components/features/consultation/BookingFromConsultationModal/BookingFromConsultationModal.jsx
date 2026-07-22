@@ -8,6 +8,7 @@ import {
 } from "../../../../hooks/useDentalServices";
 import { useAvailableSlots } from "../../../../hooks/useAvailableSlots";
 import { appointmentService } from "../../../../services/appointment.service";
+import { consultationService } from "../../../../services/consultation.service";
 
 import ServiceGrid from "../../booking/ServiceGrid/ServiceGrid";
 import DentistGrid from "../../booking/DentistGrid/DentistGrid";
@@ -118,6 +119,7 @@ function BookingFromConsultationModal({ request, onClose, onSuccess }) {
           phone: selectedPatient.phone,
         },
       });
+      await consultationService.update(request.id, { status: "Booked" });
       onSuccess();
     } catch (err) {
       if (err?.code === "SLOT_TAKEN") {

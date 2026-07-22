@@ -8,18 +8,20 @@ import {
   Search,
 } from "lucide-react";
 import { useConsultationRequests } from "../../../hooks/useConsultationRequests";
-import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal";
+import HandleRequestModal from "../../../components/features/consultation/HandleRequestModal/HandleRequestModal";
 import ReceptionistPageShell from "../ReceptionistPageShell";
 import RequestFilters from "../../../components/features/consultation/RequestFilters/RequestFilters"
 import PropTypes from "prop-types";
 import "./RequestsPage.css";
 import Pagination from "../../../components/common/Pagination/Pagination";
+import Toast from "../../../components/common/Toast/Toast";
 
 function ReceptionistRequestsPage() {
 
   const [filters, setFilters] = useState({
     status: "Pending",
-    date: "",
+    from_date: "",
+    to_date: "",
     search: "",
     pagination: 1,
   });
@@ -27,22 +29,30 @@ function ReceptionistRequestsPage() {
   const MAX_PAGE = 20;
   const { requests, total, isLoading, error, refetch } = useConsultationRequests(filters);
   const [handleRequest, setHandleRequest] = useState(null);
+  const [toast, setToast] = useState({ message: null, type: null });
 
   const handleStatusChange = useCallback(
     (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
     [],
   );
 
-  const handleDateChange = useCallback(
-    (date) => setFilters((prev) => ({ ...prev, date, pagination: 1 })),
+  const handleFromDateChange = useCallback(
+    (from_date) => setFilters((prev) => ({ ...prev, from_date, pagination: 1 })),
     [],
   );
+
+  const handleToDateChange = useCallback(
+    (to_date) => setFilters((prev) => ({ ...prev, to_date, pagination: 1 })),
+    [],
+  );
+
   const handleSearchChange = useCallback(
     (search) => setFilters((prev) => ({ ...prev, search, pagination: 1 })),
     [],
   );
 
   return (
+    <>
     <ReceptionistPageShell
       contentClassName="receptionist-requests"
       contentLabelledBy="receptionist-requests-title"
@@ -75,7 +85,8 @@ function ReceptionistRequestsPage() {
           <RequestFilters
             filters={filters}
             onStatusChange={handleStatusChange}
-            onDateChange={handleDateChange}
+            onFromDateChange={handleFromDateChange}
+            onToDateChange={handleToDateChange}
             onSearchChange={handleSearchChange}
           />
 
@@ -106,7 +117,7 @@ function ReceptionistRequestsPage() {
                 {!isLoading && error && (
                   <tr>
                     <td className="receptionist-requests__cell" colSpan={9}>
-                      Lỗi: {error.message}
+                      Đã xảy ra lỗi. Vui lòng thử lại sau.
                     </td>
                   </tr>
                 )}
@@ -141,7 +152,9 @@ function ReceptionistRequestsPage() {
                         {request.email}
                       </td>
                       <td className="receptionist-requests__cell">
-                        {request.description}
+                        {request.description && request.description.length > 20
+                          ? `${request.description.slice(0, 20)}...`
+                          : request.description}
                       </td>
                       <td className="receptionist-requests__cell">
                         {new Date(request.created_at).toLocaleString("vi-VN")}
@@ -188,10 +201,22 @@ function ReceptionistRequestsPage() {
           onSuccess={() => {
             setHandleRequest(null);
             refetch();
+            setToast({ message: "Cập nhật yêu cầu thành công.", type: "success" });
           }}
+          refetch={refetch}
         />
       )}
     </ReceptionistPageShell>
+
+      {toast.message && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast({ message: null, type: null })}
+          duration={5000}
+        />
+      )}
+    </>
   );
 }
 

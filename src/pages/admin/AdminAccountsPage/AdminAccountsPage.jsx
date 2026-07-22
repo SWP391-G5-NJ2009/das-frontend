@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
+import { useAuth } from "../../../context/AuthContext";
 import AddAccountModal from "../../../components/features/admin/AddAccountModal";
 import EditAccountModal from "../../../components/features/admin/EditAccountModal";
 import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
@@ -24,31 +25,59 @@ import Pagination from "../../../components/common/Pagination/Pagination"
 import Toast from "../../../components/common/Toast/Toast"
 import "./AdminAccountsPage.css";
 
+const MAX_PAGE = 20;
+
+const STATUS_MAP = {
+  Active: "Hoạt động",
+  Deactivated: "Ngừng hoạt động",
+};
+
+const ROLE_MAP = {
+  Admin: "Admin",
+  Owner: "Chủ phòng khám",
+  Receptionist: "Lễ tân",
+  Dentist: "Nha sĩ",
+  Patient: "Bệnh nhân",
+};
+
 function AdminAccountsPage() {
+  const { user } = useAuth();
 
   const [filters, setFilters] = useState({
+    role: "All",
     status: "All",
-    date: "",
+    from_date: "",
+    to_date: "",
     search: "",
     pagination: 1,
   });
-  const MAX_PAGE = 20;
 
   const { accounts, total, isLoading, error, refetch } = useAccounts(filters);
-  const [showModal, setShowModal] = useState(false);
+  const [addAccount, setAddAccount] = useState(false);
   const [editAccount, setEditAccount] = useState(null);
   const [deleteAccount, setDeleteAccount] = useState(null);
-  const [toast, setToast] = useState(null);
+  const [toast, setToast] = useState({ message: null, type: null });
+
+  const handleRoleChange = useCallback(
+    (role) => setFilters((prev) => ({ ...prev, role, pagination: 1 })),
+    [],
+  );
 
   const handleStatusChange = useCallback(
     (status) => setFilters((prev) => ({ ...prev, status, pagination: 1 })),
     [],
   );
 
-  const handleDateChange = useCallback(
-    (date) => setFilters((prev) => ({ ...prev, date, pagination: 1 })),
+  const handleFromDateChange = useCallback(
+    (from_date) => setFilters((prev) => ({ ...prev, from_date, pagination: 1 })),
     [],
   );
+
+  const handleToDateChange = useCallback(
+    (to_date) => setFilters((prev) => ({ ...prev, to_date, pagination: 1 })),
+    [],
+  );
+
   const handleSearchChange = useCallback(
     (search) => setFilters((prev) => ({ ...prev, search, pagination: 1 })),
     [],
@@ -60,13 +89,13 @@ function AdminAccountsPage() {
         <div>
           <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
           <p className="admin-accounts__page-desc">
-            Thêm, cập nhật hoặc xóa quyền truy cập người dùng trong hệ thống.
+            Thêm, cập nhật hoặc xóa tài khoản nhân viên trong hệ thống.
           </p>
         </div>
         <button
           className="admin-accounts__btn-primary"
           type="button"
-          onClick={() => setShowModal(true)}
+          onClick={() => setAddAccount(true)}
         >
           <UserPlus size={20} aria-hidden="true" />
           Thêm tài khoản mới
@@ -84,8 +113,10 @@ function AdminAccountsPage() {
 
         <AccountFilters
           filters={filters}
+          onRoleChange={handleRoleChange}
           onStatusChange={handleStatusChange}
-          onDateChange={handleDateChange}
+          onFromDateChange={handleFromDateChange}
+          onToDateChange={handleToDateChange}
           onSearchChange={handleSearchChange}
         />
 
@@ -97,8 +128,9 @@ function AdminAccountsPage() {
                 <th>Tên đăng nhập</th>
                 <th>Email</th>
                 <th>Số điện thoại</th>
-                <th>Status</th>
                 <th>Loại tài khoản</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -114,7 +146,7 @@ function AdminAccountsPage() {
               {error && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
-                    Error: {error.message}
+                    Đã xảy ra lỗi. Vui lòng thử lại sau.
                   </td>
                 </tr>
               )}
@@ -131,26 +163,33 @@ function AdminAccountsPage() {
                 !error &&
                 accounts.map((account, index) => (
                   <tr key={account.account_id} className="admin-accounts__row">
+
                     <td className="admin-accounts__cell admin-accounts__cell--num">
-                      {index + 1}
+                      {index + (filters.pagination - 1) * MAX_PAGE + 1}
                     </td>
+
                     <td className="admin-accounts__cell">
                       <div className="admin-accounts__user-cell">
-                        <div className="admin-accounts__avatar">
-                          {(account.username || "?").charAt(0).toUpperCase()}
-                        </div>
                         <span>{account.username}</span>
                       </div>
                     </td>
+
                     <td className="admin-accounts__cell">{account.email}</td>
+
                     <td className="admin-accounts__cell">{account.phone}</td>
-                    <td className="admin-accounts__cell">{account.status}</td>
+
                     <td className="admin-accounts__cell">
                       <span
                         className={`admin-accounts__role-badge admin-accounts__role-badge--${(account.role?.role_name || "").toLowerCase()}`}
                       >
-                        {account.role?.role_name}
+                        {ROLE_MAP[account.role?.role_name] || account.role?.role_name}
                       </span>
+                    </td>
+
+                    <td className="admin-accounts__cell">{STATUS_MAP[account.status] || account.status}</td>
+
+                    <td className="admin-accounts__cell">
+                      {new Date(account.created_date).toLocaleString("vi-VN")}
                     </td>
                     <td className="admin-accounts__cell admin-accounts__cell--actions">
                       <button
@@ -160,13 +199,14 @@ function AdminAccountsPage() {
                       >
                         <Edit size={20} aria-hidden="true" />
                       </button>
-                      <button
+                      {account.status !== "Deactivated" && account.account_id !== user.accountId && <button
                         className="admin-accounts__action-btn admin-accounts__action-btn--delete"
                         type="button"
                         onClick={() => setDeleteAccount(account)}
                       >
                         <Trash2 size={20} aria-hidden="true" />
-                      </button>
+                      </button>}
+
                     </td>
                   </tr>
                 ))}
@@ -176,7 +216,7 @@ function AdminAccountsPage() {
 
         <div className="admin-accounts__pagination">
           <p className="admin-accounts__pagination-info">
-            Showing {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} of {total} accounts
+            Hiển thị {(filters.pagination - 1) * MAX_PAGE + 1}-{filters.pagination * MAX_PAGE < total ? filters.pagination * MAX_PAGE : total} trong tổng số {total} tài khoản
           </p>
           <div className="admin-accounts__pagination-controls">
             <Pagination
@@ -187,25 +227,26 @@ function AdminAccountsPage() {
         </div>
       </div>
 
-      {toast && <Toast type="success" message={toast} onClose={() => setToast(null)} duration={5000} />}
-      {showModal && (
+      {toast.message && <Toast type={toast.type} message={toast.message} onClose={() => setToast({ message: null, type: "success" })} duration={5000} />}
+      {addAccount && (
         <AddAccountModal
-          onClose={() => setShowModal(false)}
+          onClose={() => setAddAccount(false)}
           onSuccess={() => {
-            setShowModal(false);
+            setAddAccount(false);
             refetch();
-            setToast("Thêm tài khoản thành công.");
+            setToast({ message: "Thêm tài khoản thành công.", type: "success" });
           }}
         />
       )}
       {editAccount && (
         <EditAccountModal
           account={editAccount}
+          userAccount = {user.accountId}
           onClose={() => setEditAccount(null)}
           onSuccess={() => {
             setEditAccount(null);
             refetch();
-            setToast("Cập nhật tài khoản thành công.");
+            setToast({ message: "Cập nhật tài khoản thành công.", type: "success" });
           }}
         />
       )}
@@ -216,7 +257,12 @@ function AdminAccountsPage() {
           onSuccess={() => {
             setDeleteAccount(null);
             refetch();
-            setToast("Xóa tài khoản thành công.");
+            setToast({ message: "Xóa tài khoản thành công.", type: "success" });
+          }}
+          onError={(msg) => {
+            setDeleteAccount(null);
+            refetch();
+            setToast({ message: "Xóa tài khoản thất bại: " + msg, type: "error" })
           }}
         />
       )}

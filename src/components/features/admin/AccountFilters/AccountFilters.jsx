@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Search, X } from "lucide-react";
 import "./AccountFilters.css";
 
-const STATUS_TABS = [
+const ROLE_TABS = [
   { value: "All", label: "Tất cả" },
   { value: "Admin", label: "Admin" },
   { value: "Owner", label: "Chủ phòng khám" },
@@ -11,30 +11,55 @@ const STATUS_TABS = [
   { value: "Patient", label: "Bệnh nhân" },
 ];
 
+const STATUS_TABS = [
+  { value: "All", label: "Tất cả" },
+  { value: "Active", label: "Hoạt động" },
+  { value: "Deactivated", label: "Ngừng hoạt động" },
+];
+
+const today = new Date().toISOString().split("T")[0];
+
 function AccountFilters({
   filters,
+  onRoleChange,
   onStatusChange,
-  onDateChange,
+  onFromDateChange,
+  onToDateChange,
   onSearchChange,
-  statusOptions,
 }) {
-  const tabs = statusOptions ?? STATUS_TABS;
 
-  return (<div className="appt-filters">
-    {/* Status tab strip */}
+  return (<div className="account-filters">
+
     <div
-      className="appt-filters__tabs"
+      className="account-filters__tabs"
       role="tablist"
-      aria-label="Lọc theo trạng thái"
+      aria-label="Lọc theo vai trò"
     >
-      {tabs.map((tab) => (
+      <label className="account-filters__date-label">Vai trò</label>
+      {ROLE_TABS.map((tab) => (
         <button
           key={tab.value}
-          id={`appt-filter-tab-${tab.value}`}
+          id={`account-filter-tab-${tab.value}`}
+          role="tab"
+          type="button"
+          aria-selected={filters.role === tab.value}
+          className={`account-filters__tab${filters.role === tab.value ? " account-filters__tab--active" : ""
+            }`}
+          onClick={() => onRoleChange(tab.value)}
+        >
+          {tab.label}
+        </button>
+      ))}
+
+      <label className="account-filters__date-label">Trạng thái</label>
+      {STATUS_TABS.map((tab) => (
+        <button
+          key={tab.value}
+          id={`account-filter-tab-${tab.value}`}
           role="tab"
           type="button"
           aria-selected={filters.status === tab.value}
-          className={`appt-filters__tab${filters.status === tab.value ? " appt-filters__tab--active" : ""
+          className={`account-filters__tab${filters.status === tab.value ? " account-filters__tab--active" : ""
             }`}
           onClick={() => onStatusChange(tab.value)}
         >
@@ -43,18 +68,17 @@ function AccountFilters({
       ))}
     </div>
 
-    {/* Search + date row */}
-    <div className="appt-filters__controls">
-      <div className="appt-filters__search-wrap">
+    <div className="account-filters__controls">
+      <div className="account-filters__search-wrap">
         <Search
           size={16}
-          className="appt-filters__search-icon"
+          className="account-filters__search-icon"
           aria-hidden="true"
         />
         <input
-          id="appt-filter-search"
+          id="account-filter-search"
           type="text"
-          className="appt-filters__search"
+          className="account-filters__search"
           placeholder="Tìm theo bệnh nhân, dịch vụ, nha sĩ..."
           value={filters.search}
           onChange={(e) => onSearchChange(e.target.value)}
@@ -63,7 +87,7 @@ function AccountFilters({
         {filters.search && (
           <button
             type="button"
-            className="appt-filters__search-clear"
+            className="account-filters__search-clear"
             aria-label="Xóa tìm kiếm"
             onClick={() => onSearchChange("")}
           >
@@ -72,21 +96,51 @@ function AccountFilters({
         )}
       </div>
 
-      <div className="appt-filters__date-wrap">
+      <label className="account-filters__date-label">Từ ngày</label>
+      <div className="account-filters__date-wrap">
         <input
-          id="appt-filter-date"
+          id="account-filter-date"
           type="date"
-          className="appt-filters__date"
-          value={filters.date}
-          onChange={(e) => onDateChange(e.target.value)}
-          aria-label="Lọc theo ngày"
+          className="account-filters__date"
+          max={today}
+          value={filters.from_date}
+          onChange={(e) => onFromDateChange(e.target.value)}
+          aria-label="Lọc từ ngày"
         />
-        {filters.date && (
+        {filters.from_date && (
           <button
             type="button"
-            className="appt-filters__date-clear"
-            aria-label="Xóa bộ lọc ngày"
-            onClick={() => onDateChange("")}
+            className="account-filters__date-clear"
+            aria-label="Xóa bộ lọc từ ngày"
+            onClick={() => {
+              onFromDateChange("")
+              onToDateChange("")
+            }}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      <label className="account-filters__date-label">Đến ngày</label>
+      <div className="account-filters__date-wrap">
+        <input
+          id="account-filter-date"
+          type="date"
+          className="account-filters__date"
+          min={filters.from_date}
+          max={today}
+          disabled={!filters.from_date}
+          value={filters.to_date}
+          onChange={(e) => onToDateChange(e.target.value)}
+          aria-label="Lọc đến ngày"
+        />
+        {filters.to_date && (
+          <button
+            type="button"
+            className="account-filters__date-clear"
+            aria-label="Xóa bộ lọc đến ngày"
+            onClick={() => onToDateChange("")}
           >
             <X size={14} aria-hidden="true" />
           </button>
@@ -97,8 +151,6 @@ function AccountFilters({
   );
 }
 
-AccountFilters.defaultProps = {
-  statusOptions: null,
-};
+AccountFilters.defaultProps = {};
 
 export default AccountFilters;
