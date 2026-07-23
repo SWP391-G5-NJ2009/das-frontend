@@ -192,13 +192,23 @@ export function useAllAppointments(filters = {}, options = {}) {
     [fetchAppointments],
   );
 
+  const markNoShow = useCallback(
+    async (appointmentId) => {
+      await appointmentService.markNoShow(appointmentId);
+      await fetchAppointments();
+    },
+    [fetchAppointments],
+  );
+
   return {
     appointments,
     isLoading,
     error,
     cancelAppointment,
     checkInAppointment,
+    markNoShow,
     startTreatment,
     refetch: fetchAppointments,
   };
 }
+

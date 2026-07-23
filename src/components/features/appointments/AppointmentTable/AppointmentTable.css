@@ -236,6 +236,23 @@
   transform: scale(1.1);
 }
 
+/* No-Show — dark red to signal absence */
+.appt-table__action-btn--no-show {
+  color: var(--status-no-show);
+}
+
+.appt-table__action-btn--no-show:hover:not(:disabled) {
+  background-color: var(--status-no-show-bg);
+  transform: scale(1.1);
+}
+
+.appt-table__action-btn--no-show:disabled {
+  color: var(--color-neutral-300);
+  cursor: not-allowed;
+  transform: none;
+}
+
+
 /* Dentist read-only dash — replaces action buttons */
 .appt-table__view-only {
   display: block;

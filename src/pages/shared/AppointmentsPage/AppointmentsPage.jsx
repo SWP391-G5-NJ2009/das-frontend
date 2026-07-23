@@ -13,6 +13,7 @@ import AppointmentTable from "../../../components/features/appointments/Appointm
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
 import LiftBanModal from "../../../components/features/appointments/LiftBanModal/LiftBanModal";
 import TreatmentRecordModal from "../../../components/features/treatments/TreatmentRecordModal/TreatmentRecordModal";
+import NoShowConfirmModal from "../../../components/features/appointments/NoShowConfirmModal/NoShowConfirmModal";
 import Toast from "../../../components/common/Toast/Toast";
 import Pagination from "../../../components/common/Pagination/Pagination";
 import {
@@ -137,6 +138,9 @@ function AppointmentsPage() {
   const [toast, setToast] = useState(null);
   const [checkingInId, setCheckingInId] = useState(null);
   const [startingTreatmentId, setStartingTreatmentId] = useState(null);
+  const [noShowTarget, setNoShowTarget] = useState(null);
+  const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
+  const [markingNoShowId, setMarkingNoShowId] = useState(null);
   const [treatmentTarget, setTreatmentTarget] = useState(null);
   const [treatmentError, setTreatmentError] = useState(null);
   const [isSavingTreatment, setIsSavingTreatment] = useState(false);
@@ -148,6 +152,7 @@ function AppointmentsPage() {
     error,
     cancelAppointment,
     checkInAppointment,
+    markNoShow,
     startTreatment,
     refetch,
   } = useAppointmentsByRole(role, filters);
@@ -281,6 +286,36 @@ function AppointmentsPage() {
     },
     [handleStatusChange, startTreatment],
   );
+
+  const handleRequestMarkNoShow = useCallback((appt) => {
+    setNoShowTarget(appt);
+  }, []);
+
+  const handleConfirmMarkNoShow = useCallback(async () => {
+    if (!noShowTarget) return;
+    setIsMarkingNoShow(true);
+    setMarkingNoShowId(noShowTarget.id);
+    try {
+      await markNoShow(noShowTarget.id);
+      setToast({
+        type: "success",
+        message: `Đã đánh dấu No-Show cho ${noShowTarget.patientName}.`,
+      });
+      setNoShowTarget(null);
+    } catch (requestError) {
+      setToast({
+        type: "error",
+        message: requestError.message || "Không thể đánh dấu No-Show.",
+      });
+    } finally {
+      setIsMarkingNoShow(false);
+      setMarkingNoShowId(null);
+    }
+  }, [markNoShow, noShowTarget]);
+
+  const handleCloseNoShowModal = useCallback(() => {
+    if (!isMarkingNoShow) setNoShowTarget(null);
+  }, [isMarkingNoShow]);
 
   const handleSaveTreatment = useCallback(
     async (values) => {
@@ -423,6 +458,8 @@ function AppointmentsPage() {
               onLiftBan={role === "receptionist" ? handleRequestLiftBan : null}
               onCheckIn={role === "receptionist" ? handleCheckIn : null}
               checkingInId={checkingInId}
+              onMarkNoShow={role === "receptionist" ? handleRequestMarkNoShow : null}
+              markingNoShowId={markingNoShowId}
               onStartTreatment={
                 role === "dentist" ? handleStartTreatment : null
               }
@@ -470,6 +507,14 @@ function AppointmentsPage() {
         onConfirm={handleConfirmLiftBan}
         onClose={handleCloseLiftBanModal}
         isLoading={isLiftingBan}
+      />
+
+      <NoShowConfirmModal
+        isOpen={!!noShowTarget}
+        appointment={noShowTarget}
+        onConfirm={handleConfirmMarkNoShow}
+        onClose={handleCloseNoShowModal}
+        isLoading={isMarkingNoShow}
       />
 
       {treatmentTarget && (

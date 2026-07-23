@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Ban, ClipboardPlus, MessageSquare, Play, ShieldBan, UnlockKeyhole, UserCheck } from "lucide-react";
+import { Ban, ClipboardPlus, MessageSquare, Play, ShieldBan, UnlockKeyhole, UserCheck, UserX } from "lucide-react";
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
@@ -27,6 +27,8 @@ function AppointmentTable({
   onLiftBan,
   onCheckIn,
   checkingInId,
+  onMarkNoShow,
+  markingNoShowId,
   onStartTreatment,
   startingTreatmentId,
   onRecordTreatment,
@@ -224,6 +226,21 @@ function AppointmentTable({
                           <UserCheck size={16} aria-hidden="true" />
                         </button>
                       )}
+                      {/* No-Show button — receptionist only, Confirmed status only */}
+                      {actorRole === "receptionist" &&
+                        appt.status === "Confirmed" && (
+                          <button
+                            id={`tbl-noshow-${appt.id}`}
+                            type="button"
+                            className="appt-table__action-btn appt-table__action-btn--no-show"
+                            aria-label={`Đánh dấu No-Show cho ${appt.patientName}`}
+                            title="Đánh dấu No-Show"
+                            disabled={markingNoShowId === appt.id}
+                            onClick={() => onMarkNoShow?.(appt)}
+                          >
+                            <UserX size={15} aria-hidden="true" />
+                          </button>
+                        )}
                       {/* Lift Ban button — only for patients with no_show_count >= 3, only for receptionist */}
                       {appt.patientNoShowCount >= 3 &&
                         actorRole === "receptionist" && (
@@ -301,6 +318,8 @@ AppointmentTable.propTypes = {
   onLiftBan: PropTypes.func,
   onCheckIn: PropTypes.func,
   checkingInId: PropTypes.string,
+  onMarkNoShow: PropTypes.func,
+  markingNoShowId: PropTypes.string,
   onStartTreatment: PropTypes.func,
   startingTreatmentId: PropTypes.string,
   onRecordTreatment: PropTypes.func,
@@ -315,6 +334,8 @@ AppointmentTable.defaultProps = {
   onLiftBan: null,
   onCheckIn: null,
   checkingInId: null,
+  onMarkNoShow: null,
+  markingNoShowId: null,
   onStartTreatment: null,
   startingTreatmentId: null,
   onRecordTreatment: null,
