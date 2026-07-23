@@ -1,12 +1,21 @@
 import { useState, useCallback } from "react";
-import { X, UserPlus } from "lucide-react";
+import { X, UserPlus, Loader } from "lucide-react";
 import PropTypes from "prop-types";
+import { patientService } from "../../../../services/patient.service";
 import "./AddPatientModal.css";
 
+/**
+ * AddPatientModal — reusable modal để thêm walk-in patient record.
+ *
+ * Khi bấm "Thêm bệnh nhân", modal gọi API ngay và tạo record trong DB.
+ * onSave({ id, fullName, phone }) được gọi với dữ liệu thật từ server.
+ */
 function AddPatientModal({ isOpen, onClose, onSave }) {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState(null);
 
   const validate = useCallback(() => {
     const next = {};
@@ -19,29 +28,46 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
     return next;
   }, [fullName, phone]);
 
+  const resetForm = useCallback(() => {
+    setFullName("");
+    setPhone("");
+    setErrors({});
+    setServerError(null);
+  }, []);
+
   const handleSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       const errs = validate();
       if (Object.keys(errs).length) {
         setErrors(errs);
         return;
       }
-      onSave({ fullName: fullName.trim(), phone: phone.trim() });
-      setFullName("");
-      setPhone("");
-      setErrors({});
-      onClose();
+
+      setIsSubmitting(true);
+      setServerError(null);
+      try {
+        const patient = await patientService.createWalkInPatient({
+          fullName: fullName.trim(),
+          phone: phone.trim(),
+        });
+        onSave(patient);
+        resetForm();
+        onClose();
+      } catch (err) {
+        setServerError(err?.message || "Không thể thêm bệnh nhân. Vui lòng thử lại.");
+      } finally {
+        setIsSubmitting(false);
+      }
     },
-    [fullName, phone, validate, onSave, onClose],
+    [fullName, phone, validate, onSave, onClose, resetForm],
   );
 
   const handleClose = useCallback(() => {
-    setFullName("");
-    setPhone("");
-    setErrors({});
+    if (isSubmitting) return;
+    resetForm();
     onClose();
-  }, [onClose]);
+  }, [onClose, isSubmitting, resetForm]);
 
   if (!isOpen) return null;
 
@@ -67,6 +93,7 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
             className="add-patient-modal__close-btn"
             onClick={handleClose}
             aria-label="Đóng hộp thoại"
+            disabled={isSubmitting}
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -74,6 +101,13 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
 
         {/* Form */}
         <form className="add-patient-modal__form" onSubmit={handleSubmit} noValidate>
+          {/* Server error */}
+          {serverError && (
+            <div className="add-patient-modal__server-error" role="alert">
+              {serverError}
+            </div>
+          )}
+
           {/* Full Name */}
           <div className="add-patient-modal__field">
             <label htmlFor="new-patient-fullname" className="add-patient-modal__label">
@@ -88,9 +122,11 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
               onChange={(e) => {
                 setFullName(e.target.value);
                 if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: undefined }));
+                if (serverError) setServerError(null);
               }}
               autoComplete="off"
               autoFocus
+              disabled={isSubmitting}
             />
             {errors.fullName && (
               <span className="add-patient-modal__error" role="alert">
@@ -113,8 +149,10 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
               onChange={(e) => {
                 setPhone(e.target.value);
                 if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                if (serverError) setServerError(null);
               }}
               autoComplete="off"
+              disabled={isSubmitting}
             />
             {errors.phone && (
               <span className="add-patient-modal__error" role="alert">
@@ -129,14 +167,23 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
               type="button"
               className="add-patient-modal__btn add-patient-modal__btn--cancel"
               onClick={handleClose}
+              disabled={isSubmitting}
             >
               Hủy
             </button>
             <button
               type="submit"
               className="add-patient-modal__btn add-patient-modal__btn--save"
+              disabled={isSubmitting}
             >
-              Thêm bệnh nhân
+              {isSubmitting ? (
+                <>
+                  <Loader size={14} className="add-patient-modal__spinner" aria-hidden="true" />
+                  Đang lưu...
+                </>
+              ) : (
+                "Thêm bệnh nhân"
+              )}
             </button>
           </div>
         </form>
@@ -148,6 +195,7 @@ function AddPatientModal({ isOpen, onClose, onSave }) {
 AddPatientModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  /** Được gọi với { id, fullName, phone } từ server sau khi tạo thành công */
   onSave: PropTypes.func.isRequired,
 };
 

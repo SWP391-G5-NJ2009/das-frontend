@@ -24,7 +24,7 @@ import DentistGrid from "../../../components/features/booking/DentistGrid/Dentis
 import DateTimePicker from "../../../components/features/booking/DateTimePicker/DateTimePicker";
 import BookingSummary from "../../../components/features/booking/BookingSummary/BookingSummary";
 import BookingStepHeader from "../../../components/features/booking/BookingStepHeader/BookingStepHeader";
-import AddPatientModal from "../../../components/features/booking/AddPatientModal/AddPatientModal";
+import AddPatientModal from "../../../components/features/patient/AddPatientModal/AddPatientModal";
 import Spinner from "../../../components/common/Spinner/Spinner";
 
 import "./BookAppointmentPage.css";
@@ -90,7 +90,8 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
 
   const handleSaveNewPatient = useCallback(
     (newPatient) => {
-      setSelectedPatient({ id: `new-${Date.now()}`, ...newPatient });
+      // newPatient đã có id thật từ server (walk-in đã được lưu vào DB)
+      setSelectedPatient(newPatient);
     },
     [setSelectedPatient],
   );
@@ -173,16 +174,7 @@ function BookAppointmentPage({ isReceptionist, Shell }) {
         serviceId: Number(selectedService.id),
         note: "",
         slotOccupied: selectedService.slotOccupied ?? 1,
-        ...(isReceptionist
-          ? String(selectedPatient.id).startsWith("new-")
-            ? {
-                newPatient: {
-                  fullName: selectedPatient.fullName,
-                  phone: selectedPatient.phone,
-                },
-              }
-            : { patientId: Number(selectedPatient.id) }
-          : {}),
+        ...(isReceptionist ? { patientId: Number(selectedPatient.id) } : {}),
       });
       alert("Đặt lịch hẹn thành công!");
       if (isReceptionist) {
