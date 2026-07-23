@@ -70,6 +70,10 @@ function LandingPage() {
 
     if (v.valueMissing) {
       e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    } else if (v.patternMismatch) {
+      e.target.setCustomValidity('Số điện thoại phải từ 10 đến 11 chữ số');
+    } else if (v.typeMismatch) {
+      e.target.setCustomValidity('Vui lòng email đúng định dạng (VD: abc@gmail.com)');
     }
 
   }
@@ -306,6 +310,7 @@ function LandingPage() {
                   value={form.email}
                   placeholder="Email"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                 />
                 {fieldErrors?.email && (
                   <span className="consultation-form__field-error">

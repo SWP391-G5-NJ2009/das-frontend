@@ -38,6 +38,10 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
 
     if (v.valueMissing) {
       e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    } else if (v.patternMismatch) {
+      e.target.setCustomValidity('Số điện thoại phải từ 10 đến 11 chữ số');
+    } else if (v.typeMismatch) {
+      e.target.setCustomValidity('Vui lòng email đúng định dạng (VD: abc@gmail.com)');
     }
 
   }
@@ -123,6 +127,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               type="email"
               value={form.email}
               onChange={handleChange}
+              onInvalid={handleInvalid}
             />
             {fieldErrors?.email && (
               <span className="add-account-modal__field-error">
@@ -140,6 +145,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               pattern="[0-9]*"
               value={form.phone}
               onChange={handleChange}
+              onInvalid={handleInvalid}
             />
             {fieldErrors?.phone && (
               <span className="add-account-modal__field-error">

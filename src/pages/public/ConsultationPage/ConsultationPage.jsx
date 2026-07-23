@@ -53,7 +53,15 @@ function ConsultationPage() {
   };
 
   function handleInvalid(e) {
-    e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    } else if (v.patternMismatch) {
+      e.target.setCustomValidity('Số điện thoại phải từ 10 đến 11 chữ số');
+    } else if (v.typeMismatch) {
+      e.target.setCustomValidity('Vui lòng email đúng định dạng (VD: abc@gmail.com)');
+    }
   }
 
   return (
@@ -102,7 +110,7 @@ function ConsultationPage() {
                   type="tel"
                   name="phone"
                   inputMode="numeric"
-                  pattern="[0-9]*"
+                  pattern="[0-9]{10,11}"
                   value={form.phone}
                   placeholder="Nhập số điện thoại liên hệ"
                   onChange={handleChange}
@@ -124,6 +132,7 @@ function ConsultationPage() {
                   value={form.email}
                   placeholder="Nhập địa chỉ email"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                 />
                 {fieldErrors?.email && (
                   <span className="consultation-panel__field-error">
