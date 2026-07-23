@@ -43,13 +43,33 @@ function RevenueSummary() {
     );
   }
 
+  const revenue = data?.current_revenue ?? 0;
+  const pct = data?.percentage_change;
+
+  let changeClass = "revenue-summary__change--neutral";
+  let arrow = "";
+  if (pct !== null && pct !== undefined) {
+    if (pct > 0) {
+      changeClass = "revenue-summary__change--positive";
+      arrow = "▲";
+    } else if (pct < 0) {
+      changeClass = "revenue-summary__change--negative";
+      arrow = "▼";
+    }
+  }
+
   return (
     <section className="revenue-summary">
       <div className="revenue-summary__header">
         <h2 className="revenue-summary__title">Doanh thu tháng hiện tại</h2>
         <span className="revenue-summary__period">{getCurrentMonthLabel()}</span>
       </div>
-      <p className="revenue-summary__amount">{formatVND(data ?? 0)}</p>
+      <p className="revenue-summary__amount">{formatVND(revenue)}</p>
+      {pct !== null && pct !== undefined && (
+        <div className={`revenue-summary__change ${changeClass}`}>
+          {`${arrow} ${pct > 0 ? "+" : ""}${pct}% so với tháng trước`}
+        </div>
+      )}
     </section>
   );
 }
