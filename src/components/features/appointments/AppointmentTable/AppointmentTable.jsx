@@ -3,7 +3,7 @@ import { Ban, ClipboardPlus, MessageSquare, Play, ShieldBan, UnlockKeyhole, User
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
-const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict"];
+const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict", "No-Show"];
 
 // Map room_id → color variant (r1–r5) via modulo — works for any room_id
 function getRoomColorClass(roomId) {
