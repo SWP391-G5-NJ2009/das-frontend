@@ -5,8 +5,8 @@ import DentistProfileModal from "../../../components/features/staff/DentistProfi
 import StaffState from "../../../components/features/staff/StaffState/StaffState";
 import StaffTable from "../../../components/features/staff/StaffTable/StaffTable";
 import { useStaff } from "../../../hooks/useStaff";
-import OwnerPageShell from "../OwnerPageShell";
-import "./OwnerStaffPage.css";
+import ManagerPageShell from "../ManagerPageShell";
+import "./ManagerStaffPage.css";
 
 const ROLE_OPTIONS = [
   { value: "all", label: "Tất cả" },
@@ -22,7 +22,7 @@ const STATUS_OPTIONS = [
 
 const PAGE_SIZE = 5;
 
-function OwnerStaffPage() {
+function ManagerStaffPage() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
@@ -75,24 +75,24 @@ function OwnerStaffPage() {
   };
 
   return (
-    <OwnerPageShell contentClassName="owner-staff-page">
-      <div className="owner-staff">
-        <header className="owner-staff__header">
-          <div className="owner-staff__heading">
+    <ManagerPageShell contentClassName="manager-staff-page">
+      <div className="manager-staff">
+        <header className="manager-staff__header">
+          <div className="manager-staff__heading">
             <h1>Quản lý nhân sự</h1>
           </div>
 
         </header>
 
         <section
-          className="owner-staff__toolbar"
+          className="manager-staff__toolbar"
           aria-label="Bộ lọc nhân sự"
         >
           <form
-            className="owner-staff__search-form"
+            className="manager-staff__search-form"
             onSubmit={handleSearchSubmit}
           >
-            <div className="owner-staff__search-input">
+            <div className="manager-staff__search-input">
               <Search size={16} aria-hidden="true" />
 
               <input
@@ -107,7 +107,7 @@ function OwnerStaffPage() {
             <button type="submit">Tìm kiếm</button>
           </form>
 
-          <label className="owner-staff__filter">
+          <label className="manager-staff__filter">
             <span>Vai trò</span>
 
             <select
@@ -123,7 +123,7 @@ function OwnerStaffPage() {
             </select>
           </label>
 
-          <label className="owner-staff__filter">
+          <label className="manager-staff__filter">
             <span>Trạng thái</span>
 
             <select
@@ -141,7 +141,7 @@ function OwnerStaffPage() {
         </section>
 
         {successMessage ? (
-          <div className="owner-staff__notice owner-staff__notice--success" role="status">
+          <div className="manager-staff__notice manager-staff__notice--success" role="status">
             {successMessage}
           </div>
         ) : null}
@@ -169,8 +169,8 @@ function OwnerStaffPage() {
               staff={paginatedStaff}
               onViewStaff={setSelectedStaff}
             />
-            <div className="owner-staff__pagination">
-              <p className="owner-staff__pagination-info">
+            <div className="manager-staff__pagination">
+              <p className="manager-staff__pagination-info">
                 Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
                 {Math.min(currentPage * PAGE_SIZE, staff.length)} trong tổng số{" "}
                 {staff.length} nhân viên
@@ -192,10 +192,10 @@ function OwnerStaffPage() {
           />
         )}
       </div>
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 
-OwnerStaffPage.propTypes = {};
+ManagerStaffPage.propTypes = {};
 
-export default OwnerStaffPage;
+export default ManagerStaffPage;

@@ -6,8 +6,8 @@ import AppointmentDashboardPage from "./pages/admin/AppointmentDashboardPage/App
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
 import LandingPage from "./pages/public/LandingPage/LandingPage";
-import ServiceCatalogPage from "./pages/owner/ServiceCatalogPage/ServiceCatalogPage";
-import ClinicInfoPage from "./pages/owner/ClinicInfoPage/ClinicInfoPage";
+import ServiceCatalogPage from "./pages/manager/ServiceCatalogPage/ServiceCatalogPage";
+import ClinicInfoPage from "./pages/manager/ClinicInfoPage/ClinicInfoPage";
 import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import PaymentHistoryPage from "./pages/patient/PaymentHistoryPage/PaymentHistoryPage";
@@ -21,14 +21,14 @@ import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmen
 import DentistScheduleViewPage from "./pages/receptionist/DentistScheduleViewPage/DentistScheduleViewPage";
 import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
-import ScheduleApprovalPage from "./pages/owner/ScheduleApprovalPage/ScheduleApprovalPage";
-import RoomsPage from "./pages/owner/RoomsPage/RoomsPage";
+import ScheduleApprovalPage from "./pages/manager/ScheduleApprovalPage/ScheduleApprovalPage";
+import RoomsPage from "./pages/manager/RoomsPage/RoomsPage";
 import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
 import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
-import OwnerStaffPage from "./pages/owner/OwnerStaffPage/OwnerStaffPage";
+import ManagerStaffPage from "./pages/manager/ManagerStaffPage/ManagerStaffPage";
 import ProtectedRoute from "./router/ProtectedRoute";
-import RevenuePage from "./pages/owner/RevenuePage/RevenuePage";
-import PatientPage from "./pages/owner/PatientPage/PatientPage";
+import RevenuePage from "./pages/manager/RevenuePage/RevenuePage";
+import PatientPage from "./pages/manager/PatientPage/PatientPage";
 
 function App() {
   return (
@@ -182,65 +182,65 @@ function App() {
             }
           />
           <Route
-            path="/owner/services-management"
+            path="/manager/services-management"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <ServiceCatalogPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/clinic-info"
+            path="/manager/clinic-info"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <ClinicInfoPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/clinic-schedule"
+            path="/manager/clinic-schedule"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <ScheduleApprovalPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/rooms-management"
+            path="/manager/rooms-management"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <RoomsPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/profile"
+            path="/manager/profile"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <ManageProfilePage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/revenue"
+            path="/manager/revenue"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <RevenuePage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/patient"
+            path="/manager/patient"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <PatientPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/owner/appointment-dashboard"
+            path="/manager/appointment-dashboard"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
+              <ProtectedRoute allowedRoles={["manager"]}>
                 <AppointmentDashboardPage />
               </ProtectedRoute>
             }
@@ -262,10 +262,10 @@ function App() {
             }
           />
           <Route
-            path="/owner/staff"
+            path="/manager/staff"
             element={
-              <ProtectedRoute allowedRoles={["owner"]}>
-                <OwnerStaffPage />
+              <ProtectedRoute allowedRoles={["manager"]}>
+                <ManagerStaffPage />
               </ProtectedRoute>
             }
           />

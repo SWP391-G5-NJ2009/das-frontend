@@ -10,7 +10,7 @@ import {
   User,
   Users,
 } from "lucide-react";
-import OwnerPageShell from "../../owner/OwnerPageShell";
+import ManagerPageShell from "../../manager/ManagerPageShell";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { api } from "../../../services/api";
 import "./AppointmentDashboardPage.css";
@@ -63,7 +63,7 @@ function AppointmentDashboardPage() {
     setError(null);
     try {
       const data = await api.get(
-        `/owner/appointment-dashboard/monthly?year=${currentYear}&month=${currentMonth}`,
+        `/manager/appointment-dashboard/monthly?year=${currentYear}&month=${currentMonth}`,
       );
       setMonthlyCounts(data || []);
     } catch (err) {
@@ -137,7 +137,7 @@ function AppointmentDashboardPage() {
     setError(null);
     try {
       const data = await api.get(
-        `/owner/appointment-dashboard/daily?date=${dateStr}`,
+        `/manager/appointment-dashboard/daily?date=${dateStr}`,
       );
       setDailyData(data);
     } catch (err) {
@@ -161,11 +161,11 @@ function AppointmentDashboardPage() {
   };
 
   return (
-    <OwnerPageShell>
+    <ManagerPageShell>
       <div className="appt-dash">
         <header className="appt-dash__header">
           <div>
-            <p className="appt-dash__eyebrow">Bảng điều khiển chủ phòng khám</p>
+            <p className="appt-dash__eyebrow">Bảng điều khiển quản lý</p>
             <h1 className="appt-dash__title">Bảng điều khiển lịch hẹn</h1>
             <p className="appt-dash__subtitle">
               Xem tổng quan lịch hẹn và chi tiết lịch trình.
@@ -368,7 +368,7 @@ function AppointmentDashboardPage() {
           </div>
         )}
       </div>
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 

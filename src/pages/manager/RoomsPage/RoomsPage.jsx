@@ -5,7 +5,7 @@ import DeleteRoomModal from "../../../components/features/room/DeleteRoomModal/D
 import RoomFormModal from "../../../components/features/room/RoomFormModal/RoomFormModal";
 import { useRooms } from "../../../hooks/useRooms";
 import { useStaff } from "../../../hooks/useStaff";
-import OwnerPageShell from "../OwnerPageShell";
+import ManagerPageShell from "../ManagerPageShell";
 import "../ServiceCatalogPage/ServiceCatalogPage.css";
 import "./RoomsPage.css";
 
@@ -261,9 +261,9 @@ RoomsPageContent.propTypes = {};
 
 function RoomsPage() {
   return (
-    <OwnerPageShell contentClassName="owner-catalog-page">
+    <ManagerPageShell contentClassName="manager-catalog-page">
       <RoomsPageContent />
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 

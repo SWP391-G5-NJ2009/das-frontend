@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import RoleHeader from "../../components/layout/RoleHeader/RoleHeader";
 import RoleSidebar from "../../components/layout/RoleSidebar/RoleSidebar";
 import { useAuth } from "../../context/AuthContext";
-import { OWNER_NAV_ITEMS, OWNER_FOOTER_ITEMS } from "./ownerNavigation";
-import "./ownerPageShell.css";
+import { MANAGER_NAV_ITEMS, MANAGER_FOOTER_ITEMS } from "./managerNavigation";
+import "./managerPageShell.css";
 
-function OwnerPageShell({ children, contentClassName }) {
+function ManagerPageShell({ children, contentClassName }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const footerItems = {
-    ...OWNER_FOOTER_ITEMS[0],
+    ...MANAGER_FOOTER_ITEMS[0],
     onClick: () => {
       logout();
       navigate("/staff/login", { replace: true });
@@ -19,33 +19,33 @@ function OwnerPageShell({ children, contentClassName }) {
 
   return (
     <div
-      className={`owner-page${contentClassName ? ` ${contentClassName}` : ""}`}
+      className={`manager-page${contentClassName ? ` ${contentClassName}` : ""}`}
     >
       <RoleSidebar
         ariaLabel="Điều hướng quản lý phòng khám"
-        navItems={OWNER_NAV_ITEMS}
+        navItems={MANAGER_NAV_ITEMS}
         footerItems={[footerItems]}
       />
 
-      <main className="owner-page__main">
+      <main className="manager-page__main">
         <RoleHeader
           isFixed
-          mobileNavItems={OWNER_NAV_ITEMS}
-          roleLabel={user?.role || "Chủ phòng khám"}
+          mobileNavItems={MANAGER_NAV_ITEMS}
+          roleLabel={user?.role || "Quản lý"}
         />
-        <div className="owner-page__content">{children}</div>
+        <div className="manager-page__content">{children}</div>
       </main>
     </div>
   );
 }
 
-OwnerPageShell.propTypes = {
+ManagerPageShell.propTypes = {
   children: PropTypes.node.isRequired,
   contentClassName: PropTypes.string,
 };
 
-OwnerPageShell.defaultProps = {
+ManagerPageShell.defaultProps = {
   contentClassName: "",
 };
 
-export default OwnerPageShell;
+export default ManagerPageShell;

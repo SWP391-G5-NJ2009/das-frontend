@@ -29,7 +29,7 @@ function getInitials(name) {
 const ROLE_LABELS = {
   admin: "Quản trị viên",
   dentist: "Nha sĩ",
-  owner: "Chủ phòng khám",
+  manager: "Quản lý",
   patient: "Bệnh nhân",
   receptionist: "Lễ tân",
 };

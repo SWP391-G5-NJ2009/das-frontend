@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { dentalServiceService } from "../services/dentalService.service";
 
-export function useOwnerDentalServices(filters = {}) {
+export function useManagerDentalServices(filters = {}) {
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

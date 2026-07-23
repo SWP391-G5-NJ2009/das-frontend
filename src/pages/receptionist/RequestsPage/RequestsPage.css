@@ -521,7 +521,7 @@
   color: var(--color-primary-700);
 }
 
-.receptionist-requests__role-badge--owner {
+.receptionist-requests__role-badge--manager {
   background-color: var(--color-primary-200);
   color: var(--color-primary-900);
 }

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import AdminPageShell from "../../admin/AdminPageShell";
 import DentistPageShell from "../../dentist/DentistPageShell";
-import OwnerPageShell from "../../owner/OwnerPageShell";
+import ManagerPageShell from "../../manager/ManagerPageShell";
 import PatientPageShell from "../../patient/PatientPageShell";
 import ReceptionistPageShell from "../../receptionist/ReceptionistPageShell";
 import { useAuth } from "../../../context/AuthContext";
@@ -53,7 +53,7 @@ function RoleShell({ children, role }) {
   if (role === "admin") return <AdminPageShell>{children}</AdminPageShell>;
   if (role === "dentist")
     return <DentistPageShell>{children}</DentistPageShell>;
-  if (role === "owner") return <OwnerPageShell>{children}</OwnerPageShell>;
+  if (role === "manager") return <ManagerPageShell>{children}</ManagerPageShell>;
   if (role === "receptionist") {
     return <ReceptionistPageShell>{children}</ReceptionistPageShell>;
   }

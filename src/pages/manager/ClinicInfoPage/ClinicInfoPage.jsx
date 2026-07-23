@@ -11,10 +11,10 @@ import {
 import Button from "../../../components/common/Button/Button";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
-import ClinicInfoEditModal from "../../../components/features/owner/ClinicInfoEditModal/ClinicInfoEditModal";
+import ClinicInfoEditModal from "../../../components/features/manager/ClinicInfoEditModal/ClinicInfoEditModal";
 import { useClinicInfo } from "../../../hooks/useClinicInfo";
 import { clinicService } from "../../../services/clinic.service";
-import OwnerPageShell from "../OwnerPageShell";
+import ManagerPageShell from "../ManagerPageShell";
 import "./ClinicInfoPage.css";
 
 function ClinicInfoPage() {
@@ -68,7 +68,7 @@ function ClinicInfoPage() {
   };
 
   return (
-    <OwnerPageShell contentClassName="clinic-info-page">
+    <ManagerPageShell contentClassName="clinic-info-page">
       <section className="clinic-info" aria-labelledby="clinic-info-title">
         <header className="clinic-info__header">
           <div>
@@ -180,7 +180,7 @@ function ClinicInfoPage() {
           />
         )}
       </section>
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 

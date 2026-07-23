@@ -2,7 +2,7 @@ import { Check, RefreshCw, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import { scheduleService } from "../../../services/schedule.service";
-import OwnerPageShell from "../OwnerPageShell";
+import ManagerPageShell from "../ManagerPageShell";
 import "./ScheduleApprovalPage.css";
 
 const STATUS_OPTIONS = [
@@ -113,7 +113,7 @@ function ScheduleApprovalPage() {
   };
 
   return (
-    <OwnerPageShell>
+    <ManagerPageShell>
       <div className="schedule-approval">
         <header className="schedule-approval__header">
           <div>
@@ -191,7 +191,7 @@ function ScheduleApprovalPage() {
                   <th>Giờ</th>
                   <th>Phòng</th>
                   <th>Trạng thái</th>
-                  <th>Ghi chú chủ phòng khám</th>
+                  <th>Ghi chú quản lý</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
@@ -209,7 +209,7 @@ function ScheduleApprovalPage() {
                           : request.status === "Pending" ? "Đang chờ" : request.status === "Denied" ? "Đã từ chối" : request.status}
                       </span>
                     </td>
-                    <td>{request.ownerNote || "-"}</td>
+                    <td>{request.managerNote || "-"}</td>
                     <td>
                       <div className="schedule-approval__actions">
                         <button
@@ -279,7 +279,7 @@ function ScheduleApprovalPage() {
               </header>
               <form className="schedule-approval__deny-form" onSubmit={handleDeny}>
                 <label>
-                  <span>Ghi chú chủ phòng khám</span>
+                  <span>Ghi chú quản lý</span>
                   <textarea
                     value={denialReason}
                     onChange={(event) => setDenialReason(event.target.value)}
@@ -310,7 +310,7 @@ function ScheduleApprovalPage() {
           </div>
         )}
       </div>
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 

@@ -5,7 +5,7 @@ import "./AccountFilters.css";
 const ROLE_TABS = [
   { value: "All", label: "Tất cả" },
   { value: "Admin", label: "Admin" },
-  { value: "Owner", label: "Chủ phòng khám" },
+  { value: "Manager", label: "Quản lý" },
   { value: "Receptionist", label: "Lễ tân" },
   { value: "Dentist", label: "Nha sĩ" },
   { value: "Patient", label: "Bệnh nhân" },

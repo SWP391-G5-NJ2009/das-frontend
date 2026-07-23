@@ -34,7 +34,7 @@ const STATUS_MAP = {
 
 const ROLE_MAP = {
   Admin: "Admin",
-  Owner: "Chủ phòng khám",
+  Manager: "Quản lý",
   Receptionist: "Lễ tân",
   Dentist: "Nha sĩ",
   Patient: "Bệnh nhân",

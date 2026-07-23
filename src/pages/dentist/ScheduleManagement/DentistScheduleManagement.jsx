@@ -39,7 +39,7 @@ const FALLBACK_WEEKDAYS = [
 const STATUS_COPY = {
   Pending: {
     className: "dentist-schedule__status dentist-schedule__status--pending",
-    label: "Chờ chủ phòng khám duyệt",
+    label: "Chờ quản lý duyệt",
   },
   Scheduled: {
     className: "dentist-schedule__status dentist-schedule__status--approved",
@@ -813,7 +813,7 @@ function DentistScheduleManagement() {
       setMessage(
         `MSG22: ${saved.length} schedule request${
           saved.length === 1 ? "" : "s"
-        } sent for owner approval.`,
+        } sent for manager approval.`,
       );
       setIsEditorOpen(false);
       await fetchSchedules();
@@ -1022,9 +1022,9 @@ function DentistScheduleManagement() {
                 </dl>
 
                 {selectedSchedule.status === "Denied" && (
-                  <div className="dentist-schedule__owner-note" role="alert">
+                  <div className="dentist-schedule__manager-note" role="alert">
                     <strong>MSG23: Yêu cầu bị từ chối</strong>
-                    <p>{selectedSchedule.ownerNote || "No owner note provided."}</p>
+                    <p>{selectedSchedule.managerNote || "No manager note provided."}</p>
                   </div>
                 )}
 

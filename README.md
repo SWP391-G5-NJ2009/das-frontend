@@ -78,8 +78,8 @@ Staff pages:
 /receptionist/book-appointment
 /receptionist/profile
 /dentist/profile
-/owner/services-management
-/owner/profile
+/manager/services-management
+/manager/profile
 /admin/accounts
 /admin/profile
 ```
@@ -102,7 +102,7 @@ username: admin
 password: Admin12345
 ```
 
-The staff login page is used by `receptionist`, `dentist`, `owner`, and `admin` roles.
+The staff login page is used by `receptionist`, `dentist`, `manager`, and `admin` roles.
 
 ## Assets
 

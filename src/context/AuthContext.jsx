@@ -8,7 +8,7 @@ export const ROLE_HOME = {
   patient: "/patient/booking",
   receptionist: "/receptionist/consultation-request",
   dentist: "/dentist/schedule",
-  owner: "/owner/services-management",
+  manager: "/manager/services-management",
   admin: "/admin/accounts",
 };
 

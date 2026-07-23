@@ -528,7 +528,7 @@
   color: var(--color-primary-700);
 }
 
-.admin-accounts__role-badge--owner {
+.admin-accounts__role-badge--manager {
   background-color: var(--color-primary-200);
   color: var(--color-primary-900);
 }

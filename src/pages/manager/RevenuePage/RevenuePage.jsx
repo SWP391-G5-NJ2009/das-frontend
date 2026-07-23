@@ -1,7 +1,7 @@
 import PaymentState from "../../../components/features/payment/PaymentState/PaymentState";
 import PaymentTable from "../../../components/features/payment/PaymentTable/PaymentTable";
 import { usePayments } from "../../../hooks/usePayments";
-import OwnerPageShell from "../OwnerPageShell";
+import ManagerPageShell from "../ManagerPageShell";
 import RevenueSummary from "./RevenueSummary";
 import MonthlyRevenueSummary from "./MonthlyRevenue";
 import "./RevenuePage.css";
@@ -10,7 +10,7 @@ function RevenuePage() {
   const { payments, isLoading, error } = usePayments();
 
   return (
-    <OwnerPageShell>
+    <ManagerPageShell>
       <div className="revenue-page__header">
         <div className="revenue-page__heading">
           <h1 className="revenue-page__title">Phân tích doanh thu</h1>
@@ -50,7 +50,7 @@ function RevenuePage() {
       {!isLoading && !error && payments.length > 0 && (
         <PaymentTable payments={payments} />
       )}
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 

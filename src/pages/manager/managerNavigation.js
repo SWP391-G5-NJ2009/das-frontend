@@ -1,51 +1,51 @@
-export const OWNER_NAV_ITEMS = [
+export const MANAGER_NAV_ITEMS = [
   {
     icon: "medical_services",
     label: "Dịch vụ nha khoa",
-    to: "/owner/services-management",
+    to: "/manager/services-management",
   },
   {
     icon: "business",
     label: "Thông tin phòng khám",
-    to: "/owner/clinic-info",
+    to: "/manager/clinic-info",
   },
   {
     icon: "calendar_today",
     label: "Duyet lich nha si",
-    to: "/owner/clinic-schedule",
+    to: "/manager/clinic-schedule",
   },
   {
     icon: "meeting_room",
     label: "Quản lý phòng",
-    to: "/owner/rooms-management",
+    to: "/manager/rooms-management",
   },
   {
     icon: "payments",
     label: "Doanh thu",
-    to: "/owner/revenue",
+    to: "/manager/revenue",
   },
   {
     icon: "group",
     label: "Thống kê bệnh nhân",
-    to: "/owner/patient",
+    to: "/manager/patient",
   },
   {
     icon: "calendar_today",
     label: "Thống kê lịch hẹn",
-    to: "/owner/appointment-dashboard",
+    to: "/manager/appointment-dashboard",
   },
   {
     icon: "person",
     label: "Quản lý hồ sơ",
-    to: "/owner/profile",
+    to: "/manager/profile",
   },
   {
     icon: "group",
     label: "Quản lí nhân sự",
-    to: "/owner/staff",
+    to: "/manager/staff",
   },
 ];
 
-export const OWNER_FOOTER_ITEMS = [
+export const MANAGER_FOOTER_ITEMS = [
   { icon: "logout", label: "Đăng xuất", to: "/staff/login" },
 ];

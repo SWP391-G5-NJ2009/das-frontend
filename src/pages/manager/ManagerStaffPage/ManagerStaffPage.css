@@ -1,9 +1,9 @@
-.owner-staff-page {
+.manager-staff-page {
   min-height: 100vh;
   background-color: var(--color-neutral-50);
 }
 
-.owner-staff {
+.manager-staff {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
@@ -15,20 +15,20 @@
   box-shadow: var(--shadow-md);
 }
 
-.owner-staff__header {
+.manager-staff__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
 }
 
-.owner-staff__heading {
+.manager-staff__heading {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.owner-staff__header h1 {
+.manager-staff__header h1 {
   margin: 0;
   color: var(--color-neutral-900);
   font-size: var(--font-size-2xl);
@@ -36,21 +36,21 @@
   line-height: var(--line-height-tight);
 }
 
-.owner-staff__heading p {
+.manager-staff__heading p {
   margin: 0;
   color: var(--color-neutral-500);
   font-size: var(--font-size-sm);
 }
 
-.owner-staff__header-actions {
+.manager-staff__header-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-3);
 }
 
-.owner-staff__refresh-button,
-.owner-staff__add-button {
+.manager-staff__refresh-button,
+.manager-staff__add-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +62,7 @@
   cursor: pointer;
 }
 
-.owner-staff__refresh-button {
+.manager-staff__refresh-button {
   border: 1px solid var(--border-color);
   background-color: white;
   color: var(--color-neutral-700);
@@ -73,13 +73,13 @@
     color var(--transition-fast);
 }
 
-.owner-staff__refresh-button:hover {
+.manager-staff__refresh-button:hover {
   border-color: var(--color-primary-300);
   background-color: var(--color-primary-50);
   color: var(--color-primary-700);
 }
 
-.owner-staff__add-button {
+.manager-staff__add-button {
   border: 1px solid var(--color-primary-700);
   background-color: var(--color-primary-700);
   color: white;
@@ -87,19 +87,19 @@
   transition: background-color var(--transition-fast);
 }
 
-.owner-staff__add-button:hover {
+.manager-staff__add-button:hover {
   background-color: var(--color-primary-800);
 }
 
-.owner-staff__refresh-button:focus-visible,
-.owner-staff__add-button:focus-visible,
-.owner-staff__search-form button:focus-visible,
-.owner-staff__filter select:focus-visible {
+.manager-staff__refresh-button:focus-visible,
+.manager-staff__add-button:focus-visible,
+.manager-staff__search-form button:focus-visible,
+.manager-staff__filter select:focus-visible {
   outline: 2px solid var(--color-primary-700);
   outline-offset: 2px;
 }
 
-.owner-staff__toolbar {
+.manager-staff__toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -110,14 +110,14 @@
   background-color: var(--color-neutral-50);
 }
 
-.owner-staff__search-form {
+.manager-staff__search-form {
   display: flex;
   flex: 1 1 18rem;
   align-items: center;
   gap: var(--space-3);
 }
 
-.owner-staff__search-input {
+.manager-staff__search-input {
   display: flex;
   flex: 1;
   align-items: center;
@@ -129,7 +129,7 @@
   background-color: var(--color-neutral-50);
 }
 
-.owner-staff__search-input input {
+.manager-staff__search-input input {
   flex: 1;
   min-width: 0;
   border: 0;
@@ -138,16 +138,16 @@
   font-size: var(--font-size-sm);
 }
 
-.owner-staff__search-input input:focus {
+.manager-staff__search-input input:focus {
   outline: none;
 }
 
-.owner-staff__search-input:focus-within {
+.manager-staff__search-input:focus-within {
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 var(--space-1) var(--color-primary-100);
 }
 
-.owner-staff__search-form button {
+.manager-staff__search-form button {
   min-height: var(--space-10);
   padding: 0 var(--space-4);
   border: 0;
@@ -159,19 +159,19 @@
   cursor: pointer;
 }
 
-.owner-staff__filter {
+.manager-staff__filter {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.owner-staff__filter span {
+.manager-staff__filter span {
   color: var(--color-neutral-600);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
 }
 
-.owner-staff__filter select {
+.manager-staff__filter select {
   min-height: var(--space-10);
   padding: 0 var(--space-3);
   border: 1px solid var(--border-color);
@@ -181,20 +181,20 @@
   font-size: var(--font-size-sm);
 }
 
-.owner-staff__notice {
+.manager-staff__notice {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
 
-.owner-staff__notice--success {
+.manager-staff__notice--success {
   border: 1px solid var(--color-success);
   background-color: var(--color-success-bg);
   color: var(--color-success);
 }
 
-.owner-staff__pagination {
+.manager-staff__pagination {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -202,40 +202,40 @@
   gap: var(--space-4);
 }
 
-.owner-staff__pagination-info {
+.manager-staff__pagination-info {
   margin: 0;
   color: var(--color-neutral-600);
   font-size: var(--font-size-sm);
 }
 
-.owner-staff__pagination .receptionist-requests__pagination-controls {
+.manager-staff__pagination .receptionist-requests__pagination-controls {
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
 @media (max-width: 768px) {
-  .owner-staff {
+  .manager-staff {
     padding: var(--space-5);
   }
 
-  .owner-staff__header {
+  .manager-staff__header {
     flex-direction: column;
   }
 
-  .owner-staff__header-actions,
-  .owner-staff__refresh-button,
-  .owner-staff__add-button,
-  .owner-staff__filter,
-  .owner-staff__filter select {
+  .manager-staff__header-actions,
+  .manager-staff__refresh-button,
+  .manager-staff__add-button,
+  .manager-staff__filter,
+  .manager-staff__filter select {
     width: 100%;
   }
 
-  .owner-staff__toolbar {
+  .manager-staff__toolbar {
     align-items: stretch;
   }
 
-  .owner-staff__pagination {
+  .manager-staff__pagination {
     flex-direction: column;
     align-items: flex-start;
   }

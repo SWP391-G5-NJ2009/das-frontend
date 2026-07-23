@@ -1,4 +1,4 @@
-import OwnerPageShell from "../OwnerPageShell";
+import ManagerPageShell from "../ManagerPageShell";
 import NewPatientCount from "./NewPatient";
 import NoShowRate from "./NoShowRate";
 import ReturningPatientCount from "./ReturningPatient";
@@ -11,7 +11,7 @@ function RevenuePage() {
   
 
   return (
-    <OwnerPageShell>
+    <ManagerPageShell>
       <div className="patient-page__header">
         <div className="patient-page__heading">
           <h1 className="patient-page__title">Thống kê bệnh nhân</h1>
@@ -31,7 +31,7 @@ function RevenuePage() {
         <MonthlyReturningPatientCount/>
         <MonthlyNoShowRate/>
       </div>
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 

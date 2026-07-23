@@ -8,7 +8,7 @@ const ROLES = [
   { value: "Admin", label: "Admin" },
   { value: "Dentist", label: "Nha sĩ" },
   { value: "Receptionist", label: "Lễ tân" },
-  { value: "Owner", label: "Chủ phòng khám" },
+  { value: "Manager", label: "Quản lý" },
 ];
 
 function AddAccountModal({ onClose, onSuccess }) {

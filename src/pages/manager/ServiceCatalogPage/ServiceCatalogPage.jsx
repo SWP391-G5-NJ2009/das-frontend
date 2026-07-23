@@ -1,14 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import Spinner from "../../../components/common/Spinner/Spinner";
-import { useOwnerDentalServices } from "../../../hooks/useDentalServices";
-import OwnerPageShell from "../OwnerPageShell";
+import { useManagerDentalServices } from "../../../hooks/useDentalServices";
+import ManagerPageShell from "../ManagerPageShell";
 import Pagination from "../../../components/common/Pagination/Pagination";
 import "./ServiceCatalogPage.css";
 
 const PAGE_SIZE = 8;
 
-function OwnerServiceCatalog() {
+function ManagerServiceCatalog() {
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +33,7 @@ function OwnerServiceCatalog() {
     isLoading,
     services,
     updateService,
-  } = useOwnerDentalServices();
+  } = useManagerDentalServices();
 
   useEffect(() => {
     if (!formData.category_id && dbCategories.length > 0) {
@@ -150,7 +150,7 @@ function OwnerServiceCatalog() {
 
 
   return (
-    <OwnerPageShell contentClassName="owner-catalog-page">
+    <ManagerPageShell contentClassName="manager-catalog-page">
           <div className="catalog-container">
             <div className="catalog-header">
               <div>
@@ -464,8 +464,8 @@ function OwnerServiceCatalog() {
           </div>
         </div>
       )}
-    </OwnerPageShell>
+    </ManagerPageShell>
   );
 }
 
-export default OwnerServiceCatalog;
+export default ManagerServiceCatalog;
