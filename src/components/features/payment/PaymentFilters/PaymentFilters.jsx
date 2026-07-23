@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import { Search, RotateCcw } from "lucide-react";
+import { Search } from "lucide-react";
 import "./PaymentFilters.css";
 
-function PaymentFilters({ filters, methods, onChange, onReset }) {
+function PaymentFilters({ filters, onChange }) {
   const updateFilter = (event) => {
     onChange({ ...filters, [event.target.name]: event.target.value });
   };
@@ -16,7 +16,7 @@ function PaymentFilters({ filters, methods, onChange, onReset }) {
           <input
             name="keyword"
             onChange={updateFilter}
-            placeholder="Mã hóa đơn..."
+            placeholder="Mã hóa đơn, tên khách hàng..."
             type="search"
             value={filters.keyword}
           />
@@ -24,12 +24,21 @@ function PaymentFilters({ filters, methods, onChange, onReset }) {
       </label>
 
       <label className="payment-filters__field">
-        <span>Từ ngày</span>
+        <span>Trạng thái</span>
+        <select name="status" onChange={updateFilter} value={filters.status}>
+          <option value="all">Tất cả</option>
+          <option value="paid">Đã thanh toán</option>
+          <option value="unpaid">Chưa thanh toán</option>
+        </select>
+      </label>
+
+      <label className="payment-filters__field">
+        <span>Từ ngày thanh toán</span>
         <input name="fromDate" onChange={updateFilter} type="date" value={filters.fromDate} />
       </label>
 
       <label className="payment-filters__field">
-        <span>Đến ngày</span>
+        <span>Đến ngày thanh toán</span>
         <input name="toDate" onChange={updateFilter} type="date" value={filters.toDate} />
       </label>
     </form>
@@ -40,13 +49,10 @@ PaymentFilters.propTypes = {
   filters: PropTypes.shape({
     fromDate: PropTypes.string.isRequired,
     keyword: PropTypes.string.isRequired,
-    method: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
+    status: PropTypes.oneOf(["all", "paid", "unpaid"]).isRequired,
     toDate: PropTypes.string.isRequired,
   }).isRequired,
-  methods: PropTypes.arrayOf(PropTypes.string).isRequired,
   onChange: PropTypes.func.isRequired,
-  onReset: PropTypes.func.isRequired,
 };
 
 export default PaymentFilters;
