@@ -99,28 +99,30 @@ function AppointmentFilters({
 
   return (
     <div className="appt-filters">
-      {/* Status tab strip */}
-      <div
-        className="appt-filters__tabs"
-        role="tablist"
-        aria-label="Lọc theo trạng thái"
-      >
-        {tabs.map((tab) => (
-          <button
-            key={tab.value}
-            id={`appt-filter-tab-${tab.value}`}
-            role="tab"
-            type="button"
-            aria-selected={filters.status === tab.value}
-            className={`appt-filters__tab${
-              filters.status === tab.value ? " appt-filters__tab--active" : ""
-            }`}
-            onClick={() => onStatusChange(tab.value)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* Status tab strip — ẩn khi chỉ có 1 option (status cố định) */}
+      {tabs.length > 1 && (
+        <div
+          className="appt-filters__tabs"
+          role="tablist"
+          aria-label="Lọc theo trạng thái"
+        >
+          {tabs.map((tab) => (
+            <button
+              key={tab.value}
+              id={`appt-filter-tab-${tab.value}`}
+              role="tab"
+              type="button"
+              aria-selected={filters.status === tab.value}
+              className={`appt-filters__tab${
+                filters.status === tab.value ? " appt-filters__tab--active" : ""
+              }`}
+              onClick={() => onStatusChange(tab.value)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Search + date pickers row */}
       <div className="appt-filters__controls">

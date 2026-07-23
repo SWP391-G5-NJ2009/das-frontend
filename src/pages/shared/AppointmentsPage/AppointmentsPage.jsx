@@ -61,8 +61,6 @@ const ROLE_CONFIG = {
       { value: "all", label: "Tất cả" },
       { value: "Confirmed", label: "Đã xác nhận" },
       { value: "Checked-in", label: "Đã check-in" },
-      { value: "In-Treatment", label: "Đang điều trị" },
-      { value: "Completed", label: "Hoàn tất" },
     ],
   },
 };
@@ -125,7 +123,7 @@ function AppointmentsPage() {
   const isDentist = role === "dentist";
 
   const [filters, setFilters] = useState({
-    status: isPatient ? "Confirmed" : isReceptionist ? "Confirmed" : isDentist ? "Checked-in" : "all",
+    status: isPatient ? "Confirmed" : isReceptionist ? "Confirmed" : isDentist ? "Confirmed" : "all",
     date: isPatient ? "" : `${todayYear}-${todayMonth}-${todayDay}`,
     month: "",
     year: "",
