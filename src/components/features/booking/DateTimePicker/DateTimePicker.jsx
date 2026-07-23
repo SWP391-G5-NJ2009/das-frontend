@@ -39,13 +39,23 @@ function formatDate(date) {
   return `${WEEKDAYS[date.getDay()]}, ${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
-/** BR-14 (all roles): slot start time has already passed. */
+/** BR-14 (patient & others): slot start time has already passed. */
 function isSlotPast(slotTimeStr) {
   const now = new Date();
   const [hours, minutes] = slotTimeStr.split(":").map(Number);
   const slotDateTime = new Date();
   slotDateTime.setHours(hours, minutes, 0, 0);
   return slotDateTime.getTime() <= now.getTime();
+}
+
+/** BR-14 (receptionist): slot end time has already passed. */
+function isSlotEndPast(slotEndTimeStr) {
+  if (!slotEndTimeStr) return false;
+  const now = new Date();
+  const [hours, minutes] = slotEndTimeStr.split(":").map(Number);
+  const slotEndDateTime = new Date();
+  slotEndDateTime.setHours(hours, minutes, 0, 0);
+  return slotEndDateTime.getTime() <= now.getTime();
 }
 
 /** BR-14 (patient only): slot starts within 30 minutes of now. */
@@ -115,7 +125,11 @@ function DateTimePicker({
   const isTodayDate = selectedDate && isSameDay(selectedDate, today);
 
   const slotAvailability = slots.map((slot) => {
-    const past = isTodayDate && isSlotPast(slot.time);
+    // Receptionist: ẩn slot khi end_time đã qua; Patient/others: ẩn khi start_time đã qua
+    const past = isTodayDate &&
+      (enforceTimingRule
+        ? isSlotPast(slot.time)
+        : isSlotEndPast(slot.timeEnd || slot.time));
     const tooSoon =
       isTodayDate && enforceTimingRule && isSlotWithin30Min(slot.time);
     const alreadyBooked =

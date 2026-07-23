@@ -3,7 +3,7 @@ import { Ban, ClipboardPlus, MessageSquare, Play, ShieldBan, UnlockKeyhole, User
 import Badge from "../../../common/Badge/Badge";
 import "./AppointmentTable.css";
 
-const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict"];
+const CANCELLABLE_STATUSES = ["Confirmed", "Checked-in", "Conflict", "No-Show"];
 
 // Map room_id → color variant (r1–r5) via modulo — works for any room_id
 function getRoomColorClass(roomId) {
@@ -106,7 +106,7 @@ function AppointmentTable({
                     <span className="appt-table__patient-phone">
                       {appt.patientPhone}
                     </span>
-                    {appt.patientAccountStatus === "Restricted" && (
+                    {appt.patientNoShowCount >= 3 && (
                       <span
                         className="appt-table__booking-banned"
                         title="Tài khoản bệnh nhân bị hạn chế do vắng mặt từ 3 lần trở lên"
@@ -224,8 +224,8 @@ function AppointmentTable({
                           <UserCheck size={16} aria-hidden="true" />
                         </button>
                       )}
-                      {/* Lift Ban button — only for restricted patients, only for receptionist */}
-                      {appt.patientAccountStatus === "Restricted" &&
+                      {/* Lift Ban button — only for patients with no_show_count >= 3, only for receptionist */}
+                      {appt.patientNoShowCount >= 3 &&
                         actorRole === "receptionist" && (
                           <button
                             id={`tbl-liftban-${appt.id}`}
