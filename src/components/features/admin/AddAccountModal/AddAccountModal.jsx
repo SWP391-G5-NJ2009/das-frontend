@@ -29,6 +29,7 @@ function AddAccountModal({ onClose, onSuccess }) {
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
     setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
   };
 
   const handleSubmit = async (e) => {
@@ -54,6 +55,15 @@ function AddAccountModal({ onClose, onSuccess }) {
       setIsSubmitting(false);
     }
   };
+
+  function handleInvalid(e) {
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    }
+
+  }
 
   return (
     <div
@@ -84,6 +94,7 @@ function AddAccountModal({ onClose, onSuccess }) {
               name="username"
               value={form.username}
               onChange={handleChange}
+              onInvalid={handleInvalid}
               required
             />
             {fieldErrors?.username && (
@@ -132,6 +143,7 @@ function AddAccountModal({ onClose, onSuccess }) {
               type="password"
               value={form.password}
               onChange={handleChange}
+              onInvalid={handleInvalid}
               required
             />
             {fieldErrors?.password && (

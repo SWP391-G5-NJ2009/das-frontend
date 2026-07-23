@@ -29,6 +29,7 @@ function ConsultationPage() {
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
     setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
   }
 
   const handleSubmit = async (e) => {
@@ -50,6 +51,10 @@ function ConsultationPage() {
       setIsSubmitting(false);
     }
   };
+
+  function handleInvalid(e) {
+    e.target.setCustomValidity('Vui lòng nhập thông tin này');
+  }
 
   return (
     <div className="consultation-page">
@@ -81,6 +86,7 @@ function ConsultationPage() {
                   value={form.full_name}
                   placeholder="Nhập họ và tên"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.full_name && (
@@ -100,6 +106,7 @@ function ConsultationPage() {
                   value={form.phone}
                   placeholder="Nhập số điện thoại liên hệ"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.phone && (

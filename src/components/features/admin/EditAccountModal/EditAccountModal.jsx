@@ -30,7 +30,17 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
     setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
   };
+
+  function handleInvalid(e) {
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    }
+
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,6 +107,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               name="username"
               value={form.username}
               onChange={handleChange}
+              onInvalid={handleInvalid}
             />
             {fieldErrors?.username && (
               <span className="add-account-modal__field-error">
@@ -146,6 +157,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               type="password"
               value={form.password}
               onChange={handleChange}
+              onInvalid={handleInvalid}
             />
             {fieldErrors?.password && (
               <span className="add-account-modal__field-error">

@@ -58,10 +58,20 @@ function LandingPage() {
   const featuredServices = services.slice(0, 6);
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
-    setFieldErrors((prev) => ({ ...prev , [name]: null}));
+    setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
+  }
+
+  function handleInvalid(e) {
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    }
+
   }
 
   const handleSubmit = async (e) => {
@@ -262,6 +272,7 @@ function LandingPage() {
                   value={form.full_name}
                   placeholder="Họ và tên *"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.full_name && (
@@ -279,6 +290,7 @@ function LandingPage() {
                   value={form.phone}
                   placeholder="Số điện thoại *"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.phone && (
