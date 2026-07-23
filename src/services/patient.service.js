@@ -7,8 +7,10 @@ export const patientService = {
    * @returns {Promise<Array<{ id, fullName, phone, email, birthDate, gender }>>}
    */
   search: (q) => api.get(`/patients/search?q=${encodeURIComponent(q)}`),
+  createWalkInPatient: (payload) => api.post("/patients/walk-in", payload),
   createPatientAccount: (payload) => api.post("/patients", payload),
   getMyTreatmentHistory: () => api.get("/patients/me/treatments"),
-  getTreatmentHistory: (patientId) => api.get(`/patients/${patientId}/treatments`),
+  getTreatmentHistory: (patientId) =>
+    api.get(`/patients/${patientId}/treatments`),
   liftBan: (patientId) => api.patch(`/patients/${patientId}/lift-ban`),
 };
