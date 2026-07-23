@@ -63,6 +63,18 @@
   border: 1px solid var(--color-secondary-400);
 }
 
+.badge--paid {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: var(--border-width-thin) solid var(--color-success);
+}
+
+.badge--unpaid {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: var(--border-width-thin) solid var(--color-warning);
+}
+
 /* Waiting — orange */
 .badge--waiting {
   background-color: var(--status-waiting-bg);

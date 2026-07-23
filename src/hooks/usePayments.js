@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { paymentService } from "../services/payment.service";
 
 function normalizePayments(data) {
@@ -40,5 +40,19 @@ export function usePayments() {
 
   useEffect(() => { fetchPayments(); }, [fetchPayments]);
 
-  return { payments, unpaidInvoices, isLoading, error, refetch: fetchPayments };
+  const invoices = useMemo(
+    () => [...payments, ...unpaidInvoices].sort(
+      (first, second) => Number(second.invoice_id) - Number(first.invoice_id),
+    ),
+    [payments, unpaidInvoices],
+  );
+
+  return {
+    payments,
+    unpaidInvoices,
+    invoices,
+    isLoading,
+    error,
+    refetch: fetchPayments,
+  };
 }

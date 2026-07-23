@@ -9,6 +9,8 @@ const STATUS_CLASS = {
   Conflict: "conflict",
   "In-Treatment": "in-treatment",
   Completed: "completed",
+  Paid: "paid",
+  Unpaid: "unpaid",
   "Resolved No-Show": "resolved-no-show",
 };
 
@@ -20,6 +22,8 @@ const STATUS_LABEL = {
   Conflict: "Xung đột",
   "In-Treatment": "Đang điều trị",
   Completed: "Hoàn tất",
+  Paid: "Đã thanh toán",
+  Unpaid: "Chưa thanh toán",
   "Resolved No-Show": "Đã xử lý vắng mặt",
 };
 
