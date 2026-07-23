@@ -37,7 +37,7 @@ function RevenueSummary() {
           <h2 className="revenue-summary__title">Doanh thu tháng hiện tại</h2>
         </div>
         <p className="revenue-summary__error-text">
-          Không thể tải dữ liệu doanh thu.
+          Đã xảy ra lỗi. Vui lòng thử lại sau.
         </p>
       </section>
     );

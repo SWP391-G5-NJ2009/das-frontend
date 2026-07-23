@@ -21,7 +21,7 @@ export const MANAGER_NAV_ITEMS = [
   },
   {
     icon: "payments",
-    label: "Doanh thu",
+    label: "Thống kê doanh thu",
     to: "/manager/revenue",
   },
   {
