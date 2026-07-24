@@ -52,4 +52,11 @@ export const appointmentService = {
    */
   getPatientBookedTimes: (patientId) =>
     api.get(`/appointments/patient-booked-times?patientId=${patientId}`),
+
+  /**
+   * Receptionist: manually mark a Confirmed appointment as No-Show.
+   */
+  markNoShow: (appointmentId) =>
+    api.patch(`/appointments/${appointmentId}/no-show`),
 };
+

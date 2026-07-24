@@ -64,7 +64,9 @@ function buildPatientRows(appointments) {
 
   return Array.from(groups.values())
     .map((patientAppointments) => {
-      const latestAppointment = patientAppointments.slice().sort(compareAppointmentsDesc)[0];
+      const latestAppointment = patientAppointments
+        .slice()
+        .sort(compareAppointmentsDesc)[0];
       if (!latestAppointment) return null;
       return {
         latestDate: latestAppointment.scheduledDate || "",
@@ -79,7 +81,9 @@ function buildPatientRows(appointments) {
       };
     })
     .filter(Boolean)
-    .sort((a, b) => compareAppointmentsDesc(a.latestAppointment, b.latestAppointment));
+    .sort((a, b) =>
+      compareAppointmentsDesc(a.latestAppointment, b.latestAppointment),
+    );
 }
 
 function FollowUpReminderModal({
@@ -93,7 +97,10 @@ function FollowUpReminderModal({
   if (!patient) return null;
 
   return (
-    <div className="dentist-waiting-patients__modal-overlay" role="presentation">
+    <div
+      className="dentist-waiting-patients__modal-overlay"
+      role="presentation"
+    >
       <section
         className="dentist-waiting-patients__modal"
         role="dialog"
@@ -115,11 +122,12 @@ function FollowUpReminderModal({
           </button>
         </header>
 
-        <form className="dentist-waiting-patients__follow-up-form" onSubmit={onSubmit}>
+        <form
+          className="dentist-waiting-patients__follow-up-form"
+          onSubmit={onSubmit}
+        >
           {error && (
-            <div className="dentist-waiting-patients__form-error">
-              {error}
-            </div>
+            <div className="dentist-waiting-patients__form-error">{error}</div>
           )}
 
           <div className="dentist-waiting-patients__form-grid">
@@ -194,7 +202,8 @@ function DentistWaitingPatientsPage() {
   const patients = useMemo(() => {
     const ownAppointments = user?.profileId
       ? appointments.filter(
-          (appointment) => String(appointment.dentistId) === String(user.profileId),
+          (appointment) =>
+            String(appointment.dentistId) === String(user.profileId),
         )
       : appointments;
     return buildPatientRows(ownAppointments);
@@ -213,7 +222,11 @@ function DentistWaitingPatientsPage() {
 
   const totalPage = Math.max(1, Math.ceil(filteredPatients.length / PAGE_SIZE));
   const paginatedPatients = useMemo(
-    () => filteredPatients.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    () =>
+      filteredPatients.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE,
+      ),
     [currentPage, filteredPatients],
   );
 
@@ -251,7 +264,10 @@ function DentistWaitingPatientsPage() {
       return;
     }
 
-    if (Number.isNaN(followUpDateTime.getTime()) || followUpDateTime <= new Date()) {
+    if (
+      Number.isNaN(followUpDateTime.getTime()) ||
+      followUpDateTime <= new Date()
+    ) {
       setFollowUpError("Follow-up date and time must be in the future.");
       return;
     }
@@ -267,16 +283,26 @@ function DentistWaitingPatientsPage() {
 
   return (
     <DentistPageShell>
-      <section className="dentist-waiting-patients" aria-labelledby="dentist-waiting-patients-title">
+      <section
+        className="dentist-waiting-patients"
+        aria-labelledby="dentist-waiting-patients-title"
+      >
         <div className="dentist-waiting-patients__header">
-          <h1 className="dentist-waiting-patients__title" id="dentist-waiting-patients-title">
+          <h1
+            className="dentist-waiting-patients__title"
+            id="dentist-waiting-patients-title"
+          >
             Danh sách bệnh nhân
           </h1>
         </div>
 
         {isLoading && <Spinner />}
-        {!isLoading && error && <EmptyState message="Không thể tải danh sách bệnh nhân. Vui lòng thử lại." />}
-        {!isLoading && !error && patients.length === 0 && <EmptyState message="Chưa có bệnh nhân nào trong danh sách." />}
+        {!isLoading && error && (
+          <EmptyState message="Không thể tải danh sách bệnh nhân. Vui lòng thử lại." />
+        )}
+        {!isLoading && !error && patients.length === 0 && (
+          <EmptyState message="Chưa có bệnh nhân nào trong danh sách." />
+        )}
 
         {!isLoading && !error && patients.length > 0 && (
           <>
@@ -296,11 +322,11 @@ function DentistWaitingPatientsPage() {
               </label>
             </div>
 
-        {followUpMessage && (
-          <div className="dentist-waiting-patients__notice">
-            {followUpMessage}
-          </div>
-        )}
+            {followUpMessage && (
+              <div className="dentist-waiting-patients__notice">
+                {followUpMessage}
+              </div>
+            )}
 
             {filteredPatients.length === 0 && (
               <EmptyState message="Không tìm thấy bệnh nhân phù hợp với từ khóa." />
@@ -308,73 +334,102 @@ function DentistWaitingPatientsPage() {
 
             {filteredPatients.length > 0 && (
               <>
-            <div className="dentist-waiting-patients__table-wrap" role="region" aria-label="My Patients list">
-              <table className="dentist-waiting-patients__table">
-              <thead className="dentist-waiting-patients__table-head">
-                <tr>
-                  <th scope="col">Tên bệnh nhân</th>
-                  <th scope="col">Số điện thoại</th>
-                  <th scope="col">Dịch vụ</th>
-                  <th scope="col">Lần khám gần nhất</th>
-                  <th scope="col">Trạng thái</th>
-                  <th scope="col">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedPatients.map((patient) => (
-                  <tr key={patient.patientId || patient.patientPhone}>
-                    <td><span className="dentist-waiting-patients__patient-name">{patient.patientName}</span></td>
-                    <td><span className="dentist-waiting-patients__time">{patient.patientPhone || "Chưa cập nhật"}</span></td>
-                    <td><span className="dentist-waiting-patients__time">{patient.serviceName}</span></td>
-                    <td>
-                      <span className="dentist-waiting-patients__time">
-                        {patient.latestTime || "Chưa có giờ"}
-                        {patient.latestTimeEnd && ` - ${patient.latestTimeEnd}`}
-                      </span>
-                      <span className="dentist-waiting-patients__muted-info">{formatDate(patient.latestDate)}</span>
-                    </td>
-                    <td><Badge status={patient.status} /></td>
-                    <td>
-                      <div className="dentist-waiting-patients__actions">
-                        <button
-                          aria-label={`Xem lịch sử điều trị của ${patient.patientName}`}
-                          className="dentist-waiting-patients__action-button"
-                          disabled={!patient.patientId}
-                          onClick={() => navigate(
-                            `/dentist/patients/${patient.patientId}/treatment-history`,
-                            { state: { patient: patient.latestAppointment } },
-                          )}
-                          title="Xem lịch sử điều trị"
-                          type="button"
-                        >
-                          <History aria-hidden="true" size={15} />
-                        </button>
-                        <button
-                          aria-label={`Schedule follow-up for ${patient.patientName}`}
-                          className="dentist-waiting-patients__icon-action dentist-waiting-patients__icon-action--follow-up"
-                          onClick={() => openFollowUpModal(patient)}
-                          title="Schedule follow-up reminder"
-                          type="button"
-                        >
-                          <CalendarPlus aria-hidden="true" size={15} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              </table>
-            </div>
-            <div className="dentist-waiting-patients__pagination">
-              <p className="dentist-waiting-patients__pagination-info">
-                Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filteredPatients.length)} trong tổng số {filteredPatients.length} bệnh nhân
-              </p>
-              <Pagination
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                totalPage={totalPage}
-              />
-            </div>
+                <div
+                  className="dentist-waiting-patients__table-wrap"
+                  role="region"
+                  aria-label="My Patients list"
+                >
+                  <table className="dentist-waiting-patients__table">
+                    <thead className="dentist-waiting-patients__table-head">
+                      <tr>
+                        <th scope="col">Tên bệnh nhân</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Dịch vụ</th>
+                        <th scope="col">Lần khám gần nhất</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedPatients.map((patient) => (
+                        <tr key={patient.patientId || patient.patientPhone}>
+                          <td>
+                            <span className="dentist-waiting-patients__patient-name">
+                              {patient.patientName}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="dentist-waiting-patients__time">
+                              {patient.patientPhone || "Chưa cập nhật"}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="dentist-waiting-patients__time">
+                              {patient.serviceName}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="dentist-waiting-patients__time">
+                              {patient.latestTime || "Chưa có giờ"}
+                              {patient.latestTimeEnd &&
+                                ` - ${patient.latestTimeEnd}`}
+                            </span>
+                            <span className="dentist-waiting-patients__muted-info">
+                              {formatDate(patient.latestDate)}
+                            </span>
+                          </td>
+                          <td>
+                            <Badge status={patient.status} />
+                          </td>
+                          <td>
+                            <div className="dentist-waiting-patients__actions">
+                              <button
+                                aria-label={`Xem lịch sử điều trị của ${patient.patientName}`}
+                                className="dentist-waiting-patients__action-button"
+                                disabled={!patient.patientId}
+                                onClick={() =>
+                                  navigate(
+                                    `/dentist/patients/${patient.patientId}/treatment-history`,
+                                    {
+                                      state: {
+                                        patient: patient.latestAppointment,
+                                      },
+                                    },
+                                  )
+                                }
+                                title="Xem lịch sử điều trị"
+                                type="button"
+                              >
+                                <History aria-hidden="true" size={15} />
+                              </button>
+                              <button
+                                aria-label={`Schedule follow-up for ${patient.patientName}`}
+                                className="dentist-waiting-patients__icon-action dentist-waiting-patients__icon-action--follow-up"
+                                onClick={() => openFollowUpModal(patient)}
+                                title="Schedule follow-up reminder"
+                                type="button"
+                              >
+                                <CalendarPlus aria-hidden="true" size={15} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="dentist-waiting-patients__pagination">
+                  <p className="dentist-waiting-patients__pagination-info">
+                    Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
+                    {Math.min(currentPage * PAGE_SIZE, filteredPatients.length)}{" "}
+                    trong tổng số {filteredPatients.length} bệnh nhân
+                  </p>
+                  <Pagination
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                    totalPage={totalPage}
+                  />
+                </div>
               </>
             )}
           </>
