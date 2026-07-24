@@ -18,7 +18,7 @@ export function useLoginForm({ login, getCredentials, fallbackPath }) {
       const user = await login(getCredentials(formData));
       navigate(ROLE_HOME[user.role] || fallbackPath, { replace: true });
     } catch (err) {
-      setError(err.message || "Login failed.");
+      setError(err.message || "Đăng nhập thất bại.");
     } finally {
       setIsSubmitting(false);
     }

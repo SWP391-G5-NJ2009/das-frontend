@@ -11,7 +11,14 @@ async function request(method, endpoint, data = null) {
     ...(data ? { body: JSON.stringify(data) } : {}),
   };
 
-  const response = await fetch(`${API_BASE}${endpoint}`, options);
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, options);
+  } catch {
+    throw new Error("Không thể kết nối tới máy chủ.");
+  }
+
   const json = await response.json();
 
   if (response.status === 401) {
