@@ -103,7 +103,6 @@ function ReceptionistRequestsPage() {
                   <th>Ngày tư vấn</th>
                   <th>Ngày tạo</th>
                   <th>Trạng thái</th>
-                  <th>Người xử lý</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
@@ -171,9 +170,6 @@ function ReceptionistRequestsPage() {
                       </td>
                       <td className="receptionist-requests__cell">
                         {request.status}
-                      </td>
-                      <td className="receptionist-requests__cell">
-                        {request.handled_by}
                       </td>
                       <td className="receptionist-requests__cell">
                         <button
