@@ -42,7 +42,7 @@ function RoomsPageContent() {
     staff: dentists,
     isLoading: areDentistsLoading,
     error: dentistError,
-  } = useStaff({ role: "dentist" });
+  } = useStaff({ role: "dentist", status: "Active" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentRoomId, setCurrentRoomId] = useState(null);
@@ -65,7 +65,11 @@ function RoomsPageContent() {
   const dentistOptions = useMemo(
     () =>
       [...dentists]
-        .filter((dentist) => dentist.profileId)
+        .filter(
+          (dentist) =>
+            dentist.profileId &&
+            String(dentist.status || "").toLowerCase() === "active",
+        )
         .sort((firstDentist, secondDentist) =>
           String(firstDentist.fullName || "").localeCompare(
             String(secondDentist.fullName || ""),
