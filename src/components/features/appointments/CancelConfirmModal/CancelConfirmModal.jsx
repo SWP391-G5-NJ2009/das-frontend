@@ -216,8 +216,7 @@ function CancelConfirmModal({
             <p className="cancel-modal__warning-text">
               <strong>Lưu ý:</strong> Xác nhận hủy lịch sẽ{" "}
               <strong>giải phóng ngay</strong> khung giờ liên quan và mở lại cho
-              phép đặt lịch mới. SMS thông báo hủy cũng sẽ được tự động gửi đến
-              bệnh nhân.
+              phép đặt lịch mới.
             </p>
           </div>
 
