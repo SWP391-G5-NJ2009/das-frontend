@@ -69,7 +69,13 @@ export function useMyAppointments(filters = {}, options = {}) {
       fetchAppointments(true);
     }, 30000);
 
-    return () => clearInterval(interval);
+    const handleFocus = () => fetchAppointments(true);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, [fetchAppointments]);
 
   const cancelAppointment = useCallback(
@@ -211,4 +217,3 @@ export function useAllAppointments(filters = {}, options = {}) {
     refetch: fetchAppointments,
   };
 }
-
