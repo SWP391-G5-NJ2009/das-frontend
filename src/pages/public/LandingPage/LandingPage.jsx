@@ -45,8 +45,14 @@ function LandingPage() {
     phone: "",
     email: "",
     description: "",
+    service_id: "",
+    consultation_date: "",
     website: "",
   });
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
   const [error, setError] = useState(null);
   const [loadedAt] = useState(Date.now());
@@ -84,7 +90,7 @@ function LandingPage() {
     setIsSubmitting(true);
     try {
       await consultationService.create({ ...form, loadedAt });
-      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setForm({ full_name: "", phone: "", email: "", description: "", service_id: "", consultation_date: "" });
       setFieldErrors(null);
       setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
@@ -317,6 +323,28 @@ function LandingPage() {
                     {fieldErrors.email[0]}
                   </span>
                 )}
+              </label>
+              <label className="consultation-form__field">
+                <select
+                  name="service_id"
+                  value={form.service_id}
+                  onChange={handleChange}
+                >
+                  <option value="">Dịch vụ quan tâm (không bắt buộc)</option>
+                  {!isServicesLoading && services.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="consultation-form__field">
+                <input
+                  type="date"
+                  name="consultation_date"
+                  value={form.consultation_date}
+                  min={minDate}
+                  placeholder="Ngày tư vấn mong muốn"
+                  onChange={handleChange}
+                />
               </label>
               <label className="consultation-form__field">
                 <textarea

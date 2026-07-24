@@ -99,6 +99,8 @@ function ReceptionistRequestsPage() {
                   <th>Số điện thoại</th>
                   <th>Email</th>
                   <th>Mô tả</th>
+                  <th>Dịch vụ</th>
+                  <th>Ngày tư vấn</th>
                   <th>Ngày tạo</th>
                   <th>Trạng thái</th>
                   <th>Người xử lý</th>
@@ -108,7 +110,7 @@ function ReceptionistRequestsPage() {
               <tbody>
                 {isLoading && (
                   <tr>
-                    <td className="receptionist-requests__cell" colSpan={9}>
+                    <td className="receptionist-requests__cell" colSpan={11}>
                       Đang tải dữ liệu...
                     </td>
                   </tr>
@@ -116,7 +118,7 @@ function ReceptionistRequestsPage() {
 
                 {!isLoading && error && (
                   <tr>
-                    <td className="receptionist-requests__cell" colSpan={9}>
+                    <td className="receptionist-requests__cell" colSpan={11}>
                       Đã xảy ra lỗi. Vui lòng thử lại sau.
                     </td>
                   </tr>
@@ -124,7 +126,7 @@ function ReceptionistRequestsPage() {
 
                 {!isLoading && !error && requests.length === 0 && (
                   <tr>
-                    <td className="receptionist-requests__cell" colSpan={9}>
+                    <td className="receptionist-requests__cell" colSpan={11}>
                       Không tìm thấy yêu cầu nào
                     </td>
                   </tr>
@@ -155,6 +157,14 @@ function ReceptionistRequestsPage() {
                         {request.description && request.description.length > 20
                           ? `${request.description.slice(0, 20)}...`
                           : request.description}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.dental_services?.name || "—"}
+                      </td>
+                      <td className="receptionist-requests__cell">
+                        {request.consultation_date
+                          ? new Date(request.consultation_date).toLocaleDateString("vi-VN")
+                          : "—"}
                       </td>
                       <td className="receptionist-requests__cell">
                         {new Date(request.created_at).toLocaleString("vi-VN")}

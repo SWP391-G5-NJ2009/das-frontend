@@ -4,16 +4,24 @@ import SiteFooter from "../../../components/layout/SiteFooter/SiteFooter";
 import SiteHeader from "../../../components/layout/SiteHeader/SiteHeader";
 import "./ConsultationPage.css";
 import { consultationService } from "../../../services/consultation.service";
+import { usePublicServices } from "../../../hooks/useDentalServices";
 import { useState } from "react";
 import Toast from "../../../components/common/Toast/Toast";
 
 function ConsultationPage() {
+
+  const { services, isLoading: isServicesLoading } = usePublicServices();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
     email: "",
     description: "",
+    service_id: "",
+    consultation_date: "",
     website: "",
   })
 
@@ -38,7 +46,7 @@ function ConsultationPage() {
     setIsSubmitting(true);
     try {
       await consultationService.create({ ...form, loadedAt });
-      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setForm({ full_name: "", phone: "", email: "", description: "", service_id: "", consultation_date: "" });
       setFieldErrors(null);
       setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
@@ -139,6 +147,31 @@ function ConsultationPage() {
                     {fieldErrors.email[0]}
                   </span>
                 )}
+              </label>
+
+              <label className="consultation-panel__field">
+                <span>Dịch vụ quan tâm (không bắt buộc)</span>
+                <select
+                  name="service_id"
+                  value={form.service_id}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn dịch vụ --</option>
+                  {!isServicesLoading && services.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="consultation-panel__field">
+                <span>Ngày tư vấn mong muốn (không bắt buộc)</span>
+                <input
+                  type="date"
+                  name="consultation_date"
+                  value={form.consultation_date}
+                  min={minDate}
+                  onChange={handleChange}
+                />
               </label>
 
               <label className="consultation-panel__field">

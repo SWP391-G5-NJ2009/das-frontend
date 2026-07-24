@@ -106,6 +106,21 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
               <span className="handle-request-modal__label">Mô tả</span>
               <textarea name="description" value={form.description} readOnly />
             </label>
+
+            <label className="handle-request-modal__field">
+              <span className="handle-request-modal__label">Dịch vụ quan tâm</span>
+              <input name="service_name" value={request.dental_services?.name || "Chưa chọn"} readOnly />
+            </label>
+
+            <label className="handle-request-modal__field">
+              <span className="handle-request-modal__label">Ngày tư vấn mong muốn</span>
+              <input
+                name="consultation_date"
+                type="date"
+                value={request.consultation_date || ""}
+                readOnly
+              />
+            </label>
           </div>
 
           <div className="handle-request-modal__column handle-request-modal__column--editable">
@@ -193,6 +208,11 @@ HandleRequestModal.propTypes = {
     created_at: PropTypes.string,
     status: PropTypes.string,
     note: PropTypes.string,
+    dental_services: PropTypes.shape({
+      service_id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+    consultation_date: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
