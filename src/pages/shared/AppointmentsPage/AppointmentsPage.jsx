@@ -195,13 +195,28 @@ function AppointmentsPage() {
   }, []);
 
   const handleTodayClick = useCallback(() => {
-    setDateParts({ year: todayYear, month: todayMonth, day: todayDay });
-    setFilters((prev) => ({
-      ...prev,
-      date: `${todayYear}-${todayMonth}-${todayDay}`,
-      month: "",
-      year: "",
-    }));
+    setFilters((prev) => {
+      const isCurrentlyToday =
+        prev.date === `${todayYear}-${todayMonth}-${todayDay}`;
+
+      if (isCurrentlyToday) {
+        setDateParts({ year: "", month: "", day: "" });
+        return {
+          ...prev,
+          date: "",
+          month: "",
+          year: "",
+        };
+      } else {
+        setDateParts({ year: todayYear, month: todayMonth, day: todayDay });
+        return {
+          ...prev,
+          date: `${todayYear}-${todayMonth}-${todayDay}`,
+          month: "",
+          year: "",
+        };
+      }
+    });
     setCurrentPage(1);
   }, [todayYear, todayMonth, todayDay]);
 

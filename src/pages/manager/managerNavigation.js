@@ -11,7 +11,7 @@ export const MANAGER_NAV_ITEMS = [
   },
   {
     icon: "calendar_today",
-    label: "Duyet lich nha si",
+    label: "Duyệt lịch nha sĩ",
     to: "/manager/clinic-schedule",
   },
   {
