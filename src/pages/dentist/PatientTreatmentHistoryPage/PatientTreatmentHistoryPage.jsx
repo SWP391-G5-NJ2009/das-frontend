@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -54,7 +54,9 @@ FieldRow.defaultProps = {
 
 function TreatmentRecordRow({ record }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const treatment = record.treatment || "Dental treatment";
+  const treatment = record.visitNumber
+    ? `Lần ${record.visitNumber}`
+    : record.treatment || "Dental treatment";
 
   return (
     <article className="patient-treatment-history__record">
@@ -89,12 +91,22 @@ function TreatmentRecordRow({ record }) {
       {isExpanded && (
         <div className="patient-treatment-history__record-details">
           <dl className="patient-treatment-history__field-list">
+            <FieldRow
+              label="Khám lâm sàng"
+              value={record.clinicalExamination}
+            />
             <FieldRow label="Chấn đoán" value={record.diagnosis} />
             <FieldRow label="Ghi chú điều trị" value={record.treatmentNote} />
+            <FieldRow
+              label="Hướng dẫn sau điều trị"
+              value={record.postTreatmentInstructions}
+            />
             <FieldRow label="Ghi chú lịch hẹn" value={record.appointmentNote} />
           </dl>
-          {!hasValue(record.diagnosis) &&
+          {!hasValue(record.clinicalExamination) &&
+            !hasValue(record.diagnosis) &&
             !hasValue(record.treatmentNote) &&
+            !hasValue(record.postTreatmentInstructions) &&
             !hasValue(record.appointmentNote) && (
               <p className="patient-treatment-history__record-empty">
                 Chưa có ghi chú lâm sàng.
@@ -113,16 +125,118 @@ TreatmentRecordRow.propTypes = {
     date: PropTypes.string,
     dentist: PropTypes.string,
     diagnosis: PropTypes.string,
+    clinicalExamination: PropTypes.string,
     endTime: PropTypes.string,
     startTime: PropTypes.string,
     status: PropTypes.string,
     treatment: PropTypes.string,
     treatmentNote: PropTypes.string,
+    postTreatmentInstructions: PropTypes.string,
+    treatmentPlanId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+    visitNumber: PropTypes.number,
+  }).isRequired,
+};
+
+function groupTreatmentsByPlan(treatments) {
+  const groups = new Map();
+
+  treatments.forEach((record) => {
+    const key = record.treatmentPlanId
+      ? `plan-${record.treatmentPlanId}`
+      : "standalone";
+    const currentGroup = groups.get(key) || {
+      key,
+      planId: record.treatmentPlanId || null,
+      title: record.treatmentPlanId
+        ? record.treatment || "Kế hoạch điều trị"
+        : "Điều trị độc lập",
+      status: record.treatmentPlanStatus || null,
+      createdAt: record.treatmentPlanCreatedAt || null,
+      records: [],
+    };
+    currentGroup.records.push(record);
+    groups.set(key, currentGroup);
+  });
+
+  return Array.from(groups.values()).map((group) => ({
+    ...group,
+    records: group.records.slice().sort((first, second) => {
+      if (group.planId) {
+        return Number(second.visitNumber || 0) - Number(first.visitNumber || 0);
+      }
+      return `${second.date || ""} ${second.startTime || ""}`.localeCompare(
+        `${first.date || ""} ${first.startTime || ""}`,
+      );
+    }),
+  }));
+}
+
+function TreatmentPlanGroup({ group }) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  return (
+    <section className="patient-treatment-history__plan">
+      <button
+        aria-expanded={isExpanded}
+        className="patient-treatment-history__plan-toggle"
+        onClick={() => setIsExpanded((current) => !current)}
+        type="button"
+      >
+        <span className="patient-treatment-history__plan-main">
+          <strong>{group.title}</strong>
+          <small>
+            {group.records.length} lần điều trị
+            {group.createdAt
+              ? ` · Bắt đầu ${formatDate(group.createdAt)}`
+              : ""}
+          </small>
+        </span>
+        {group.status && (
+          <span className="patient-treatment-history__plan-status">
+            <Badge status={group.status} />
+          </span>
+        )}
+        <ChevronDown
+          aria-hidden="true"
+          className="patient-treatment-history__plan-chevron"
+          size={20}
+        />
+      </button>
+
+      {isExpanded && (
+        <div className="patient-treatment-history__plan-records">
+          {group.records.map((record) => (
+            <TreatmentRecordRow key={record.id} record={record} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+TreatmentPlanGroup.propTypes = {
+  group: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    planId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    title: PropTypes.string.isRequired,
+    status: PropTypes.string,
+    createdAt: PropTypes.string,
+    records: PropTypes.arrayOf(PropTypes.object).isRequired,
   }).isRequired,
 };
 
 function getHeaderMeta({ patient, treatments }) {
-  const meta = [`${treatments.length} records`];
+  const groupCount = new Set(
+    treatments
+      .map((record) => record.treatmentPlanId)
+      .filter(Boolean),
+  ).size;
+  const meta = [
+    `${groupCount} lộ trình · ${treatments.length} lần điều trị`,
+  ];
 
   if (patient.patientPhone) {
     meta.push(patient.patientPhone);
@@ -144,6 +258,10 @@ function PatientTreatmentHistoryPage({ viewer }) {
   const patient = location.state?.patient || {};
   const { error, isLoading, treatments } = usePatientTreatments(
     isPatientView ? null : patientId,
+  );
+  const treatmentGroups = useMemo(
+    () => groupTreatmentsByPlan(treatments),
+    [treatments],
   );
   const patientName = isPatientView
     ? user?.fullName || "Hồ sơ của tôi"
@@ -201,11 +319,8 @@ function PatientTreatmentHistoryPage({ viewer }) {
 
         {!isLoading && !error && treatments.length > 0 && (
           <div className="patient-treatment-history__records">
-            {treatments.map((record) => (
-              <TreatmentRecordRow
-                key={record.id}
-                record={record}
-              />
+            {treatmentGroups.map((group) => (
+              <TreatmentPlanGroup key={group.key} group={group} />
             ))}
           </div>
         )}

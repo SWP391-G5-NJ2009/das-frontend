@@ -30,6 +30,7 @@
 }
 
 .patient-treatment-history__back-button:focus-visible,
+.patient-treatment-history__plan-toggle:focus-visible,
 .patient-treatment-history__record-toggle:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-primary-700);
   outline-offset: var(--focus-ring-offset);
@@ -78,11 +79,64 @@
 
 .patient-treatment-history__records {
   display: grid;
+  gap: var(--space-4);
+}
+
+.patient-treatment-history__plan {
   overflow: hidden;
   background-color: var(--color-surface);
   border: var(--border-width-thin) solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+}
+
+.patient-treatment-history__plan-toggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto var(--space-6);
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--color-primary-50);
+  border: 0;
+  color: var(--color-neutral-800);
+  font-family: var(--font-family-base);
+  text-align: left;
+  cursor: pointer;
+}
+
+.patient-treatment-history__plan-main {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.patient-treatment-history__plan-main strong {
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-md);
+}
+
+.patient-treatment-history__plan-main small {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-sm);
+}
+
+.patient-treatment-history__plan-status {
+  justify-self: end;
+}
+
+.patient-treatment-history__plan-chevron {
+  color: var(--color-neutral-500);
+  transition: transform var(--transition-fast);
+}
+
+.patient-treatment-history__plan-toggle[aria-expanded="true"]
+  .patient-treatment-history__plan-chevron {
+  transform: rotate(180deg);
+}
+
+.patient-treatment-history__plan-records {
+  display: grid;
+  border-top: var(--border-width-thin) solid var(--border-color);
 }
 
 .patient-treatment-history__record {

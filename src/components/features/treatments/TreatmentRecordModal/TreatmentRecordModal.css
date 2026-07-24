@@ -29,20 +29,244 @@
   border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
 }
 
-.treatment-record__header h2 { margin: 0; color: var(--color-neutral-900); font-size: var(--font-size-xl); }
-.treatment-record__header p { margin: var(--space-1) 0 0; color: var(--color-neutral-500); font-size: var(--font-size-sm); }
-.treatment-record__close { display: grid; place-items: center; padding: var(--space-2); background-color: var(--color-neutral-100); border: 0; border-radius: var(--radius-full); color: var(--color-neutral-700); cursor: pointer; }
-.treatment-record__body { display: grid; gap: var(--space-5); min-height: 0; overflow-y: auto; padding: var(--space-5); }
-.treatment-record__field { display: grid; gap: var(--space-2); color: var(--color-neutral-700); font-weight: var(--font-weight-semibold); }
-.treatment-record__field b { color: var(--color-error); }
-.treatment-record__field textarea,
-.treatment-record__field input,
-.treatment-record__field select { width: 100%; padding: var(--space-3); background-color: var(--color-surface); border: var(--border-width-thin) solid var(--color-neutral-200); border-radius: var(--radius-md); color: var(--color-neutral-900); font: inherit; font-weight: var(--font-weight-regular); }
-.treatment-record__field textarea { resize: vertical; }
-.treatment-record__error { margin: 0; padding: var(--space-3); background-color: var(--color-error-bg); border-radius: var(--radius-md); color: var(--color-error); }
-.treatment-record__actions { display: flex; justify-content: flex-end; gap: var(--space-3); }
-.treatment-record__button { padding: var(--space-2) var(--space-4); border: 0; border-radius: var(--radius-md); font-weight: var(--font-weight-semibold); cursor: pointer; }
-.treatment-record__button--cancel { background-color: var(--color-neutral-100); color: var(--color-neutral-700); }
-.treatment-record__button--submit { background-color: var(--color-secondary-700); color: var(--color-surface); }
-.treatment-record__button:disabled { cursor: not-allowed; }
-.treatment-record__close:focus-visible, .treatment-record__field textarea:focus-visible, .treatment-record__field input:focus-visible, .treatment-record__field select:focus-visible, .treatment-record__button:focus-visible { outline: var(--focus-ring-width) solid var(--color-primary-700); outline-offset: var(--focus-ring-offset); }
+.treatment-record__header h2 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+}
+
+.treatment-record__header p {
+  margin: var(--space-1) 0 0;
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-sm);
+}
+
+.treatment-record__close {
+  display: grid;
+  place-items: center;
+  padding: var(--space-2);
+  background-color: var(--color-neutral-100);
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-neutral-700);
+  cursor: pointer;
+}
+
+.treatment-record__state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-12);
+  color: var(--color-neutral-600);
+}
+
+.treatment-record__state--error {
+  margin: var(--space-5);
+  padding: var(--space-4);
+  background-color: var(--color-error-bg);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+}
+
+.treatment-record__workspace {
+  display: grid;
+  grid-template-columns: 18rem minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.treatment-record__sidebar {
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+  background-color: var(--color-neutral-50);
+  border-right: var(--border-width-thin) solid var(--color-neutral-200);
+}
+
+.treatment-record__accordion-trigger,
+.treatment-record__visit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  border: 0;
+  color: var(--color-neutral-800);
+  text-align: left;
+  cursor: pointer;
+}
+
+.treatment-record__accordion-trigger {
+  padding: var(--space-3);
+  background-color: var(--color-surface);
+  border: var(--border-width-thin) solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
+}
+
+.treatment-record__accordion-trigger span,
+.treatment-record__visit > span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.treatment-record__accordion-trigger small,
+.treatment-record__visit small {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-xs);
+}
+
+.treatment-record__visit-list {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.treatment-record__start-plan {
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-primary-700);
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-surface);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.treatment-record__start-plan:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.treatment-record__visit {
+  padding: var(--space-3);
+  background-color: var(--color-transparent);
+  border-left: var(--space-1) solid var(--color-transparent);
+  border-radius: var(--radius-sm);
+}
+
+.treatment-record__visit--active {
+  background-color: var(--color-primary-100);
+  border-left-color: var(--color-primary-700);
+}
+
+.treatment-record__status {
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-success-bg);
+  border-radius: var(--radius-full);
+  color: var(--color-success);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.treatment-record__status--active {
+  background-color: var(--status-in-treatment-bg);
+  color: var(--status-in-treatment);
+}
+
+.treatment-record__body {
+  display: grid;
+  gap: var(--space-5);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+.treatment-record__field {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-neutral-700);
+  font-weight: var(--font-weight-semibold);
+}
+
+.treatment-record__field b {
+  color: var(--color-error);
+}
+
+.treatment-record__field textarea {
+  width: 100%;
+  padding: var(--space-3);
+  resize: vertical;
+  background-color: var(--color-surface);
+  border: var(--border-width-thin) solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-900);
+  font: inherit;
+  font-weight: var(--font-weight-regular);
+}
+
+.treatment-record__field textarea:disabled {
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-600);
+  cursor: default;
+}
+
+.treatment-record__error {
+  margin: 0;
+  padding: var(--space-3);
+  background-color: var(--color-error-bg);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+}
+
+.treatment-record__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.treatment-record__button {
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.treatment-record__button--cancel {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+.treatment-record__button--submit {
+  background-color: var(--color-secondary-700);
+  color: var(--color-surface);
+}
+
+.treatment-record__button--complete-plan {
+  background-color: var(--color-primary-700);
+  color: var(--color-surface);
+}
+
+.treatment-record__button:disabled {
+  cursor: not-allowed;
+}
+
+.treatment-record__close:focus-visible,
+.treatment-record__accordion-trigger:focus-visible,
+.treatment-record__start-plan:focus-visible,
+.treatment-record__visit:focus-visible,
+.treatment-record__field textarea:focus-visible,
+.treatment-record__button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary-700);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (max-width: 767px) {
+  .treatment-record__workspace {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .treatment-record__sidebar {
+    max-height: 16rem;
+    border-right: 0;
+    border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
+  }
+
+  .treatment-record__body {
+    overflow-y: visible;
+  }
+}

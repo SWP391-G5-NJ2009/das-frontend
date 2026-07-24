@@ -115,6 +115,7 @@ export function usePublicServices() {
         description: s.description || "",
         category: s.category_name || s.service_categories?.category_name || "",
         slotOccupied: s.slot_occupied ?? 1,
+        treatmentMode: s.treatment_mode || "Single-Visit",
         process: s.process || "",
       }));
       setServices(mapped);

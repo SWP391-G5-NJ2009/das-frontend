@@ -22,6 +22,7 @@ function ManagerServiceCatalog() {
     description: "",
     unit_price: "",
     slot_occupied: "1",
+    treatment_mode: "Single-Visit",
     status: "Inactive",
   });
 
@@ -56,6 +57,7 @@ function ManagerServiceCatalog() {
       description: "",
       unit_price: "",
       slot_occupied: "1",
+      treatment_mode: "Single-Visit",
       status: "Inactive",
     });
     setIsModalOpen(true);
@@ -73,6 +75,7 @@ function ManagerServiceCatalog() {
       description: "",
       unit_price: "",
       slot_occupied: "1",
+      treatment_mode: "Single-Visit",
       status: "Inactive",
     });
   };
@@ -86,6 +89,7 @@ function ManagerServiceCatalog() {
       description: service.description || "",
       unit_price: (service.unit_price ?? service.price) ?? "",
       slot_occupied: String(service.slot_occupied || 1),
+      treatment_mode: service.treatment_mode || "Single-Visit",
       status: service.status || "Active",
     });
     setIsModalOpen(true);
@@ -435,6 +439,18 @@ function ManagerServiceCatalog() {
                     max="10"
                   />
                 </div>
+              </div>
+
+              <div className="form-group">
+                <label>Loại điều trị</label>
+                <select
+                  name="treatment_mode"
+                  value={formData.treatment_mode}
+                  onChange={handleInputChange}
+                >
+                  <option value="Single-Visit">Điều trị một lần</option>
+                  <option value="Multi-Visit">Điều trị theo lộ trình</option>
+                </select>
               </div>
 
               <div className="form-group">
