@@ -15,6 +15,11 @@ export const RECEPTIONIST_NAV_ITEMS = [
     to: "/receptionist/dentist-schedules",
   },
   {
+    icon: "assignment",
+    label: "Hàng đợi bệnh nhân",
+    to: "/receptionist/queue",
+  },
+  {
     icon: "payments",
     label: "Quản lý thanh toán",
     to: "/receptionist/payments",

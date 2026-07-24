@@ -322,12 +322,6 @@ function DentistWaitingPatientsPage() {
               </label>
             </div>
 
-            {followUpMessage && (
-              <div className="dentist-waiting-patients__notice">
-                {followUpMessage}
-              </div>
-            )}
-
             {filteredPatients.length === 0 && (
               <EmptyState message="Không tìm thấy bệnh nhân phù hợp với từ khóa." />
             )}
@@ -402,15 +396,6 @@ function DentistWaitingPatientsPage() {
                               >
                                 <History aria-hidden="true" size={15} />
                               </button>
-                              <button
-                                aria-label={`Schedule follow-up for ${patient.patientName}`}
-                                className="dentist-waiting-patients__icon-action dentist-waiting-patients__icon-action--follow-up"
-                                onClick={() => openFollowUpModal(patient)}
-                                title="Schedule follow-up reminder"
-                                type="button"
-                              >
-                                <CalendarPlus aria-hidden="true" size={15} />
-                              </button>
                             </div>
                           </td>
                         </tr>
@@ -435,14 +420,6 @@ function DentistWaitingPatientsPage() {
           </>
         )}
 
-        <FollowUpReminderModal
-          error={followUpError}
-          form={followUpForm}
-          patient={followUpTarget}
-          onChange={handleFollowUpChange}
-          onClose={() => setFollowUpTarget(null)}
-          onSubmit={handleFollowUpSubmit}
-        />
       </section>
     </DentistPageShell>
   );

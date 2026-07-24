@@ -12,6 +12,11 @@ const STATUS_CLASS = {
   Paid: "paid",
   Unpaid: "unpaid",
   "Resolved No-Show": "resolved-no-show",
+  WAITING: "waiting",
+  ASSIGNED: "confirmed",
+  IN_PROGRESS: "in-treatment",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
 };
 
 const STATUS_LABEL = {
@@ -25,6 +30,11 @@ const STATUS_LABEL = {
   Paid: "Đã thanh toán",
   Unpaid: "Chưa thanh toán",
   "Resolved No-Show": "Đã xử lý vắng mặt",
+  WAITING: "Đang chờ",
+  ASSIGNED: "Đã phân công",
+  IN_PROGRESS: "Đang khám",
+  COMPLETED: "Hoàn tất",
+  CANCELLED: "Đã hủy",
 };
 
 function Badge({ status }) {
