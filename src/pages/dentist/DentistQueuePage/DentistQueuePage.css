@@ -1,0 +1,466 @@
+.dentist-queue {
+  display: grid;
+  gap: var(--space-6);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.dentist-queue__header,
+.dentist-queue__toolbar,
+.dentist-queue__actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.dentist-queue__eyebrow {
+  margin: 0 0 var(--space-1);
+  color: var(--color-secondary-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-queue__header h1 {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.dentist-queue__header p {
+  margin: var(--space-1) 0 0;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}
+
+.dentist-queue__button,
+.dentist-queue__icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 38px;
+  padding: var(--space-2) var(--space-3);
+  border: thin solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.dentist-queue__button:disabled,
+.dentist-queue__icon-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.dentist-queue__button--primary {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: var(--color-neutral-50);
+}
+
+.dentist-queue__button--secondary,
+.dentist-queue__icon-action {
+  background-color: var(--color-neutral-50);
+  border-color: var(--border-color);
+  color: var(--color-neutral-700);
+}
+
+.dentist-queue__button--success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.dentist-queue__button--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-800);
+}
+
+.dentist-queue__button--secondary:hover:not(:disabled),
+.dentist-queue__icon-action:hover:not(:disabled) {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-200);
+  color: var(--color-primary-700);
+}
+
+.dentist-queue__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.dentist-queue__summary div {
+  padding: var(--space-5);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.dentist-queue__summary span {
+  display: block;
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.dentist-queue__summary p {
+  margin: var(--space-1) 0 0;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}
+
+.dentist-queue__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(100%, 28rem);
+  min-height: 42px;
+  padding: 0 var(--space-3);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-500);
+  box-shadow: var(--shadow-sm);
+}
+
+.dentist-queue__search input {
+  width: 100%;
+  min-width: 0;
+  background-color: transparent;
+  border: 0;
+  color: var(--color-neutral-800);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  outline: 0;
+}
+
+.dentist-queue__visually-hidden {
+  position: absolute;
+  width: var(--border-width-thin);
+  height: var(--border-width-thin);
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dentist-queue__status-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.dentist-queue__status-tab {
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-600);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.dentist-queue__status-tab--active {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: var(--color-neutral-50);
+}
+
+.dentist-queue__list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.dentist-queue__item {
+  display: grid;
+  grid-template-columns: minmax(5rem, 7rem) minmax(12rem, 1.3fr) minmax(12rem, 1fr) minmax(10rem, auto) minmax(22rem, auto);
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.dentist-queue__order,
+.dentist-queue__patient,
+.dentist-queue__meta,
+.dentist-queue__status {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.dentist-queue__order span {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background-color: var(--color-secondary-100);
+  border: thin solid var(--color-secondary-300);
+  border-radius: var(--radius-full);
+  color: var(--color-secondary-900);
+  font-weight: var(--font-weight-bold);
+}
+
+.dentist-queue__order small,
+.dentist-queue__patient span,
+.dentist-queue__patient em,
+.dentist-queue__meta small,
+.dentist-queue__status small {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+}
+
+.dentist-queue__patient strong,
+.dentist-queue__meta span {
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-queue__actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.dentist-queue__icon-action {
+  width: 38px;
+  padding: 0;
+}
+
+.dentist-queue__icon-action--follow-up {
+  color: var(--color-primary-700);
+}
+
+.dentist-queue__modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background-color: rgba(38, 50, 56, 0.45);
+}
+
+.dentist-queue__modal {
+  width: min(560px, 100%);
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+}
+
+.dentist-queue__modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-bottom: thin solid var(--border-color);
+}
+
+.dentist-queue__modal-header h2,
+.dentist-queue__modal-header p {
+  margin: 0;
+}
+
+.dentist-queue__modal-header h2 {
+  color: var(--color-neutral-900);
+  font-size: var(--font-size-xl);
+}
+
+.dentist-queue__modal-header p {
+  margin-top: var(--space-2);
+  color: var(--color-neutral-600);
+}
+
+.dentist-queue__modal-close {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-700);
+}
+
+.dentist-queue__follow-up-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+
+.dentist-queue__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.dentist-queue__follow-up-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-queue__follow-up-form input,
+.dentist-queue__follow-up-form textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: var(--space-3);
+  background-color: var(--color-neutral-50);
+  border: thin solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-900);
+  font: inherit;
+}
+
+.dentist-queue__follow-up-form textarea {
+  resize: vertical;
+}
+
+.dentist-queue__form-error {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-error-bg);
+  border: thin solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-queue__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.dentist-queue__modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: var(--space-3) var(--space-5);
+  border: thin solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-queue__modal-btn--secondary {
+  background-color: var(--color-neutral-50);
+  border-color: var(--border-color);
+  color: var(--color-neutral-700);
+}
+
+.dentist-queue__modal-btn--primary {
+  background-color: var(--color-primary-700);
+  color: var(--color-neutral-50);
+}
+
+.dentist-queue__detail {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 48px);
+  margin: 0;
+  padding: var(--space-5);
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: #fff;
+}
+
+.dentist-queue__detail header,
+.dentist-queue__detail header > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dentist-queue__detail header > div {
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.dentist-queue__detail header button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dentist-queue__detail dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-4) 0 0;
+}
+
+.dentist-queue__detail dl div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.dentist-queue__detail dt {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-xs);
+}
+
+.dentist-queue__detail dd {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+}
+
+.dentist-queue__detail-note {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-neutral-50);
+}
+
+@media (max-width: 1100px) {
+  .dentist-queue__item {
+    grid-template-columns: 1fr;
+  }
+
+  .dentist-queue__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .dentist-queue__header,
+  .dentist-queue__toolbar {
+    flex-direction: column;
+  }
+
+  .dentist-queue__summary,
+  .dentist-queue__form-grid,
+  .dentist-queue__detail dl {
+    grid-template-columns: 1fr;
+  }
+
+  .dentist-queue__search {
+    width: 100%;
+  }
+
+  .dentist-queue__modal-actions {
+    flex-direction: column;
+  }
+}

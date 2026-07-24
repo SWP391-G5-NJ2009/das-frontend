@@ -12,7 +12,6 @@ import AppointmentFilters from "../../../components/features/appointments/Appoin
 import AppointmentTable from "../../../components/features/appointments/AppointmentTable/AppointmentTable";
 import CancelConfirmModal from "../../../components/features/appointments/CancelConfirmModal/CancelConfirmModal";
 import LiftBanModal from "../../../components/features/appointments/LiftBanModal/LiftBanModal";
-import TreatmentRecordModal from "../../../components/features/treatments/TreatmentRecordModal/TreatmentRecordModal";
 import NoShowConfirmModal from "../../../components/features/appointments/NoShowConfirmModal/NoShowConfirmModal";
 import Toast from "../../../components/common/Toast/Toast";
 import Pagination from "../../../components/common/Pagination/Pagination";
@@ -21,7 +20,6 @@ import {
   useAllAppointments,
 } from "../../../hooks/useAppointments";
 import { patientService } from "../../../services/patient.service";
-import { treatmentService } from "../../../services/treatment.service";
 import "./AppointmentsPage.css";
 
 const PAGE_SIZE = 10;
@@ -141,9 +139,6 @@ function AppointmentsPage() {
   const [noShowTarget, setNoShowTarget] = useState(null);
   const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
   const [markingNoShowId, setMarkingNoShowId] = useState(null);
-  const [treatmentTarget, setTreatmentTarget] = useState(null);
-  const [treatmentError, setTreatmentError] = useState(null);
-  const [isSavingTreatment, setIsSavingTreatment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -332,31 +327,6 @@ function AppointmentsPage() {
     if (!isMarkingNoShow) setNoShowTarget(null);
   }, [isMarkingNoShow]);
 
-  const handleSaveTreatment = useCallback(
-    async (values) => {
-      setIsSavingTreatment(true);
-      setTreatmentError(null);
-      try {
-        await treatmentService.create({
-          appointmentId: treatmentTarget.id,
-          ...values,
-        });
-        setTreatmentTarget(null);
-        setToast({
-          type: "success",
-          message: "Đã lưu kết quả và hoàn tất điều trị.",
-        });
-        handleStatusChange("Completed");
-        await refetch();
-      } catch (requestError) {
-        setTreatmentError(requestError);
-      } finally {
-        setIsSavingTreatment(false);
-      }
-    },
-    [handleStatusChange, refetch, treatmentTarget],
-  );
-
   const handleRequestLiftBan = useCallback((appt) => {
     setLiftBanTarget(appt);
   }, []);
@@ -479,14 +449,6 @@ function AppointmentsPage() {
                 role === "dentist" ? handleStartTreatment : null
               }
               startingTreatmentId={startingTreatmentId}
-              onRecordTreatment={
-                role === "dentist"
-                  ? (appointment) => {
-                      setTreatmentError(null);
-                      setTreatmentTarget(appointment);
-                    }
-                  : null
-              }
               showPatientInfo={config.showPatientInfo}
               showRoom={config.showRoom}
               actorRole={role}
@@ -531,18 +493,6 @@ function AppointmentsPage() {
         onClose={handleCloseNoShowModal}
         isLoading={isMarkingNoShow}
       />
-
-      {treatmentTarget && (
-        <TreatmentRecordModal
-          appointment={treatmentTarget}
-          error={treatmentError}
-          isSubmitting={isSavingTreatment}
-          onClose={() => {
-            if (!isSavingTreatment) setTreatmentTarget(null);
-          }}
-          onSubmit={handleSaveTreatment}
-        />
-      )}
 
       {toast && (
         <Toast

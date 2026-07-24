@@ -12,6 +12,7 @@ import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
 import BookingPage from "./pages/patient/BookingPage/BookingPage";
 import PaymentHistoryPage from "./pages/patient/PaymentHistoryPage/PaymentHistoryPage";
 import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
+import DentistQueuePage from "./pages/dentist/DentistQueuePage/DentistQueuePage";
 import PatientTreatmentHistoryPage from "./pages/dentist/PatientTreatmentHistoryPage/PatientTreatmentHistoryPage";
 import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
 import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
@@ -19,6 +20,7 @@ import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPag
 import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
 import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
 import DentistScheduleViewPage from "./pages/receptionist/DentistScheduleViewPage/DentistScheduleViewPage";
+import ReceptionistQueuePage from "./pages/receptionist/ReceptionistQueuePage/ReceptionistQueuePage";
 import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
 import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
 import ScheduleApprovalPage from "./pages/manager/ScheduleApprovalPage/ScheduleApprovalPage";
@@ -142,6 +144,14 @@ function App() {
             }
           />
           <Route
+            path="/receptionist/queue"
+            element={
+              <ProtectedRoute allowedRoles={["receptionist"]}>
+                <ReceptionistQueuePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dentist/profile"
             element={
               <ProtectedRoute allowedRoles={["dentist"]}>
@@ -162,6 +172,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["dentist"]}>
                 <PatientTreatmentHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dentist/queue"
+            element={
+              <ProtectedRoute allowedRoles={["dentist"]}>
+                <DentistQueuePage />
               </ProtectedRoute>
             }
           />
