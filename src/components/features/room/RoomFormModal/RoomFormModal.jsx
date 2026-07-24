@@ -81,8 +81,8 @@ function RoomFormModal({
               onChange={onChange}
             >
               <option value="Available">Available</option>
-              <option value="Maintenance">Maintenance</option>
               <option value="Unavailable">Unavailable</option>
+              <option value="Occupied">Occupied</option>
             </select>
           </div>
 

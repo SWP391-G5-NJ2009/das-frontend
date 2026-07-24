@@ -5,7 +5,10 @@ import "./DeleteRoomModal.css";
 function formatRoomStatus(status) {
   if (status === "Active") return "Available";
   if (status === "Inactive") return "Unavailable";
-  return status || "Available";
+  if (status === "Maintenance") return "Unavailable";
+  if (status === "Occupied") return "Occupied";
+  if (status === "Unavailable") return "Unavailable";
+  return "Available";
 }
 
 function DeleteRoomModal({ isDeleting, onClose, onConfirm, room }) {

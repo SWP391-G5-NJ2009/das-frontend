@@ -35,11 +35,6 @@ export const MANAGER_NAV_ITEMS = [
     to: "/manager/appointment-dashboard",
   },
   {
-    icon: "person",
-    label: "Quản lý hồ sơ",
-    to: "/manager/profile",
-  },
-  {
     icon: "group",
     label: "Quản lí nhân sự",
     to: "/manager/staff",

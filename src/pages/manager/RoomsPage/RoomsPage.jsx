@@ -18,7 +18,10 @@ const EMPTY_FORM = {
 function formatRoomStatus(status) {
   if (status === "Active") return "Available";
   if (status === "Inactive") return "Unavailable";
-  return status || "Available";
+  if (status === "Maintenance") return "Unavailable";
+  if (status === "Occupied") return "Occupied";
+  if (status === "Unavailable") return "Unavailable";
+  return "Available";
 }
 
 function getStatusBadgeClass(status) {
@@ -28,8 +31,8 @@ function getStatusBadgeClass(status) {
     return "badge badge--completed status-badge";
   }
 
-  if (normalizedStatus === "maintenance") {
-    return "badge badge--pending status-badge";
+  if (normalizedStatus === "occupied") {
+    return "badge badge--failed status-badge";
   }
 
   return "badge badge--neutral status-badge";
