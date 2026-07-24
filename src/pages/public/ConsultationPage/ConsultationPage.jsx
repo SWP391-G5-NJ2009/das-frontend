@@ -11,9 +11,7 @@ import Toast from "../../../components/common/Toast/Toast";
 function ConsultationPage() {
 
   const { services, isLoading: isServicesLoading } = usePublicServices();
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
     full_name: "",
@@ -133,7 +131,7 @@ function ConsultationPage() {
               </label>
 
               <label className="consultation-panel__field">
-                <span>Email (không bắt buộc)</span>
+                <span>Email</span>
                 <input
                   type="email"
                   name="email"
@@ -150,7 +148,7 @@ function ConsultationPage() {
               </label>
 
               <label className="consultation-panel__field">
-                <span>Dịch vụ quan tâm (không bắt buộc)</span>
+                <span>Dịch vụ quan tâm</span>
                 <select
                   name="service_id"
                   value={form.service_id}
@@ -164,12 +162,12 @@ function ConsultationPage() {
               </label>
 
               <label className="consultation-panel__field">
-                <span>Ngày tư vấn mong muốn (không bắt buộc)</span>
+                <span>Ngày tư vấn mong muốn</span>
                 <input
                   type="date"
                   name="consultation_date"
                   value={form.consultation_date}
-                  min={minDate}
+                  min={today}
                   onChange={handleChange}
                 />
               </label>

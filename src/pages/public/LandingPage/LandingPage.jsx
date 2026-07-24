@@ -50,9 +50,7 @@ function LandingPage() {
     website: "",
   });
 
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
 
   const [error, setError] = useState(null);
   const [loadedAt] = useState(Date.now());
@@ -341,7 +339,7 @@ function LandingPage() {
                   type="date"
                   name="consultation_date"
                   value={form.consultation_date}
-                  min={minDate}
+                  min={today}
                   placeholder="Ngày tư vấn mong muốn"
                   onChange={handleChange}
                 />

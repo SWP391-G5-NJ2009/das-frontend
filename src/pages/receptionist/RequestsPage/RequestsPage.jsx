@@ -159,7 +159,7 @@ function ReceptionistRequestsPage() {
                           : request.description}
                       </td>
                       <td className="receptionist-requests__cell">
-                        {request.dental_services?.name || "—"}
+                        {request.dental_services?.service_name || "—"}
                       </td>
                       <td className="receptionist-requests__cell">
                         {request.consultation_date

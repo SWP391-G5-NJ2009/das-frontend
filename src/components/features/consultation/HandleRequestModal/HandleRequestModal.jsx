@@ -109,7 +109,7 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
 
             <label className="handle-request-modal__field">
               <span className="handle-request-modal__label">Dịch vụ quan tâm</span>
-              <input name="service_name" value={request.dental_services?.name || "Chưa chọn"} readOnly />
+              <input name="service_name" value={request.dental_services?.service_name || "Chưa chọn"} readOnly />
             </label>
 
             <label className="handle-request-modal__field">
@@ -210,7 +210,7 @@ HandleRequestModal.propTypes = {
     note: PropTypes.string,
     dental_services: PropTypes.shape({
       service_id: PropTypes.number,
-      name: PropTypes.string,
+      service_name: PropTypes.string,
     }),
     consultation_date: PropTypes.string,
   }).isRequired,
