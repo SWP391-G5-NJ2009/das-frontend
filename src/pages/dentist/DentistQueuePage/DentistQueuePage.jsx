@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { CalendarPlus, ClipboardPlus, Eye, History, Play, RefreshCw, Search, X } from "lucide-react";
+import {
+  CalendarPlus,
+  CheckCircle2,
+  ClipboardPlus,
+  Eye,
+  History,
+  Play,
+  RefreshCw,
+  Search,
+  X,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
@@ -17,7 +27,6 @@ import "./DentistQueuePage.css";
 const STATUS_FILTERS = [
   { label: "Tat ca", value: "all" },
   { label: "Dang cho", value: "WAITING" },
-  { label: "Da phan cong", value: "ASSIGNED" },
   { label: "Dang kham", value: "IN_PROGRESS" },
 ];
 
@@ -196,8 +205,8 @@ function DentistQueuePage() {
 
   const stats = useMemo(
     () => ({
+      total: queues.length,
       waiting: queues.filter((queue) => queue.status === "WAITING").length,
-      assigned: queues.filter((queue) => queue.status === "ASSIGNED").length,
       inProgress: queues.filter((queue) => queue.status === "IN_PROGRESS").length,
     }),
     [queues],
@@ -212,7 +221,11 @@ function DentistQueuePage() {
   const handleStartTreatment = async (queue) => {
     setActionId(queue.queueId);
     try {
-      await appointmentService.startTreatment(queue.appointmentId);
+      if (queue.appointmentId) {
+        await appointmentService.startTreatment(queue.appointmentId);
+      } else {
+        await queueService.updateStatus(queue.queueId, "IN_PROGRESS");
+      }
       await refetch();
       setToast({
         type: "success",
@@ -232,7 +245,8 @@ function DentistQueuePage() {
     if (!queue.appointmentId) {
       setToast({
         type: "warning",
-        message: "Walk-in chua co appointment nen chua the ghi treatment record bang flow hien tai.",
+        message:
+          "Walk-in khong co appointment nen khong dung treatment record cua lich hen.",
       });
       return;
     }
@@ -251,6 +265,25 @@ function DentistQueuePage() {
       patientName: queue.patientName,
       serviceName: queue.serviceName || "Dental service",
     });
+  };
+
+  const handleCompleteWalkIn = async (queue) => {
+    setActionId(queue.queueId);
+    try {
+      await queueService.updateStatus(queue.queueId, "COMPLETED");
+      await refetch();
+      setToast({
+        type: "success",
+        message: "Da hoan tat luot kham walk-in.",
+      });
+    } catch (requestError) {
+      setToast({
+        type: "error",
+        message: requestError.message || "Khong the hoan tat luot walk-in.",
+      });
+    } finally {
+      setActionId(null);
+    }
   };
 
   const handleSaveTreatment = async (values) => {
@@ -347,12 +380,12 @@ function DentistQueuePage() {
 
         <section className="dentist-queue__summary" aria-label="Queue summary">
           <div>
-            <span>{stats.waiting}</span>
-            <p>Dang cho</p>
+            <span>{stats.total}</span>
+            <p>Tong luot cua toi</p>
           </div>
           <div>
-            <span>{stats.assigned}</span>
-            <p>Da phan cong</p>
+            <span>{stats.waiting}</span>
+            <p>Dang cho</p>
           </div>
           <div>
             <span>{stats.inProgress}</span>
@@ -401,12 +434,12 @@ function DentistQueuePage() {
         {!isLoading && !error && filteredQueues.length > 0 && (
           <div className="dentist-queue__list">
             {filteredQueues.map((queue, index) => {
-              const canStart =
-                Boolean(queue.appointmentId) &&
-                ["WAITING", "ASSIGNED"].includes(queue.status);
+              const canStart = queue.status === "WAITING";
               const canRecord =
                 Boolean(queue.appointmentId) &&
                 queue.appointmentStatus === "In-Treatment";
+              const canCompleteWalkIn =
+                !queue.appointmentId && queue.status === "IN_PROGRESS";
               return (
                 <article className="dentist-queue__item" key={queue.queueId}>
                   <div className="dentist-queue__order">
@@ -470,6 +503,19 @@ function DentistQueuePage() {
                         {actionId === queue.queueId ? "Starting..." : "Start"}
                       </button>
                     )}
+                    {canCompleteWalkIn && (
+                      <button
+                        className="dentist-queue__button dentist-queue__button--primary"
+                        type="button"
+                        onClick={() => handleCompleteWalkIn(queue)}
+                        disabled={actionId === queue.queueId}
+                      >
+                        <CheckCircle2 size={15} aria-hidden="true" />
+                        {actionId === queue.queueId
+                          ? "Completing..."
+                          : "Complete"}
+                      </button>
+                    )}
                     <button
                       className="dentist-queue__button dentist-queue__button--secondary"
                       type="button"
@@ -478,7 +524,9 @@ function DentistQueuePage() {
                       title={
                         canRecord
                           ? "Record treatment"
-                          : "Record treatment requires an In-Treatment appointment"
+                          : queue.appointmentId
+                            ? "Record treatment requires an In-Treatment appointment"
+                            : "Walk-in does not have an appointment treatment record"
                       }
                     >
                       <ClipboardPlus size={15} aria-hidden="true" />
