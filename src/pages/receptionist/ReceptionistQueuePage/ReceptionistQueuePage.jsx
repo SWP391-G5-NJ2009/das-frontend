@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RefreshCw, Search, UserPlus, X, XCircle } from "lucide-react";
 import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
@@ -44,6 +44,14 @@ function formatAppointment(queue) {
   return `${formatDate(queue.appointmentDate)} · ${time}`;
 }
 
+function normalizeSearchValue(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 function ReceptionistQueuePage() {
   const [filters, setFilters] = useState({
     search: "",
@@ -58,10 +66,13 @@ function ReceptionistQueuePage() {
   const [isAddingWalkIn, setIsAddingWalkIn] = useState(false);
   const [actionId, setActionId] = useState(null);
   const [toast, setToast] = useState(null);
+  const queueDetailRef = useRef(null);
   const {
     searchQuery,
     searchResults,
     isSearching,
+    searchError,
+    hasSearched,
     selectedPatient,
     handleSearchChange,
     handleSelectPatient,
@@ -73,19 +84,27 @@ function ReceptionistQueuePage() {
     error,
     refetch,
   } = useQueues({
-    search: filters.search,
     status: filters.status,
   });
 
-  const queues = useMemo(
-    () =>
-      fetchedQueues.filter(
-        (queue) =>
-          (!filters.dentistId ||
-            String(queue.dentistId) === String(filters.dentistId)),
-      ),
-    [fetchedQueues, filters.dentistId],
-  );
+  const queues = useMemo(() => {
+    const keyword = normalizeSearchValue(filters.search);
+    return fetchedQueues.filter((queue) => {
+      const matchesDentist =
+        !filters.dentistId ||
+        String(queue.dentistId) === String(filters.dentistId);
+      const matchesSearch =
+        !keyword ||
+        [
+          queue.patientName,
+          queue.patientPhone,
+          queue.dentistName,
+          queue.roomName,
+          queue.serviceName,
+        ].some((value) => normalizeSearchValue(value).includes(keyword));
+      return matchesDentist && matchesSearch;
+    });
+  }, [fetchedQueues, filters.dentistId, filters.search]);
 
   useEffect(() => {
     let isMounted = true;
@@ -134,6 +153,15 @@ function ReceptionistQueuePage() {
   const selectedWalkInDentist = dentists.find(
     (dentist) => dentist.id === walkInDentistId,
   );
+
+  useEffect(() => {
+    if (selectedQueue) {
+      queueDetailRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [selectedQueue]);
 
   const updateFilter = (name, value) => {
     setFilters((current) => ({ ...current, [name]: value }));
@@ -271,6 +299,8 @@ function ReceptionistQueuePage() {
               onClearPatient={handleClearPatient}
               onAddNewPatient={() => setIsAddPatientOpen(true)}
               isSearching={isSearching}
+              searchError={searchError}
+              hasSearched={hasSearched}
               phoneNumber={selectedPatient?.phone || ""}
             />
 
@@ -386,7 +416,14 @@ function ReceptionistQueuePage() {
           />
         )}
         {!isLoading && !error && queues.length === 0 && (
-          <EmptyState message="Hàng đợi hiện đang trống. Bạn có thể làm mới lại sau." />
+          <EmptyState
+            message={
+              fetchedQueues.length > 0 &&
+              (filters.search.trim() || filters.dentistId)
+                ? "Không tìm thấy lượt khám phù hợp với bộ lọc."
+                : "Hàng đợi hiện đang trống. Bạn có thể làm mới lại sau."
+            }
+          />
         )}
 
         {!isLoading && !error && queues.length > 0 && (
@@ -438,6 +475,17 @@ function ReceptionistQueuePage() {
                         <Badge status={queue.status} />
                       </td>
                       <td>
+                        <div className="receptionist-queue__row-actions">
+                        <button
+                          className="receptionist-queue__row-action receptionist-queue__row-action--view"
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setSelectedQueue(queue);
+                          }}
+                        >
+                          Xem
+                        </button>
                         {canCancel && (
                           <button
                             className="receptionist-queue__row-action"
@@ -454,6 +502,7 @@ function ReceptionistQueuePage() {
                             Hủy
                           </button>
                         )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -465,6 +514,7 @@ function ReceptionistQueuePage() {
 
         {selectedQueue && (
           <section
+            ref={queueDetailRef}
             className="receptionist-queue__detail"
             aria-label="Chi tiết hàng đợi"
           >

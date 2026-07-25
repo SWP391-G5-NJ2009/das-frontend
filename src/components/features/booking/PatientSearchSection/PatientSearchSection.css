@@ -169,6 +169,41 @@
   color: var(--color-neutral-500);
 }
 
+.patient-search__dropdown-message {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  padding: var(--space-3);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  box-shadow: var(--shadow-lg);
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}
+
+.patient-search__dropdown-message--error {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.patient-search__patient-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-50);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-sm);
+}
+
+.patient-search__patient-summary strong {
+  color: var(--color-primary-800);
+}
+
 /* Add button */
 .patient-search__add-btn {
   display: inline-flex;

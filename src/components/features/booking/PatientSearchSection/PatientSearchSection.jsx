@@ -12,6 +12,8 @@ function PatientSearchSection({
   onClearPatient,
   onAddNewPatient,
   isSearching,
+  searchError,
+  hasSearched,
   phoneNumber,
   onPhoneChange,
 }) {
@@ -68,11 +70,28 @@ function PatientSearchSection({
                     tabIndex={0}
                   >
                     <span className="patient-search__dropdown-name">{p.fullName}</span>
-                    <span className="patient-search__dropdown-phone">{p.phone}</span>
+                    <span className="patient-search__dropdown-phone">
+                      {p.phone || "Chưa có số điện thoại"}
+                    </span>
                   </li>
                 ))}
               </ul>
             )}
+
+            {isReceptionist &&
+              !selectedPatient &&
+              !isSearching &&
+              (searchError || (hasSearched && searchResults.length === 0)) && (
+                <div
+                  className={`patient-search__dropdown-message${
+                    searchError ? " patient-search__dropdown-message--error" : ""
+                  }`}
+                  role={searchError ? "alert" : "status"}
+                >
+                  {searchError ||
+                    `Không tìm thấy bệnh nhân phù hợp với “${searchQuery.trim()}”.`}
+                </div>
+              )}
           </div>
 
           {isReceptionist && !selectedPatient && (
@@ -109,8 +128,18 @@ function PatientSearchSection({
 
       {isSearching && (
         <p className="patient-search__searching" aria-live="polite">
-          Searching...
+          Đang tìm bệnh nhân...
         </p>
+      )}
+
+      {isReceptionist && selectedPatient && (
+        <div className="patient-search__patient-summary" aria-live="polite">
+          <strong>Đã chọn bệnh nhân</strong>
+          <span>
+            {selectedPatient.fullName} ·{" "}
+            {selectedPatient.phone || "Chưa có số điện thoại"}
+          </span>
+        </div>
       )}
     </div>
   );
@@ -136,6 +165,8 @@ PatientSearchSection.propTypes = {
   onClearPatient: PropTypes.func.isRequired,
   onAddNewPatient: PropTypes.func,
   isSearching: PropTypes.bool.isRequired,
+  searchError: PropTypes.string,
+  hasSearched: PropTypes.bool,
   phoneNumber: PropTypes.string.isRequired,
   onPhoneChange: PropTypes.func,
 };
@@ -144,6 +175,8 @@ PatientSearchSection.defaultProps = {
   selectedPatient: null,
   onAddNewPatient: null,
   onPhoneChange: null,
+  searchError: "",
+  hasSearched: false,
 };
 
 export default PatientSearchSection;
