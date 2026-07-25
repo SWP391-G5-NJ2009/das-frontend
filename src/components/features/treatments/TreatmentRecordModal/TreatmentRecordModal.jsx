@@ -22,6 +22,7 @@ function TreatmentRecordModal({
   isSubmitting,
   onClose,
   onSubmit,
+  standalone,
 }) {
   const {
     context,
@@ -29,7 +30,7 @@ function TreatmentRecordModal({
     isLoading,
     isStartingPlan,
     startPlan,
-  } = useTreatmentContext(appointment.id);
+  } = useTreatmentContext(standalone ? null : appointment.id);
   const [clinicalExamination, setClinicalExamination] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [isExpanded, setIsExpanded] = useState(true);
@@ -40,7 +41,37 @@ function TreatmentRecordModal({
   const [postTreatmentInstructions, setPostTreatmentInstructions] =
     useState("");
 
-  const visits = useMemo(() => context?.visits || [], [context]);
+  const resolvedContext = useMemo(
+    () =>
+      standalone
+        ? {
+            planId: null,
+            planStatus: null,
+            serviceName: appointment.serviceName,
+            treatmentMode: "Single-Visit",
+            visits: [
+              {
+                appointmentId: appointment.id,
+                visitNumber: 1,
+                status: "IN_PROGRESS",
+                treatmentDate: null,
+                dentistName: null,
+                clinicalExamination: "",
+                diagnosis: "",
+                treatmentNote: "",
+                postTreatmentInstructions: "",
+                isCurrent: true,
+                isEditable: true,
+              },
+            ],
+          }
+        : context,
+    [appointment.id, appointment.serviceName, context, standalone],
+  );
+  const visits = useMemo(
+    () => resolvedContext?.visits || [],
+    [resolvedContext],
+  );
   const selectedVisit =
     visits.find(
       (visit) =>
@@ -48,7 +79,9 @@ function TreatmentRecordModal({
     ) || visits.find((visit) => visit.isCurrent);
   const canEdit = Boolean(selectedVisit?.isEditable);
   const canCompletePlan =
-    canEdit && Boolean(context?.planId) && context?.planStatus === "Active";
+    canEdit &&
+    Boolean(resolvedContext?.planId) &&
+    resolvedContext?.planStatus === "Active";
 
   useEffect(() => {
     const currentVisit = visits.find((visit) => visit.isCurrent);
@@ -132,14 +165,14 @@ function TreatmentRecordModal({
           </button>
         </header>
 
-        {isLoading && (
+        {!standalone && isLoading && (
           <div className="treatment-record__state">
             <Spinner />
             <p>Đang tải các lần điều trị...</p>
           </div>
         )}
 
-        {!isLoading && contextError && (
+        {!standalone && !isLoading && contextError && (
           <div className="treatment-record__state treatment-record__state--error">
             <p>
               {contextError.message ||
@@ -148,7 +181,7 @@ function TreatmentRecordModal({
           </div>
         )}
 
-        {!isLoading && !contextError && context && (
+        {(standalone || (!isLoading && !contextError && resolvedContext)) && (
           <div className="treatment-record__workspace">
             <aside
               aria-label="Các lần điều trị"
@@ -161,10 +194,12 @@ function TreatmentRecordModal({
                 type="button"
               >
                 <span>
-                  <strong>{context.serviceName}</strong>
+                  <strong>{resolvedContext.serviceName}</strong>
                   <small>
                     {visits.length} lần khám
-                    {context.planStatus ? ` · ${context.planStatus}` : ""}
+                    {resolvedContext.planStatus
+                      ? ` · ${resolvedContext.planStatus}`
+                      : ""}
                   </small>
                 </span>
                 {isExpanded ? (
@@ -174,8 +209,8 @@ function TreatmentRecordModal({
                 )}
               </button>
 
-              {!context.planId &&
-                context.treatmentMode === "Multi-Visit" && (
+              {!resolvedContext.planId &&
+                resolvedContext.treatmentMode === "Multi-Visit" && (
                   <button
                     className="treatment-record__start-plan"
                     disabled={isStartingPlan || isSubmitting}
@@ -361,8 +396,9 @@ TreatmentRecordModal.propTypes = {
   isSubmitting: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  standalone: PropTypes.bool,
 };
 
-TreatmentRecordModal.defaultProps = { error: null };
+TreatmentRecordModal.defaultProps = { error: null, standalone: false };
 
 export default TreatmentRecordModal;

@@ -92,6 +92,18 @@
   color: var(--color-primary-700);
 }
 
+.receptionist-queue__row-action {
+  min-height: 34px;
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-neutral-50);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.receptionist-queue__row-action:hover:not(:disabled) {
+  background-color: var(--color-error-bg);
+}
+
 .receptionist-queue__summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -129,9 +141,18 @@
   box-shadow: var(--shadow-sm);
 }
 
+.receptionist-queue__walk-in form {
+  display: grid;
+  gap: var(--space-5);
+}
+
 .receptionist-queue__walk-in-controls {
   display: grid;
-  grid-template-columns: minmax(10rem, 16rem) minmax(14rem, 1fr) auto;
+  grid-template-columns:
+    minmax(12rem, 1fr)
+    minmax(12rem, 1fr)
+    minmax(14rem, 1.4fr)
+    auto;
   align-items: end;
   gap: var(--space-4);
 }
@@ -387,6 +408,10 @@
 
   .receptionist-queue__summary,
   .receptionist-queue__detail dl {
+    grid-template-columns: 1fr;
+  }
+
+  .receptionist-queue__walk-in-controls {
     grid-template-columns: 1fr;
   }
 
