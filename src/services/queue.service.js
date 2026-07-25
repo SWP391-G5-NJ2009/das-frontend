@@ -20,8 +20,6 @@ export const queueService = {
   getMine: (filters = {}) => api.get(withQuery("/queues/mine", filters)),
   getDetail: (queueId) => api.get(`/queues/${queueId}`),
   createWalkIn: (payload) => api.post("/queues/walk-in", payload),
-  assign: (queueId, payload) =>
-    api.patch(`/queues/${queueId}/assignment`, payload),
   updateStatus: (queueId, status) =>
     api.patch(`/queues/${queueId}/status`, { status }),
   createTreatmentRecord: (queueId, payload) =>

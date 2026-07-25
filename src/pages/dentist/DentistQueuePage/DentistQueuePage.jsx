@@ -25,7 +25,7 @@ import "./DentistQueuePage.css";
 
 const STATUS_FILTERS = [
   { label: "Tat ca", value: "all" },
-  { label: "Da phan cong", value: "ASSIGNED" },
+  { label: "Dang cho", value: "WAITING" },
   { label: "Dang kham", value: "IN_PROGRESS" },
 ];
 
@@ -205,7 +205,7 @@ function DentistQueuePage() {
   const stats = useMemo(
     () => ({
       total: queues.length,
-      assigned: queues.filter((queue) => queue.status === "ASSIGNED").length,
+      waiting: queues.filter((queue) => queue.status === "WAITING").length,
       inProgress: queues.filter((queue) => queue.status === "IN_PROGRESS").length,
     }),
     [queues],
@@ -387,8 +387,8 @@ function DentistQueuePage() {
             <p>Tong luot cua toi</p>
           </div>
           <div>
-            <span>{stats.assigned}</span>
-            <p>Da phan cong</p>
+            <span>{stats.waiting}</span>
+            <p>Dang cho</p>
           </div>
           <div>
             <span>{stats.inProgress}</span>
@@ -437,7 +437,7 @@ function DentistQueuePage() {
         {!isLoading && !error && filteredQueues.length > 0 && (
           <div className="dentist-queue__list">
             {filteredQueues.map((queue, index) => {
-              const canStart = queue.status === "ASSIGNED";
+              const canStart = queue.status === "WAITING";
               const canRecord =
                 (Boolean(queue.appointmentId) &&
                   queue.appointmentStatus === "In-Treatment") ||

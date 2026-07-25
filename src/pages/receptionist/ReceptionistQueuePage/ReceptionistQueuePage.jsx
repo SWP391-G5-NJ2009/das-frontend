@@ -14,9 +14,8 @@ import ReceptionistPageShell from "../ReceptionistPageShell";
 import "./ReceptionistQueuePage.css";
 
 const STATUS_OPTIONS = [
-  { label: "Đang phục vụ", value: "active" },
+  { label: "Hiện tại", value: "active" },
   { label: "Đang chờ", value: "WAITING" },
-  { label: "Đã phân công", value: "ASSIGNED" },
   { label: "Đang khám", value: "IN_PROGRESS" },
   { label: "Tất cả", value: "all" },
 ];
@@ -50,12 +49,10 @@ function ReceptionistQueuePage() {
     search: "",
     status: "active",
     dentistId: "",
-    roomId: "",
   });
   const [dentistMetadata, setDentistMetadata] = useState([]);
   const [selectedQueue, setSelectedQueue] = useState(null);
   const [walkInDentistId, setWalkInDentistId] = useState("");
-  const [walkInRoomId, setWalkInRoomId] = useState("");
   const [walkInNote, setWalkInNote] = useState("");
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isAddingWalkIn, setIsAddingWalkIn] = useState(false);
@@ -85,11 +82,9 @@ function ReceptionistQueuePage() {
       fetchedQueues.filter(
         (queue) =>
           (!filters.dentistId ||
-            String(queue.dentistId) === String(filters.dentistId)) &&
-          (!filters.roomId ||
-            String(queue.roomId) === String(filters.roomId)),
+            String(queue.dentistId) === String(filters.dentistId)),
       ),
-    [fetchedQueues, filters.dentistId, filters.roomId],
+    [fetchedQueues, filters.dentistId],
   );
 
   useEffect(() => {
@@ -111,56 +106,37 @@ function ReceptionistQueuePage() {
     const items = new Map();
     fetchedQueues.forEach((queue) => {
       if (queue.dentistId) {
-        items.set(String(queue.dentistId), queue.dentistName);
+        items.set(String(queue.dentistId), {
+          id: String(queue.dentistId),
+          name: queue.dentistName,
+          roomId: queue.roomId ? String(queue.roomId) : "",
+          roomName: queue.roomName || "",
+        });
       }
     });
     dentistMetadata.forEach((dentist) => {
       items.set(
         String(dentist.dentist_id),
-        dentist.name || dentist.fullName || `Nha sĩ #${dentist.dentist_id}`,
+        {
+          id: String(dentist.dentist_id),
+          name:
+            dentist.name ||
+            dentist.fullName ||
+            `Nha sĩ #${dentist.dentist_id}`,
+          roomId: dentist.room_id ? String(dentist.room_id) : "",
+          roomName: dentist.roomName || "",
+        },
       );
     });
-    return [...items.entries()].map(([id, name]) => ({ id, name }));
+    return [...items.values()];
   }, [dentistMetadata, fetchedQueues]);
 
-  const rooms = useMemo(() => {
-    const items = new Map();
-    fetchedQueues.forEach((queue) => {
-      if (queue.roomId) items.set(String(queue.roomId), queue.roomName);
-    });
-    dentistMetadata.forEach((dentist) => {
-      if (dentist.room_id) {
-        items.set(
-          String(dentist.room_id),
-          dentist.roomName || `Phòng #${dentist.room_id}`,
-        );
-      }
-    });
-    return [...items.entries()].map(([id, name]) => ({ id, name }));
-  }, [dentistMetadata, fetchedQueues]);
-
-  const getDentistRoomId = (dentistId) => {
-    const dentist = dentistMetadata.find(
-      (item) => String(item.dentist_id) === String(dentistId),
-    );
-    return dentist?.room_id ? String(dentist.room_id) : "";
-  };
+  const selectedWalkInDentist = dentists.find(
+    (dentist) => dentist.id === walkInDentistId,
+  );
 
   const updateFilter = (name, value) => {
     setFilters((current) => ({ ...current, [name]: value }));
-  };
-
-  const handleDentistFilterChange = (dentistId) => {
-    setFilters((current) => ({
-      ...current,
-      dentistId,
-      roomId: dentistId ? getDentistRoomId(dentistId) : "",
-    }));
-  };
-
-  const handleWalkInDentistChange = (dentistId) => {
-    setWalkInDentistId(dentistId);
-    setWalkInRoomId(dentistId ? getDentistRoomId(dentistId) : "");
   };
 
   const handleCreatedPatient = (patient) => {
@@ -180,10 +156,17 @@ function ReceptionistQueuePage() {
       });
       return;
     }
-    if (walkInDentistId && !walkInRoomId) {
+    if (!walkInDentistId) {
       setToast({
         type: "warning",
-        message: "Nha sĩ đã chọn chưa có phòng khám khả dụng.",
+        message: "Vui lòng chọn nha sĩ.",
+      });
+      return;
+    }
+    if (!selectedWalkInDentist?.roomId) {
+      setToast({
+        type: "warning",
+        message: "Nha sĩ đã chọn chưa được gắn phòng khám.",
       });
       return;
     }
@@ -192,13 +175,11 @@ function ReceptionistQueuePage() {
     try {
       await queueService.createWalkIn({
         patientId: Number(selectedPatient.id),
-        dentistId: walkInDentistId ? Number(walkInDentistId) : null,
-        roomId: walkInRoomId ? Number(walkInRoomId) : null,
+        dentistId: Number(walkInDentistId),
         note: walkInNote.trim() || null,
       });
       handleClearPatient();
       setWalkInDentistId("");
-      setWalkInRoomId("");
       setWalkInNote("");
       await refetch();
       setToast({
@@ -215,30 +196,6 @@ function ReceptionistQueuePage() {
     } finally {
       setIsAddingWalkIn(false);
     }
-  };
-
-  const handleAssignment = async (queue, dentistId, roomId) => {
-    setActionId(queue.queueId);
-    try {
-      await queueService.assign(queue.queueId, {
-        dentistId: dentistId ? Number(dentistId) : null,
-        roomId: roomId ? Number(roomId) : null,
-      });
-      await refetch();
-      setToast({ type: "success", message: "Đã cập nhật phân công." });
-    } catch (requestError) {
-      setToast({
-        type: "error",
-        message: requestError.message || "Không thể cập nhật phân công.",
-      });
-    } finally {
-      setActionId(null);
-    }
-  };
-
-  const handleAssignedDentistChange = (queue, dentistId) => {
-    const roomId = dentistId ? getDentistRoomId(dentistId) : "";
-    handleAssignment(queue, dentistId, roomId);
   };
 
   const handleCancelWalkIn = async (queue) => {
@@ -319,14 +276,13 @@ function ReceptionistQueuePage() {
 
             <div className="receptionist-queue__walk-in-controls">
               <label>
-                <span>Nha sĩ (có thể phân công sau)</span>
+                <span>Nha sĩ</span>
                 <select
                   value={walkInDentistId}
-                  onChange={(event) =>
-                    handleWalkInDentistChange(event.target.value)
-                  }
+                  onChange={(event) => setWalkInDentistId(event.target.value)}
+                  required
                 >
-                  <option value="">Chưa phân công</option>
+                  <option value="">Chọn nha sĩ</option>
                   {dentists.map((dentist) => (
                     <option key={dentist.id} value={dentist.id}>
                       {dentist.name}
@@ -335,19 +291,17 @@ function ReceptionistQueuePage() {
                 </select>
               </label>
               <label>
-                <span>Phòng (tự chọn theo nha sĩ)</span>
-                <select
-                  value={walkInRoomId}
-                  onChange={(event) => setWalkInRoomId(event.target.value)}
-                  disabled={!walkInDentistId}
-                >
-                  <option value="">Chưa phân phòng</option>
-                  {rooms.map((room) => (
-                    <option key={room.id} value={room.id}>
-                      {room.name}
-                    </option>
-                  ))}
-                </select>
+                <span>Phòng của nha sĩ</span>
+                <input
+                  type="text"
+                  value={
+                    selectedWalkInDentist?.roomName ||
+                    (walkInDentistId
+                      ? "Nha sĩ chưa có phòng"
+                      : "Tự động theo nha sĩ")
+                  }
+                  readOnly
+                />
               </label>
               <label>
                 <span>Ghi chú</span>
@@ -391,25 +345,14 @@ function ReceptionistQueuePage() {
             className="receptionist-queue__filter-select"
             aria-label="Lọc theo nha sĩ"
             value={filters.dentistId}
-            onChange={(event) => handleDentistFilterChange(event.target.value)}
+            onChange={(event) =>
+              updateFilter("dentistId", event.target.value)
+            }
           >
             <option value="">Tất cả nha sĩ</option>
             {dentists.map((dentist) => (
               <option key={dentist.id} value={dentist.id}>
                 {dentist.name}
-              </option>
-            ))}
-          </select>
-          <select
-            className="receptionist-queue__filter-select"
-            aria-label="Lọc theo phòng"
-            value={filters.roomId}
-            onChange={(event) => updateFilter("roomId", event.target.value)}
-          >
-            <option value="">Tất cả phòng</option>
-            {rooms.map((room) => (
-              <option key={room.id} value={room.id}>
-                {room.name}
               </option>
             ))}
           </select>
@@ -468,9 +411,9 @@ function ReceptionistQueuePage() {
               </thead>
               <tbody>
                 {queues.map((queue, index) => {
-                  const canAssign =
+                  const canCancel =
                     queue.queueType === "WALK_IN" &&
-                    ["WAITING", "ASSIGNED"].includes(queue.status);
+                    queue.status === "WAITING";
                   return (
                     <tr
                       key={queue.queueId}
@@ -489,64 +432,13 @@ function ReceptionistQueuePage() {
                       </td>
                       <td>{formatAppointment(queue)}</td>
                       <td>{formatTime(queue.checkInTime)}</td>
-                      <td>
-                        {canAssign ? (
-                          <select
-                            value={queue.dentistId || ""}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={(event) =>
-                              handleAssignedDentistChange(
-                                queue,
-                                event.target.value,
-                              )
-                            }
-                            disabled={actionId === queue.queueId}
-                            aria-label={`Phân công nha sĩ cho ${queue.patientName}`}
-                          >
-                            <option value="">Chưa phân công</option>
-                            {dentists.map((dentist) => (
-                              <option key={dentist.id} value={dentist.id}>
-                                {dentist.name}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          queue.dentistName || "Chưa phân công"
-                        )}
-                      </td>
-                      <td>
-                        {canAssign ? (
-                          <select
-                            value={queue.roomId || ""}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={(event) =>
-                              handleAssignment(
-                                queue,
-                                queue.dentistId,
-                                event.target.value,
-                              )
-                            }
-                            disabled={
-                              actionId === queue.queueId || !queue.dentistId
-                            }
-                            aria-label={`Phân phòng cho ${queue.patientName}`}
-                          >
-                            <option value="">Chưa phân phòng</option>
-                            {rooms.map((room) => (
-                              <option key={room.id} value={room.id}>
-                                {room.name}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          queue.roomName || "Chưa phân phòng"
-                        )}
-                      </td>
+                      <td>{queue.dentistName || "—"}</td>
+                      <td>{queue.roomName || "—"}</td>
                       <td>
                         <Badge status={queue.status} />
                       </td>
                       <td>
-                        {canAssign && (
+                        {canCancel && (
                           <button
                             className="receptionist-queue__row-action"
                             type="button"
@@ -604,7 +496,11 @@ function ReceptionistQueuePage() {
               </div>
               <div>
                 <dt>Thời gian chờ</dt>
-                <dd>{selectedQueue.waitingMinutes} phút</dd>
+                <dd>
+                  {selectedQueue.waitingMinutes == null
+                    ? "—"
+                    : `${selectedQueue.waitingMinutes} phút`}
+                </dd>
               </div>
               <div>
                 <dt>Nha sĩ</dt>
