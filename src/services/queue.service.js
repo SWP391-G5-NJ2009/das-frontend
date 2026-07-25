@@ -22,8 +22,6 @@ export const queueService = {
   createWalkIn: (payload) => api.post("/queues/walk-in", payload),
   updateStatus: (queueId, status) =>
     api.patch(`/queues/${queueId}/status`, { status }),
-  createTreatmentRecord: (queueId, payload) =>
-    api.post(`/queues/${queueId}/treatment-record`, payload),
   createFollowUp: (queueId, payload) =>
     api.post(`/queues/${queueId}/follow-ups`, payload),
 };

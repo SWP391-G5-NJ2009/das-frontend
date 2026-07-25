@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarPlus,
+  CheckCircle2,
   ClipboardPlus,
   Eye,
   History,
@@ -242,20 +243,10 @@ function DentistQueuePage() {
 
   const handleRecordTreatment = (queue) => {
     if (!queue.appointmentId) {
-      if (queue.status !== "IN_PROGRESS") {
-        setToast({
-          type: "warning",
-          message: "Vui long bat dau kham walk-in truoc khi ghi ket qua.",
-        });
-        return;
-      }
-      setTreatmentError(null);
-      setTreatmentTarget({
-        id: queue.queueId,
-        queueId: queue.queueId,
-        patientName: queue.patientName,
-        serviceName: queue.serviceName || "Walk-in",
-        standalone: true,
+      setToast({
+        type: "warning",
+        message:
+          "Walk-in khong co appointment nen khong dung treatment record cua lich hen.",
       });
       return;
     }
@@ -273,8 +264,26 @@ function DentistQueuePage() {
       id: queue.appointmentId,
       patientName: queue.patientName,
       serviceName: queue.serviceName || "Dental service",
-      standalone: false,
     });
+  };
+
+  const handleCompleteWalkIn = async (queue) => {
+    setActionId(queue.queueId);
+    try {
+      await queueService.updateStatus(queue.queueId, "COMPLETED");
+      await refetch();
+      setToast({
+        type: "success",
+        message: "Da hoan tat luot kham walk-in.",
+      });
+    } catch (requestError) {
+      setToast({
+        type: "error",
+        message: requestError.message || "Khong the hoan tat luot walk-in.",
+      });
+    } finally {
+      setActionId(null);
+    }
   };
 
   const handleSaveTreatment = async (values) => {
@@ -282,22 +291,10 @@ function DentistQueuePage() {
     setIsSavingTreatment(true);
     setTreatmentError(null);
     try {
-      if (treatmentTarget.standalone) {
-        await queueService.createTreatmentRecord(
-          treatmentTarget.queueId,
-          {
-            clinicalExamination: values.clinicalExamination,
-            diagnosis: values.diagnosis,
-            treatmentNote: values.treatmentNote,
-            postTreatmentInstructions: values.postTreatmentInstructions,
-          },
-        );
-      } else {
-        await treatmentService.create({
-          appointmentId: treatmentTarget.id,
-          ...values,
-        });
-      }
+      await treatmentService.create({
+        appointmentId: treatmentTarget.id,
+        ...values,
+      });
       setTreatmentTarget(null);
       await refetch();
       setToast({
@@ -439,9 +436,10 @@ function DentistQueuePage() {
             {filteredQueues.map((queue, index) => {
               const canStart = queue.status === "WAITING";
               const canRecord =
-                (Boolean(queue.appointmentId) &&
-                  queue.appointmentStatus === "In-Treatment") ||
-                (!queue.appointmentId && queue.status === "IN_PROGRESS");
+                Boolean(queue.appointmentId) &&
+                queue.appointmentStatus === "In-Treatment";
+              const canCompleteWalkIn =
+                !queue.appointmentId && queue.status === "IN_PROGRESS";
               return (
                 <article className="dentist-queue__item" key={queue.queueId}>
                   <div className="dentist-queue__order">
@@ -505,6 +503,19 @@ function DentistQueuePage() {
                         {actionId === queue.queueId ? "Starting..." : "Start"}
                       </button>
                     )}
+                    {canCompleteWalkIn && (
+                      <button
+                        className="dentist-queue__button dentist-queue__button--primary"
+                        type="button"
+                        onClick={() => handleCompleteWalkIn(queue)}
+                        disabled={actionId === queue.queueId}
+                      >
+                        <CheckCircle2 size={15} aria-hidden="true" />
+                        {actionId === queue.queueId
+                          ? "Completing..."
+                          : "Complete"}
+                      </button>
+                    )}
                     <button
                       className="dentist-queue__button dentist-queue__button--secondary"
                       type="button"
@@ -515,7 +526,7 @@ function DentistQueuePage() {
                           ? "Record treatment"
                           : queue.appointmentId
                             ? "Record treatment requires an In-Treatment appointment"
-                            : "Start the walk-in visit before recording treatment"
+                            : "Walk-in does not have an appointment treatment record"
                       }
                     >
                       <ClipboardPlus size={15} aria-hidden="true" />
@@ -595,7 +606,6 @@ function DentistQueuePage() {
             appointment={treatmentTarget}
             error={treatmentError}
             isSubmitting={isSavingTreatment}
-            standalone={treatmentTarget.standalone}
             onClose={() => {
               if (!isSavingTreatment) setTreatmentTarget(null);
             }}
