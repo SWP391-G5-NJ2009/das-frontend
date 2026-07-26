@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Pagination from "../../../components/common/Pagination/Pagination";
 import PaymentDetailModal from "../../../components/features/payment/PaymentDetailModal/PaymentDetailModal";
 import PaymentFilters from "../../../components/features/payment/PaymentFilters/PaymentFilters";
 import PaymentState from "../../../components/features/payment/PaymentState/PaymentState";
@@ -14,6 +15,7 @@ const EMPTY_FILTERS = {
   fromDate: "",
   toDate: "",
 };
+const PAGE_SIZE = 10;
 
 function PaymentListPage() {
   const { invoices, isLoading, error, refetch } = usePayments();
@@ -24,6 +26,7 @@ function PaymentListPage() {
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
   const [payingInvoiceId, setPayingInvoiceId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredInvoices = useMemo(
     () => invoices.filter((invoice) => {
@@ -48,6 +51,26 @@ function PaymentListPage() {
     }),
     [filters, invoices],
   );
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredInvoices.length / PAGE_SIZE),
+  );
+  const paginatedInvoices = useMemo(
+    () =>
+      filteredInvoices.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE,
+      ),
+    [currentPage, filteredInvoices],
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   const viewDetail = async (invoice) => {
     setSelectedInvoice(invoice);
@@ -67,11 +90,15 @@ function PaymentListPage() {
     }
   };
 
-  const payInvoice = async (paymentMethod) => {
+  const payInvoice = async (paymentMethod, paymentDate) => {
     setPayingInvoiceId(selectedInvoice.invoice_id);
     setPaymentError(null);
     try {
-      await paymentService.payInvoice(selectedInvoice.invoice_id, paymentMethod);
+      await paymentService.payInvoice(
+        selectedInvoice.invoice_id,
+        paymentMethod,
+        paymentDate,
+      );
       await refetch();
       setSelectedInvoice(null);
     } catch (requestError) {
@@ -120,10 +147,24 @@ function PaymentListPage() {
         <PaymentTable
           dateColumn="payment"
           onViewDetail={viewDetail}
-          payments={filteredInvoices}
+          payments={paginatedInvoices}
           showActions
           showPatientInfo
         />
+      )}
+      {!isLoading && !error && filteredInvoices.length > 0 && (
+        <div className="payment-list__pagination">
+          <p className="payment-list__pagination-info">
+            Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–
+            {Math.min(currentPage * PAGE_SIZE, filteredInvoices.length)} trong
+            tổng số {filteredInvoices.length} hóa đơn
+          </p>
+          <Pagination
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            totalPage={totalPages}
+          />
+        </div>
       )}
 
       {selectedInvoice && (

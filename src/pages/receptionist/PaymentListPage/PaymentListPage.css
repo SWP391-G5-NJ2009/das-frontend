@@ -77,8 +77,27 @@
   font-size: var(--font-size-sm);
 }
 
+.payment-list__pagination {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.payment-list__pagination-info {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+}
+
 @media (min-width: 640px) {
   .payment-list__tabs {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .payment-list__pagination {
+    align-items: center;
+    flex-direction: row;
   }
 }

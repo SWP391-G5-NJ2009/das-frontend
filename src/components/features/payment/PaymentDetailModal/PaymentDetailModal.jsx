@@ -7,6 +7,11 @@ import "./PaymentDetailModal.css";
 const EMPTY_VALUE = "-";
 const formatMoney = (value) => `${new Intl.NumberFormat("vi-VN").format(Number(value) || 0)}đ`;
 
+const toLocalDateTimeInputValue = (date = new Date()) => {
+  const offset = date.getTimezoneOffset();
+  return new Date(date.getTime() - offset * 60000).toISOString().slice(0, 16);
+};
+
 const formatDateTime = (value) => {
   if (!value) return EMPTY_VALUE;
 
@@ -22,10 +27,10 @@ const formatDateTime = (value) => {
   return `${day}/${month}/${year} ${hour}:${minute}`;
 };
 
-const formatAppointment = (date, time) => {
+const formatAppointment = (date) => {
   if (!date) return EMPTY_VALUE;
   const [year, month, day] = date.split("-");
-  return `${day}/${month}/${year}${time ? ` ${time.slice(0, 5)}` : ""}`;
+  return `${day}/${month}/${year}`;
 };
 
 const PAYMENT_METHOD_LABELS = {
@@ -90,6 +95,9 @@ function PaymentDetailModal({
   showPaymentInfo,
 }) {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
+  const [paymentDate, setPaymentDate] = useState(
+    toLocalDateTimeInputValue(),
+  );
 
   useEffect(() => {
     const closeOnEscape = (event) => event.key === "Escape" && onClose();
@@ -125,7 +133,7 @@ function PaymentDetailModal({
               <InfoField label="Bác sĩ phụ trách" value={detail.dentist?.full_name ? `BS. ${detail.dentist.full_name}` : EMPTY_VALUE} />
               <InfoField label="Ngày hẹn">
                 <CalendarDays aria-hidden="true" />
-                {formatAppointment(detail.appointmentDate, detail.appointmentTime)}
+                {formatAppointment(detail.appointmentDate)}
               </InfoField>
             </dl>
 
@@ -161,16 +169,38 @@ function PaymentDetailModal({
 
             {showPaymentActions && (
               <section className="payment-detail__checkout">
+                <fieldset className="payment-detail__payment-method">
+                  <legend>Phương thức thanh toán</legend>
+                  <div className="payment-detail__payment-options">
+                    {["Tiền mặt", "Chuyển khoản"].map((method) => (
+                      <label
+                        className="payment-detail__payment-option"
+                        key={method}
+                      >
+                        <input
+                          checked={paymentMethod === method}
+                          disabled={isPaying}
+                          name="paymentMethod"
+                          onChange={(event) =>
+                            setPaymentMethod(event.target.value)
+                          }
+                          type="radio"
+                          value={method}
+                        />
+                        <span>{method}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
                 <label className="payment-detail__payment-method">
-                  <span>Phương thức thanh toán</span>
-                  <select
+                  <span>Ngày giao dịch</span>
+                  <input
                     disabled={isPaying}
-                    onChange={(event) => setPaymentMethod(event.target.value)}
-                    value={paymentMethod}
-                  >
-                    <option value="Tiền mặt">Tiền mặt</option>
-                    <option value="Chuyển khoản">Chuyển khoản</option>
-                  </select>
+                    max={toLocalDateTimeInputValue()}
+                    onChange={(event) => setPaymentDate(event.target.value)}
+                    type="datetime-local"
+                    value={paymentDate}
+                  />
                 </label>
                 <div className="payment-detail__checkout-actions">
                   <div className="payment-detail__checkout-total">
@@ -180,7 +210,9 @@ function PaymentDetailModal({
                   <button
                     className="payment-detail__pay"
                     disabled={isPaying}
-                    onClick={() => onPay(paymentMethod)}
+                    onClick={() =>
+                      onPay(paymentMethod, new Date(paymentDate).toISOString())
+                    }
                     type="button"
                   >
                     {isPaying ? "Đang xử lý..." : "Thanh toán"}
