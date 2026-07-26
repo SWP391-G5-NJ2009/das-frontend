@@ -12,11 +12,6 @@ import {
 import { useMonthlyNoShowRate } from "../../../hooks/usePatientAnalytics";
 import "./MonthlyNoShowRate.css";
 
-const MONTH_NAMES = [
-    "T1", "T2", "T3", "T4", "T5", "T6",
-    "T7", "T8", "T9", "T10", "T11", "T12",
-];
-
 const LINE_COLOR = "var(--color-primary-700)";
 
 function getCurrentMonthLabel() {
@@ -25,8 +20,7 @@ function getCurrentMonthLabel() {
 }
 
 function formatShortLabel(monthStr) {
-    const monthIndex = parseInt(monthStr.split("-")[1], 10) - 1;
-    return MONTH_NAMES[monthIndex] || monthStr;
+    return monthStr;
 }
 
 function CustomTooltip({ active, payload, label }) {
