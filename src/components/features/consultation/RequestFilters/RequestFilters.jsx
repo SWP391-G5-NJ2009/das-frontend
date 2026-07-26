@@ -7,10 +7,8 @@ const STATUS_TABS = [
   { value: "Pending", label: "Đang chờ" },
   { value: "Booked", label: "Đã đặt lịch" },
   { value: "Resolved", label: "Đã xử lý" },
-  { value: "Follow-up", label: "Cần gọi lại" },
-  { value: "Fail-to-contact", label: "Không liên hệ được" },
-  { value: "Spam", label: "Spam" },
-  { value: "Other", label: "Khác" },
+  { value: "Unreachable", label: "Không liên hệ được" },
+  { value: "Closed", label: "Đã đóng" },
 ];
 
 const today = new Date().toISOString().split("T")[0];

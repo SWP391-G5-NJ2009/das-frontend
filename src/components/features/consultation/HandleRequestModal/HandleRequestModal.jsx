@@ -7,13 +7,13 @@ import BookingFromConsultationModal from "../BookingFromConsultationModal/Bookin
 
 const STATUS_LABELS = {
   Pending: "Đang chờ",
-  Resolved: "Đã xử lý",
   Booked: "Đã đặt lịch",
-  "Fail-to-contact": "Không liên hệ được",
-  Other: "Khác",
+  Resolved: "Đã xử lý",
+  Unreachable: "Không liên hệ được",
+  Closed: "Đã đóng",
 };
 
-const STATUSES = ["Pending", "Resolved", "Fail-to-contact", "Other"];
+const STATUSES = ["Pending", "Resolved", "Unreachable", "Closed"];
 
 function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
 
