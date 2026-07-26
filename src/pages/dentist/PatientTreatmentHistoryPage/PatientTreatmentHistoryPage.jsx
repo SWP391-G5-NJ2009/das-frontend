@@ -314,7 +314,7 @@ function PatientTreatmentHistoryPage({ viewer }) {
         )}
 
         {!isLoading && !error && treatments.length === 0 && (
-          <EmptyState message="No treatment history found for this patient." />
+          <EmptyState message="Không tìm thấy lịch sử điều trị của bệnh nhân." />
         )}
 
         {!isLoading && !error && treatments.length > 0 && (

@@ -7,5 +7,9 @@ export const paymentService = {
   getInvoiceDetail: (invoiceId) => api.get(`/payments/invoices/${invoiceId}`),
   getUnpaidInvoices: () => api.get("/payments/unpaid-invoices"),
   getPaymentDetail: (paymentId) => api.get(`/payments/${paymentId}`),
-  payInvoice: (invoiceId, paymentMethod) => api.post(`/payments/invoices/${invoiceId}/pay`, { paymentMethod }),
+  payInvoice: (invoiceId, paymentMethod, paymentDate) =>
+    api.post(`/payments/invoices/${invoiceId}/pay`, {
+      paymentMethod,
+      paymentDate,
+    }),
 };
