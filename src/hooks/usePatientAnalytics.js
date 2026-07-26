@@ -97,11 +97,11 @@ export function useReturningPatient() {
     return { data, isLoading, error };
 }
 
-export function useMonthlyNewPatient() {
+export function useMonthlyNewPatient(mOffset = 0) {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const mCurrent = new Date().toISOString().slice(0, 10);
 
     useEffect(() => {
         let isMounted = true;
@@ -110,7 +110,7 @@ export function useMonthlyNewPatient() {
             setIsLoading(true);
             setError(null);
             try {
-                const result = await patientAnalyticsService.getMonthlyNewPatient();
+                const result = await patientAnalyticsService.getMonthlyNewPatient(mCurrent, mOffset);
                 if (isMounted) setData(result);
             } catch (err) {
                 if (isMounted) {
@@ -124,7 +124,7 @@ export function useMonthlyNewPatient() {
 
         fetchRevenue();
         return () => { isMounted = false; };
-    }, []);
+    }, [mCurrent, mOffset]);
 
     return { data, isLoading, error };
 }

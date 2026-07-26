@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
     BarChart,
@@ -60,7 +61,8 @@ function formatYAxis(value) {
 }
 
 function MonthlyNewPatientCount() {
-    const { data, isLoading, error } = useMonthlyNewPatient();
+    const [offset, setOffset] = useState(0);
+    const { data, isLoading, error } = useMonthlyNewPatient(offset);
 
     if (isLoading) {
         return (
@@ -109,6 +111,23 @@ function MonthlyNewPatientCount() {
         <section className="monthly-new-patient">
             <div className="monthly-new-patient__header">
                 <h2 className="monthly-new-patient__title">Bệnh nhân mới 12 tháng gần đây</h2>
+                <div className="monthly-new-patient__nav">
+                    <button
+                        className="monthly-new-patient__nav-btn"
+                        onClick={() => setOffset((prev) => prev + 1)}
+                        aria-label="Tháng trước"
+                    >
+                        &#8592;
+                    </button>
+                    <button
+                        className="monthly-new-patient__nav-btn"
+                        onClick={() => setOffset((prev) => Math.max(0, prev - 1))}
+                        disabled={offset === 0}
+                        aria-label="Tháng sau"
+                    >
+                        &#8594;
+                    </button>
+                </div>
             </div>
             <div className="monthly-new-patient__chart-container">
                 <ResponsiveContainer width="100%" height="100%">

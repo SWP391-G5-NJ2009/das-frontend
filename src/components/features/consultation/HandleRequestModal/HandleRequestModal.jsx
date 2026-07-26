@@ -9,13 +9,11 @@ const STATUS_LABELS = {
   Pending: "Đang chờ",
   Resolved: "Đã xử lý",
   Booked: "Đã đặt lịch",
-  "Follow-up": "Cần gọi lại",
   "Fail-to-contact": "Không liên hệ được",
-  Spam: "Spam",
   Other: "Khác",
 };
 
-const STATUSES = ["Pending", "Resolved", "Follow-up", "Fail-to-contact", "Spam", "Other"];
+const STATUSES = ["Pending", "Resolved", "Fail-to-contact", "Other"];
 
 function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
 
