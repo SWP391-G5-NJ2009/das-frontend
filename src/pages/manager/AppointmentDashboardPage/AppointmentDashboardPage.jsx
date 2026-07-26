@@ -340,7 +340,7 @@ function AppointmentDashboardPage() {
                                   </span>
                                 )}
                                 <span className="appt-dash__appt-dentist">
-                                  Dr. {appt.dentist_name}
+                                  Bác sĩ {appt.dentist_name}
                                 </span>
                                 {appt.room_name && (
                                   <span className="appt-dash__appt-room">

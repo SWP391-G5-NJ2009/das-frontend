@@ -1,17 +1,8 @@
 import { useState, useCallback } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
   Edit,
-  Filter,
-  Headphones,
-  Landmark,
-  Search,
-  Shield,
-  Stethoscope,
   Trash2,
   UserPlus,
-  Users,
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
 import { useAuth } from "../../../context/AuthContext";
@@ -89,7 +80,7 @@ function AdminAccountsPage() {
         <div>
           <h2 className="admin-accounts__page-title">Quản lý tài khoản</h2>
           <p className="admin-accounts__page-desc">
-            Thêm, cập nhật hoặc xóa tài khoản nhân viên trong hệ thống.
+            Thêm, cập nhật hoặc xóa tài khoản người dùng trong hệ thống.
           </p>
         </div>
         <button
@@ -135,6 +126,7 @@ function AdminAccountsPage() {
               </tr>
             </thead>
             <tbody>
+
               {isLoading && (
                 <tr>
                   <td className="admin-accounts__cell" colSpan={7}>
@@ -168,11 +160,7 @@ function AdminAccountsPage() {
                       {index + (filters.pagination - 1) * MAX_PAGE + 1}
                     </td>
 
-                    <td className="admin-accounts__cell">
-                      <div className="admin-accounts__user-cell">
-                        <span>{account.username}</span>
-                      </div>
-                    </td>
+                    <td className="admin-accounts__cell">{account.username}</td>
 
                     <td className="admin-accounts__cell">{account.email}</td>
 
