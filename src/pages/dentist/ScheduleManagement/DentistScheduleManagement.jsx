@@ -246,6 +246,14 @@ function formatScheduleTime(schedule) {
   return `${schedule.startTime} - ${schedule.endTime}`;
 }
 
+function translateSlotStatus(status) {
+  return {
+    Available: "Còn trống",
+    Unavailable: "Không khả dụng",
+    Booked: "Đã đặt",
+  }[status] || status;
+}
+
 function getEventColors(status) {
   if (status === "Scheduled") {
     return {
@@ -329,12 +337,12 @@ function ScheduleEditor({
 
         <form className="dentist-schedule__form" onSubmit={onSubmit}>
           <div className="dentist-schedule__rule-note">
-            Configured hours: {clinic.openTime} - {clinic.closeTime}. Busy
+            Giờ làm việc: {clinic.openTime} - {clinic.closeTime}. Các khung giờ bận
             slots will be unavailable; all other selected-day slots remain
             available after approval. Target month:{" "}
-            {scheduleWindow.targetMonthStart} to {scheduleWindow.targetMonthEnd}.
-            Giờ đã cấu hình: {clinic.openTime} - {clinic.closeTime}. Target
-            month: {scheduleWindow.targetMonthStart} to{" "}
+            {scheduleWindow.targetMonthStart} đến {scheduleWindow.targetMonthEnd}.
+            Giờ đã cấu hình: {clinic.openTime} - {clinic.closeTime}. Tháng áp dụng:
+            {scheduleWindow.targetMonthStart} đến{" "}
             {scheduleWindow.targetMonthEnd}.
           </div>
 
@@ -530,7 +538,7 @@ function ConflictWarningModal({
                 key={appointment.appointmentId}
               >
                 <strong>{appointment.patientName}</strong>
-                <span>{appointment.patientPhone || "No phone"}</span>
+                <span>{appointment.patientPhone || "Không có số điện thoại"}</span>
                 <span>{appointment.serviceName}</span>
                 <span>
                   {appointment.date} {appointment.time}
@@ -635,7 +643,9 @@ function DentistScheduleManagement() {
     () =>
       schedules.map((schedule) => ({
         id: schedule.id,
-        title: `${formatScheduleTime(schedule)} - ${schedule.status}`,
+        title: `${formatScheduleTime(schedule)} - ${
+          STATUS_COPY[schedule.status]?.label || schedule.status
+        }`,
         start: `${schedule.date}T${schedule.startTime || "08:00"}:00`,
         end: `${schedule.date}T${schedule.endTime || "08:30"}:00`,
         extendedProps: schedule,
@@ -909,7 +919,7 @@ function DentistScheduleManagement() {
               onClick={() => fetchSchedules()}
             >
               <RefreshCw size={16} aria-hidden="true" />
-              Refresh
+              Làm mới
             </button>
             <button
               className="dentist-schedule__button dentist-schedule__button--primary"
@@ -972,6 +982,11 @@ function DentistScheduleManagement() {
             )}
             <FullCalendar
               allDaySlot={false}
+              buttonText={{
+                today: "Hôm nay",
+                week: "Tuần",
+                day: "Ngày",
+              }}
               datesSet={handleDatesSet}
               editable={false}
               eventClick={(info) => selectSchedule(info.event.extendedProps)}
@@ -1008,15 +1023,15 @@ function DentistScheduleManagement() {
                 </span>
                 <dl>
                   <div>
-                    <dt>Date</dt>
+                    <dt>Ngày</dt>
                     <dd>{selectedSchedule.date}</dd>
                   </div>
                   <div>
-                    <dt>Time</dt>
+                    <dt>Thời gian</dt>
                     <dd>{formatScheduleTime(selectedSchedule)}</dd>
                   </div>
                   <div>
-                    <dt>Slots</dt>
+                    <dt>Số khung giờ</dt>
                     <dd>{selectedSchedule.slotCount}</dd>
                   </div>
                 </dl>
@@ -1024,7 +1039,7 @@ function DentistScheduleManagement() {
                 {selectedSchedule.status === "Denied" && (
                   <div className="dentist-schedule__manager-note" role="alert">
                     <strong>MSG23: Yêu cầu bị từ chối</strong>
-                    <p>{selectedSchedule.managerNote || "No manager note provided."}</p>
+                    <p>{selectedSchedule.managerNote || "Quản lý chưa ghi lý do."}</p>
                   </div>
                 )}
 
@@ -1067,13 +1082,13 @@ function DentistScheduleManagement() {
                           <span>
                             {slot.startTime} - {slot.endTime}
                           </span>
-                          <strong>{slot.status}</strong>
+                          <strong>{translateSlotStatus(slot.status)}</strong>
                         </button>
                       ))}
                     </div>
 
                     <label className="dentist-schedule__field">
-                      <span>Reason</span>
+                      <span>Lý do</span>
                       <textarea
                         value={availabilityReason}
                         onChange={(event) =>
@@ -1095,7 +1110,7 @@ function DentistScheduleManagement() {
                     >
                       <Ban size={16} aria-hidden="true" />
                       {isAvailabilitySubmitting
-                        ? "Updating..."
+                        ? "Đang cập nhật..."
                         : "Cập nhật trạng thái"}
                     </button>
                   </form>

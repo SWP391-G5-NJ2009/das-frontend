@@ -7,6 +7,7 @@ import Toast from "../../../components/common/Toast/Toast";
 import PatientSearchSection from "../../../components/features/booking/PatientSearchSection/PatientSearchSection";
 import AddPatientModal from "../../../components/features/patient/AddPatientModal/AddPatientModal";
 import { usePatientSearch } from "../../../hooks/usePatientSearch";
+import { usePublicServices } from "../../../hooks/useDentalServices";
 import { useQueues } from "../../../hooks/useQueues";
 import { queueService } from "../../../services/queue.service";
 import { scheduleService } from "../../../services/schedule.service";
@@ -61,6 +62,7 @@ function ReceptionistQueuePage() {
   const [dentistMetadata, setDentistMetadata] = useState([]);
   const [selectedQueue, setSelectedQueue] = useState(null);
   const [walkInDentistId, setWalkInDentistId] = useState("");
+  const [walkInServiceId, setWalkInServiceId] = useState("");
   const [walkInNote, setWalkInNote] = useState("");
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isAddingWalkIn, setIsAddingWalkIn] = useState(false);
@@ -78,6 +80,7 @@ function ReceptionistQueuePage() {
     handleSelectPatient,
     handleClearPatient,
   } = usePatientSearch();
+  const { services: dentalServices } = usePublicServices();
   const {
     queues: fetchedQueues,
     isLoading,
@@ -122,33 +125,18 @@ function ReceptionistQueuePage() {
   }, []);
 
   const dentists = useMemo(() => {
-    const items = new Map();
-    fetchedQueues.forEach((queue) => {
-      if (queue.dentistId) {
-        items.set(String(queue.dentistId), {
-          id: String(queue.dentistId),
-          name: queue.dentistName,
-          roomId: queue.roomId ? String(queue.roomId) : "",
-          roomName: queue.roomName || "",
-        });
-      }
-    });
-    dentistMetadata.forEach((dentist) => {
-      items.set(
-        String(dentist.dentist_id),
-        {
-          id: String(dentist.dentist_id),
-          name:
-            dentist.name ||
-            dentist.fullName ||
-            `Nha sĩ #${dentist.dentist_id}`,
-          roomId: dentist.room_id ? String(dentist.room_id) : "",
-          roomName: dentist.roomName || "",
-        },
-      );
-    });
-    return [...items.values()];
-  }, [dentistMetadata, fetchedQueues]);
+    return dentistMetadata
+      .filter((dentist) => dentist.room_id)
+      .map((dentist) => ({
+        id: String(dentist.dentist_id),
+        name:
+          dentist.name ||
+          dentist.fullName ||
+          `Nha sĩ #${dentist.dentist_id}`,
+        roomId: String(dentist.room_id),
+        roomName: dentist.roomName || "",
+      }));
+  }, [dentistMetadata]);
 
   const selectedWalkInDentist = dentists.find(
     (dentist) => dentist.id === walkInDentistId,
@@ -184,6 +172,10 @@ function ReceptionistQueuePage() {
       });
       return;
     }
+    if (!walkInServiceId) {
+      setToast({ type: "warning", message: "Vui lòng chọn dịch vụ." });
+      return;
+    }
     if (!walkInDentistId) {
       setToast({
         type: "warning",
@@ -203,11 +195,13 @@ function ReceptionistQueuePage() {
     try {
       await queueService.createWalkIn({
         patientId: Number(selectedPatient.id),
+        serviceId: Number(walkInServiceId),
         dentistId: Number(walkInDentistId),
         note: walkInNote.trim() || null,
       });
       handleClearPatient();
       setWalkInDentistId("");
+      setWalkInServiceId("");
       setWalkInNote("");
       await refetch();
       setToast({
@@ -258,7 +252,7 @@ function ReceptionistQueuePage() {
       <div className="receptionist-queue">
         <header className="receptionist-queue__header">
           <div>
-            <p className="receptionist-queue__eyebrow">Patient Queue</p>
+            <p className="receptionist-queue__eyebrow">Hàng đợi bệnh nhân</p>
             <h1 id="receptionist-queue-title">Hàng đợi bệnh nhân</h1>
             <p>Theo dõi bệnh nhân đã check-in và walk-in theo thứ tự đến.</p>
           </div>
@@ -305,6 +299,21 @@ function ReceptionistQueuePage() {
             />
 
             <div className="receptionist-queue__walk-in-controls">
+              <label>
+                <span>Dịch vụ</span>
+                <select
+                  value={walkInServiceId}
+                  onChange={(event) => setWalkInServiceId(event.target.value)}
+                  required
+                >
+                  <option value="">Chọn dịch vụ</option>
+                  {dentalServices.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} — {Number(service.price || 0).toLocaleString("vi-VN")} ₫
+                    </option>
+                  ))}
+                </select>
+              </label>
               <label>
                 <span>Nha sĩ</span>
                 <select
@@ -439,7 +448,9 @@ function ReceptionistQueuePage() {
                   <th>Bệnh nhân</th>
                   <th>Loại</th>
                   <th>Giờ hẹn</th>
-                  <th>Check-in</th>
+                  <th>Dịch vụ</th>
+                  <th>Giá</th>
+                  <th>Giờ nhận bệnh</th>
                   <th>Nha sĩ</th>
                   <th>Phòng</th>
                   <th>Trạng thái</th>
@@ -468,6 +479,12 @@ function ReceptionistQueuePage() {
                           : "Lịch hẹn"}
                       </td>
                       <td>{formatAppointment(queue)}</td>
+                      <td>{queue.serviceName || "—"}</td>
+                      <td>
+                        {queue.actualPrice == null
+                          ? "—"
+                          : `${Number(queue.actualPrice).toLocaleString("vi-VN")} ₫`}
+                      </td>
                       <td>{formatTime(queue.checkInTime)}</td>
                       <td>{queue.dentistName || "—"}</td>
                       <td>{queue.roomName || "—"}</td>
@@ -521,7 +538,7 @@ function ReceptionistQueuePage() {
             <header>
               <div>
                 <h2>{selectedQueue.patientName}</h2>
-                <p>Queue #{selectedQueue.queueId}</p>
+                <p>Lượt khám #{selectedQueue.queueId}</p>
               </div>
               <button
                 type="button"
@@ -563,6 +580,14 @@ function ReceptionistQueuePage() {
               <div>
                 <dt>Dịch vụ</dt>
                 <dd>{selectedQueue.serviceName || "Walk-in"}</dd>
+              </div>
+              <div>
+                <dt>Giá dịch vụ</dt>
+                <dd>
+                  {selectedQueue.actualPrice == null
+                    ? "—"
+                    : `${Number(selectedQueue.actualPrice).toLocaleString("vi-VN")} ₫`}
+                </dd>
               </div>
               <div>
                 <dt>Trạng thái</dt>

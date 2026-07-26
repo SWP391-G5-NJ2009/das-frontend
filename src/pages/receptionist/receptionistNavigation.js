@@ -11,7 +11,7 @@ export const RECEPTIONIST_NAV_ITEMS = [
   },
   {
     icon: "calendar_month",
-    label: "Dentist Schedules",
+    label: "Lịch hẹn bác sĩ",
     to: "/receptionist/dentist-schedules",
   },
   {
