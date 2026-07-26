@@ -277,6 +277,7 @@ function LandingPage() {
                 <input
                   type="text"
                   name="full_name"
+                  maxLength={100}
                   value={form.full_name}
                   placeholder="Họ và tên *"
                   onChange={handleChange}
@@ -294,7 +295,7 @@ function LandingPage() {
                   type="tel"
                   name="phone"
                   inputMode="numeric"
-                  pattern="[0-9]*"
+                  pattern="0[0-9]{9,10}"
                   value={form.phone}
                   placeholder="Số điện thoại *"
                   onChange={handleChange}
@@ -311,6 +312,7 @@ function LandingPage() {
                 <input
                   type="email"
                   name="email"
+                  maxLength={254}
                   value={form.email}
                   placeholder="Email"
                   onChange={handleChange}
@@ -347,6 +349,7 @@ function LandingPage() {
               <label className="consultation-form__field">
                 <textarea
                   name="description"
+                  maxLength={1000}
                   value={form.description}
                   placeholder="Chi tiết yêu cầu tư vấn"
                   rows="5"

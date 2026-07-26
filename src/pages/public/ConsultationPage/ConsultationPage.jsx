@@ -99,6 +99,7 @@ function ConsultationPage() {
                   name="full_name"
                   value={form.full_name}
                   placeholder="Nhập họ và tên"
+                  maxLength={100}
                   onChange={handleChange}
                   onInvalid={handleInvalid}
                   required
@@ -136,6 +137,7 @@ function ConsultationPage() {
                   type="email"
                   name="email"
                   value={form.email}
+                  maxLength={254}
                   placeholder="Nhập địa chỉ email"
                   onChange={handleChange}
                   onInvalid={handleInvalid}
@@ -176,6 +178,7 @@ function ConsultationPage() {
                 <span>Nội dung yêu cầu tư vấn</span>
                 <textarea
                   name="description"
+                  maxLength={1000}
                   value={form.description}
                   placeholder="Mô tả ngắn gọn vấn đề hoặc dịch vụ bạn quan tâm..."
                   rows="5"
