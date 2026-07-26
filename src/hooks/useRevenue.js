@@ -38,7 +38,7 @@ export function useMonthlyRevenue(mOffset = 0) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const mCurrent = new Date().toISOString().slice(0, 10);
+    const mCurrent = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Ho_Chi_Minh" });
 
     useEffect(() => {
         let isMounted = true;

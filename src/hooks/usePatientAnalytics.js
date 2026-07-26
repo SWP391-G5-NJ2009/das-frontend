@@ -101,7 +101,7 @@ export function useMonthlyNewPatient(mOffset = 0) {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const mCurrent = new Date().toISOString().slice(0, 10);
+    const mCurrent = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Ho_Chi_Minh" });
 
     useEffect(() => {
         let isMounted = true;
@@ -129,11 +129,11 @@ export function useMonthlyNewPatient(mOffset = 0) {
     return { data, isLoading, error };
 }
 
-export function useMonthlyReturningPatient() {
+export function useMonthlyReturningPatient(mOffset = 0) {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const mCurrent = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Ho_Chi_Minh" });
 
     useEffect(() => {
         let isMounted = true;
@@ -142,7 +142,7 @@ export function useMonthlyReturningPatient() {
             setIsLoading(true);
             setError(null);
             try {
-                const result = await patientAnalyticsService.getMonthlyReturningPatient();
+                const result = await patientAnalyticsService.getMonthlyReturningPatient(mCurrent, mOffset);
                 if (isMounted) setData(result);
             } catch (err) {
                 if (isMounted) {
@@ -156,7 +156,7 @@ export function useMonthlyReturningPatient() {
 
         fetchRevenue();
         return () => { isMounted = false; };
-    }, []);
+    }, [mCurrent, mOffset]);
 
     return { data, isLoading, error };
 }
