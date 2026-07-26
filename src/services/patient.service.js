@@ -10,6 +10,7 @@ export const patientService = {
   createWalkInPatient: (payload) => api.post("/patients/walk-in", payload),
   createPatientAccount: (payload) => api.post("/patients", payload),
   getMyTreatmentHistory: () => api.get("/patients/me/treatments"),
+  getMyTreatedPatients: () => api.get("/patients/dentist/mine"),
   getTreatmentHistory: (patientId) =>
     api.get(`/patients/${patientId}/treatments`),
   liftBan: (patientId) => api.patch(`/patients/${patientId}/lift-ban`),

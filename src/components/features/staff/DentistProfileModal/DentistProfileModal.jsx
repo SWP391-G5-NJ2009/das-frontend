@@ -30,6 +30,10 @@ function getStatus(status) {
     return { label: "Bị khóa", modifier: "banned" };
   }
 
+  if (normalizedStatus === "deactivated") {
+    return { label: "Không hoạt động", modifier: "inactive" };
+  }
+
   return { label: "Không xác định", modifier: "inactive" };
 }
 

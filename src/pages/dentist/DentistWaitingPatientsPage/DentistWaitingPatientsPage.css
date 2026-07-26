@@ -258,7 +258,7 @@
   margin-top: var(--space-1);
   color: var(--color-neutral-500);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
 }
 
 .dentist-waiting-patients__actions {

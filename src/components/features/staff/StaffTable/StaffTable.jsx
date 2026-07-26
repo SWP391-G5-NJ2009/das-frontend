@@ -15,6 +15,7 @@ function getStatusLabel(status) {
   const normalizedStatus = status?.toLowerCase();
 
   if (normalizedStatus === "active") return "Hoạt động";
+  if (normalizedStatus === "deactivated") return "Không hoạt động";
   if (normalizedStatus === "banned") return "Bị khóa";
 
   return "Unknown";
