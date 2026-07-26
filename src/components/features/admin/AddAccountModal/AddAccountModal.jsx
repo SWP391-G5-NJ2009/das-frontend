@@ -1,24 +1,24 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
-import { accountService } from "../../../services/account.service";
+import { accountService } from "../../../../services/account.service";
 import "./AddAccountModal.css";
 
 const ROLES = [
   { value: "Admin", label: "Admin" },
   { value: "Dentist", label: "Nha sĩ" },
   { value: "Receptionist", label: "Lễ tân" },
-  { value: "Manager", label: "Quản lý" },
+  { value: "Owner", label: "Chủ phòng khám" },
+  { value: "Patient", label: "Bệnh nhân" },
 ];
 
-function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
+function AddAccountModal({ onClose, onSuccess }) {
   const [form, setForm] = useState({
-    username: account.username || "",
-    email: account.email || "",
-    phone: account.phone || "",
+    username: "",
+    email: "",
+    phone: "",
     password: "",
-    role_name: account.role?.role_name || "",
-    status: account.status || "Active",
+    role_name: "Admin",
   });
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState(null);
@@ -29,26 +29,15 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
     setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setIsSubmitting(true);
-
-    const payload = { ...form };
-    if (!payload.email) {
-      delete payload.email;
-    }
-    if (!payload.phone) {
-      delete payload.phone;
-    }
-    if (!payload.password) {
-      delete payload.password;
-    }
-
     try {
-      await accountService.update(account.account_id, payload);
+      await accountService.create({ ...form });
       onSuccess();
     } catch (err) {
       if (err.code === "VALIDATION_ERROR") {
@@ -67,6 +56,19 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
     }
   };
 
+  function handleInvalid(e) {
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    } else if (v.patternMismatch) {
+      e.target.setCustomValidity('Số điện thoại phải từ 10 đến 11 chữ số');
+    } else if (v.typeMismatch) {
+      e.target.setCustomValidity('Vui lòng email đúng định dạng (VD: abc@gmail.com)');
+    }
+
+  }
+
   return (
     <div
       className="add-account-modal__overlay"
@@ -76,7 +78,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
     >
       <div className="add-account-modal">
         <div className="add-account-modal__header">
-          <h3 className="add-account-modal__title">Chỉnh sửa tài khoản</h3>
+          <h3 className="add-account-modal__title">Thêm tài khoản mới</h3>
           <button
             className="add-account-modal__close"
             type="button"
@@ -90,12 +92,14 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
           {error && <p className="add-account-modal__error">{error}</p>}
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Tên đăng nhập</span>
+            <span className="add-account-modal__label">Tên đăng nhập *</span>
             <input
               type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
+              onInvalid={handleInvalid}
+              required
             />
             {fieldErrors?.username && (
               <span className="add-account-modal__field-error">
@@ -111,6 +115,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               type="email"
               value={form.email}
               onChange={handleChange}
+              onInvalid={handleInvalid}
             />
             {fieldErrors?.email && (
               <span className="add-account-modal__field-error">
@@ -125,9 +130,10 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               name="phone"
               type="tel"
               inputMode="numeric"
-              pattern="[0-9]*"
+              pattern="[0-9]{10,11}"
               value={form.phone}
               onChange={handleChange}
+              onInvalid={handleInvalid}
             />
             {fieldErrors?.phone && (
               <span className="add-account-modal__field-error">
@@ -137,14 +143,14 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">
-              Mật khẩu mới (để trống nếu giữ nguyên)
-            </span>
+            <span className="add-account-modal__label">Mật khẩu *</span>
             <input
               name="password"
               type="password"
               value={form.password}
               onChange={handleChange}
+              onInvalid={handleInvalid}
+              required
             />
             {fieldErrors?.password && (
               <span className="add-account-modal__field-error">
@@ -154,7 +160,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
           </label>
 
           <label className="add-account-modal__field">
-            <span className="add-account-modal__label">Role</span>
+            <span className="add-account-modal__label">Vai trò *</span>
             <select
               name="role_name"
               value={form.role_name}
@@ -173,18 +179,6 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
             )}
           </label>
 
-          {account.account_id !== userAccount &&
-            <label className="add-account-modal__field">
-              <span className="add-account-modal__label">Status</span>
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}>
-                <option value="Active">Hoạt động</option>
-                <option value="Deactivated">Ngừng hoạt động</option>
-              </select>
-            </label>}
-
           <div className="add-account-modal__actions">
             <button
               className="add-account-modal__btn add-account-modal__btn--cancel"
@@ -198,7 +192,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+              {isSubmitting ? "Đang tạo..." : "Tạo tài khoản"}
             </button>
           </div>
         </form>
@@ -207,19 +201,9 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
   );
 }
 
-EditAccountModal.propTypes = {
-  account: PropTypes.shape({
-    account_id: PropTypes.string.isRequired,
-    username: PropTypes.string,
-    email: PropTypes.string,
-    phone: PropTypes.string,
-    status: PropTypes.string,
-    role: PropTypes.shape({
-      role_name: PropTypes.string,
-    }),
-  }).isRequired,
+AddAccountModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
 };
 
-export default EditAccountModal;
+export default AddAccountModal;

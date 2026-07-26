@@ -45,8 +45,12 @@ function LandingPage() {
     phone: "",
     email: "",
     description: "",
+    service_id: "",
+    consultation_date: "",
     website: "",
   });
+
+  const today = new Date().toISOString().split("T")[0];
 
   const [error, setError] = useState(null);
   const [loadedAt] = useState(Date.now());
@@ -58,10 +62,24 @@ function LandingPage() {
   const featuredServices = services.slice(0, 6);
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
-    setFieldErrors((prev) => ({ ...prev , [name]: null}));
+    setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
+  }
+
+  function handleInvalid(e) {
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    } else if (v.patternMismatch) {
+      e.target.setCustomValidity('Số điện thoại phải từ 10 đến 11 chữ số');
+    } else if (v.typeMismatch) {
+      e.target.setCustomValidity('Vui lòng email đúng định dạng (VD: abc@gmail.com)');
+    }
+
   }
 
   const handleSubmit = async (e) => {
@@ -70,7 +88,7 @@ function LandingPage() {
     setIsSubmitting(true);
     try {
       await consultationService.create({ ...form, loadedAt });
-      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setForm({ full_name: "", phone: "", email: "", description: "", service_id: "", consultation_date: "" });
       setFieldErrors(null);
       setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
@@ -262,6 +280,7 @@ function LandingPage() {
                   value={form.full_name}
                   placeholder="Họ và tên *"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.full_name && (
@@ -279,6 +298,7 @@ function LandingPage() {
                   value={form.phone}
                   placeholder="Số điện thoại *"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.phone && (
@@ -294,12 +314,35 @@ function LandingPage() {
                   value={form.email}
                   placeholder="Email"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                 />
                 {fieldErrors?.email && (
                   <span className="consultation-form__field-error">
                     {fieldErrors.email[0]}
                   </span>
                 )}
+              </label>
+              <label className="consultation-form__field">
+                <select
+                  name="service_id"
+                  value={form.service_id}
+                  onChange={handleChange}
+                >
+                  <option value="">Dịch vụ quan tâm (không bắt buộc)</option>
+                  {!isServicesLoading && services.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="consultation-form__field">
+                <input
+                  type="date"
+                  name="consultation_date"
+                  value={form.consultation_date}
+                  min={today}
+                  placeholder="Ngày tư vấn mong muốn"
+                  onChange={handleChange}
+                />
               </label>
               <label className="consultation-form__field">
                 <textarea

@@ -27,6 +27,12 @@
   gap: var(--space-3);
 }
 
+.patient-page__monthly {
+  margin-top: var(--space-8);
+  display: grid;
+  gap: var(--space-6);
+}
+
 @media (max-width: 768px) {
   .patient-page__cards {
     grid-template-columns: 1fr;

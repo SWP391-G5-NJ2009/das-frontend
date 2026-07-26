@@ -26,6 +26,43 @@
   flex: 1;
 }
 
+.monthly-no-show-rate__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.monthly-no-show-rate__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.monthly-no-show-rate__nav-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-100);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-700);
+}
+
+.monthly-no-show-rate__nav-btn:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+.monthly-no-show-rate__nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .monthly-no-show-rate__chart-container,
 .monthly-no-show-rate__chart-container svg {
   width: 100%;

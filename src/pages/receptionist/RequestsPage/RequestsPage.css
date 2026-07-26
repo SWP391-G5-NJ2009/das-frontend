@@ -6,7 +6,6 @@
   font-family: var(--font-family-base);
 }
 
-/* ===== Sidebar ===== */
 .receptionist-requests__sidebar {
   width: 260px;
   min-width: 260px;
@@ -90,7 +89,6 @@
   padding: var(--space-2) var(--space-3);
 }
 
-/* ===== Main ===== */
 .receptionist-requests__main {
   flex: 1;
   margin-left: 260px;
@@ -99,7 +97,6 @@
   flex-direction: column;
 }
 
-/* ===== Header / Top Bar ===== */
 .receptionist-requests__header {
   height: 64px;
   position: fixed;
@@ -225,7 +222,6 @@
   flex-shrink: 0;
 }
 
-/* Avatar color variants */
 .receptionist-requests__avatar--primary-fixed {
   background-color: var(--color-primary-100);
   color: var(--color-primary-800);
@@ -251,14 +247,12 @@
   color: var(--color-primary-700);
 }
 
-/* ===== Content ===== */
 .receptionist-requests__content {
   display: grid;
   gap: var(--space-6);
   padding: 0;
 }
 
-/* ===== Page Header ===== */
 .receptionist-requests__page-header {
   display: flex;
   justify-content: space-between;
@@ -303,7 +297,6 @@
   transform: scale(0.97);
 }
 
-/* ===== Card ===== */
 .receptionist-requests__card {
   background-color: #ffffff;
   border-radius: var(--radius-lg);
@@ -417,7 +410,6 @@
   background-color: var(--color-primary-50);
 }
 
-/* ===== Table ===== */
 .receptionist-requests__table-wrapper {
   overflow-x: auto;
 }
@@ -500,7 +492,6 @@
   color: var(--color-neutral-900);
 }
 
-/* Role badges */
 .receptionist-requests__role-badge {
   display: inline-block;
   padding: var(--space-1) var(--space-2);
@@ -537,7 +528,6 @@
   color: var(--color-primary-700);
 }
 
-/* Action buttons */
 .receptionist-requests__action-btn {
   width: 32px;
   height: 32px;
@@ -571,7 +561,6 @@
   background-color: var(--color-error-bg);
 }
 
-/* ===== Pagination ===== */
 .receptionist-requests__pagination {
   display: flex;
   align-items: center;
@@ -622,7 +611,6 @@
     cursor: not-allowed;
   }
 
-/* ===== Stats ===== */
 .receptionist-requests__stats {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -696,7 +684,6 @@
   margin: var(--space-1) 0 0 0;
 }
 
-/* ===== Toast ===== */
 .receptionist-requests__toast {
   position: fixed;
   bottom: var(--space-6);
@@ -728,9 +715,6 @@
   font-size: 20px;
 }
 
-
-
-/* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .receptionist-requests__stats {
     grid-template-columns: repeat(3, 1fr);
@@ -773,7 +757,5 @@
     align-items: flex-start;
     gap: var(--space-4);
   }
-
-  
   
 }

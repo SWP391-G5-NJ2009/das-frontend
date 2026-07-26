@@ -7,15 +7,13 @@ import BookingFromConsultationModal from "../BookingFromConsultationModal/Bookin
 
 const STATUS_LABELS = {
   Pending: "Đang chờ",
-  Resolved: "Đã xử lý",
   Booked: "Đã đặt lịch",
-  "Follow-up": "Cần gọi lại",
-  "Fail-to-contact": "Không liên hệ được",
-  Spam: "Spam",
-  Other: "Khác",
+  Resolved: "Đã xử lý",
+  Unreachable: "Không liên hệ được",
+  Closed: "Đã đóng",
 };
 
-const STATUSES = ["Pending", "Resolved", "Follow-up", "Fail-to-contact", "Spam", "Other"];
+const STATUSES = ["Pending", "Resolved", "Unreachable", "Closed"];
 
 function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
 
@@ -34,6 +32,10 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
   const [fieldErrors, setFieldErrors] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
+  const isDirty =
+    form.status !== request.status ||
+    form.note !== (request.note || "");
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -106,6 +108,21 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
               <span className="handle-request-modal__label">Mô tả</span>
               <textarea name="description" value={form.description} readOnly />
             </label>
+
+            <label className="handle-request-modal__field">
+              <span className="handle-request-modal__label">Dịch vụ quan tâm</span>
+              <input name="service_name" value={request.dental_services?.service_name || "Chưa chọn"} readOnly />
+            </label>
+
+            <label className="handle-request-modal__field">
+              <span className="handle-request-modal__label">Ngày tư vấn mong muốn</span>
+              <input
+                name="consultation_date"
+                type="date"
+                value={request.consultation_date || ""}
+                readOnly
+              />
+            </label>
           </div>
 
           <div className="handle-request-modal__column handle-request-modal__column--editable">
@@ -159,7 +176,7 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
               <button
                 className="handle-request-modal__btn handle-request-modal__btn--submit"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isDirty}
               >
                 {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
               </button>
@@ -193,6 +210,11 @@ HandleRequestModal.propTypes = {
     created_at: PropTypes.string,
     status: PropTypes.string,
     note: PropTypes.string,
+    dental_services: PropTypes.shape({
+      service_id: PropTypes.number,
+      service_name: PropTypes.string,
+    }),
+    consultation_date: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,

@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
-import AppointmentDashboardPage from "./pages/admin/AppointmentDashboardPage/AppointmentDashboardPage";
+import AppointmentDashboardPage from "./pages/manager/AppointmentDashboardPage/AppointmentDashboardPage";
 
 import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";

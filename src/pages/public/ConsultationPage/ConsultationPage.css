@@ -83,6 +83,7 @@
 }
 
 .consultation-panel__field input,
+.consultation-panel__field select,
 .consultation-panel__field textarea {
   width: 100%;
   padding: var(--space-3) var(--space-4);
@@ -104,9 +105,20 @@
 }
 
 .consultation-panel__field input:focus,
+.consultation-panel__field select:focus,
 .consultation-panel__field textarea:focus {
   outline: thin solid var(--color-primary-700);
   outline-offset: var(--space-1);
+}
+
+.consultation-panel__field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23607d8b' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  padding-right: var(--space-8);
+  cursor: pointer;
+  color: var(--color-neutral-500);
 }
 
 .consultation-panel__submit {

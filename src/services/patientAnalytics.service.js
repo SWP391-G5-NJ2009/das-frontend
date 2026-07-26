@@ -4,7 +4,7 @@ export const patientAnalyticsService = {
     getNewPatient: () => api.get("/reports/patient/newPatient"),
     getNoShowRate: () => api.get("/reports/patient/noShowRate"),
     getReturningPatient: () => api.get("/reports/patient/returningPatient"),
-    getMonthlyNewPatient: () => api.get("/reports/patient/newPatientMonthly"),
-    getMonthlyReturningPatient: () => api.get("/reports/patient/returningPatientMonthly"),
-    getMonthlyNoShowRate: () => api.get("/reports/patient/noShowRateMonthly"),
+    getMonthlyNewPatient: (mCurrent, mOffset = 0) => api.get(`/reports/patient/newPatientMonthly?m_current=${mCurrent}&m_offset=${mOffset}`),
+    getMonthlyReturningPatient: (mCurrent, mOffset = 0) => api.get(`/reports/patient/returningPatientMonthly?m_current=${mCurrent}&m_offset=${mOffset}`),
+    getMonthlyNoShowRate: (mCurrent, mOffset = 0) => api.get(`/reports/patient/noShowRateMonthly?m_current=${mCurrent}&m_offset=${mOffset}`),
 }

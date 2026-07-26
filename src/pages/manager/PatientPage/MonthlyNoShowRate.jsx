@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
     LineChart,
@@ -11,11 +12,6 @@ import {
 import { useMonthlyNoShowRate } from "../../../hooks/usePatientAnalytics";
 import "./MonthlyNoShowRate.css";
 
-const MONTH_NAMES = [
-    "T1", "T2", "T3", "T4", "T5", "T6",
-    "T7", "T8", "T9", "T10", "T11", "T12",
-];
-
 const LINE_COLOR = "var(--color-primary-700)";
 
 function getCurrentMonthLabel() {
@@ -24,8 +20,7 @@ function getCurrentMonthLabel() {
 }
 
 function formatShortLabel(monthStr) {
-    const monthIndex = parseInt(monthStr.split("-")[1], 10) - 1;
-    return MONTH_NAMES[monthIndex] || monthStr;
+    return monthStr;
 }
 
 function CustomTooltip({ active, payload, label }) {
@@ -56,7 +51,8 @@ function formatYAxis(value) {
 }
 
 function MonthlyNoShowRate() {
-    const { data, isLoading, error } = useMonthlyNoShowRate();
+    const [offset, setOffset] = useState(0);
+    const { data, isLoading, error } = useMonthlyNoShowRate(offset);
 
     if (isLoading) {
         return (
@@ -105,6 +101,23 @@ function MonthlyNoShowRate() {
         <section className="monthly-no-show-rate">
             <div className="monthly-no-show-rate__header">
                 <h2 className="monthly-no-show-rate__title">Tỷ lệ không đến khám 12 tháng gần đây</h2>
+                <div className="monthly-no-show-rate__nav">
+                    <button
+                        className="monthly-no-show-rate__nav-btn"
+                        onClick={() => setOffset((prev) => prev + 1)}
+                        aria-label="Tháng trước"
+                    >
+                        &#8592;
+                    </button>
+                    <button
+                        className="monthly-no-show-rate__nav-btn"
+                        onClick={() => setOffset((prev) => Math.max(0, prev - 1))}
+                        disabled={offset === 0}
+                        aria-label="Tháng sau"
+                    >
+                        &#8594;
+                    </button>
+                </div>
             </div>
             <div className="monthly-no-show-rate__chart-container">
                 <ResponsiveContainer width="100%" height="100%">

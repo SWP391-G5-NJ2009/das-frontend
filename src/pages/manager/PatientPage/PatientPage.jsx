@@ -26,7 +26,7 @@ function RevenuePage() {
         <ReturningPatientCount/>
         <NoShowRate/>
       </div>
-      <div>
+      <div className="patient-page__monthly">
         <MonthlyNewPatientCount/>
         <MonthlyReturningPatientCount/>
         <MonthlyNoShowRate/>

@@ -15,9 +15,9 @@ import {
 } from "lucide-react";
 import { useAccounts } from "../../../hooks/useAccounts";
 import { useAuth } from "../../../context/AuthContext";
-import AddAccountModal from "../../../components/features/admin/AddAccountModal";
-import EditAccountModal from "../../../components/features/admin/EditAccountModal";
-import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal";
+import AddAccountModal from "../../../components/features/admin/AddAccountModal/AddAccountModal";
+import EditAccountModal from "../../../components/features/admin/EditAccountModal/EditAccountModal";
+import DeleteConfirmModal from "../../../components/features/admin/DeleteConfirmModal/DeleteConfirmModal";
 import AdminPageShell from "../AdminPageShell";
 import PropTypes from "prop-types";
 import AccountFilters from "../../../components/features/admin/AccountFilters/AccountFilters"

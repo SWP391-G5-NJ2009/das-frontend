@@ -45,6 +45,24 @@
   line-height: var(--line-height-tight);
 }
 
+.revenue-summary__change {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin: var(--space-2) 0 0 0;
+}
+
+.revenue-summary__change--positive {
+  color: var(--color-success);
+}
+
+.revenue-summary__change--negative {
+  color: var(--color-error);
+}
+
+.revenue-summary__change--neutral {
+  color: var(--color-neutral-400);
+}
+
 .revenue-summary__error-text {
   font-size: var(--font-size-sm);
   color: var(--color-error);

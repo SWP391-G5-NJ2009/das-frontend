@@ -4,16 +4,22 @@ import SiteFooter from "../../../components/layout/SiteFooter/SiteFooter";
 import SiteHeader from "../../../components/layout/SiteHeader/SiteHeader";
 import "./ConsultationPage.css";
 import { consultationService } from "../../../services/consultation.service";
+import { usePublicServices } from "../../../hooks/useDentalServices";
 import { useState } from "react";
 import Toast from "../../../components/common/Toast/Toast";
 
 function ConsultationPage() {
+
+  const { services, isLoading: isServicesLoading } = usePublicServices();
+  const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
     email: "",
     description: "",
+    service_id: "",
+    consultation_date: "",
     website: "",
   })
 
@@ -29,6 +35,7 @@ function ConsultationPage() {
     const cleaned = name === "phone" ? value.replace(/\D/g, "") : value;
     setForm((prev) => ({ ...prev, [name]: cleaned }));
     setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    e.target.setCustomValidity('');
   }
 
   const handleSubmit = async (e) => {
@@ -37,7 +44,7 @@ function ConsultationPage() {
     setIsSubmitting(true);
     try {
       await consultationService.create({ ...form, loadedAt });
-      setForm({ full_name: "", phone: "", email: "", description: "" });
+      setForm({ full_name: "", phone: "", email: "", description: "", service_id: "", consultation_date: "" });
       setFieldErrors(null);
       setSuccess("Yêu cầu tư vấn đã được gửi thành công!");
     } catch (err) {
@@ -50,6 +57,18 @@ function ConsultationPage() {
       setIsSubmitting(false);
     }
   };
+
+  function handleInvalid(e) {
+    const v = e.target.validity;
+
+    if (v.valueMissing) {
+      e.target.setCustomValidity('Vui lòng nhập thông tin này');
+    } else if (v.patternMismatch) {
+      e.target.setCustomValidity('Số điện thoại phải từ 10 đến 11 chữ số');
+    } else if (v.typeMismatch) {
+      e.target.setCustomValidity('Vui lòng email đúng định dạng (VD: abc@gmail.com)');
+    }
+  }
 
   return (
     <div className="consultation-page">
@@ -81,6 +100,7 @@ function ConsultationPage() {
                   value={form.full_name}
                   placeholder="Nhập họ và tên"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.full_name && (
@@ -96,10 +116,11 @@ function ConsultationPage() {
                   type="tel"
                   name="phone"
                   inputMode="numeric"
-                  pattern="[0-9]*"
+                  pattern="[0-9]{10,11}"
                   value={form.phone}
                   placeholder="Nhập số điện thoại liên hệ"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                   required
                 />
                 {fieldErrors?.phone && (
@@ -110,19 +131,45 @@ function ConsultationPage() {
               </label>
 
               <label className="consultation-panel__field">
-                <span>Email (không bắt buộc)</span>
+                <span>Email</span>
                 <input
                   type="email"
                   name="email"
                   value={form.email}
                   placeholder="Nhập địa chỉ email"
                   onChange={handleChange}
+                  onInvalid={handleInvalid}
                 />
                 {fieldErrors?.email && (
                   <span className="consultation-panel__field-error">
                     {fieldErrors.email[0]}
                   </span>
                 )}
+              </label>
+
+              <label className="consultation-panel__field">
+                <span>Dịch vụ quan tâm</span>
+                <select
+                  name="service_id"
+                  value={form.service_id}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn dịch vụ --</option>
+                  {!isServicesLoading && services.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="consultation-panel__field">
+                <span>Ngày tư vấn mong muốn</span>
+                <input
+                  type="date"
+                  name="consultation_date"
+                  value={form.consultation_date}
+                  min={today}
+                  onChange={handleChange}
+                />
               </label>
 
               <label className="consultation-panel__field">

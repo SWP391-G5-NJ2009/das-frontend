@@ -33,11 +33,12 @@ export function useRevenue() {
     return { data, isLoading, error };
 }
 
-export function useMonthlyRevenue() {
+export function useMonthlyRevenue(mOffset = 0) {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const mCurrent = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Ho_Chi_Minh" });
 
     useEffect(() => {
         let isMounted = true;
@@ -46,7 +47,7 @@ export function useMonthlyRevenue() {
             setIsLoading(true);
             setError(null);
             try {
-                const result = await revenueService.getMonthly();
+                const result = await revenueService.getMonthly(mCurrent, mOffset);
                 if (isMounted) setData(result);
             } catch (err) {
                 if (isMounted) {
@@ -60,7 +61,7 @@ export function useMonthlyRevenue() {
 
         fetchRevenue();
         return () => { isMounted = false; };
-    }, []);
+    }, [mCurrent, mOffset]);
 
     return { data, isLoading, error };
 }
