@@ -267,9 +267,9 @@ function ForgotPasswordPage({ mode = "patient" }) {
               </p>
             </div>
 
-            {devOtp && (
+            {/* {devOtp && (
               <p className="forgot-password__dev-otp">OTP dev: {devOtp}</p>
-            )}
+            )} */}
             {error && <p className="forgot-password__error">{error}</p>}
 
             <div className="forgot-password__otp" aria-label="Nhập OTP">
