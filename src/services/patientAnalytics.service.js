@@ -6,5 +6,5 @@ export const patientAnalyticsService = {
     getReturningPatient: () => api.get("/reports/patient/returningPatient"),
     getMonthlyNewPatient: (mCurrent, mOffset = 0) => api.get(`/reports/patient/newPatientMonthly?m_current=${mCurrent}&m_offset=${mOffset}`),
     getMonthlyReturningPatient: (mCurrent, mOffset = 0) => api.get(`/reports/patient/returningPatientMonthly?m_current=${mCurrent}&m_offset=${mOffset}`),
-    getMonthlyNoShowRate: () => api.get("/reports/patient/noShowRateMonthly"),
+    getMonthlyNoShowRate: (mCurrent, mOffset = 0) => api.get(`/reports/patient/noShowRateMonthly?m_current=${mCurrent}&m_offset=${mOffset}`),
 }
