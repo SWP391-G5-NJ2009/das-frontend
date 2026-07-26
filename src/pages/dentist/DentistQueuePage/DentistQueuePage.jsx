@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarPlus,
-  CheckCircle2,
   ClipboardPlus,
   Eye,
   History,
@@ -16,6 +15,7 @@ import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import Toast from "../../../components/common/Toast/Toast";
 import TreatmentRecordModal from "../../../components/features/treatments/TreatmentRecordModal/TreatmentRecordModal";
+import WalkInTreatmentRecordModal from "../../../components/features/treatments/WalkInTreatmentRecordModal/WalkInTreatmentRecordModal";
 import { useAuth } from "../../../context/AuthContext";
 import { useDentistQueue } from "../../../hooks/useQueues";
 import { appointmentService } from "../../../services/appointment.service";
@@ -25,9 +25,9 @@ import DentistPageShell from "../DentistPageShell";
 import "./DentistQueuePage.css";
 
 const STATUS_FILTERS = [
-  { label: "Tat ca", value: "all" },
-  { label: "Dang cho", value: "WAITING" },
-  { label: "Dang kham", value: "IN_PROGRESS" },
+  { label: "Tất cả", value: "all" },
+  { label: "Đang chờ", value: "WAITING" },
+  { label: "Đang khám", value: "IN_PROGRESS" },
 ];
 
 function toIsoDate(date) {
@@ -60,8 +60,8 @@ function formatQueueTime(queue) {
 }
 
 function formatCheckInTime(value) {
-  if (!value) return "Chua cap nhat";
-  return new Date(value).toLocaleString("en-GB", {
+  if (!value) return "Chưa cập nhật";
+  return new Date(value).toLocaleString("vi-VN", {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
@@ -97,14 +97,14 @@ function FollowUpReminderModal({
       >
         <header className="dentist-queue__modal-header">
           <div>
-            <h2 id="dentist-queue-follow-up-title">Create Follow-up Alert</h2>
+            <h2 id="dentist-queue-follow-up-title">Tạo nhắc lịch tái khám</h2>
             <p>{patient.patientName}</p>
           </div>
           <button
             className="dentist-queue__modal-close"
             type="button"
             onClick={onClose}
-            aria-label="Close follow-up alert"
+            aria-label="Đóng nhắc lịch tái khám"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -115,7 +115,7 @@ function FollowUpReminderModal({
 
           <div className="dentist-queue__form-grid">
             <label>
-              <span>Appointment date</span>
+              <span>Ngày tái khám</span>
               <input
                 type="date"
                 name="appointmentDate"
@@ -126,7 +126,7 @@ function FollowUpReminderModal({
               />
             </label>
             <label>
-              <span>Appointment time</span>
+              <span>Giờ tái khám</span>
               <input
                 type="time"
                 name="appointmentTime"
@@ -138,14 +138,14 @@ function FollowUpReminderModal({
           </div>
 
           <label>
-            <span>Treatment reason</span>
+            <span>Lý do tái khám</span>
             <textarea
               name="reason"
               value={form.reason}
               onChange={onChange}
               rows="4"
               maxLength={500}
-              placeholder="Follow-up reason"
+              placeholder="Nhập lý do tái khám"
               required
             />
           </label>
@@ -156,13 +156,13 @@ function FollowUpReminderModal({
               type="button"
               onClick={onClose}
             >
-              Cancel
+              Hủy
             </button>
             <button
               className="dentist-queue__modal-btn dentist-queue__modal-btn--primary"
               type="submit"
             >
-              Confirm Alert
+              Xác nhận
             </button>
           </footer>
         </form>
@@ -229,12 +229,12 @@ function DentistQueuePage() {
       await refetch();
       setToast({
         type: "success",
-        message: "Da bat dau kham cho benh nhan.",
+        message: "Đã bắt đầu khám cho bệnh nhân.",
       });
     } catch (requestError) {
       setToast({
         type: "error",
-        message: requestError.message || "Khong the bat dau kham.",
+        message: requestError.message || "Không thể bắt đầu khám.",
       });
     } finally {
       setActionId(null);
@@ -242,48 +242,32 @@ function DentistQueuePage() {
   };
 
   const handleRecordTreatment = (queue) => {
-    if (!queue.appointmentId) {
+    const isWalkIn = queue.queueType === "WALK_IN";
+    if (isWalkIn && queue.status !== "IN_PROGRESS") {
       setToast({
         type: "warning",
-        message:
-          "Walk-in khong co appointment nen khong dung treatment record cua lich hen.",
+        message: "Vui lòng bắt đầu khám trước khi ghi kết quả.",
       });
       return;
     }
 
-    if (queue.appointmentStatus !== "In-Treatment") {
+    if (!isWalkIn && queue.appointmentStatus !== "In-Treatment") {
       setToast({
         type: "warning",
-        message: "Vui long bat dau dieu tri truoc khi ghi ket qua.",
+        message: "Vui lòng bắt đầu điều trị trước khi ghi kết quả.",
       });
       return;
     }
 
     setTreatmentError(null);
     setTreatmentTarget({
-      id: queue.appointmentId,
+      id: queue.appointmentId || `walk-in-${queue.queueId}`,
+      queueId: isWalkIn ? queue.queueId : null,
       patientName: queue.patientName,
-      serviceName: queue.serviceName || "Dental service",
+      serviceName: queue.serviceName || "Dịch vụ nha khoa",
+      treatmentDate: queue.checkInTime?.slice(0, 10),
+      dentistName: queue.dentistName,
     });
-  };
-
-  const handleCompleteWalkIn = async (queue) => {
-    setActionId(queue.queueId);
-    try {
-      await queueService.updateStatus(queue.queueId, "COMPLETED");
-      await refetch();
-      setToast({
-        type: "success",
-        message: "Da hoan tat luot kham walk-in.",
-      });
-    } catch (requestError) {
-      setToast({
-        type: "error",
-        message: requestError.message || "Khong the hoan tat luot walk-in.",
-      });
-    } finally {
-      setActionId(null);
-    }
   };
 
   const handleSaveTreatment = async (values) => {
@@ -291,15 +275,19 @@ function DentistQueuePage() {
     setIsSavingTreatment(true);
     setTreatmentError(null);
     try {
-      await treatmentService.create({
-        appointmentId: treatmentTarget.id,
-        ...values,
-      });
+      if (treatmentTarget.queueId) {
+        await queueService.recordTreatment(treatmentTarget.queueId, values);
+      } else {
+        await treatmentService.create({
+          appointmentId: treatmentTarget.id,
+          ...values,
+        });
+      }
       setTreatmentTarget(null);
       await refetch();
       setToast({
         type: "success",
-        message: "Da luu treatment record va hoan tat luot kham.",
+        message: "Đã lưu kết quả điều trị, tạo hóa đơn và hoàn tất lượt khám.",
       });
     } catch (requestError) {
       setTreatmentError(requestError);
@@ -326,7 +314,7 @@ function DentistQueuePage() {
     );
 
     if (!reason) {
-      setFollowUpError("Treatment reason is required.");
+      setFollowUpError("Vui lòng nhập lý do tái khám.");
       return;
     }
 
@@ -334,7 +322,7 @@ function DentistQueuePage() {
       Number.isNaN(followUpDateTime.getTime()) ||
       followUpDateTime <= new Date()
     ) {
-      setFollowUpError("Follow-up date and time must be in the future.");
+      setFollowUpError("Ngày và giờ tái khám phải ở trong tương lai.");
       return;
     }
 
@@ -363,9 +351,9 @@ function DentistQueuePage() {
       <section className="dentist-queue" aria-labelledby="dentist-queue-title">
         <header className="dentist-queue__header">
           <div>
-            <p className="dentist-queue__eyebrow">Queue</p>
-            <h1 id="dentist-queue-title">My Queue</h1>
-            <p>Only checked-in appointment patients and assigned walk-ins appear here.</p>
+            <p className="dentist-queue__eyebrow">Hàng đợi</p>
+            <h1 id="dentist-queue-title">Hàng đợi của tôi</h1>
+            <p>Danh sách bệnh nhân đã nhận bệnh và walk-in được phân công cho bạn.</p>
           </div>
           <button
             className="dentist-queue__button dentist-queue__button--secondary"
@@ -374,33 +362,33 @@ function DentistQueuePage() {
             disabled={isLoading}
           >
             <RefreshCw size={16} aria-hidden="true" />
-            Refresh
+            Làm mới
           </button>
         </header>
 
         <section className="dentist-queue__summary" aria-label="Queue summary">
           <div>
             <span>{stats.total}</span>
-            <p>Tong luot cua toi</p>
+            <p>Tổng lượt của tôi</p>
           </div>
           <div>
             <span>{stats.waiting}</span>
-            <p>Dang cho</p>
+            <p>Đang chờ</p>
           </div>
           <div>
             <span>{stats.inProgress}</span>
-            <p>Dang kham</p>
+            <p>Đang khám</p>
           </div>
         </section>
 
         <section className="dentist-queue__toolbar" aria-label="Queue filters">
           <label className="dentist-queue__search">
             <Search aria-hidden="true" size={18} />
-            <span className="dentist-queue__visually-hidden">Search queue</span>
+            <span className="dentist-queue__visually-hidden">Tìm trong hàng đợi</span>
             <input
               autoComplete="off"
               onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search patient, phone, service..."
+              placeholder="Tìm bệnh nhân, số điện thoại, dịch vụ..."
               type="search"
               value={searchTerm}
             />
@@ -425,10 +413,10 @@ function DentistQueuePage() {
 
         {isLoading && <Spinner />}
         {!isLoading && error && (
-          <EmptyState message={error.message || "Khong the tai queue."} />
+          <EmptyState message={error.message || "Không thể tải hàng đợi."} />
         )}
         {!isLoading && !error && filteredQueues.length === 0 && (
-          <EmptyState message="Chua co benh nhan nao trong queue cua ban." />
+          <EmptyState message="Chưa có bệnh nhân nào trong hàng đợi của bạn." />
         )}
 
         {!isLoading && !error && filteredQueues.length > 0 && (
@@ -436,10 +424,9 @@ function DentistQueuePage() {
             {filteredQueues.map((queue, index) => {
               const canStart = queue.status === "WAITING";
               const canRecord =
-                Boolean(queue.appointmentId) &&
-                queue.appointmentStatus === "In-Treatment";
-              const canCompleteWalkIn =
-                !queue.appointmentId && queue.status === "IN_PROGRESS";
+                (queue.queueType === "WALK_IN" && queue.status === "IN_PROGRESS") ||
+                (Boolean(queue.appointmentId) &&
+                  queue.appointmentStatus === "In-Treatment");
               return (
                 <article className="dentist-queue__item" key={queue.queueId}>
                   <div className="dentist-queue__order">
@@ -449,7 +436,7 @@ function DentistQueuePage() {
 
                   <div className="dentist-queue__patient">
                     <strong>{queue.patientName}</strong>
-                    <span>{queue.patientPhone || "No phone"}</span>
+                    <span>{queue.patientPhone || "Không có số điện thoại"}</span>
                     {queue.note && <em title={queue.note}>{queue.note}</em>}
                   </div>
 
@@ -473,8 +460,8 @@ function DentistQueuePage() {
                       className="dentist-queue__icon-action"
                       type="button"
                       onClick={() => setDetailTarget(queue)}
-                      title="Queue details"
-                      aria-label={`View queue details for ${queue.patientName}`}
+                      title="Chi tiết lượt khám"
+                      aria-label={`Xem chi tiết lượt khám của ${queue.patientName}`}
                     >
                       <Eye size={15} aria-hidden="true" />
                     </button>
@@ -487,8 +474,8 @@ function DentistQueuePage() {
                         })
                       }
                       disabled={!queue.patientId}
-                      title="Treatment history"
-                      aria-label={`View treatment history for ${queue.patientName}`}
+                      title="Lịch sử điều trị"
+                      aria-label={`Xem lịch sử điều trị của ${queue.patientName}`}
                     >
                       <History size={15} aria-hidden="true" />
                     </button>
@@ -500,20 +487,7 @@ function DentistQueuePage() {
                         disabled={actionId === queue.queueId}
                       >
                         <Play size={15} aria-hidden="true" />
-                        {actionId === queue.queueId ? "Starting..." : "Start"}
-                      </button>
-                    )}
-                    {canCompleteWalkIn && (
-                      <button
-                        className="dentist-queue__button dentist-queue__button--primary"
-                        type="button"
-                        onClick={() => handleCompleteWalkIn(queue)}
-                        disabled={actionId === queue.queueId}
-                      >
-                        <CheckCircle2 size={15} aria-hidden="true" />
-                        {actionId === queue.queueId
-                          ? "Completing..."
-                          : "Complete"}
+                        {actionId === queue.queueId ? "Đang bắt đầu..." : "Bắt đầu khám"}
                       </button>
                     )}
                     <button
@@ -523,21 +497,21 @@ function DentistQueuePage() {
                       disabled={!canRecord}
                       title={
                         canRecord
-                          ? "Record treatment"
+                          ? "Ghi kết quả điều trị"
                           : queue.appointmentId
                             ? "Record treatment requires an In-Treatment appointment"
                             : "Walk-in does not have an appointment treatment record"
                       }
                     >
                       <ClipboardPlus size={15} aria-hidden="true" />
-                      Record
+                      Ghi kết quả
                     </button>
                     <button
                       className="dentist-queue__icon-action dentist-queue__icon-action--follow-up"
                       type="button"
                       onClick={() => openFollowUp(queue)}
-                      title="Create follow-up alert"
-                      aria-label={`Create follow-up alert for ${queue.patientName}`}
+                      title="Tạo nhắc lịch tái khám"
+                      aria-label={`Tạo nhắc lịch tái khám cho ${queue.patientName}`}
                     >
                       <CalendarPlus size={15} aria-hidden="true" />
                     </button>
@@ -574,25 +548,25 @@ function DentistQueuePage() {
               <header>
                 <div>
                   <h2 id="dentist-queue-detail-title">{detailTarget.patientName}</h2>
-                  <p>Queue #{detailTarget.queueId}</p>
+                  <p>Lượt khám #{detailTarget.queueId}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setDetailTarget(null)}
-                  aria-label="Close queue details"
+                  aria-label="Đóng chi tiết lượt khám"
                 >
                   <X size={18} />
                 </button>
               </header>
               <dl>
-                <div><dt>Phone</dt><dd>{detailTarget.patientPhone || "—"}</dd></div>
-                <div><dt>Check-in</dt><dd>{formatCheckInTime(detailTarget.checkInTime)}</dd></div>
-                <div><dt>Waiting</dt><dd>{detailTarget.waitingMinutes} minutes</dd></div>
-                <div><dt>Appointment</dt><dd>{formatQueueTime(detailTarget)}</dd></div>
-                <div><dt>Room</dt><dd>{detailTarget.roomName || "Unassigned"}</dd></div>
-                <div><dt>Service</dt><dd>{detailTarget.serviceName || "Walk-in"}</dd></div>
-                <div><dt>Status</dt><dd><Badge status={detailTarget.status} /></dd></div>
-                <div><dt>Dentist</dt><dd>{detailTarget.dentistName || "Unassigned"}</dd></div>
+                <div><dt>Điện thoại</dt><dd>{detailTarget.patientPhone || "—"}</dd></div>
+                <div><dt>Giờ nhận bệnh</dt><dd>{formatCheckInTime(detailTarget.checkInTime)}</dd></div>
+                <div><dt>Thời gian chờ</dt><dd>{detailTarget.waitingMinutes} phút</dd></div>
+                <div><dt>Lịch hẹn</dt><dd>{formatQueueTime(detailTarget)}</dd></div>
+                <div><dt>Phòng</dt><dd>{detailTarget.roomName || "Chưa phân phòng"}</dd></div>
+                <div><dt>Dịch vụ</dt><dd>{detailTarget.serviceName || "Walk-in"}</dd></div>
+                <div><dt>Trạng thái</dt><dd><Badge status={detailTarget.status} /></dd></div>
+                <div><dt>Nha sĩ</dt><dd>{detailTarget.dentistName || "Chưa phân công"}</dd></div>
               </dl>
               {detailTarget.note && (
                 <p className="dentist-queue__detail-note">{detailTarget.note}</p>
@@ -601,9 +575,21 @@ function DentistQueuePage() {
           </div>
         )}
 
-        {treatmentTarget && (
+        {treatmentTarget && !treatmentTarget.queueId && (
           <TreatmentRecordModal
             appointment={treatmentTarget}
+            error={treatmentError}
+            isSubmitting={isSavingTreatment}
+            onClose={() => {
+              if (!isSavingTreatment) setTreatmentTarget(null);
+            }}
+            onSubmit={handleSaveTreatment}
+          />
+        )}
+
+        {treatmentTarget?.queueId && (
+          <WalkInTreatmentRecordModal
+            queue={treatmentTarget}
             error={treatmentError}
             isSubmitting={isSavingTreatment}
             onClose={() => {

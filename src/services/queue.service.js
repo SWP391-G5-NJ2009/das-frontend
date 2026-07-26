@@ -15,6 +15,8 @@ function withQuery(path, filters) {
   return `${path}${query ? `?${query}` : ""}`;
 }
 
+
+
 export const queueService = {
   getAll: (filters = {}) => api.get(withQuery("/queues", filters)),
   getMine: (filters = {}) => api.get(withQuery("/queues/mine", filters)),
@@ -22,6 +24,13 @@ export const queueService = {
   createWalkIn: (payload) => api.post("/queues/walk-in", payload),
   updateStatus: (queueId, status) =>
     api.patch(`/queues/${queueId}/status`, { status }),
+
+  //treatment
+    recordTreatment: (queueId, payload) =>
+    api.post(
+      `/queues/${queueId}/treatment`,
+      payload,
+    ),
   createFollowUp: (queueId, payload) =>
     api.post(`/queues/${queueId}/follow-ups`, payload),
 };

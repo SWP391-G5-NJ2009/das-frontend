@@ -49,8 +49,16 @@ function getSlotClass(status) {
 }
 
 function formatScheduleTime(schedule) {
-  if (!schedule.startTime || !schedule.endTime) return "No configured slots";
+  if (!schedule.startTime || !schedule.endTime) return "Chưa cấu hình khung giờ";
   return `${schedule.startTime} - ${schedule.endTime}`;
+}
+
+function translateSlotStatus(status) {
+  return {
+    Available: "Còn trống",
+    Unavailable: "Không khả dụng",
+    Booked: "Đã đặt",
+  }[status] || status;
 }
 
 function DentistScheduleViewPage() {
@@ -171,11 +179,11 @@ function DentistScheduleViewPage() {
       <div className="dentist-schedule-view">
         <header className="dentist-schedule-view__header">
           <div>
-            <p className="dentist-schedule-view__eyebrow">Schedules</p>
-            <h1 id="dentist-schedule-view-title">View Dentist Schedule</h1>
+            <p className="dentist-schedule-view__eyebrow">Lịch làm việc</p>
+            <h1 id="dentist-schedule-view-title">Xem lịch nha sĩ</h1>
             <p>
-              Check working shifts, assigned room, available slots, and
-              unavailable time before arranging patients.
+              Kiểm tra ca làm việc, phòng phụ trách và khung giờ còn trống
+              trước khi sắp xếp lịch cho bệnh nhân.
             </p>
           </div>
           <button
@@ -185,13 +193,13 @@ function DentistScheduleViewPage() {
             disabled={isScheduleLoading}
           >
             <RefreshCw size={16} aria-hidden="true" />
-            Refresh
+            Làm mới
           </button>
         </header>
 
-        <section className="dentist-schedule-view__filters" aria-label="Schedule filters">
+        <section className="dentist-schedule-view__filters" aria-label="Bộ lọc lịch làm việc">
           <label>
-            <span>Dentist</span>
+            <span>Nha sĩ</span>
             <select
               value={selectedDentistId}
               onChange={(event) => setSelectedDentistId(event.target.value)}
@@ -206,12 +214,12 @@ function DentistScheduleViewPage() {
           </label>
 
           <label>
-            <span>Room</span>
+            <span>Phòng</span>
             <select
               value={roomFilter}
               onChange={(event) => setRoomFilter(event.target.value)}
             >
-              <option value="">All rooms</option>
+              <option value="">Tất cả phòng</option>
               {roomOptions.map((room) => (
                 <option key={room.value} value={room.value}>
                   {room.label}
@@ -221,7 +229,7 @@ function DentistScheduleViewPage() {
           </label>
 
           <label>
-            <span>Date</span>
+            <span>Ngày</span>
             <input
               type="date"
               value={date}
@@ -229,36 +237,36 @@ function DentistScheduleViewPage() {
             />
           </label>
 
-          <div className="dentist-schedule-view__mode" role="group" aria-label="View mode">
+          <div className="dentist-schedule-view__mode" role="group" aria-label="Chế độ xem">
             <button
               className={mode === "day" ? "dentist-schedule-view__mode-btn dentist-schedule-view__mode-btn--active" : "dentist-schedule-view__mode-btn"}
               type="button"
               onClick={() => setMode("day")}
             >
-              Day
+              Ngày
             </button>
             <button
               className={mode === "week" ? "dentist-schedule-view__mode-btn dentist-schedule-view__mode-btn--active" : "dentist-schedule-view__mode-btn"}
               type="button"
               onClick={() => setMode("week")}
             >
-              Week
+              Tuần
             </button>
           </div>
         </section>
 
-        <section className="dentist-schedule-view__summary" aria-label="Slot summary">
+        <section className="dentist-schedule-view__summary" aria-label="Tóm tắt khung giờ">
           <div>
             <span>{slotStats.available}</span>
-            <p>Available</p>
+            <p>Còn trống</p>
           </div>
           <div>
             <span>{slotStats.unavailable}</span>
-            <p>Unavailable</p>
+            <p>Không khả dụng</p>
           </div>
           <div>
             <span>{slotStats.booked}</span>
-            <p>Booked</p>
+            <p>Đã đặt</p>
           </div>
         </section>
 
@@ -272,7 +280,7 @@ function DentistScheduleViewPage() {
 
         {error && (
           <div className="dentist-schedule-view__notice dentist-schedule-view__notice--error">
-            {error.message || "Unable to load dentist schedule."}
+            {error.message || "Không thể tải lịch làm việc của nha sĩ."}
           </div>
         )}
 
@@ -285,12 +293,12 @@ function DentistScheduleViewPage() {
         {!isDentistLoading && !isScheduleLoading && !error && schedules.length === 0 && (
           <div className="dentist-schedule-view__empty">
             <CalendarDays size={24} aria-hidden="true" />
-            <p>No schedule is available for the selected dentist and range.</p>
+            <p>Không có lịch làm việc trong khoảng thời gian đã chọn.</p>
           </div>
         )}
 
         {!isDentistLoading && !isScheduleLoading && schedules.length > 0 && (
-          <section className="dentist-schedule-view__list" aria-label="Dentist schedule">
+          <section className="dentist-schedule-view__list" aria-label="Lịch làm việc của nha sĩ">
             {schedules.map((schedule) => (
               <article className="dentist-schedule-view__card" key={schedule.schedule_id}>
                 <div className="dentist-schedule-view__card-header">
@@ -304,7 +312,7 @@ function DentistScheduleViewPage() {
                   {(schedule.slots || []).map((slot) => (
                     <span className={getSlotClass(slot.status)} key={slot.slot_id}>
                       <span>{slot.startTime} - {slot.endTime}</span>
-                      <strong>{slot.status}</strong>
+                      <strong>{translateSlotStatus(slot.status)}</strong>
                     </span>
                   ))}
                 </div>
