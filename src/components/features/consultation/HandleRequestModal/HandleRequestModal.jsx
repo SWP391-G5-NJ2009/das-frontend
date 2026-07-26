@@ -33,6 +33,10 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
+  const isDirty =
+    form.status !== request.status ||
+    form.note !== (request.note || "");
+
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -172,7 +176,7 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
               <button
                 className="handle-request-modal__btn handle-request-modal__btn--submit"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isDirty}
               >
                 {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
               </button>
