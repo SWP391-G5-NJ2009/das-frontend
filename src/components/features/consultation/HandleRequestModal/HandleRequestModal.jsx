@@ -104,11 +104,6 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
               <input name="phone" type="tel" value={form.phone} readOnly />
             </label>
 
-            <label className="handle-request-modal__field handle-request-modal__field--description">
-              <span className="handle-request-modal__label">Mô tả</span>
-              <textarea name="description" value={form.description} readOnly />
-            </label>
-
             <label className="handle-request-modal__field">
               <span className="handle-request-modal__label">Dịch vụ quan tâm</span>
               <input name="service_name" value={request.dental_services?.service_name || "Chưa chọn"} readOnly />
@@ -123,6 +118,12 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
                 readOnly
               />
             </label>
+
+            <label className="handle-request-modal__field handle-request-modal__field--description">
+              <span className="handle-request-modal__label">Mô tả</span>
+              <textarea name="description" value={form.description} readOnly />
+            </label>
+
           </div>
 
           <div className="handle-request-modal__column handle-request-modal__column--editable">
@@ -148,7 +149,7 @@ function HandleRequestModal({ request, onClose, onSuccess, refetch }) {
 
             <label className="handle-request-modal__field handle-request-modal__field--note">
               <span className="handle-request-modal__label">Ghi chú</span>
-              <textarea name="note" value={form.note} onChange={handleChange} />
+              <textarea name="note" maxLength={1000} value={form.note} onChange={handleChange} />
               {fieldErrors?.note && (
                 <span className="add-account-modal__field-error">
                   {fieldErrors.note[0]}

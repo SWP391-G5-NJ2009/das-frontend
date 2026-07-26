@@ -165,10 +165,9 @@ function AppointmentDashboardPage() {
       <div className="appt-dash">
         <header className="appt-dash__header">
           <div>
-            <p className="appt-dash__eyebrow">Bảng điều khiển quản lý</p>
-            <h1 className="appt-dash__title">Bảng điều khiển lịch hẹn</h1>
+            <h1 className="appt-dash__title">Bảng lịch hẹn</h1>
             <p className="appt-dash__subtitle">
-              Xem tổng quan lịch hẹn và chi tiết lịch trình.
+              Xem tổng quan và chi tiết lịch hẹn.
             </p>
           </div>
         </header>

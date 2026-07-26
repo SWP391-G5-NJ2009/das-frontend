@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import { accountService } from "../../../../services/account.service";
@@ -13,17 +13,27 @@ const ROLES = [
 ];
 
 function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
-  const [form, setForm] = useState({
+  const initialForm = useRef({
     username: account.username || "",
     email: account.email || "",
     phone: account.phone || "",
     password: "",
     role_name: account.role?.role_name || "",
     status: account.status || "Active",
-  });
+  }).current;
+
+  const [form, setForm] = useState({ ...initialForm });
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isDirty =
+    form.username !== initialForm.username ||
+    form.email !== initialForm.email ||
+    form.phone !== initialForm.phone ||
+    form.password !== "" ||
+    form.role_name !== initialForm.role_name ||
+    form.status !== initialForm.status;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -215,7 +225,7 @@ function EditAccountModal({ account, userAccount, onClose, onSuccess }) {
             <button
               className="add-account-modal__btn add-account-modal__btn--submit"
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isDirty}
             >
               {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
