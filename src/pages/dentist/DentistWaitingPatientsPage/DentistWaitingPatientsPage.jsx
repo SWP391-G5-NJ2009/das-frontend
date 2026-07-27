@@ -5,8 +5,7 @@ import Badge from "../../../components/common/Badge/Badge";
 import EmptyState from "../../../components/common/EmptyState/EmptyState";
 import Spinner from "../../../components/common/Spinner/Spinner";
 import Pagination from "../../../components/common/Pagination/Pagination";
-import { useAuth } from "../../../context/AuthContext";
-import { useAllAppointments } from "../../../hooks/useAppointments";
+import { useDentistPatients } from "../../../hooks/useDentistPatients";
 import DentistPageShell from "../DentistPageShell";
 import "./DentistWaitingPatientsPage.css";
 
@@ -34,56 +33,12 @@ function getDefaultFollowUpForm() {
   };
 }
 
-function getPatientKey(appointment) {
-  return appointment.patientId || appointment.patientPhone || appointment.id;
-}
-
-function getAppointmentDateTime(appointment) {
-  return `${appointment.scheduledDate ?? ""} ${appointment.scheduledTime ?? ""}`;
-}
-
-function compareAppointmentsDesc(a, b) {
-  return getAppointmentDateTime(b).localeCompare(getAppointmentDateTime(a));
-}
-
 function normalizeSearchValue(value) {
   return String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
-}
-
-function buildPatientRows(appointments) {
-  const groups = appointments.reduce((result, appointment) => {
-    const key = getPatientKey(appointment);
-    const patientAppointments = result.get(key) || [];
-    result.set(key, [...patientAppointments, appointment]);
-    return result;
-  }, new Map());
-
-  return Array.from(groups.values())
-    .map((patientAppointments) => {
-      const latestAppointment = patientAppointments
-        .slice()
-        .sort(compareAppointmentsDesc)[0];
-      if (!latestAppointment) return null;
-      return {
-        latestDate: latestAppointment.scheduledDate || "",
-        latestTime: latestAppointment.scheduledTime || "",
-        latestTimeEnd: latestAppointment.scheduledTimeEnd || "",
-        patientId: latestAppointment.patientId,
-        patientName: latestAppointment.patientName || "Chưa cập nhật",
-        patientPhone: latestAppointment.patientPhone || "",
-        latestAppointment,
-        status: latestAppointment.status || "Waiting",
-        serviceName: latestAppointment.serviceName || "Chưa cập nhật",
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) =>
-      compareAppointmentsDesc(a.latestAppointment, b.latestAppointment),
-    );
 }
 
 function FollowUpReminderModal({
@@ -189,7 +144,6 @@ function FollowUpReminderModal({
 }
 
 function DentistWaitingPatientsPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [followUpError, setFollowUpError] = useState("");
@@ -197,17 +151,7 @@ function DentistWaitingPatientsPage() {
   const [followUpMessage, setFollowUpMessage] = useState("");
   const [followUpTarget, setFollowUpTarget] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const { appointments, error, isLoading } = useAllAppointments({});
-
-  const patients = useMemo(() => {
-    const ownAppointments = user?.profileId
-      ? appointments.filter(
-          (appointment) =>
-            String(appointment.dentistId) === String(user.profileId),
-        )
-      : appointments;
-    return buildPatientRows(ownAppointments);
-  }, [appointments, user?.profileId]);
+  const { patients, error, isLoading } = useDentistPatients();
 
   const filteredPatients = useMemo(() => {
     const keyword = normalizeSearchValue(searchTerm);
@@ -363,11 +307,6 @@ function DentistWaitingPatientsPage() {
                             </span>
                           </td>
                           <td>
-                            <span className="dentist-waiting-patients__time">
-                              {patient.latestTime || "Chưa có giờ"}
-                              {patient.latestTimeEnd &&
-                                ` - ${patient.latestTimeEnd}`}
-                            </span>
                             <span className="dentist-waiting-patients__muted-info">
                               {formatDate(patient.latestDate)}
                             </span>
@@ -386,7 +325,7 @@ function DentistWaitingPatientsPage() {
                                     `/dentist/patients/${patient.patientId}/treatment-history`,
                                     {
                                       state: {
-                                        patient: patient.latestAppointment,
+                                        patient,
                                       },
                                     },
                                   )

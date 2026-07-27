@@ -17,7 +17,7 @@ const ROLE_OPTIONS = [
 const STATUS_OPTIONS = [
   { value: "all", label: "Tất cả" },
   { value: "Active", label: "Hoạt động" },
-  { value: "Banned", label: "Bị khóa" },
+  { value: "Deactivated", label: "Không hoạt động" },
 ];
 
 const PAGE_SIZE = 5;
