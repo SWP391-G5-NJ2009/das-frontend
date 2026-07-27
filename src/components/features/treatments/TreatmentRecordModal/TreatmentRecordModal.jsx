@@ -46,7 +46,10 @@ function TreatmentRecordModal({
       (visit) =>
         String(visit.appointmentId) === String(selectedAppointmentId),
     ) || visits.find((visit) => visit.isCurrent);
-  const canEdit = Boolean(selectedVisit?.isEditable);
+  const requiresTreatmentPlan =
+    context?.treatmentMode === "Multi-Visit" && !context?.planId;
+  const canEdit =
+    Boolean(selectedVisit?.isEditable) && !requiresTreatmentPlan;
   const canCompletePlan =
     canEdit && Boolean(context?.planId) && context?.planStatus === "Active";
 
@@ -237,7 +240,9 @@ function TreatmentRecordModal({
 
             <form className="treatment-record__body" onSubmit={submit}>
               <label className="treatment-record__field">
-                <span>Khám lâm sàng</span>
+                <span>
+                  Khám lâm sàng <b aria-hidden="true">*</b>
+                </span>
                 <textarea
                   disabled={!canEdit || isSubmitting}
                   maxLength={2000}
@@ -246,6 +251,7 @@ function TreatmentRecordModal({
                   }
                   placeholder="Nhập kết quả khám lâm sàng..."
                   readOnly={!canEdit}
+                  required={canEdit}
                   rows={3}
                   value={clinicalExamination}
                 />
