@@ -105,7 +105,6 @@ function ManagerServiceCatalog() {
       await deleteService(serviceId);
       alert("Xóa dịch vụ thành công.");
     } catch (err) {
-      console.error("Error occurred while deleting service:", err);
       alert(err.message || "Không thể xóa dịch vụ.");
     }
   };
@@ -123,7 +122,6 @@ function ManagerServiceCatalog() {
 
       setIsModalOpen(false);
     } catch (err) {
-      console.error("Error submitting form:", err);
       alert(err.message || "Thao tác thất bại.");
     }
   };

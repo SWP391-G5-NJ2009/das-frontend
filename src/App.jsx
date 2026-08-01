@@ -1,42 +1,61 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import AdminAccountsPage from "./pages/admin/AdminAccountsPage/AdminAccountsPage";
-import AppointmentDashboardPage from "./pages/manager/AppointmentDashboardPage/AppointmentDashboardPage";
-
-import ConsultationPage from "./pages/public/ConsultationPage/ConsultationPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage/ForgotPasswordPage";
-import LandingPage from "./pages/public/LandingPage/LandingPage";
-import ServiceCatalogPage from "./pages/manager/ServiceCatalogPage/ServiceCatalogPage";
-import ClinicInfoPage from "./pages/manager/ClinicInfoPage/ClinicInfoPage";
-import AppointmentsPage from "./pages/shared/AppointmentsPage/AppointmentsPage";
-import BookingPage from "./pages/patient/BookingPage/BookingPage";
-import PaymentHistoryPage from "./pages/patient/PaymentHistoryPage/PaymentHistoryPage";
-import DentistWaitingPatientsPage from "./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage";
-import DentistQueuePage from "./pages/dentist/DentistQueuePage/DentistQueuePage";
-import PatientTreatmentHistoryPage from "./pages/dentist/PatientTreatmentHistoryPage/PatientTreatmentHistoryPage";
-import PatientLoginPage from "./pages/auth/PatientLoginPage/PatientLoginPage";
-import PaymentListPage from "./pages/receptionist/PaymentListPage/PaymentListPage";
-import PatientRegistrationPage from "./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage";
-import ReceptionistRequestsPage from "./pages/receptionist/RequestsPage/RequestsPage";
-import ReceptionistBookAppointmentPage from "./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage";
-import DentistScheduleViewPage from "./pages/receptionist/DentistScheduleViewPage/DentistScheduleViewPage";
-import ReceptionistQueuePage from "./pages/receptionist/ReceptionistQueuePage/ReceptionistQueuePage";
-import DentistScheduleManagement from "./pages/dentist/ScheduleManagement/DentistScheduleManagement";
-import ManageProfilePage from "./pages/shared/ManageProfilePage/ManageProfilePage";
-import ScheduleApprovalPage from "./pages/manager/ScheduleApprovalPage/ScheduleApprovalPage";
-import RoomsPage from "./pages/manager/RoomsPage/RoomsPage";
-import ServicesPage from "./pages/public/ServicesPage/ServicesPage";
-import StaffLoginPage from "./pages/auth/StaffLoginPage/StaffLoginPage";
-import ManagerStaffPage from "./pages/manager/ManagerStaffPage/ManagerStaffPage";
+import Spinner from "./components/common/Spinner/Spinner";
 import ProtectedRoute from "./router/ProtectedRoute";
-import RevenuePage from "./pages/manager/RevenuePage/RevenuePage";
-import PatientPage from "./pages/manager/PatientPage/PatientPage";
+
+const AdminAccountsPage = lazy(() => import("./pages/admin/AdminAccountsPage/AdminAccountsPage"));
+const AppointmentDashboardPage = lazy(() =>
+  import("./pages/manager/AppointmentDashboardPage/AppointmentDashboardPage"),
+);
+const ConsultationPage = lazy(() => import("./pages/public/ConsultationPage/ConsultationPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage/ForgotPasswordPage"));
+const LandingPage = lazy(() => import("./pages/public/LandingPage/LandingPage"));
+const ServiceCatalogPage = lazy(() => import("./pages/manager/ServiceCatalogPage/ServiceCatalogPage"));
+const ClinicInfoPage = lazy(() => import("./pages/manager/ClinicInfoPage/ClinicInfoPage"));
+const AppointmentsPage = lazy(() => import("./pages/shared/AppointmentsPage/AppointmentsPage"));
+const BookingPage = lazy(() => import("./pages/patient/BookingPage/BookingPage"));
+const PaymentHistoryPage = lazy(() => import("./pages/patient/PaymentHistoryPage/PaymentHistoryPage"));
+const DentistWaitingPatientsPage = lazy(() =>
+  import("./pages/dentist/DentistWaitingPatientsPage/DentistWaitingPatientsPage"),
+);
+const DentistQueuePage = lazy(() => import("./pages/dentist/DentistQueuePage/DentistQueuePage"));
+const PatientTreatmentHistoryPage = lazy(() =>
+  import("./pages/dentist/PatientTreatmentHistoryPage/PatientTreatmentHistoryPage"),
+);
+const PatientLoginPage = lazy(() => import("./pages/auth/PatientLoginPage/PatientLoginPage"));
+const PaymentListPage = lazy(() => import("./pages/receptionist/PaymentListPage/PaymentListPage"));
+const PatientRegistrationPage = lazy(() =>
+  import("./pages/receptionist/PatientRegistrationPage/PatientRegistrationPage"),
+);
+const ReceptionistRequestsPage = lazy(() => import("./pages/receptionist/RequestsPage/RequestsPage"));
+const ReceptionistBookAppointmentPage = lazy(() =>
+  import("./pages/receptionist/BookAppointmentPage/ReceptionistBookAppointmentPage"),
+);
+const DentistScheduleViewPage = lazy(() =>
+  import("./pages/receptionist/DentistScheduleViewPage/DentistScheduleViewPage"),
+);
+const ReceptionistQueuePage = lazy(() =>
+  import("./pages/receptionist/ReceptionistQueuePage/ReceptionistQueuePage"),
+);
+const DentistScheduleManagement = lazy(() =>
+  import("./pages/dentist/ScheduleManagement/DentistScheduleManagement"),
+);
+const ManageProfilePage = lazy(() => import("./pages/shared/ManageProfilePage/ManageProfilePage"));
+const ScheduleApprovalPage = lazy(() => import("./pages/manager/ScheduleApprovalPage/ScheduleApprovalPage"));
+const RoomsPage = lazy(() => import("./pages/manager/RoomsPage/RoomsPage"));
+const ServicesPage = lazy(() => import("./pages/public/ServicesPage/ServicesPage"));
+const StaffLoginPage = lazy(() => import("./pages/auth/StaffLoginPage/StaffLoginPage"));
+const ManagerStaffPage = lazy(() => import("./pages/manager/ManagerStaffPage/ManagerStaffPage"));
+const RevenuePage = lazy(() => import("./pages/manager/RevenuePage/RevenuePage"));
+const PatientPage = lazy(() => import("./pages/manager/PatientPage/PatientPage"));
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/consultation" element={<ConsultationPage />} />
@@ -287,7 +306,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Routes>
+          </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );

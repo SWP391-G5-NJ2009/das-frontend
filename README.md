@@ -1,12 +1,12 @@
-# DAS Frontend Setup
+# DAS Frontend
 
 React SPA for the DentalCare Dentist Appointment System. The frontend talks only to the Express backend API; it does not call Supabase directly.
 
 ## Requirements
 
-- Node.js 18 or newer
+- Node.js 20.19 or newer
 - npm
-- DAS backend running locally
+- DAS backend API
 
 ## Install
 
@@ -17,20 +17,46 @@ npm install
 
 ## Environment
 
-Create a local `.env` file from the example:
-
-```bash
-copy .env.example .env
-```
-
-Configure:
+Local `.env`:
 
 ```env
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=https://das-backend-production-5199.up.railway.app/api
 VITE_APP_NAME=DentalCare
 ```
 
-If your backend runs on another port, update `VITE_API_URL`.
+`VITE_API_URL` can be changed to a local backend during development:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+## Vercel Deployment
+
+Use these Vercel settings:
+
+```text
+Root Directory: das-frontend
+Build Command: npm run build
+Output Directory: dist
+Install Command: npm install
+```
+
+Set these Vercel environment variables:
+
+```env
+VITE_API_URL=https://das-backend-production-5199.up.railway.app/api
+VITE_APP_NAME=DentalCare
+```
+
+This project includes `vercel.json` with a rewrite to support React Router browser routes on refresh.
+
+After Vercel deploys, copy the Vercel frontend URL and update Railway backend:
+
+```env
+FRONTEND_URL=https://your-vercel-app.vercel.app
+```
+
+Then redeploy or restart the Railway backend so CORS allows the frontend.
 
 ## Run
 
@@ -40,114 +66,56 @@ Development server:
 npm run dev
 ```
 
-Default Vite URL:
+Default local URL:
 
 ```text
 http://localhost:5173
 ```
 
-## Current Routes
+Production build:
 
-Public pages:
-
-```text
-/                  Landing page
-/services          Dental services
-/consultation      Consultation form
-/login             Patient login
-/staff/login       Staff login
-/forgot-password   Forgot password and OTP reset
+```bash
+npm run build
 ```
 
-Patient pages:
+Preview production build locally:
 
-```text
-/patient/profile
-/patient/booking
-/patient/appointments
-/patient/history
+```bash
+npm run preview
 ```
 
-Staff pages:
-
-```text
-/receptionist/consultation-request
-/receptionist/appointments
-/receptionist/payments
-/receptionist/patient-registration
-/receptionist/book-appointment
-/receptionist/profile
-/dentist/profile
-/manager/services-management
-/manager/profile
-/admin/accounts
-/admin/profile
-```
-
-Protected routes use `AuthContext` and `ProtectedRoute`. Users are redirected based on their role after login.
-
-## Login Test Accounts
+## Test Accounts
 
 Patient:
 
 ```text
-phone: 0901000001
-password: Test12345
+phone: 0900000002
+password: Test12345!
 ```
 
-Admin:
+Staff:
 
 ```text
-username: admin
-password: Admin12345
+password for all staff accounts: Test12345!
 ```
 
-The staff login page is used by `receptionist`, `dentist`, `manager`, and `admin` roles.
-
-## Assets
-
-Project images live in:
+Staff usernames:
 
 ```text
-src/assets/
+admin
+recep
+owner
+dentist
+dentist2
+dentist3
 ```
 
-Images imported by components should be placed there, for example:
+## Performance Notes
 
-```jsx
-import heroLogin from "../../assets/hero-login.png";
-```
+Routes are lazy-loaded in `src/App.jsx` so users only download page code for the route they visit. Vite also separates large vendor groups such as FullCalendar, Recharts, icons, and React into separate chunks.
 
-Use `public/` only for files that must be served by a fixed URL and are not imported by React.
-
-## Styling
-
-The app uses pure CSS with BEM naming and CSS custom properties from:
-
-```text
-src/styles/base/_variables.css
-```
-
-Global CSS entry:
-
-```text
-src/styles/main.css
-```
-
-Component and page CSS files are colocated with their JSX files.
-
-## API Layer
-
-All API calls go through:
+The unused `axios` dependency was removed because all API calls use the shared `fetch` wrapper in:
 
 ```text
 src/services/api.js
 ```
-
-Auth-specific API calls live in:
-
-```text
-src/services/auth.service.js
-```
-
-Components should not call `fetch` directly.
