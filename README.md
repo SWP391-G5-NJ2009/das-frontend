@@ -20,7 +20,7 @@ npm install
 Local `.env`:
 
 ```env
-VITE_API_URL=https://das-backend-production-5199.up.railway.app/api
+VITE_API_URL=https://your-backend-url.com
 VITE_APP_NAME=DentalCare
 ```
 
@@ -44,7 +44,7 @@ Install Command: npm install
 Set these Vercel environment variables:
 
 ```env
-VITE_API_URL=https://das-backend-production-5199.up.railway.app/api
+VITE_API_URL=https://your-backend-url.com
 VITE_APP_NAME=DentalCare
 ```
 
